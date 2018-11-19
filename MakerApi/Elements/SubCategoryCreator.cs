@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Logger = BepInEx.Logger;
 
-namespace MakerAPI.Utilities
+namespace MakerAPI
 {
     internal class SubCategoryCreator
     {
@@ -21,7 +21,7 @@ namespace MakerAPI.Utilities
                     // 00_FaceTop/tglEar is present in Both male and female maker
                     var original = GameObject.Find("00_FaceTop").transform.Find("tglEar");
 
-                    _subCategoryCopy = Object.Instantiate(original, MakerAPI.Instance.transform, true);
+                    _subCategoryCopy = Object.Instantiate(original, MakerGuiEntryBase.GuiCacheTransfrom, true);
                     _subCategoryCopy.gameObject.SetActive(false);
 
                     var toggle = _subCategoryCopy.GetComponent<Toggle>();

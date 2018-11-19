@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -62,6 +63,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Elements\MakerButton.cs" />
+    <Compile Include="Elements\MakerColor.cs" />
+    <Compile Include="Elements\MakerDropdown.cs" />
+    <Compile Include="Elements\MakerText.cs" />
     <Compile Include="Elements\MakerToggle.cs" />
     <Compile Include="Elements\ValueMakerGuiEntry.cs" />
     <Compile Include="MakerAPI.Hooks.cs" />
@@ -75,7 +80,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Events\RegisterCustomControlsEvent.cs" />
     <Compile Include="Events\RegisterSubCategoriesEvent.cs" />
-    <Compile Include="Utilities\SubCategoryCreator.cs" />
+    <Compile Include="Elements\SubCategoryCreator.cs" />
     <Compile Include="Utilities\Utils.cs" />
   </ItemGroup>
   <ItemGroup />

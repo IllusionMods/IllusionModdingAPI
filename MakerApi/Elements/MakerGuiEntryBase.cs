@@ -17,7 +17,7 @@ namespace MakerAPI
 
         public MakerCategory Category { get; }
 
-        protected static Transform GuiCacheTransfrom
+        protected internal static Transform GuiCacheTransfrom
         {
             get
             {

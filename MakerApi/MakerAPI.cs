@@ -6,20 +6,9 @@ using BepInEx;
 using BepInEx.Logging;
 using ChaCustom;
 using Harmony;
-using MakerAPI.Utilities;
 using UniRx;
 using UnityEngine;
 using Logger = BepInEx.Logger;
-
-/*
-    MakerAPI.Instance.RegisterCustomSubCategories
-    var category = new MakerCategory("01_BodyTop", "tglGenitals", 101, "Genitals");
-    args.AddSubCategory(category);
-    var toggle = args.AddControl(new MakerToggle(category, "Test toggle", this));
-    toggle.TextColor = Color.magenta;
-    toggle.ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
-    toggle.Value = true;
-*/
 
 namespace MakerAPI
 {

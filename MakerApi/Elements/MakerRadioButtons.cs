@@ -41,7 +41,7 @@ namespace MakerAPI
             t1.GetComponentInChildren<TextMeshProUGUI>().text = _button1;
             t2.GetComponentInChildren<TextMeshProUGUI>().text = _button2;
             t3.GetComponentInChildren<TextMeshProUGUI>().text = _button3;
-            
+
             t1.onValueChanged.AddListener(a =>
             {
                 if (a)
@@ -73,7 +73,7 @@ namespace MakerAPI
                         break;
                 }
             });
-            
+
             tr.gameObject.SetActive(true);
         }
 
