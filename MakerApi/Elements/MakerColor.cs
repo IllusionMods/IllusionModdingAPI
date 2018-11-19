@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace MakerAPI
 {
-    public class MakerColor : ValueMakerGuiEntry<Color>
+    public class MakerColor : BaseEditableGuiEntry<Color>
     {
         private static Transform _colorCopy;
 

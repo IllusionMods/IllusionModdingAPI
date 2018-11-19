@@ -21,14 +21,14 @@ namespace MakerAPI
                     // 00_FaceTop/tglEar is present in Both male and female maker
                     var original = GameObject.Find("00_FaceTop").transform.Find("tglEar");
 
-                    _subCategoryCopy = Object.Instantiate(original, MakerGuiEntryBase.GuiCacheTransfrom, true);
+                    _subCategoryCopy = Object.Instantiate(original, BaseGuiEntry.GuiCacheTransfrom, true);
                     _subCategoryCopy.gameObject.SetActive(false);
 
                     var toggle = _subCategoryCopy.GetComponent<Toggle>();
                     toggle.onValueChanged.RemoveAllListeners();
                     toggle.isOn = false;
 
-                    _subCategoryCopy.name = "CustomSubcategory" + MakerGuiEntryBase.GuiApiNameAppendix;
+                    _subCategoryCopy.name = "CustomSubcategory" + BaseGuiEntry.GuiApiNameAppendix;
                     var copyTop = _subCategoryCopy.Find("EarTop");
                     copyTop.name = "CustomSubcategoryTop";
 

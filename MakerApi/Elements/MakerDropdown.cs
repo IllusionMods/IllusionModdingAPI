@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace MakerAPI
 {
-    public class MakerDropdown : ValueMakerGuiEntry<int>
+    public class MakerDropdown : BaseEditableGuiEntry<int>
     {
         private static Transform _dropdownCopy;
 

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace MakerAPI
 {
-    public class MakerButton : MakerGuiEntryBase
+    public class MakerButton : BaseGuiEntry
     {
         private static Transform _buttonCopy;
 

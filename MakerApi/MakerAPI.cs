@@ -18,7 +18,7 @@ namespace MakerAPI
         public const string GUID = "com.bepis.makerapi";
 
         private readonly List<MakerCategory> _categories = new List<MakerCategory>();
-        private readonly List<MakerGuiEntryBase> _guiEntries = new List<MakerGuiEntryBase>();
+        private readonly List<BaseGuiEntry> _guiEntries = new List<BaseGuiEntry>();
 
         public MakerAPI()
         {
@@ -156,7 +156,7 @@ namespace MakerAPI
         /// <summary>
         /// Add custom controls. If you want to use custom sub categories, register them by calling AddSubCategory.
         /// </summary>
-        internal T AddControl<T>(T control) where T : MakerGuiEntryBase
+        internal T AddControl<T>(T control) where T : BaseGuiEntry
         {
             _guiEntries.Add(control);
             return control;
@@ -177,10 +177,11 @@ namespace MakerAPI
         /// <summary>
         /// 0 is male, 1 is female
         /// </summary>
-        public int GetMakerSex()
-        {
-            return CustomBase.Instance.modeSex;
-        }
+        public int GetMakerSex() => GetMakerBase().modeSex;
+
+        public CustomBase GetMakerBase() => CustomBase.Instance;
+
+        public ChaFileDefine.CoordinateType GetCurrentCoordinateType() => (ChaFileDefine.CoordinateType) GetMakerBase().chaCtrl.fileStatus.coordinateType;
 
         /// <summary>
         /// Called at the very beginning of maker loading. This is the only chance to add custom sub categories.
@@ -216,13 +217,13 @@ namespace MakerAPI
         private void OnRegisterCustomSubCategories()
         {
             //Logger.Log(LogLevel.Debug, "OnRegisterCustomSubCategories");
-            RegisterCustomSubCategories?.Invoke(this, new RegisterSubCategoriesEvent());
+            RegisterCustomSubCategories?.Invoke(this, new RegisterSubCategoriesEvent(this));
         }
 
         private void OnMakerStartedLoading()
         {
             //Logger.Log(LogLevel.Debug, "Character Maker Started Loading");
-            MakerStartedLoading?.Invoke(this, new RegisterCustomControlsEvent());
+            MakerStartedLoading?.Invoke(this, new RegisterCustomControlsEvent(this));
         }
 
         private void OnMakerFinishedLoading()
@@ -234,7 +235,7 @@ namespace MakerAPI
         private void OnMakerBaseLoaded()
         {
             //Logger.Log(LogLevel.Debug, "Character Maker Base Loaded");
-            MakerBaseLoaded?.Invoke(this, new RegisterCustomControlsEvent());
+            MakerBaseLoaded?.Invoke(this, new RegisterCustomControlsEvent(this));
 
             CreateCustomControls();
         }

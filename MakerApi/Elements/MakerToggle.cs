@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace MakerAPI
 {
-    public class MakerToggle : ValueMakerGuiEntry<bool>
+    public class MakerToggle : BaseEditableGuiEntry<bool>
     {
         private static Transform _toggleCopy;
 

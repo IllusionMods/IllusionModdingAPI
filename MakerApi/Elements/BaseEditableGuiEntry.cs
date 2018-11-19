@@ -3,12 +3,12 @@ using UniRx;
 
 namespace MakerAPI
 {
-    public abstract class ValueMakerGuiEntry<TValue> : MakerGuiEntryBase
+    public abstract class BaseEditableGuiEntry<TValue> : BaseGuiEntry
     {
         private readonly BehaviorSubject<TValue> _incomingValue;
         private readonly Subject<TValue> _outgoingValue;
 
-        protected ValueMakerGuiEntry(MakerCategory category, TValue initialValue, BaseUnityPlugin owner) : base(category, owner)
+        protected BaseEditableGuiEntry(MakerCategory category, TValue initialValue, BaseUnityPlugin owner) : base(category, owner)
         {
             _incomingValue = new BehaviorSubject<TValue>(initialValue);
             _outgoingValue = new Subject<TValue>();

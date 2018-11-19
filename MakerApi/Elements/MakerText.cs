@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MakerAPI
 {
-    public class MakerText : MakerGuiEntryBase
+    public class MakerText : BaseGuiEntry
     {
         private static Transform _textCopy;
 

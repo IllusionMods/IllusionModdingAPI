@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace MakerAPI
 {
-    public abstract class MakerGuiEntryBase : IDisposable
+    public abstract class BaseGuiEntry : IDisposable
     {
         public static readonly string GuiApiNameAppendix = "(GUIAPI)";
         private static Transform _guiCacheTransfrom;
 
-        protected MakerGuiEntryBase(MakerCategory category, BaseUnityPlugin owner)
+        protected BaseGuiEntry(MakerCategory category, BaseUnityPlugin owner)
         {
             Category = category;
             Owner = owner;

@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace MakerAPI
 {
-    public class MakerSlider : ValueMakerGuiEntry<float>
+    public class MakerSlider : BaseEditableGuiEntry<float>
     {
         private static Transform _sliderCopy;
 

@@ -68,11 +68,11 @@
     <Compile Include="Elements\MakerDropdown.cs" />
     <Compile Include="Elements\MakerText.cs" />
     <Compile Include="Elements\MakerToggle.cs" />
-    <Compile Include="Elements\ValueMakerGuiEntry.cs" />
+    <Compile Include="Elements\BaseEditableGuiEntry.cs" />
     <Compile Include="MakerAPI.Hooks.cs" />
     <Compile Include="MakerCategory.cs" />
     <Compile Include="MakerAPI.cs" />
-    <Compile Include="Elements\MakerGuiEntryBase.cs" />
+    <Compile Include="Elements\BaseGuiEntry.cs" />
     <Compile Include="Elements\MakerRadioButtons.cs" />
     <Compile Include="Elements\MakerSeparator.cs" />
     <Compile Include="Elements\MakerSlider.cs" />

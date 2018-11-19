@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MakerAPI
 {
-    public class MakerSeparator : MakerGuiEntryBase
+    public class MakerSeparator : BaseGuiEntry
     {
         private static Transform _sourceSeparator;
         

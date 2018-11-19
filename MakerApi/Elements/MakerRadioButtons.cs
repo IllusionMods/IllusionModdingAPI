@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace MakerAPI
 {
-    public class MakerRadioButtons : ValueMakerGuiEntry<int>
+    public class MakerRadioButtons : BaseEditableGuiEntry<int>
     {
         private readonly string _settingName;
         private readonly string _button1;
