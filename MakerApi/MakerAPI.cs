@@ -39,7 +39,7 @@ namespace MakerAPI
             foreach (Transform categoryTransfrom in GameObject.Find("CvsMenuTree").transform)
                 CreateCustomControlsInCategory(categoryTransfrom);
         }
-
+        
         private void CreateCustomControlsInCategory(Transform categoryTransfrom)
         {
             foreach (var subCategoryGroup in _guiEntries
@@ -51,7 +51,7 @@ namespace MakerAPI
                 if (categorySubTransform != null)
                 {
                     var contentParent = FindSubcategoryContentParent(categorySubTransform);
-                    
+
                     BaseUnityPlugin lastOwner = contentParent.childCount > 1 ? this : null;
                     foreach (var customControl in subCategoryGroup)
                     {
@@ -84,8 +84,8 @@ namespace MakerAPI
 
         private static Transform FindSubcategoryContentParent(Transform categorySubTransform)
         {
-            var scrollViewContent = categorySubTransform.Find("Scroll View/Viewport/Content");
-            return scrollViewContent ?? categorySubTransform.Cast<Transform>().First(x => x.name != "imgOff");
+            var top = categorySubTransform.Cast<Transform>().First(x => x.name != "imgOff");
+            return top.Find("Scroll View/Viewport/Content") ?? top;
         }
 
         /// <summary>

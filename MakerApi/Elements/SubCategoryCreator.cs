@@ -1,8 +1,10 @@
-﻿using BepInEx.Logging;
+﻿using System.Collections;
+using BepInEx.Logging;
 using ChaCustom;
 using Harmony;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Logger = BepInEx.Logger;
 
@@ -11,6 +13,7 @@ namespace MakerAPI
     internal class SubCategoryCreator
     {
         private static Transform _subCategoryCopy;
+        private static Transform _scrollbarCopy;
 
         private static Transform SubCategoryCopy
         {
@@ -41,6 +44,18 @@ namespace MakerAPI
 
                     foreach (var renderer in _subCategoryCopy.GetComponentsInChildren<Image>())
                         renderer.raycastTarget = true;
+
+                    var originalScroll = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/03_ClothesTop/tglSocks/SocksTop/Scroll View");
+                    _scrollbarCopy = Object.Instantiate(originalScroll.transform, BaseGuiEntry.GuiCacheTransfrom, true);
+                    _scrollbarCopy.gameObject.SetActive(false);
+
+                    foreach (Transform tr in _scrollbarCopy.Find("Viewport/Content"))
+                        Object.Destroy(tr.gameObject);
+
+                    Object.DestroyImmediate(copyTop.GetComponent<Image>());
+                    Object.DestroyImmediate(copyTop.GetComponent<ContentSizeFitter>());
+                    Object.DestroyImmediate(copyTop.GetComponent<VerticalLayoutGroup>());
+                    Object.DestroyImmediate(copyTop.GetComponent<CanvasRenderer>());
                 }
                 return _subCategoryCopy;
             }
@@ -74,10 +89,27 @@ namespace MakerAPI
 
             foreach (var renderer in _subCategoryCopy.GetComponentsInChildren<UI_RaycastCtrl>())
                 renderer.Reset();
+            
+            MakerAPI.Instance.StartCoroutine(FinishInit(trTop));
 
             tr.gameObject.SetActive(true);
 
             return tr;
+        }
+        
+        private static IEnumerator FinishInit(Transform trTop)
+        {
+            yield return null;
+            var scrl = Object.Instantiate(_scrollbarCopy, trTop, true);
+            scrl.name = "Scroll View";
+            var rt = scrl.GetComponent<RectTransform>();
+            rt.offsetMax = new Vector2(472, 0);
+            rt.offsetMin = new Vector2(0, -952);
+            scrl.Find("Viewport/Content").GetComponent<Image>().raycastTarget = true;
+            scrl.Find("Scrollbar Vertical").GetComponent<Image>().raycastTarget = true;
+            scrl.gameObject.SetActive(true);
+
+            trTop.GetComponentInChildren<UI_RaycastCtrl>(true)?.Reset();
         }
     }
 }
