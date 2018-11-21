@@ -23,19 +23,28 @@ namespace MakerAPI
             get
             {
                 if (_buttonCopy == null)
-                {
-                    var original = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/02_HairTop/tglBack/BackTop/grpBtn").transform;
-
-                    _buttonCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
-                    _buttonCopy.gameObject.SetActive(false);
-                    _buttonCopy.name = "btnCustom" + GuiApiNameAppendix;
-
-                    var button = _buttonCopy.GetComponentInChildren<Button>();
-                    button.onClick.RemoveAllListeners();
-                    button.targetGraphic.raycastTarget = true;
-                }
+                    MakeCopy();
                 return _buttonCopy;
             }
+        }
+
+        private static void MakeCopy()
+        {
+            var original = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/02_HairTop/tglBack/BackTop/grpBtn").transform;
+
+            _buttonCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
+            _buttonCopy.gameObject.SetActive(false);
+            _buttonCopy.name = "btnCustom" + GuiApiNameAppendix;
+
+            var button = _buttonCopy.GetComponentInChildren<Button>();
+            button.onClick.RemoveAllListeners();
+            button.targetGraphic.raycastTarget = true;
+        }
+
+        protected internal override void Initialize()
+        {
+            if (_buttonCopy == null)
+                MakeCopy();
         }
 
         public override void Dispose()

@@ -1,4 +1,6 @@
-﻿using BepInEx;
+﻿using System;
+using System.Linq;
+using BepInEx;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -10,18 +12,22 @@ namespace MakerAPI
     public class MakerRadioButtons : BaseEditableGuiEntry<int>
     {
         private readonly string _settingName;
-        private readonly string _button1;
-        private readonly string _button2;
-        private readonly string _button3;
+        private readonly string[] _buttons;
 
         private static Transform _radioCopy;
 
-        public MakerRadioButtons(MakerCategory category, string settingName, string button1, string button2, string button3, BaseUnityPlugin owner) : base(category, 0, owner)
+        public MakerRadioButtons(MakerCategory category, BaseUnityPlugin owner, string settingName, params string[] buttons) : base(category, 0, owner)
         {
+            if (buttons.Length < 2) throw new ArgumentException("Need at least two buttons.", nameof(buttons));
+
             _settingName = settingName;
-            _button1 = button1;
-            _button2 = button2;
-            _button3 = button3;
+            _buttons = buttons;
+        }
+
+        protected internal override void Initialize()
+        {
+            if (_radioCopy == null)
+                MakeCopy();
         }
 
         protected internal override void CreateControl(Transform subCategoryList)
@@ -34,43 +40,46 @@ namespace MakerAPI
             settingName.text = _settingName;
             settingName.color = TextColor;
 
-            var t1 = tr.Find("rb00").GetComponent<Toggle>();
-            var t2 = tr.Find("rb01").GetComponent<Toggle>();
-            var t3 = tr.Find("rb02").GetComponent<Toggle>();
+            var sourceToggle = tr.Find("rb00");
 
-            t1.GetComponentInChildren<TextMeshProUGUI>().text = _button1;
-            t2.GetComponentInChildren<TextMeshProUGUI>().text = _button2;
-            t3.GetComponentInChildren<TextMeshProUGUI>().text = _button3;
+            var toggles = _buttons.Select(
+                (x, i) =>
+                {
+                    if (i == 0)
+                        return sourceToggle;
 
-            t1.onValueChanged.AddListener(a =>
+                    var newButton = Object.Instantiate(sourceToggle, tr, true);
+                    newButton.name = "rb0" + i;
+                    
+                    return newButton;
+                }).Select(x => x.GetComponent<Toggle>())
+                .ToList();
+            
+            var singleToggleWidth = 280 / toggles.Count;
+            for (var index = 0; index < toggles.Count; index++)
             {
-                if (a)
-                    SetNewValue(0);
-            });
-            t2.onValueChanged.AddListener(a =>
-            {
-                if (a)
-                    SetNewValue(1);
-            });
-            t3.onValueChanged.AddListener(a =>
-            {
-                if (a)
-                    SetNewValue(2);
-            });
+                var toggle = toggles[index];
 
+                var rt = toggle.GetComponent<RectTransform>();
+                rt.offsetMin = new Vector2(singleToggleWidth * index - 280, 8);
+                rt.offsetMax = new Vector2(singleToggleWidth * (index + 1) - 280, -8);
+
+                toggle.GetComponentInChildren<TextMeshProUGUI>().text = _buttons[index];
+
+                var indexCopy = index;
+                toggle.onValueChanged.AddListener(a =>
+                {
+                    if (a || indexCopy == Value)
+                        SetNewValue(indexCopy);
+                });
+            }
+            
             BufferedValueChanged.Subscribe(i =>
             {
-                switch (i)
+                for (var index = 0; index < toggles.Count; index++)
                 {
-                    case 0:
-                        t1.isOn = true;
-                        break;
-                    case 1:
-                        t2.isOn = true;
-                        break;
-                    case 2:
-                        t3.isOn = true;
-                        break;
+                    var tgl = toggles[index];
+                    tgl.isOn = index == i;
                 }
             });
 
@@ -82,24 +91,38 @@ namespace MakerAPI
             get
             {
                 if (_radioCopy == null)
-                {
-                    // Exists in male and female maker
-                    var originalSlider = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglEye02/Eye02Top/rbEyeSettingType").transform;
-
-                    _radioCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
-                    _radioCopy.gameObject.SetActive(false);
-                    _radioCopy.name = "rbSide" + GuiApiNameAppendix;
-
-                    foreach (var toggle in _radioCopy.GetComponentsInChildren<Toggle>())
-                    {
-                        toggle.onValueChanged.RemoveAllListeners();
-                        toggle.image.raycastTarget = true;
-                        toggle.graphic.raycastTarget = true;
-                        toggle.gameObject.name = "rb" + toggle.gameObject.name.Substring(8);
-                    }
-                }
+                    MakeCopy();
 
                 return _radioCopy;
+            }
+        }
+
+        private static void MakeCopy()
+        {
+            // Exists in male and female maker
+            var originalSlider = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglEye02/Eye02Top/rbEyeSettingType").transform;
+
+            _radioCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
+            _radioCopy.gameObject.SetActive(false);
+            _radioCopy.name = "rbSide" + GuiApiNameAppendix;
+
+            Object.DestroyImmediate(_radioCopy.GetComponent<ToggleGroup>());
+
+            foreach (var toggle in _radioCopy.GetComponentsInChildren<Toggle>())
+            {
+                toggle.onValueChanged.RemoveAllListeners();
+
+                var gameObjectName = "rb" + toggle.gameObject.name.Substring(8);
+                if (gameObjectName == "rb00")
+                {
+                    toggle.image.raycastTarget = true;
+                    toggle.graphic.raycastTarget = true;
+                    toggle.gameObject.name = gameObjectName;
+                }
+                else
+                {
+                    Object.Destroy(toggle.gameObject);
+                }
             }
         }
     }

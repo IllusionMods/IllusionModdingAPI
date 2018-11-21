@@ -20,15 +20,24 @@ namespace MakerAPI
             get
             {
                 if (_textCopy == null)
-                {
-                    var original = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/tglConfig/ConfigTop/txtExplanation").transform;
-
-                    _textCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
-                    _textCopy.gameObject.SetActive(false);
-                    _textCopy.name = "txtCustom" + GuiApiNameAppendix;
-                }
+                    MakeCopy();
                 return _textCopy;
             }
+        }
+
+        private static void MakeCopy()
+        {
+            var original = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/tglConfig/ConfigTop/txtExplanation").transform;
+
+            _textCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
+            _textCopy.gameObject.SetActive(false);
+            _textCopy.name = "txtCustom" + GuiApiNameAppendix;
+        }
+
+        protected internal override void Initialize()
+        {
+            if (_textCopy == null)
+                MakeCopy();
         }
 
         public override void Dispose() { }

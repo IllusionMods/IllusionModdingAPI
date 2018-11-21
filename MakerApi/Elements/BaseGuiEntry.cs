@@ -31,6 +31,8 @@ namespace MakerAPI
             }
         }
 
+        protected internal abstract void Initialize();
+
         public abstract void Dispose();
         protected internal abstract void CreateControl(Transform subCategoryList);
 

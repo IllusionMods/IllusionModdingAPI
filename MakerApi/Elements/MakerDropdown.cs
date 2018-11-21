@@ -26,20 +26,29 @@ namespace MakerAPI
             get
             {
                 if (_dropdownCopy == null)
-                {
-                    var originalSlider = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/tglConfig/ConfigTop/ddRamp").transform;
-
-                    _dropdownCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
-                    _dropdownCopy.gameObject.SetActive(false);
-                    _dropdownCopy.name = "ddList" + GuiApiNameAppendix;
-
-                    var dd = _dropdownCopy.GetComponentInChildren<TMP_Dropdown>();
-                    dd.onValueChanged.RemoveAllListeners();
-                    dd.ClearOptions();
-                    dd.GetComponent<Image>().raycastTarget = true;
-                }
+                    MakeCopy();
                 return _dropdownCopy;
             }
+        }
+
+        private static void MakeCopy()
+        {
+            var originalSlider = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/tglConfig/ConfigTop/ddRamp").transform;
+
+            _dropdownCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
+            _dropdownCopy.gameObject.SetActive(false);
+            _dropdownCopy.name = "ddList" + GuiApiNameAppendix;
+
+            var dd = _dropdownCopy.GetComponentInChildren<TMP_Dropdown>();
+            dd.onValueChanged.RemoveAllListeners();
+            dd.ClearOptions();
+            dd.GetComponent<Image>().raycastTarget = true;
+        }
+
+        protected internal override void Initialize()
+        {
+            if (_dropdownCopy == null)
+                MakeCopy();
         }
 
         protected internal override void CreateControl(Transform subCategoryList)

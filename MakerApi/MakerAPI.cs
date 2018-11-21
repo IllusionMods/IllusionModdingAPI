@@ -232,12 +232,18 @@ namespace MakerAPI
             MakerFinishedLoading?.Invoke(this, EventArgs.Empty);
         }
 
+        private void OnCreateCustomControls()
+        {
+            CreateCustomControls();
+        }
+
         private void OnMakerBaseLoaded()
         {
             //Logger.Log(LogLevel.Debug, "Character Maker Base Loaded");
             MakerBaseLoaded?.Invoke(this, new RegisterCustomControlsEvent(this));
-
-            CreateCustomControls();
+            
+            foreach (var baseGuiEntry in _guiEntries)
+                baseGuiEntry.Initialize();
         }
 
         private void OnMakerExiting()

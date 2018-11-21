@@ -60,7 +60,11 @@ namespace MakerAPI
 
                 Instance.OnMakerBaseLoaded();
 
-                for (var i = 0; i < 3; i++)
+                yield return null;
+
+                Instance.OnCreateCustomControls();
+
+                for (var i = 0; i < 2; i++)
                     yield return null;
 
                 _studioStarting = false;

@@ -36,31 +36,40 @@ namespace MakerAPI
             get
             {
                 if (_sliderCopy == null)
-                {
-                    // Exists in male and female maker
-                    var originalSlider = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglAll/AllTop/sldTemp").transform;
-
-                    _sliderCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
-                    _sliderCopy.gameObject.SetActive(false);
-                    _sliderCopy.name = "sldTemp" + GuiApiNameAppendix;
-
-                    var slider = _sliderCopy.Find("Slider").GetComponent<Slider>();
-                    slider.onValueChanged.RemoveAllListeners();
-                    
-                    var inputField = _sliderCopy.Find("InputField").GetComponent<TMP_InputField>();
-                    inputField.onValueChanged.RemoveAllListeners();
-                    inputField.onSubmit.RemoveAllListeners();
-                    inputField.onEndEdit.RemoveAllListeners();
-
-                    var resetButton = _sliderCopy.Find("Button").GetComponent<Button>();
-                    resetButton.onClick.RemoveAllListeners();
-
-                    foreach (var renderer in _sliderCopy.GetComponentsInChildren<Image>())
-                        renderer.raycastTarget = true;
-                }
+                    MakeCopy();
 
                 return _sliderCopy;
             }
+        }
+
+        private static void MakeCopy()
+        {
+            // Exists in male and female maker
+            var originalSlider = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglAll/AllTop/sldTemp").transform;
+
+            _sliderCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
+            _sliderCopy.gameObject.SetActive(false);
+            _sliderCopy.name = "sldTemp" + GuiApiNameAppendix;
+
+            var slider = _sliderCopy.Find("Slider").GetComponent<Slider>();
+            slider.onValueChanged.RemoveAllListeners();
+
+            var inputField = _sliderCopy.Find("InputField").GetComponent<TMP_InputField>();
+            inputField.onValueChanged.RemoveAllListeners();
+            inputField.onSubmit.RemoveAllListeners();
+            inputField.onEndEdit.RemoveAllListeners();
+
+            var resetButton = _sliderCopy.Find("Button").GetComponent<Button>();
+            resetButton.onClick.RemoveAllListeners();
+
+            foreach (var renderer in _sliderCopy.GetComponentsInChildren<Image>())
+                renderer.raycastTarget = true;
+        }
+
+        protected internal override void Initialize()
+        {
+            if (_sliderCopy == null)
+                MakeCopy();
         }
 
         protected internal override void CreateControl(Transform subCategoryList)

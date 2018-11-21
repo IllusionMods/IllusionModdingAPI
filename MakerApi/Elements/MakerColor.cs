@@ -25,19 +25,28 @@ namespace MakerAPI
             get
             {
                 if (_colorCopy == null)
-                {
-                    var original = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglMole/MoleTop/btnMoleColor").transform;
-
-                    _colorCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
-                    _colorCopy.gameObject.SetActive(false);
-                    _colorCopy.name = "btnColor" + GuiApiNameAppendix;
-
-                    var button = _colorCopy.GetComponentInChildren<Button>();
-                    button.onClick.RemoveAllListeners();
-                    button.targetGraphic.raycastTarget = true;
-                }
+                    MakeCopy();
                 return _colorCopy;
             }
+        }
+
+        private static void MakeCopy()
+        {
+            var original = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglMole/MoleTop/btnMoleColor").transform;
+
+            _colorCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
+            _colorCopy.gameObject.SetActive(false);
+            _colorCopy.name = "btnColor" + GuiApiNameAppendix;
+
+            var button = _colorCopy.GetComponentInChildren<Button>();
+            button.onClick.RemoveAllListeners();
+            button.targetGraphic.raycastTarget = true;
+        }
+
+        protected internal override void Initialize()
+        {
+            if (_colorCopy == null)
+                MakeCopy();
         }
 
         public override void Dispose() { }
