@@ -1,10 +1,10 @@
 ﻿using System.Collections;
+using System.Reflection;
 using BepInEx.Logging;
 using ChaCustom;
 using Harmony;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Logger = BepInEx.Logger;
 
@@ -56,6 +56,10 @@ namespace MakerAPI
                     Object.DestroyImmediate(copyTop.GetComponent<ContentSizeFitter>());
                     Object.DestroyImmediate(copyTop.GetComponent<VerticalLayoutGroup>());
                     Object.DestroyImmediate(copyTop.GetComponent<CanvasRenderer>());
+
+                    var targets = typeof(UI_RaycastCtrl).GetField("imgRaycastTargetOn", BindingFlags.NonPublic | BindingFlags.Instance);
+                    foreach (var raycastCtrl in _subCategoryCopy.GetComponentsInChildren<UI_RaycastCtrl>())
+                        targets.SetValue(raycastCtrl, null);
                 }
                 return _subCategoryCopy;
             }
@@ -87,16 +91,16 @@ namespace MakerAPI
             var cgroup = trTop.GetComponent<CanvasGroup>();
             mainCategory.items = mainCategory.items.AddToArray(new UI_ToggleGroupCtrl.ItemInfo { tglItem = tgl, cgItem = cgroup });
 
-            foreach (var renderer in _subCategoryCopy.GetComponentsInChildren<UI_RaycastCtrl>())
-                renderer.Reset();
-            
+            foreach (var raycastCtrl in _subCategoryCopy.GetComponentsInChildren<UI_RaycastCtrl>())
+                raycastCtrl.Reset();
+
             MakerAPI.Instance.StartCoroutine(FinishInit(trTop));
 
             tr.gameObject.SetActive(true);
 
             return tr;
         }
-        
+
         private static IEnumerator FinishInit(Transform trTop)
         {
             yield return null;
