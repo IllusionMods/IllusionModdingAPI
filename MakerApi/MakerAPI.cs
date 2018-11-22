@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
@@ -39,7 +40,7 @@ namespace MakerAPI
             foreach (Transform categoryTransfrom in GameObject.Find("CvsMenuTree").transform)
                 CreateCustomControlsInCategory(categoryTransfrom);
         }
-        
+
         private void CreateCustomControlsInCategory(Transform categoryTransfrom)
         {
             foreach (var subCategoryGroup in _guiEntries
@@ -181,7 +182,7 @@ namespace MakerAPI
 
         public CustomBase GetMakerBase() => CustomBase.Instance;
 
-        public ChaFileDefine.CoordinateType GetCurrentCoordinateType() => (ChaFileDefine.CoordinateType) GetMakerBase().chaCtrl.fileStatus.coordinateType;
+        public ChaFileDefine.CoordinateType GetCurrentCoordinateType() => (ChaFileDefine.CoordinateType)GetMakerBase().chaCtrl.fileStatus.coordinateType;
 
         /// <summary>
         /// Called at the very beginning of maker loading. This is the only chance to add custom sub categories.
@@ -232,18 +233,20 @@ namespace MakerAPI
             MakerFinishedLoading?.Invoke(this, EventArgs.Empty);
         }
 
-        private void OnCreateCustomControls()
-        {
-            CreateCustomControls();
-        }
-
         private void OnMakerBaseLoaded()
         {
             //Logger.Log(LogLevel.Debug, "Character Maker Base Loaded");
             MakerBaseLoaded?.Invoke(this, new RegisterCustomControlsEvent(this));
-            
+
+            DebugControls();
+
             foreach (var baseGuiEntry in _guiEntries)
                 baseGuiEntry.Initialize();
+        }
+
+        private void OnCreateCustomControls()
+        {
+            CreateCustomControls();
         }
 
         private void OnMakerExiting()
@@ -252,6 +255,29 @@ namespace MakerAPI
             MakerExiting?.Invoke(this, EventArgs.Empty);
 
             RemoveCustomControls();
+        }
+
+        [Conditional("DEBUG")]
+        private void DebugControls()
+        {
+            var cat = MakerConstants.BuiltInCategories.First();
+            AddControl(new MakerSeparator(cat, this));
+            AddControl(new MakerSeparator(cat, this));
+            AddControl(new MakerSeparator(cat, this));
+            AddControl(new MakerToggle(cat, "test toggle", this))
+                .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
+            AddControl(new MakerButton("test btn", cat, this))
+                .OnClick.AddListener(() => Logger.Log(LogLevel.Message, "Clicked"));
+            AddControl(new MakerColor("test color", true, cat, Color.magenta, this))
+                .ValueChanged.Subscribe(color => Logger.Log(LogLevel.Message, color));
+            AddControl(new MakerDropdown("test toggle", new[] { "t0", "t1", "t2", "t3" }, cat, 1, this))
+                .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
+            AddControl(new MakerRadioButtons(cat, this, "radio btns", "b1", "b2"))
+                .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
+            AddControl(new MakerSlider(cat, "test slider", 0, 1, 1, this))
+                .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
+            AddControl(new MakerText("test text test text test text test text test text test " +
+                                     "text test text test text test text test text", cat, this));
         }
     }
 }
