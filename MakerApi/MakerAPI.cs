@@ -13,9 +13,10 @@ using Logger = BepInEx.Logger;
 
 namespace MakerAPI
 {
-    [BepInPlugin(GUID, "Character Maker API", "1.0")]
+    [BepInPlugin(GUID, "Character Maker API", Version)]
     public partial class MakerAPI : BaseUnityPlugin
     {
+        public const string Version = "1.1";
         public const string GUID = "com.bepis.makerapi";
 
         private readonly List<MakerCategory> _categories = new List<MakerCategory>();
