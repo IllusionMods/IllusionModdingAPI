@@ -21,6 +21,7 @@ namespace MakerAPI
 
         private readonly List<MakerCategory> _categories = new List<MakerCategory>();
         private readonly List<BaseGuiEntry> _guiEntries = new List<BaseGuiEntry>();
+        private bool _insideMaker;
 
         public MakerAPI()
         {
@@ -279,6 +280,46 @@ namespace MakerAPI
                 .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
             AddControl(new MakerText("test text test text test text test text test text test " +
                                      "text test text test text test text test text", cat, this));
+        }
+
+        /// <summary>
+        /// Use to avoid unnecessary processing cards when they are loaded to the character list.
+        /// For example, don't load extended data for these characters since it's never used.
+        /// </summary>
+        public bool CharaListIsLoading { get; private set; }
+
+        /// <summary>
+        /// ChaFile of the character currently opened in maker. Use this when getting extended data.
+        /// </summary>
+        public ChaFile CurrentChaFile => Hooks.LastLoadedChaFile;
+
+        /// <summary>
+        /// Fired when the current character in maker is changed by loading other cards or coordinates.
+        /// Only fired when inside maker.
+        /// </summary>
+        public event EventHandler<CharacterChangedEventArgs> CharacterChanged;
+
+        private void OnCharacterChanged(CharacterChangedEventArgs characterChangedEventArgs)
+        {
+            CharacterChanged?.Invoke(this, characterChangedEventArgs);
+        }
+
+        public event EventHandler InsideMakerChanged;
+
+        /// <summary>
+        /// Maker is currently loaded and running
+        /// </summary>
+        public bool InsideMaker
+        {
+            get { return _insideMaker; }
+            private set
+            {
+                if (_insideMaker != value)
+                {
+                    _insideMaker = value;
+                    InsideMakerChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
     }
 }
