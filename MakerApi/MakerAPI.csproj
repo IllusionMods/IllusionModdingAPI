@@ -67,6 +67,7 @@
     <Compile Include="Elements\MakerButton.cs" />
     <Compile Include="Elements\MakerColor.cs" />
     <Compile Include="Elements\MakerDropdown.cs" />
+    <Compile Include="Elements\MakerImage.cs" />
     <Compile Include="Elements\MakerText.cs" />
     <Compile Include="Elements\MakerToggle.cs" />
     <Compile Include="Elements\BaseEditableGuiEntry.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Events\RegisterCustomControlsEvent.cs" />
     <Compile Include="Events\RegisterSubCategoriesEvent.cs" />
     <Compile Include="Elements\SubCategoryCreator.cs" />
+    <Compile Include="Utilities\OpenFileDialog.cs" />
     <Compile Include="Utilities\Utils.cs" />
   </ItemGroup>
   <ItemGroup />
