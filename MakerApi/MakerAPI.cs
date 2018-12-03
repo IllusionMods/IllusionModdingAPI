@@ -33,8 +33,13 @@ namespace MakerAPI
 
         private void Start()
         {
-            var harmony = HarmonyInstance.Create(GUID);
-            harmony.PatchAll(typeof(Hooks));
+            InsideStudio = Application.productName == "CharaStudio";
+
+            if (!InsideStudio)
+            {
+                var harmony = HarmonyInstance.Create(GUID);
+                harmony.PatchAll(typeof(Hooks));
+            }
         }
 
         private void CreateCustomControls()
@@ -184,6 +189,11 @@ namespace MakerAPI
 
         public CustomBase GetMakerBase() => CustomBase.Instance;
 
+        public ChaControl GetCharacterControl() => InsideMaker ? GetMakerBase()?.chaCtrl : null;
+
+        /// <summary>
+        /// Currently selected maker coordinate
+        /// </summary>
         public ChaFileDefine.CoordinateType GetCurrentCoordinateType() => (ChaFileDefine.CoordinateType)GetMakerBase().chaCtrl.fileStatus.coordinateType;
 
         /// <summary>
@@ -291,7 +301,7 @@ namespace MakerAPI
         /// <summary>
         /// ChaFile of the character currently opened in maker. Use this when getting extended data.
         /// </summary>
-        public ChaFile CurrentChaFile => Hooks.LastLoadedChaFile;
+        public ChaFile CurrentChaFile => InsideMaker ? (Hooks.LastLoadedChaFile ?? GetCharacterControl()?.chaFile) : null;
 
         /// <summary>
         /// Fired when the current character in maker is changed by loading other cards or coordinates.
@@ -321,5 +331,10 @@ namespace MakerAPI
                 }
             }
         }
+
+        /// <summary>
+        /// We are in the studio and the API has very limited functionality
+        /// </summary>
+        public bool InsideStudio { get; private set; }
     }
 }
