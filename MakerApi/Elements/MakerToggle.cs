@@ -41,6 +41,8 @@ namespace MakerAPI
             toggle.image.raycastTarget = true;
             toggle.graphic.raycastTarget = true;
 
+            toggle.GetComponent<RectTransform>().offsetMax = new Vector2(460, -8);
+
             _toggleCopy = copy;
         }
 
