@@ -53,13 +53,13 @@ namespace MakerAPI
         protected internal override void CreateControl(Transform subCategoryList)
         {
             var go = new GameObject("image" + GuiApiNameAppendix, typeof(RectTransform), typeof(LayoutElement));
-            go.transform.parent = subCategoryList;
+            go.transform.SetParent(subCategoryList, false);
             go.layer = 5;
             var le = go.GetComponent<LayoutElement>();
             le.minWidth = 456;
 
             var ig = new GameObject("img", typeof(RectTransform), typeof(CanvasRenderer));
-            ig.transform.parent = go.transform;
+            ig.transform.SetParent(go.transform, false);
             ig.layer = 5;
             var i = ig.AddComponent<RawImage>();
             var irt = ig.GetComponent<RectTransform>();
