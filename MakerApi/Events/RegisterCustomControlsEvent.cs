@@ -4,11 +4,9 @@ namespace MakerAPI
 {
     public class RegisterCustomControlsEvent : EventArgs
     {
-        private readonly MakerAPI _makerApi;
-
         public RegisterCustomControlsEvent(MakerAPI makerApi)
         {
-            _makerApi = makerApi;
+            Api = makerApi;
         }
 
         /// <summary>
@@ -16,9 +14,17 @@ namespace MakerAPI
         /// </summary>
         public T AddControl<T>(T control) where T : BaseGuiEntry
         {
-            return _makerApi.AddControl(control);
+            return Api.AddControl(control);
         }
-        
-        public MakerAPI Api => _makerApi;
+
+        /// <summary>
+        /// Add a toggle to the bottom of the "Load character" window that allows for partial loading of characters.
+        /// </summary>
+        public MakerLoadToggle AddLoadToggle(MakerLoadToggle toggle)
+        {
+            return MakerLoadToggle.AddLoadToggle(toggle);
+        }
+
+        public MakerAPI Api { get; }
     }
 }

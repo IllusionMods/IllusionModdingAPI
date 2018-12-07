@@ -34,7 +34,7 @@ namespace MakerAPI
         private void Start()
         {
             InsideStudio = Application.productName == "CharaStudio";
-            
+
             if (!InsideStudio)
             {
                 var harmony = HarmonyInstance.Create(GUID);
@@ -166,6 +166,10 @@ namespace MakerAPI
         /// </summary>
         internal T AddControl<T>(T control) where T : BaseGuiEntry
         {
+            if (control == null) throw new ArgumentNullException(nameof(control));
+            if (control is MakerLoadToggle)
+                throw new ArgumentException("Can't add a MakerLoadToggle as a control", nameof(control));
+
             _guiEntries.Add(control);
             return control;
         }
@@ -229,6 +233,8 @@ namespace MakerAPI
 
         private void OnRegisterCustomSubCategories()
         {
+            MakerLoadToggle.Setup();
+
             //Logger.Log(LogLevel.Debug, "OnRegisterCustomSubCategories");
             RegisterCustomSubCategories?.Invoke(this, new RegisterSubCategoriesEvent(this));
         }
@@ -259,6 +265,7 @@ namespace MakerAPI
         private void OnCreateCustomControls()
         {
             CreateCustomControls();
+            MakerLoadToggle.CreateCustomToggles();
         }
 
         private void OnMakerExiting()
@@ -267,6 +274,7 @@ namespace MakerAPI
             MakerExiting?.Invoke(this, EventArgs.Empty);
 
             RemoveCustomControls();
+            MakerLoadToggle.Reset();
         }
 
         [Conditional("DEBUG")]
@@ -290,6 +298,11 @@ namespace MakerAPI
                 .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
             AddControl(new MakerText("test text test text test text test text test text test " +
                                      "text test text test text test text test text", cat, this));
+
+            MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle"))
+                .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
+            MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle 2"))
+                .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
         }
 
         /// <summary>
