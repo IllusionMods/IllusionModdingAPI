@@ -34,7 +34,7 @@ namespace MakerAPI
         private void Start()
         {
             InsideStudio = Application.productName == "CharaStudio";
-
+            
             if (!InsideStudio)
             {
                 var harmony = HarmonyInstance.Create(GUID);
@@ -299,19 +299,20 @@ namespace MakerAPI
         public bool CharaListIsLoading { get; private set; }
 
         /// <summary>
-        /// ChaFile of the character currently opened in maker. Use this when getting extended data.
+        /// ChaFile of the character currently opened in maker. Do not use to save extended data, or it will be lost when saving the card.
+        /// Use ChaFile from <code>ExtendedSave.CardBeingSaved</code> event to save extended data instead.
         /// </summary>
-        public ChaFile CurrentChaFile => InsideMaker ? (Hooks.LastLoadedChaFile ?? GetCharacterControl()?.chaFile) : null;
+        public ChaFile LastLoadedChaFile => InsideMaker ? (Hooks.LastLoadedChaFile ?? GetCharacterControl()?.chaFile) : null;
 
         /// <summary>
-        /// Fired when the current character in maker is changed by loading other cards or coordinates.
+        /// Fired when the current ChaFile in maker is changed by loading other cards or coordinates.
         /// Only fired when inside maker.
         /// </summary>
-        public event EventHandler<CharacterChangedEventArgs> CharacterChanged;
+        public event EventHandler<ChaFileLoadedEventArgs> ChaFileLoaded;
 
-        private void OnCharacterChanged(CharacterChangedEventArgs characterChangedEventArgs)
+        private void OnChaFileLoaded(ChaFileLoadedEventArgs chaFileLoadedEventArgs)
         {
-            CharacterChanged?.Invoke(this, characterChangedEventArgs);
+            ChaFileLoaded?.Invoke(this, chaFileLoadedEventArgs);
         }
 
         public event EventHandler InsideMakerChanged;
@@ -333,7 +334,7 @@ namespace MakerAPI
         }
 
         /// <summary>
-        /// We are in the studio and the API has very limited functionality
+        /// If we are in the CharaStudio the API has very limited functionality
         /// </summary>
         public bool InsideStudio { get; private set; }
     }

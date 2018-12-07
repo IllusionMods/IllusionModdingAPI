@@ -124,7 +124,7 @@ namespace MakerAPI
                 bool hair, bool parameter, bool coordinate, ChaFileControl __instance)
             {
                 if (!Instance.CharaListIsLoading && Instance.InsideMaker)
-                    Instance.OnCharacterChanged(new CharacterChangedEventArgs(filename, sex, face, body, hair, parameter, coordinate, __instance, LastLoadedChaFile));
+                    Instance.OnChaFileLoaded(new ChaFileLoadedEventArgs(filename, sex, face, body, hair, parameter, coordinate, __instance, LastLoadedChaFile));
             }
         }
     }

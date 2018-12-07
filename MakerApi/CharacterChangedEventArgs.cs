@@ -2,9 +2,9 @@
 
 namespace MakerAPI
 {
-    public sealed class CharacterChangedEventArgs : EventArgs
+    public sealed class ChaFileLoadedEventArgs : EventArgs
     {
-        public CharacterChangedEventArgs(string filename, byte sex, bool face, bool body, bool hair, bool parameter, bool coordinate, ChaFileControl characterInstance, ChaFile loadedChaFile)
+        public ChaFileLoadedEventArgs(string filename, byte sex, bool face, bool body, bool hair, bool parameter, bool coordinate, ChaFileControl characterInstance, ChaFile loadedChaFile)
         {
             Filename = filename;
             Sex = sex;
