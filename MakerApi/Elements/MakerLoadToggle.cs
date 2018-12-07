@@ -41,6 +41,8 @@ namespace MakerAPI
             var tgl = copy.GetComponentInChildren<Toggle>();
             BufferedValueChanged.Subscribe(b => tgl.isOn = b);
             tgl.onValueChanged.AddListener(SetNewValue);
+            tgl.image.raycastTarget = true;
+            tgl.graphic.raycastTarget = true;
 
             var txt = copy.GetComponentInChildren<TextMeshProUGUI>();
             txt.text = Text;
