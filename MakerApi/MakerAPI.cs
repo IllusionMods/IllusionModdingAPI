@@ -16,7 +16,7 @@ namespace MakerAPI
     [BepInPlugin(GUID, "Character Maker API", Version)]
     public partial class MakerAPI : BaseUnityPlugin
     {
-        public const string Version = "1.1";
+        public const string Version = "1.2";
         public const string GUID = "com.bepis.makerapi";
 
         private readonly List<MakerCategory> _categories = new List<MakerCategory>();
