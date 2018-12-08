@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
-using BepInEx;
-using BepInEx.Logging;
 
 namespace MakerAPI.Utilities
 {
@@ -65,7 +63,11 @@ namespace MakerAPI.Utilities
 
             ofn.dlgOwner = owner;
 
-            if (NativeMethods.GetOpenFileName(ofn))
+            // Save and restore working directory after GetOpenFileName changes it
+            var currentWorkingDirectory = Environment.CurrentDirectory;
+            var success = NativeMethods.GetOpenFileName(ofn);
+            Environment.CurrentDirectory = currentWorkingDirectory;
+            if (success)
             {
                 var selectedFilesList = new List<string>();
 
@@ -73,7 +75,7 @@ namespace MakerAPI.Utilities
                 var file = Marshal.PtrToStringAuto(ofn.file);
 
                 // Retrieve file names
-                while (file.Length > 0)
+                while (!string.IsNullOrEmpty(file))
                 {
                     selectedFilesList.Add(file);
 
