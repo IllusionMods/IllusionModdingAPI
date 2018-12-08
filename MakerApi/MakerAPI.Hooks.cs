@@ -1,15 +1,14 @@
 ﻿using System.Collections;
 using System.IO;
-using System.Reflection;
 using ChaCustom;
 using Harmony;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MakerAPI
 {
     public partial class MakerAPI
     {
-        // ReSharper disable UnusedMember.Local
         private static class Hooks
         {
             private static bool _studioStarting;
@@ -19,8 +18,6 @@ namespace MakerAPI
             public static void HBeforeToggleGroupStart(UI_ToggleGroupCtrl __instance)
             {
                 var categoryTransfrom = __instance.transform;
-
-                //Logger.Log(LogLevel.Info, categoryTransfrom.name + "\n" + string.Join("\n  ", categoryTransfrom.Cast<Transform>().Select(x=>x.name).ToArray()));
 
                 if (categoryTransfrom?.parent != null && categoryTransfrom.parent.name == "CvsMenuTree")
                 {
@@ -36,29 +33,6 @@ namespace MakerAPI
                     Instance.AddMissingSubCategories(__instance);
                 }
             }
-
-            [HarmonyPrefix]
-            [HarmonyPatch(typeof(CustomScene), "Start")]
-            public static void CustomScene_Start()
-            {
-                Instance.InsideMaker = Singleton<CustomBase>.Instance != null;
-            }
-
-            [HarmonyPrefix]
-            [HarmonyPatch(typeof(CustomScene), "OnDestroy")]
-            public static void CustomScene_Destroy()
-            {
-                Instance.OnMakerExiting();
-                Instance.InsideMaker = false;
-                LastLoadedChaFile = null;
-            }
-
-            /*[HarmonyPrefix]
-            [HarmonyPatch(typeof(BaseLoader), "Awake")]
-            public static void CustomScene_Awake(BaseLoader __instance)
-            {
-                Instance.CurrentCustomScene = __instance as CustomScene;
-            }*/
 
             private static IEnumerator OnMakerLoadingCo()
             {
@@ -84,6 +58,22 @@ namespace MakerAPI
                 Instance.OnMakerFinishedLoading();
             }
 
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(CustomScene), "Start")]
+            public static void CustomScene_Start()
+            {
+                Instance.InsideMaker = Singleton<CustomBase>.Instance != null;
+            }
+
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(CustomScene), "OnDestroy")]
+            public static void CustomScene_Destroy()
+            {
+                Instance.OnMakerExiting();
+                Instance.InsideMaker = false;
+                LastLoadedChaFile = null;
+            }
+
             [HarmonyPrefix, HarmonyPatch(typeof(CustomCharaFile), "Initialize")]
             public static void CustomScenePrefix()
             {
@@ -95,8 +85,7 @@ namespace MakerAPI
             {
                 Instance.CharaListIsLoading = false;
             }
-
-
+            
             [HarmonyPrefix]
             [HarmonyPatch(typeof(ChaFile), "LoadFile", new[] { typeof(BinaryReader), typeof(bool), typeof(bool) })]
             public static void ChaFileLoadFilePreHook(ChaFile __instance, BinaryReader br, bool noLoadPNG, bool noLoadStatus)
@@ -125,6 +114,17 @@ namespace MakerAPI
             {
                 if (!Instance.CharaListIsLoading && Instance.InsideMaker)
                     Instance.OnChaFileLoaded(new ChaFileLoadedEventArgs(filename, sex, face, body, hair, parameter, coordinate, __instance, LastLoadedChaFile));
+            }
+
+            /// <summary>
+            /// Keep Load button in maker character load list enabled if any of the extra toggles are enabled, but none of the stock ones are. 
+            /// </summary>
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(Selectable), "set_interactable")]
+            public static void LoadButtonOverride(Selectable __instance, ref bool value)
+            {
+                if (!value && ReferenceEquals(__instance, MakerLoadToggle.LoadButton))
+                    value = MakerLoadToggle.AnyEnabled;
             }
         }
     }

@@ -26,6 +26,8 @@ namespace MakerAPI
         }
 
         public string Text { get; }
+        public static bool AnyEnabled => Toggles.Any(x => x.Value);
+        internal static Button LoadButton { get; private set; }
 
         internal static void CreateCustomToggles()
         {
@@ -71,6 +73,7 @@ namespace MakerAPI
                 toggle.Dispose();
             Toggles.Clear();
             _createdCount = 0;
+            LoadButton = null;
         }
 
         internal static void Setup()
@@ -97,6 +100,8 @@ namespace MakerAPI
             allon.GetComponentInChildren<Button>().onClick.AddListener(OnAllOn);
             var alloff = _root.transform.Find("btnAllOff");
             alloff.GetComponentInChildren<Button>().onClick.AddListener(OnAllOff);
+
+            LoadButton = _root.transform.parent.Find("btnLoad").GetComponent<Button>();
         }
 
         private static GameObject GetRootObject()
