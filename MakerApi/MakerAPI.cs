@@ -40,6 +40,8 @@ namespace MakerAPI
                 var harmony = HarmonyInstance.Create(GUID);
                 harmony.PatchAll(typeof(Hooks));
             }
+
+            CharacterApi.Init();
         }
 
         private void CreateCustomControls()

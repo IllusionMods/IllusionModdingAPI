@@ -48,6 +48,10 @@
       <HintPath>..\lib\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\ExtensibleSaveFormat.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="TextMeshPro-1.0.55.56.0b12">
       <HintPath>..\lib\TextMeshPro-1.0.55.56.0b12.dll</HintPath>
@@ -63,7 +67,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharacterApi.cs" />
+    <Compile Include="CharacterApi.Hooks.cs" />
     <Compile Include="CharacterChangedEventArgs.cs" />
+    <Compile Include="CharaExtraBehaviour.cs" />
     <Compile Include="Elements\MakerButton.cs" />
     <Compile Include="Elements\MakerColor.cs" />
     <Compile Include="Elements\MakerDropdown.cs" />
