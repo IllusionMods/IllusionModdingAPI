@@ -5,13 +5,12 @@ using Harmony;
 using Studio;
 using UnityEngine;
 using UnityEngine.UI;
+
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace MakerAPI
+namespace MakerAPI.Chara
 {
-
-
-    internal static partial class CharacterApi
+    public static partial class CharacterApi
     {
         private static class Hooks
         {
@@ -36,12 +35,10 @@ namespace MakerAPI
             public static void ChaControl_InitializePostHook(byte _sex, bool _hiPoly, GameObject _objRoot, int _id, int _no,
                 ChaFileControl _chaFile, ChaControl __instance)
             {
-                if (!MakerListIsLoading)
-                {
-                    CreateOrAddBehaviours(__instance);
+                ChaControls.Add(__instance);
 
-                    ChaControls.Add(__instance);
-                }
+                if (!MakerListIsLoading)
+                    CreateOrAddBehaviours(__instance);
             }
 
             [HarmonyPostfix]
@@ -66,7 +63,7 @@ namespace MakerAPI
             }
 
             /// <summary>
-            /// Copy extended data when moving between class roster and main game data
+            /// Copy extended data when moving between class roster and main game data, and in free h
             /// (the character data gets transferred to predefined slots instead of creating new characters)
             /// </summary>
             [HarmonyPrefix]
@@ -77,12 +74,10 @@ namespace MakerAPI
             })]
             public static void ChaFile_CopyChaFilePostHook(ChaFile dst, ChaFile src)
             {
-                if (dst is ChaFileControl dstCfc && src is ChaFileControl srcCfc)
+                //if (dst is ChaFileControl dstCfc && src is ChaFileControl srcCfc)
                 {
-                    foreach (var behaviour in GetBehaviours(FileControlToChaControl(srcCfc)))
-                    {
-                        behaviour.OnCopyExtendedData(dstCfc);
-                    }
+                    foreach (var copier in DataCopiers)
+                        copier(dst, src);
                 }
             }
 

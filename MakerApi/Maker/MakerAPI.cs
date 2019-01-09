@@ -7,6 +7,8 @@ using BepInEx;
 using BepInEx.Logging;
 using ChaCustom;
 using Harmony;
+using MakerAPI.Chara;
+using MakerAPI.Studio;
 using UniRx;
 using UnityEngine;
 using Logger = BepInEx.Logger;
@@ -39,6 +41,10 @@ namespace MakerAPI
             {
                 var harmony = HarmonyInstance.Create(GUID);
                 harmony.PatchAll(typeof(Hooks));
+            }
+            else
+            {
+                StudioAPI.Init();
             }
 
             CharacterApi.Init();
@@ -352,5 +358,21 @@ namespace MakerAPI
         /// If we are in the CharaStudio the API has very limited functionality
         /// </summary>
         public bool InsideStudio { get; private set; }
+
+        public GameMode GetCurrentGameMode()
+        {
+            if (InsideStudio) return GameMode.Studio;
+            if (InsideMaker) return GameMode.Maker;
+            if (Manager.Game.Instance != null) return GameMode.MainGame;
+            return GameMode.Unknown;
+        }
+    }
+
+    public enum GameMode
+    {
+        Unknown,
+        Maker,
+        Studio,
+        MainGame
     }
 }
