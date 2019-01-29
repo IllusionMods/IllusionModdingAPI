@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Reflection;
+using BepInEx.Logging;
 using ChaCustom;
 using Harmony;
 using Studio;
@@ -74,10 +76,16 @@ namespace MakerAPI.Chara
             })]
             public static void ChaFile_CopyChaFilePostHook(ChaFile dst, ChaFile src)
             {
-                //if (dst is ChaFileControl dstCfc && src is ChaFileControl srcCfc)
+                foreach (var copier in DataCopiers)
                 {
-                    foreach (var copier in DataCopiers)
+                    try
+                    {
                         copier(dst, src);
+                    }
+                    catch (Exception e)
+                    {
+                        BepInEx.Logger.Log(LogLevel.Error, e);
+                    }
                 }
             }
 

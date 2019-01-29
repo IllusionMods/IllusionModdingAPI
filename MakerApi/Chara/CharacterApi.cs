@@ -90,8 +90,15 @@ namespace MakerAPI.Chara
 
                 if (existing == null)
                 {
-                    var newBehaviour = (CharaCustomFunctionController)target.gameObject.AddComponent(handler.Key);
-                    newBehaviour.ExtendedDataId = handler.Value;
+                    try
+                    {
+                        var newBehaviour = (CharaCustomFunctionController)target.gameObject.AddComponent(handler.Key);
+                        newBehaviour.ExtendedDataId = handler.Value;
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(LogLevel.Error, e);
+                    }
                 }
             }
         }
@@ -105,9 +112,9 @@ namespace MakerAPI.Chara
                 {
                     behaviour.OnCardBeingSaved(gamemode);
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Error, ex);
+                    Logger.Log(LogLevel.Error, e);
                 }
             }
         }
