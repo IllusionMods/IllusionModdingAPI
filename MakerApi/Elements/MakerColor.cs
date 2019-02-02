@@ -51,7 +51,7 @@ namespace MakerAPI
 
         public override void Dispose() { }
 
-        protected internal override void CreateControl(Transform subCategoryList)
+        protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var tr = Object.Instantiate(ColorCopy, subCategoryList, true);
 
@@ -78,7 +78,7 @@ namespace MakerAPI
             var previewImg = tr.Find("backrect/alpha/imgColorSample").GetComponent<Image>();
             BufferedValueChanged.Subscribe(c => previewImg.color = c);
 
-            tr.gameObject.SetActive(true);
+            return tr.gameObject;
         }
     }
 }

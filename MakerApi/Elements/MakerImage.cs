@@ -50,7 +50,7 @@ namespace MakerAPI
         {
         }
 
-        protected internal override void CreateControl(Transform subCategoryList)
+        protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var go = new GameObject("image" + GuiApiNameAppendix, typeof(RectTransform), typeof(LayoutElement));
             go.transform.SetParent(subCategoryList, false);
@@ -75,6 +75,8 @@ namespace MakerAPI
                 le.enabled = false;
                 le.enabled = true;
             });
+
+            return go;
         }
     }
 }

@@ -6,11 +6,12 @@ namespace MakerAPI
     public class MakerSeparator : BaseGuiEntry
     {
         private static Transform _sourceSeparator;
-        
-        protected internal override void CreateControl(Transform subCategoryList)
+
+        protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var s = Object.Instantiate(SourceSeparator, subCategoryList, false);
             s.name = "Separate" + GuiApiNameAppendix;
+            return s.gameObject;
         }
 
         protected internal override void Initialize()

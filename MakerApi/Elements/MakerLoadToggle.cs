@@ -35,7 +35,7 @@ namespace MakerAPI
                 toggle.CreateControl(_root.transform);
         }
 
-        protected internal override void CreateControl(Transform loadBoxTransform)
+        protected override GameObject OnCreateControl(Transform loadBoxTransform)
         {
             var copy = Object.Instantiate(_baseToggle, _root.transform);
             copy.name = "tglItem" + GuiApiNameAppendix;
@@ -57,6 +57,8 @@ namespace MakerAPI
 
             copy.gameObject.SetActive(true);
             _createdCount++;
+
+            return copy.gameObject;
         }
 
         protected internal override void Initialize() { }

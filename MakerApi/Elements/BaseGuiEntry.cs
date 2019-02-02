@@ -1,5 +1,6 @@
 ﻿using System;
 using BepInEx;
+using UniRx;
 using UnityEngine;
 
 namespace MakerAPI
@@ -13,6 +14,9 @@ namespace MakerAPI
         {
             Category = category;
             Owner = owner;
+
+            Visible = new BehaviorSubject<bool>(true);
+            Visible.Subscribe(b => ControlObject?.SetActive(b));
         }
 
         public MakerCategory Category { get; }
@@ -34,9 +38,30 @@ namespace MakerAPI
         protected internal abstract void Initialize();
 
         public abstract void Dispose();
-        protected internal abstract void CreateControl(Transform subCategoryList);
+
+        internal void CreateControl(Transform subCategoryList)
+        {
+            ControlObject = OnCreateControl(subCategoryList);
+            ControlObject.SetActive(Visible.Value);
+        }
+        /// <summary>
+        /// Should return main GameObject of the control
+        /// </summary>
+        protected abstract GameObject OnCreateControl(Transform subCategoryList);
 
         public Color TextColor { get; set; } = Color.white;
         public BaseUnityPlugin Owner { get; }
+
+        public BehaviorSubject<bool> Visible { get; }
+
+        /// <summary>
+        /// GameObject of the control. Populated once instantiated
+        /// </summary>
+        public GameObject ControlObject { get; private set; }
+
+        /// <summary>
+        /// True if the control is currently instantiated in the scene
+        /// </summary>
+        public bool Exists => ControlObject != null;
     }
 }

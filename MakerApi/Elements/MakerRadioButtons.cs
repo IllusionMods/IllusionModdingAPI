@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using BepInEx;
 using TMPro;
@@ -15,6 +16,7 @@ namespace MakerAPI
         private readonly string[] _buttons;
 
         private static Transform _radioCopy;
+        public ReadOnlyCollection<Toggle> Buttons { get; private set; }
 
         public MakerRadioButtons(MakerCategory category, BaseUnityPlugin owner, string settingName, params string[] buttons) : base(category, 0, owner)
         {
@@ -30,7 +32,7 @@ namespace MakerAPI
                 MakeCopy();
         }
 
-        protected internal override void CreateControl(Transform subCategoryList)
+        protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var tr = Object.Instantiate(RadioCopy, subCategoryList, true);
 
@@ -42,23 +44,23 @@ namespace MakerAPI
 
             var sourceToggle = tr.Find("rb00");
 
-            var toggles = _buttons.Select(
-                (x, i) =>
-                {
-                    if (i == 0)
-                        return sourceToggle;
+            Buttons = _buttons.Select(
+                    (x, i) =>
+                    {
+                        if (i == 0)
+                            return sourceToggle;
 
-                    var newButton = Object.Instantiate(sourceToggle, tr, true);
-                    newButton.name = "rb0" + i;
+                        var newButton = Object.Instantiate(sourceToggle, tr, true);
+                        newButton.name = "rb0" + i;
                     
-                    return newButton;
-                }).Select(x => x.GetComponent<Toggle>())
-                .ToList();
+                        return newButton;
+                    }).Select(x => x.GetComponent<Toggle>())
+                .ToList().AsReadOnly();
             
-            var singleToggleWidth = 280 / toggles.Count;
-            for (var index = 0; index < toggles.Count; index++)
+            var singleToggleWidth = 280 / Buttons.Count;
+            for (var index = 0; index < Buttons.Count; index++)
             {
-                var toggle = toggles[index];
+                var toggle = Buttons[index];
 
                 var rt = toggle.GetComponent<RectTransform>();
                 rt.offsetMin = new Vector2(singleToggleWidth * index - 280, 8);
@@ -76,14 +78,14 @@ namespace MakerAPI
             
             BufferedValueChanged.Subscribe(i =>
             {
-                for (var index = 0; index < toggles.Count; index++)
+                for (var index = 0; index < Buttons.Count; index++)
                 {
-                    var tgl = toggles[index];
+                    var tgl = Buttons[index];
                     tgl.isOn = index == i;
                 }
             });
-
-            tr.gameObject.SetActive(true);
+            
+            return tr.gameObject;
         }
 
         private static Transform RadioCopy

@@ -52,7 +52,7 @@ namespace MakerAPI
             OnClick.RemoveAllListeners();
         }
 
-        protected internal override void CreateControl(Transform subCategoryList)
+        protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var tr = Object.Instantiate(ButtonCopy, subCategoryList, true);
 
@@ -63,7 +63,7 @@ namespace MakerAPI
             text.text = Text;
             text.color = TextColor;
 
-            tr.gameObject.SetActive(true);
+            return tr.gameObject;
         }
     }
 }
