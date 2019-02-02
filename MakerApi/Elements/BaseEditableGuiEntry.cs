@@ -20,7 +20,7 @@ namespace MakerAPI
         public TValue Value
         {
             get => _incomingValue.Value;
-            set => _incomingValue.OnNext(value);
+            set => SetNewValue(value); //_incomingValue.OnNext(value);
         }
 
         /// <summary>
