@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx;
@@ -78,6 +79,11 @@ namespace MakerAPI.Chara
         {
             Hooks.InstallHook();
             ExtendedSave.CardBeingSaved += OnCardBeingSaved;
+            MakerAPI.Instance.ChaFileLoaded += (sender, args) =>
+            {
+                var chaControl = MakerAPI.Instance.GetCharacterControl();
+                if (chaControl != null) chaControl.StartCoroutine(DelayedReloadChara(chaControl));
+            };
         }
 
         private static void CreateOrAddBehaviours(ChaControl target)
@@ -124,6 +130,12 @@ namespace MakerAPI.Chara
             var gamemode = MakerAPI.Instance.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(chaControl))
                 behaviour.OnReload(gamemode);
+        }
+
+        private static IEnumerator DelayedReloadChara(ChaControl chaControl)
+        {
+            yield return null;
+            ReloadChara(chaControl);
         }
     }
 }

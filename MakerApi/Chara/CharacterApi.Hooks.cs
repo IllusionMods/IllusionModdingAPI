@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Reflection;
 using BepInEx.Logging;
 using ChaCustom;
@@ -7,6 +6,7 @@ using Harmony;
 using Studio;
 using UnityEngine;
 using UnityEngine.UI;
+using Logger = BepInEx.Logger;
 
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -84,7 +84,7 @@ namespace MakerAPI.Chara
                     }
                     catch (Exception e)
                     {
-                        BepInEx.Logger.Log(LogLevel.Error, e);
+                        Logger.Log(LogLevel.Error, e);
                     }
                 }
             }
@@ -101,14 +101,9 @@ namespace MakerAPI.Chara
             {
                 var component = __instance.charInfo;
                 if (component != null)
-                    component.StartCoroutine(DelayedLoad(component));
+                    component.StartCoroutine(DelayedReloadChara(component));
             }
 
-            private static IEnumerator DelayedLoad(ChaControl controller)
-            {
-                yield return null;
-                ReloadChara(controller);
-            }
 
             private static readonly FieldInfo IdolBackButton = typeof(LiveCharaSelectSprite).GetField("btnIdolBack", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
@@ -123,7 +118,7 @@ namespace MakerAPI.Chara
                 button?.onClick.AddListener(
                     () =>
                     {
-                        __instance.StartCoroutine(DelayedLoad(__instance.heroine.chaCtrl));
+                        __instance.StartCoroutine(DelayedReloadChara(__instance.heroine.chaCtrl));
                     });
             }
 
@@ -135,7 +130,7 @@ namespace MakerAPI.Chara
             [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.NPCLoadAll))]
             public static void ActionScene_NPCLoadAllPreHook(ActionScene __instance)
             {
-                __instance.StartCoroutine(DelayedLoad(null));
+                __instance.StartCoroutine(DelayedReloadChara(null));
             }
         }
     }
