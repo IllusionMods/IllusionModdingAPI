@@ -17,10 +17,22 @@ namespace MakerAPI.Chara
         public string ExtendedDataId { get; internal set; }
         public bool Started { get; private set; }
 
+        [Obsolete]
         public PluginData GetExtendedData()
         {
+            return GetExtendedData(true);
+        }
+
+        /// <summary>
+        /// Get extended data based on supplied ExtendedDataId.
+        /// </summary>
+        /// <param name="getFromLoadedChara">If true, when in chara maker load data from character that's being loaded. 
+        /// When outside maker or false, always grab current character's data.</param>
+        public PluginData GetExtendedData(bool getFromLoadedChara)
+        {
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
-            return ExtendedSave.GetExtendedDataById(ChaFileControl, ExtendedDataId);
+            var chaFile = getFromLoadedChara ? MakerAPI.Instance.LastLoadedChaFile ?? ChaFileControl : ChaFileControl;
+            return ExtendedSave.GetExtendedDataById(chaFile, ExtendedDataId);
         }
 
         public void SetExtendedData(PluginData data)
@@ -34,7 +46,7 @@ namespace MakerAPI.Chara
         /// Only fires in character maker, since that's the only time when a card can be modified.
         /// </summary>
         protected internal abstract void OnCardBeingSaved(GameMode currentGameMode);
-        
+
         /// <summary>
         /// The character is being reloaded. Reset, load and set up your modifications here.
         /// Called automatically on start, and whenever the character was changed in some way
@@ -69,10 +81,17 @@ namespace MakerAPI.Chara
         /// <summary>
         /// Warning: When overriding make sure to call the base method at the end of your logic!
         /// </summary>
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             ChaControl = GetComponent<ChaControl>();
             CurrentCoordinate = new BehaviorSubject<ChaFileDefine.CoordinateType>((ChaFileDefine.CoordinateType)ChaControl.fileStatus.coordinateType);
+        }
+
+        /// <summary>
+        /// Warning: When overriding make sure to call the base method at the end of your logic!
+        /// </summary>
+        protected virtual void Start()
+        {
             Started = true;
             OnReload(MakerAPI.Instance.GetCurrentGameMode());
         }
