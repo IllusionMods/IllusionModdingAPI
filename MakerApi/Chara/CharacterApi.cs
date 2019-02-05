@@ -82,7 +82,7 @@ namespace MakerAPI.Chara
             MakerAPI.Instance.ChaFileLoaded += (sender, args) =>
             {
                 var chaControl = MakerAPI.Instance.GetCharacterControl();
-                if (chaControl != null) chaControl.StartCoroutine(DelayedReloadChara(chaControl));
+                if (chaControl != null) ReloadChara(chaControl); //chaControl.StartCoroutine(DelayedReloadChara(chaControl));
             };
         }
 

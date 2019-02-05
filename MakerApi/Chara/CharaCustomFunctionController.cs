@@ -17,7 +17,9 @@ namespace MakerAPI.Chara
         public string ExtendedDataId { get; internal set; }
         public bool Started { get; private set; }
 
-        [Obsolete]
+        /// <summary>
+        /// Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. 
+        /// </summary>
         public PluginData GetExtendedData()
         {
             return GetExtendedData(true);
