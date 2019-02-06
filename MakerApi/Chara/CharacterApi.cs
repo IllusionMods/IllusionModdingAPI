@@ -130,6 +130,8 @@ namespace MakerAPI.Chara
             var gamemode = MakerAPI.Instance.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(chaControl))
                 behaviour.OnReload(gamemode);
+
+            CharacterReloaded?.Invoke(null, new CharaReloadEventArgs(chaControl));
         }
 
         private static IEnumerator DelayedReloadChara(ChaControl chaControl)
@@ -137,5 +139,10 @@ namespace MakerAPI.Chara
             yield return null;
             ReloadChara(chaControl);
         }
+
+        /// <summary>
+        /// Fired after all CharaCustomFunctionController have updated
+        /// </summary>
+        public static event EventHandler<CharaReloadEventArgs> CharacterReloaded;
     }
 }
