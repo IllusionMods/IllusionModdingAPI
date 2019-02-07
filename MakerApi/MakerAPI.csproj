@@ -72,6 +72,8 @@
     <Compile Include="Chara\CharaReloadEventArgs.cs" />
     <Compile Include="Events\CharacterChangedEventArgs.cs" />
     <Compile Include="Chara\CharaCustomFunctionController.cs" />
+    <Compile Include="Maker\CharacterLoadFlags.cs" />
+    <Compile Include="Maker\GameMode.cs" />
     <Compile Include="Studio\StudioAPI.cs" />
     <Compile Include="Elements\MakerButton.cs" />
     <Compile Include="Elements\MakerColor.cs" />

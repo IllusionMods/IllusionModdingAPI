@@ -366,13 +366,29 @@ namespace MakerAPI
             if (Manager.Game.Instance != null) return GameMode.MainGame;
             return GameMode.Unknown;
         }
-    }
 
-    public enum GameMode
-    {
-        Unknown,
-        Maker,
-        Studio,
-        MainGame
+        /// <summary>
+        /// Get values of the default partial load checkboxes present at the bottom of the 
+        /// character load window (load face, body, hair, parameters, clothes).
+        /// Returns null if the values could not be collected (save to assume it's the same as being enabled).
+        /// </summary>
+        public CharacterLoadFlags GetCharacterLoadFlags()
+        {
+            if (!InsideMaker) return null;
+
+            var cfw = FindObjectsOfType<CustomFileWindow>()
+                .FirstOrDefault(i => i.fwType == CustomFileWindow.FileWindowType.CharaLoad);
+
+            if (cfw == null) return null;
+
+            return new CharacterLoadFlags
+            {
+                Body = cfw.tglChaLoadBody.isOn,
+                Clothes = cfw.tglChaLoadCoorde.isOn,
+                Hair = cfw.tglChaLoadHair.isOn,
+                Face = cfw.tglChaLoadFace.isOn,
+                Parameters = cfw.tglChaLoadParam.isOn
+            };
+        }
     }
 }
