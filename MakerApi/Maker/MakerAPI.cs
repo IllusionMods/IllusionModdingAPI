@@ -370,7 +370,7 @@ namespace MakerAPI
         /// <summary>
         /// Get values of the default partial load checkboxes present at the bottom of the 
         /// character load window (load face, body, hair, parameters, clothes).
-        /// Returns null if the values could not be collected (save to assume it's the same as being enabled).
+        /// Returns null if the values could not be collected (safe to assume it's the same as being enabled).
         /// </summary>
         public CharacterLoadFlags GetCharacterLoadFlags()
         {
