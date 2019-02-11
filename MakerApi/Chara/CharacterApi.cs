@@ -199,7 +199,7 @@ namespace MakerAPI.Chara
             {
                 try
                 {
-                    controller.OnCoordinateBeingLoaded(coordinateFile);
+                    controller.OnCoordinateBeingSaved(coordinateFile);
                 }
                 catch (Exception e)
                 {
