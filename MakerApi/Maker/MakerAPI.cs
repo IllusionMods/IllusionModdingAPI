@@ -175,7 +175,7 @@ namespace MakerAPI
         internal T AddControl<T>(T control) where T : BaseGuiEntry
         {
             if (control == null) throw new ArgumentNullException(nameof(control));
-            if (control is MakerLoadToggle)
+            if (control is MakerLoadToggle || control is MakerCoordinateLoadToggle)
                 throw new ArgumentException("Can't add a MakerLoadToggle as a control", nameof(control));
 
             _guiEntries.Add(control);
@@ -242,6 +242,7 @@ namespace MakerAPI
         private void OnRegisterCustomSubCategories()
         {
             MakerLoadToggle.Setup();
+            MakerCoordinateLoadToggle.Setup();
 
             //Logger.Log(LogLevel.Debug, "OnRegisterCustomSubCategories");
             RegisterCustomSubCategories?.Invoke(this, new RegisterSubCategoriesEvent(this));
@@ -274,6 +275,7 @@ namespace MakerAPI
         {
             CreateCustomControls();
             MakerLoadToggle.CreateCustomToggles();
+            MakerCoordinateLoadToggle.CreateCustomToggles();
         }
 
         private void OnMakerExiting()
@@ -283,6 +285,7 @@ namespace MakerAPI
 
             RemoveCustomControls();
             MakerLoadToggle.Reset();
+            MakerCoordinateLoadToggle.Reset();
         }
 
         [Conditional("DEBUG")]
@@ -310,6 +313,11 @@ namespace MakerAPI
             MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle"))
                 .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
             MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle 2"))
+                .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
+
+            MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle"))
+                .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
+            MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle 2"))
                 .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
         }
 

@@ -25,6 +25,11 @@ namespace MakerAPI
             return MakerLoadToggle.AddLoadToggle(toggle);
         }
 
+        public MakerCoordinateLoadToggle AddCoordinateLoadToggle(MakerCoordinateLoadToggle toggle)
+        {
+            return MakerCoordinateLoadToggle.AddLoadToggle(toggle);
+        }
+
         public MakerAPI Api { get; }
     }
 }

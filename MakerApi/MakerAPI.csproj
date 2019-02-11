@@ -71,6 +71,7 @@
     <Compile Include="Chara\CharacterApi.Hooks.cs" />
     <Compile Include="Chara\Events\CharaReloadEventArgs.cs" />
     <Compile Include="Chara\Events\CoordinateEventArgs.cs" />
+    <Compile Include="Maker\Elements\MakerCoordinateLoadToggle.cs" />
     <Compile Include="Maker\Events\CharacterChangedEventArgs.cs" />
     <Compile Include="Chara\CharaCustomFunctionController.cs" />
     <Compile Include="Maker\CharacterLoadFlags.cs" />

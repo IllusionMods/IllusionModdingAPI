@@ -123,8 +123,13 @@ namespace MakerAPI
             [HarmonyPatch(typeof(Selectable), "set_interactable")]
             public static void LoadButtonOverride(Selectable __instance, ref bool value)
             {
-                if (!value && ReferenceEquals(__instance, MakerLoadToggle.LoadButton))
-                    value = MakerLoadToggle.AnyEnabled;
+                if (!value)
+                {
+                    if (ReferenceEquals(__instance, MakerLoadToggle.LoadButton))
+                        value = MakerLoadToggle.AnyEnabled;
+                    else if (ReferenceEquals(__instance, MakerCoordinateLoadToggle.LoadButton))
+                        value = MakerCoordinateLoadToggle.AnyEnabled;
+                }
             }
         }
     }
