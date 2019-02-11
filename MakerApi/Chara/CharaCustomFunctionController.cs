@@ -43,6 +43,20 @@ namespace MakerAPI.Chara
             ExtendedSave.SetExtendedDataById(ChaFileControl, ExtendedDataId, data);
         }
 
+        public PluginData GetCoordinateExtendedData(ChaFileCoordinate coordinate)
+        {
+            if (coordinate == null) throw new ArgumentNullException(nameof(coordinate));
+            if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
+            return ExtendedSave.GetExtendedDataById(coordinate, ExtendedDataId);
+        }
+
+        public void SetCoordinateExtendedData(ChaFileCoordinate coordinate, PluginData data)
+        {
+            if (coordinate == null) throw new ArgumentNullException(nameof(coordinate));
+            if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
+            ExtendedSave.SetExtendedDataById(coordinate, ExtendedDataId, data);
+        }
+
         /// <summary>
         /// Card is about to be saved. Write any extended data now by using <code>SetExtendedData</code>.
         /// Only fires in character maker, since that's the only time when a card can be modified.
@@ -54,6 +68,18 @@ namespace MakerAPI.Chara
         /// Called automatically on start, and whenever the character was changed in some way
         /// </summary>
         protected internal abstract void OnReload(GameMode currentGameMode);
+
+        /// <summary>
+        /// Fired just before current coordinate is saved to a coordinate card.
+        /// Use <code>SetCoordinateExtendedData</code> to save data to it.
+        /// </summary>
+        protected internal virtual void OnCoordinateBeingSaved(ChaFileCoordinate coordinate) { }
+
+        /// <summary>
+        /// Fired just after loading a coordinate card into the current coordinate slot.
+        /// Use <code>GetCoordinateExtendedData</code> to get save data of the loaded coordinate.
+        /// </summary>
+        protected internal virtual void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate) { }
 
         public BehaviorSubject<ChaFileDefine.CoordinateType> CurrentCoordinate { get; private set; }
 

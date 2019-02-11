@@ -132,7 +132,25 @@ namespace MakerAPI.Chara
             {
                 __instance.StartCoroutine(DelayedReloadChara(null));
             }
+
+            /// <summary>
+            /// Prevents firing coordinate load events when the coordinate window is populating
+            /// </summary>
+            public static bool ClothesFileControlLoading;
+
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(clothesFileControl), "Initialize")]
+            public static void clothesFileControl_InitializePreHook()
+            {
+                ClothesFileControlLoading = true;
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(clothesFileControl), "Initialize")]
+            public static void clothesFileControl_InitializePostHook()
+            {
+                ClothesFileControlLoading = false;
+            }
         }
     }
-
 }

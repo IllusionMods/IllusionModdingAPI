@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using BepInEx;
 using BepInEx.Logging;
 using ExtensibleSaveFormat;
+using Logger = BepInEx.Logger;
+using Object = UnityEngine.Object;
 
 namespace MakerAPI.Chara
 {
@@ -78,11 +80,39 @@ namespace MakerAPI.Chara
         internal static void Init()
         {
             Hooks.InstallHook();
+
+            // Cards -------------------------
             ExtendedSave.CardBeingSaved += OnCardBeingSaved;
             MakerAPI.Instance.ChaFileLoaded += (sender, args) =>
             {
                 var chaControl = MakerAPI.Instance.GetCharacterControl();
-                if (chaControl != null) ReloadChara(chaControl); //chaControl.StartCoroutine(DelayedReloadChara(chaControl));
+                if (chaControl != null) ReloadChara(chaControl);
+            };
+
+            // Coordinates -------------------
+            ExtendedSave.CoordinateBeingSaved += file =>
+            {
+                if (file == null) return;
+
+                // Safe to assume we're in maker
+                var character = MakerAPI.Instance.GetCharacterControl();
+                if (character == null)
+                {
+                    Logger.Log(LogLevel.Error, "OnCoordinateBeingSaved fired outside chara maker for " + file.coordinateName);
+                    Logger.Log(LogLevel.Info, new StackTrace());
+                    return;
+                }
+
+                OnCoordinateBeingSaved(character, file);
+            };
+            ExtendedSave.CoordinateBeingLoaded += file =>
+            {
+                if (Hooks.ClothesFileControlLoading || file == null) return;
+
+                // Coord cards are loaded by loading into the character's nowCoordinate
+                var cf = ChaControls.FirstOrDefault(x => x.nowCoordinate == file);
+                if (cf != null)
+                    OnCoordinateBeingLoaded(cf, file);
             };
         }
 
@@ -129,9 +159,25 @@ namespace MakerAPI.Chara
         {
             var gamemode = MakerAPI.Instance.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(chaControl))
-                behaviour.OnReload(gamemode);
+            {
+                try
+                {
+                    behaviour.OnReload(gamemode);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(LogLevel.Error, e);
+                }
+            }
 
-            CharacterReloaded?.Invoke(null, new CharaReloadEventArgs(chaControl));
+            try
+            {
+                CharacterReloaded?.Invoke(null, new CharaReloadEventArgs(chaControl));
+            }
+            catch (Exception e)
+            {
+                Logger.Log(LogLevel.Error, e);
+            }
         }
 
         private static IEnumerator DelayedReloadChara(ChaControl chaControl)
@@ -144,5 +190,66 @@ namespace MakerAPI.Chara
         /// Fired after all CharaCustomFunctionController have updated
         /// </summary>
         public static event EventHandler<CharaReloadEventArgs> CharacterReloaded;
+
+        private static void OnCoordinateBeingSaved(ChaControl character, ChaFileCoordinate file)
+        {
+            foreach (var controller in GetBehaviours(character))
+            {
+                try
+                {
+                    controller.OnCoordinateBeingLoaded(file);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(LogLevel.Error, e);
+                }
+            }
+
+            try
+            {
+                CoordinateSaving?.Invoke(null, new CoordinateEventArgs(character, file));
+            }
+            catch (Exception e)
+            {
+                Logger.Log(LogLevel.Error, e);
+            }
+        }
+
+        private static void OnCoordinateBeingLoaded(ChaControl chaControl, ChaFileCoordinate coordinateFile)
+        {
+            Logger.Log(LogLevel.Debug, $"Loaded coord \"{coordinateFile.coordinateName}\" to chara \"{chaControl.name}\" / {(ChaFileDefine.CoordinateType)chaControl.fileStatus.coordinateType}");
+
+            foreach (var controller in GetBehaviours(chaControl))
+            {
+                try
+                {
+                    controller.OnCoordinateBeingLoaded(coordinateFile);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(LogLevel.Error, e);
+                }
+            }
+
+            try
+            {
+                CoordinateLoaded?.Invoke(null, new CoordinateEventArgs(chaControl, coordinateFile));
+            }
+            catch (Exception e)
+            {
+                Logger.Log(LogLevel.Error, e);
+            }
+        }
+
+        /// <summary>
+        /// Fired after a coordinate card was loaded and all controllers were updated.
+        /// Not filed if the coordinate file was not loaded into a character (so not during list updates). 
+        /// </summary>
+        public static event EventHandler<CoordinateEventArgs> CoordinateLoaded;
+
+        /// <summary>
+        /// Fired just before a coordinate card is saved, but after all controllers wrote their data.
+        /// </summary>
+        public static event EventHandler<CoordinateEventArgs> CoordinateSaving;
     }
 }
