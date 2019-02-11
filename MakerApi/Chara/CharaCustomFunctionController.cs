@@ -72,6 +72,7 @@ namespace MakerAPI.Chara
         /// <summary>
         /// Fired just before current coordinate is saved to a coordinate card.
         /// Use <code>SetCoordinateExtendedData</code> to save data to it.
+        /// You might need to wait for the next frame with <code>StartCoroutine</code> before handling this.
         /// </summary>
         protected internal virtual void OnCoordinateBeingSaved(ChaFileCoordinate coordinate) { }
 

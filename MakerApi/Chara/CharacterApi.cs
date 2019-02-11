@@ -191,35 +191,11 @@ namespace MakerAPI.Chara
         /// </summary>
         public static event EventHandler<CharaReloadEventArgs> CharacterReloaded;
 
-        private static void OnCoordinateBeingSaved(ChaControl character, ChaFileCoordinate file)
+        private static void OnCoordinateBeingSaved(ChaControl character, ChaFileCoordinate coordinateFile)
         {
+            Logger.Log(LogLevel.Debug, $"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{character.name}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+
             foreach (var controller in GetBehaviours(character))
-            {
-                try
-                {
-                    controller.OnCoordinateBeingLoaded(file);
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(LogLevel.Error, e);
-                }
-            }
-
-            try
-            {
-                CoordinateSaving?.Invoke(null, new CoordinateEventArgs(character, file));
-            }
-            catch (Exception e)
-            {
-                Logger.Log(LogLevel.Error, e);
-            }
-        }
-
-        private static void OnCoordinateBeingLoaded(ChaControl chaControl, ChaFileCoordinate coordinateFile)
-        {
-            Logger.Log(LogLevel.Debug, $"Loaded coord \"{coordinateFile.coordinateName}\" to chara \"{chaControl.name}\" / {(ChaFileDefine.CoordinateType)chaControl.fileStatus.coordinateType}");
-
-            foreach (var controller in GetBehaviours(chaControl))
             {
                 try
                 {
@@ -233,7 +209,33 @@ namespace MakerAPI.Chara
 
             try
             {
-                CoordinateLoaded?.Invoke(null, new CoordinateEventArgs(chaControl, coordinateFile));
+                CoordinateSaving?.Invoke(null, new CoordinateEventArgs(character, coordinateFile));
+            }
+            catch (Exception e)
+            {
+                Logger.Log(LogLevel.Error, e);
+            }
+        }
+
+        private static void OnCoordinateBeingLoaded(ChaControl character, ChaFileCoordinate coordinateFile)
+        {
+            Logger.Log(LogLevel.Debug, $"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{character.name}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+
+            foreach (var controller in GetBehaviours(character))
+            {
+                try
+                {
+                    controller.OnCoordinateBeingLoaded(coordinateFile);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(LogLevel.Error, e);
+                }
+            }
+
+            try
+            {
+                CoordinateLoaded?.Invoke(null, new CoordinateEventArgs(character, coordinateFile));
             }
             catch (Exception e)
             {
