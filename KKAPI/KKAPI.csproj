@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{74C2DB86-55BB-47B4-9805-51B5B992EF35}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>KKAPI</RootNamespace>
+    <AssemblyName>KKAPI</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\..\Games\Koikatsu\BepInEx\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\..\Games\Koikatsu\BepInEx\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\lib\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\lib\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>..\lib\BepInEx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\ExtensibleSaveFormat.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="TextMeshPro-1.0.55.56.0b12">
+      <HintPath>..\lib\TextMeshPro-1.0.55.56.0b12.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\lib\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\lib\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Chara\CharacterApi.cs" />
+    <Compile Include="Chara\CharacterApi.Hooks.cs" />
+    <Compile Include="Chara\Events\CharaReloadEventArgs.cs" />
+    <Compile Include="Chara\Events\CoordinateEventArgs.cs" />
+    <Compile Include="GameAPI.cs" />
+    <Compile Include="Utilities\InvokeSynchronizer.cs" />
+    <Compile Include="Maker\UI\MakerCoordinateLoadToggle.cs" />
+    <Compile Include="Maker\Events\CharacterChangedEventArgs.cs" />
+    <Compile Include="Chara\CharaCustomFunctionController.cs" />
+    <Compile Include="Maker\CharacterLoadFlags.cs" />
+    <Compile Include="GameMode.cs" />
+    <Compile Include="Studio\StudioAPI.cs" />
+    <Compile Include="Maker\UI\MakerButton.cs" />
+    <Compile Include="Maker\UI\MakerColor.cs" />
+    <Compile Include="Maker\UI\MakerDropdown.cs" />
+    <Compile Include="Maker\UI\MakerImage.cs" />
+    <Compile Include="Maker\UI\MakerText.cs" />
+    <Compile Include="Maker\UI\MakerToggle.cs" />
+    <Compile Include="Maker\UI\BaseEditableGuiEntry.cs" />
+    <Compile Include="Maker\MakerAPI.Hooks.cs" />
+    <Compile Include="Maker\MakerCategory.cs" />
+    <Compile Include="Maker\MakerAPI.cs" />
+    <Compile Include="Maker\UI\BaseGuiEntry.cs" />
+    <Compile Include="Maker\UI\MakerRadioButtons.cs" />
+    <Compile Include="Maker\UI\MakerSeparator.cs" />
+    <Compile Include="Maker\UI\MakerSlider.cs" />
+    <Compile Include="Maker\MakerConstants.cs" />
+    <Compile Include="Maker\UI\MakerLoadToggle.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Maker\Events\RegisterCustomControlsEvent.cs" />
+    <Compile Include="Maker\Events\RegisterSubCategoriesEvent.cs" />
+    <Compile Include="Maker\UI\SubCategoryCreator.cs" />
+    <Compile Include="Studio\UI\CurrentStateCategory.cs" />
+    <Compile Include="Studio\UI\CurrentStateCategorySubItemBase.cs" />
+    <Compile Include="Studio\UI\CurrentStateCategoryToggle.cs" />
+    <Compile Include="Utilities\OpenFileDialog.cs" />
+    <Compile Include="Utilities\Utils.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
