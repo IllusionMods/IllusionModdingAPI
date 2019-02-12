@@ -122,13 +122,13 @@ namespace KKAPI
 
         #region Synchronization
 
-        private readonly object _invokeLock = new object();
-        private Action _invokeList;
+        private static readonly object _invokeLock = new object();
+        private static Action _invokeList;
 
         /// <summary>
         /// Invoke the Action on the main unity thread. Use to synchronize your threads.
         /// </summary>
-        public void SynchronizedInvoke(Action callback)
+        public static void SynchronizedInvoke(Action callback)
         {
             if (callback == null) throw new ArgumentNullException(nameof(callback));
 

@@ -317,7 +317,7 @@ namespace KKAPI.Maker
         }
 
         private static bool _insideMaker;
-        private static event EventHandler InsideMakerChanged;
+        public static event EventHandler InsideMakerChanged;
 
         /// <summary>
         /// Maker is currently loaded and running
