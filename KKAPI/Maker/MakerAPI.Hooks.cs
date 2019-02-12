@@ -27,7 +27,7 @@ namespace KKAPI.Maker
                         InsideMaker = true;
                         _studioStarting = true;
                         OnRegisterCustomSubCategories();
-                        GameAPI.Instance.StartCoroutine(OnMakerLoadingCo());
+                        KoikatuAPI.Instance.StartCoroutine(OnMakerLoadingCo());
                     }
 
                     // Have to add missing subcategories now, before UI_ToggleGroupCtrl.Start runs

@@ -28,7 +28,7 @@ namespace KKAPI.Maker.UI
                 if (_guiCacheTransfrom == null)
                 {
                     var obj = new GameObject(nameof(MakerAPI) + " Cache");
-                    obj.transform.SetParent(GameAPI.Instance.transform);
+                    obj.transform.SetParent(KoikatuAPI.Instance.transform);
                     _guiCacheTransfrom = obj.transform;
                 }
                 return _guiCacheTransfrom;

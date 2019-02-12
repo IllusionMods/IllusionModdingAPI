@@ -102,7 +102,7 @@ namespace KKAPI.Maker.UI
             foreach (var raycastCtrl in _subCategoryCopy.GetComponentsInChildren<UI_RaycastCtrl>())
                 raycastCtrl.Reset();
 
-            GameAPI.Instance.StartCoroutine(FinishInit(trTop));
+            KoikatuAPI.Instance.StartCoroutine(FinishInit(trTop));
 
             tr.gameObject.SetActive(true);
 

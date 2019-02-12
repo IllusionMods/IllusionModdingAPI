@@ -12,14 +12,14 @@ using Logger = BepInEx.Logger;
 namespace KKAPI
 {
     [BepInPlugin(GUID, "Modding API for Koikatsu!", Version)]
-    public class GameAPI : BaseUnityPlugin
+    public class KoikatuAPI : BaseUnityPlugin
     {
         internal const string Version = "1.4";
         public const string GUID = "marco.kkapi";
 
-        internal static GameAPI Instance { get; private set; }
+        internal static KoikatuAPI Instance { get; private set; }
 
-        public GameAPI()
+        public KoikatuAPI()
         {
             Instance = this;
         }

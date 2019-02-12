@@ -105,7 +105,7 @@ namespace KKAPI.Chara
         {
             // Order is Awake - OnEnable - Start, so need to check if we started yet
             if (Started)
-                OnReload(GameAPI.GetCurrentGameMode());
+                OnReload(KoikatuAPI.GetCurrentGameMode());
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace KKAPI.Chara
         protected virtual void Start()
         {
             Started = true;
-            OnReload(GameAPI.GetCurrentGameMode());
+            OnReload(KoikatuAPI.GetCurrentGameMode());
         }
     }
 }

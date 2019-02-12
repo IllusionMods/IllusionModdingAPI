@@ -142,7 +142,7 @@ namespace KKAPI.Chara
 
         private static void OnCardBeingSaved(ChaFile _)
         {
-            var gamemode = GameAPI.GetCurrentGameMode();
+            var gamemode = KoikatuAPI.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(MakerAPI.GetCharacterControl()))
             {
                 try
@@ -158,7 +158,7 @@ namespace KKAPI.Chara
 
         private static void ReloadChara(ChaControl chaControl = null)
         {
-            var gamemode = GameAPI.GetCurrentGameMode();
+            var gamemode = KoikatuAPI.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(chaControl))
             {
                 try

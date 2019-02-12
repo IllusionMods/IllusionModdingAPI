@@ -38,11 +38,11 @@ namespace KKAPI.Maker
                 {
                     var contentParent = FindSubcategoryContentParent(categorySubTransform);
 
-                    BaseUnityPlugin lastOwner = contentParent.childCount > 1 ? GameAPI.Instance : null;
+                    BaseUnityPlugin lastOwner = contentParent.childCount > 1 ? KoikatuAPI.Instance : null;
                     foreach (var customControl in subCategoryGroup)
                     {
                         if (lastOwner != customControl.Owner && lastOwner != null)
-                            new MakerSeparator(new MakerCategory(null, null), GameAPI.Instance).CreateControl(contentParent);
+                            new MakerSeparator(new MakerCategory(null, null), KoikatuAPI.Instance).CreateControl(contentParent);
 
                         customControl.CreateControl(contentParent);
                         lastOwner = customControl.Owner;
@@ -118,7 +118,7 @@ namespace KKAPI.Maker
             foreach (var tuple in transformsToSort.OrderBy(x => x.Item2))
                 tuple.Item1.SetSiblingIndex(index++);
 
-            GameAPI.Instance.StartCoroutine(FixCategoryContentOffsets(mainCategory));
+            KoikatuAPI.Instance.StartCoroutine(FixCategoryContentOffsets(mainCategory));
         }
 
         private static IEnumerator FixCategoryContentOffsets(UI_ToggleGroupCtrl mainCategory)
@@ -215,25 +215,25 @@ namespace KKAPI.Maker
             MakerCoordinateLoadToggle.Setup();
 
             //Logger.Log(LogLevel.Debug, "OnRegisterCustomSubCategories");
-            RegisterCustomSubCategories?.Invoke(GameAPI.Instance, new RegisterSubCategoriesEvent());
+            RegisterCustomSubCategories?.Invoke(KoikatuAPI.Instance, new RegisterSubCategoriesEvent());
         }
 
         private static void OnMakerStartedLoading()
         {
             //Logger.Log(LogLevel.Debug, "Character Maker Started Loading");
-            MakerStartedLoading?.Invoke(GameAPI.Instance, new RegisterCustomControlsEvent());
+            MakerStartedLoading?.Invoke(KoikatuAPI.Instance, new RegisterCustomControlsEvent());
         }
 
         private static void OnMakerFinishedLoading()
         {
             //Logger.Log(LogLevel.Debug, "Character Maker Finished Loading");
-            MakerFinishedLoading?.Invoke(GameAPI.Instance, EventArgs.Empty);
+            MakerFinishedLoading?.Invoke(KoikatuAPI.Instance, EventArgs.Empty);
         }
 
         private static void OnMakerBaseLoaded()
         {
             //Logger.Log(LogLevel.Debug, "Character Maker Base Loaded");
-            MakerBaseLoaded?.Invoke(GameAPI.Instance, new RegisterCustomControlsEvent());
+            MakerBaseLoaded?.Invoke(KoikatuAPI.Instance, new RegisterCustomControlsEvent());
 
             DebugControls();
 
@@ -251,7 +251,7 @@ namespace KKAPI.Maker
         private static void OnMakerExiting()
         {
             //Logger.Log(LogLevel.Debug, "Character Maker is exiting");
-            MakerExiting?.Invoke(GameAPI.Instance, EventArgs.Empty);
+            MakerExiting?.Invoke(KoikatuAPI.Instance, EventArgs.Empty);
 
             RemoveCustomControls();
             MakerLoadToggle.Reset();
@@ -261,7 +261,7 @@ namespace KKAPI.Maker
         [Conditional("DEBUG")]
         private static void DebugControls()
         {
-            var instance = GameAPI.Instance;
+            var instance = KoikatuAPI.Instance;
             var cat = MakerConstants.Face.All;
 
             AddControl(new MakerSeparator(cat, instance));
@@ -313,7 +313,7 @@ namespace KKAPI.Maker
 
         private static void OnChaFileLoaded(ChaFileLoadedEventArgs chaFileLoadedEventArgs)
         {
-            ChaFileLoaded?.Invoke(GameAPI.Instance, chaFileLoadedEventArgs);
+            ChaFileLoaded?.Invoke(KoikatuAPI.Instance, chaFileLoadedEventArgs);
         }
 
         private static bool _insideMaker;
@@ -330,7 +330,7 @@ namespace KKAPI.Maker
                 if (_insideMaker != value)
                 {
                     _insideMaker = value;
-                    InsideMakerChanged?.Invoke(GameAPI.Instance, EventArgs.Empty);
+                    InsideMakerChanged?.Invoke(KoikatuAPI.Instance, EventArgs.Empty);
                 }
             }
         }
