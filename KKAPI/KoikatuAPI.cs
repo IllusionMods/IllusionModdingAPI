@@ -26,6 +26,12 @@ namespace KKAPI
 
         private void Start()
         {
+            if (CheckIncompatiblePlugin(this, "com.bepis.makerapi"))
+            {
+                Logger.Log(LogLevel.Message | LogLevel.Warning, "MakerAPI is no longer supported and is preventing KKAPI from loading! Remove MakerAPI.dll and update all mods that used it to fix this.");
+                return;
+            }
+
             var insideStudio = Application.productName == "CharaStudio";
 
             MakerAPI.Init(insideStudio);
