@@ -14,7 +14,14 @@ namespace KKAPI
     [BepInPlugin(GUID, "Modding API for Koikatsu!", Version)]
     public class KoikatuAPI : BaseUnityPlugin
     {
-        internal const string Version = "1.4";
+        /// <summary>
+        /// WARNING: This is a const field, therefore it will be copied to your assembly!
+        /// Use this field to check if the installed version of the plugin is up to date by doing this:
+        /// <code>KoikatuAPI.CheckRequiredPlugin(this, KoikatuAPI.GUID, KoikatuAPI.Version, LogLevel.Warning)</code>
+        /// THIS VALUE WILL NOT BE READ FROM THE INSTALLED VERSION, YOU WILL READ THE VALUE FROM THIS VERSION THAT YOU COMPILE YOUR PLUGIN AGAINST!
+        /// More info: https://stackoverflow.com/questions/55984/what-is-the-difference-between-const-and-readonly
+        /// </summary>
+        public const string Version = "1.0";
         public const string GUID = "marco.kkapi";
 
         internal static KoikatuAPI Instance { get; private set; }
