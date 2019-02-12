@@ -81,7 +81,7 @@ namespace KKAPI.Maker
                     _categoryLookup.Add(MakeKey(makerCategory.CategoryName, makerCategory.SubCategoryName), makerCategory);
             }
 
-            return _categoryLookup[MakeKey(category, subCategory)];
+            return _categoryLookup.TryGetValue(MakeKey(category, subCategory), out var value) ? value : null;
         }
 
         public static class Face
