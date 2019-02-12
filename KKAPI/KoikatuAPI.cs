@@ -26,9 +26,10 @@ namespace KKAPI
 
         private void Start()
         {
-            if (CheckIncompatiblePlugin(this, "com.bepis.makerapi"))
+            if (CheckIncompatiblePlugin(this, "com.bepis.makerapi", LogLevel.Error))
             {
-                Logger.Log(LogLevel.Message | LogLevel.Warning, "MakerAPI is no longer supported and is preventing KKAPI from loading! Remove MakerAPI.dll and update all mods that used it to fix this.");
+                Logger.Log(LogLevel.Error | LogLevel.Message, "MakerAPI is no longer supported and is preventing KKAPI from loading!");
+                Logger.Log(LogLevel.Error | LogLevel.Message, "Remove MakerAPI.dll and update all mods that used it to fix this.");
                 return;
             }
 
@@ -55,20 +56,31 @@ namespace KKAPI
         /// <param name="origin">Your plugin</param>
         /// <param name="guid">Guid of the plugin your plugin is dependant on</param>
         /// <param name="minimumVersion">Minimum version of the required plugin</param>
+        /// <param name="level">Level of the issue - <code>Error</code> if plugin can't work, <code>Warning</code> if there might be issues, or <code>None</code> to not show any message.</param>
         /// <returns>True if plugin exists and it's version equals or is newer than minimumVersion, otherwise false</returns>
-        public static bool CheckRequiredPlugin(BaseUnityPlugin origin, string guid, Version minimumVersion)
+        public static bool CheckRequiredPlugin(BaseUnityPlugin origin, string guid, Version minimumVersion, LogLevel level = LogLevel.Error)
         {
             var target = BepInEx.Bootstrap.Chainloader.Plugins
                 .Select(MetadataHelper.GetMetadata)
                 .FirstOrDefault(x => x.GUID == guid);
             if (target == null)
             {
-                Logger.Log(LogLevel.Message | LogLevel.Error, $"ERROR: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).Name}\" was not found!");
+                if (level != LogLevel.None)
+                {
+                    Logger.Log(LogLevel.Message | level, 
+                        $"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).Name}\" was not found!");
+                }
+
                 return false;
             }
             if (minimumVersion > target.Version)
             {
-                Logger.Log(LogLevel.Message | LogLevel.Error, $"ERROR: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).Name}\" is outdated! At least v{minimumVersion} is needed!");
+                if (level != LogLevel.None)
+                {
+                    Logger.Log(LogLevel.Message | level, 
+                        $"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).Name}\" is outdated! At least v{minimumVersion} is needed!");
+                }
+
                 return false;
             }
             return true;
@@ -76,20 +88,26 @@ namespace KKAPI
 
         /// <summary>
         /// Check if a plugin that is not compatible with your plugin is loaded. 
-        /// If the plugin is loaded, user is shown an error message on screen and true is returned.
+        /// If the plugin is loaded, user is shown a warning message on screen and true is returned.
         /// Run from Awake or Start, not from constructor!
         /// </summary>
         /// <param name="origin">Your plugin</param>
         /// <param name="guid">Guid of the plugin your plugin is incompatible with</param>
+        /// <param name="level">Level of the issue - <code>Error</code> if plugin can't work, <code>Warning</code> if there might be issues, or <code>None</code> to not show any message.</param>
         /// <returns>True if plugin exists, otherwise false</returns>
-        public static bool CheckIncompatiblePlugin(BaseUnityPlugin origin, string guid)
+        public static bool CheckIncompatiblePlugin(BaseUnityPlugin origin, string guid, LogLevel level = LogLevel.Warning)
         {
             var target = BepInEx.Bootstrap.Chainloader.Plugins
                 .Select(MetadataHelper.GetMetadata)
                 .FirstOrDefault(x => x.GUID == guid);
             if (target != null)
             {
-                Logger.Log(LogLevel.Message | LogLevel.Error, $"ERROR: Plugin \"{guid}\" is incompatible with \"{MetadataHelper.GetMetadata(origin).Name}\" and can cause issues!");
+                if (level != LogLevel.None)
+                {
+                    Logger.Log(LogLevel.Message | level, 
+                        $"{level.ToString().ToUpper()}: Plugin \"{guid}\" is incompatible with \"{MetadataHelper.GetMetadata(origin).Name}\"!");
+                }
+
                 return true;
             }
             return false;
