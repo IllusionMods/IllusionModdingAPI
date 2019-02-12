@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Linq;
 using BepInEx;
+using BepInEx.Logging;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio;
 using Manager;
 using UnityEngine;
+using Logger = BepInEx.Logger;
 
 namespace KKAPI
 {
@@ -14,12 +17,12 @@ namespace KKAPI
         internal const string Version = "1.4";
         public const string GUID = "marco.kkapi";
 
+        internal static GameAPI Instance { get; private set; }
+
         public GameAPI()
         {
             Instance = this;
         }
-
-        internal static GameAPI Instance { get; private set; }
 
         private void Start()
         {
@@ -36,6 +39,54 @@ namespace KKAPI
             if (MakerAPI.InsideMaker) return GameMode.Maker;
             if (Game.Instance != null) return GameMode.MainGame;
             return GameMode.Unknown;
+        }
+
+        /// <summary>
+        /// Check if a plugin is loaded and has at least the minimum version. 
+        /// If the plugin is missing or older than minimumVersion, user is shown an error message on screen and false is returned.
+        /// Run from Awake or Start, not from constructor!
+        /// </summary>
+        /// <param name="origin">Your plugin</param>
+        /// <param name="guid">Guid of the plugin your plugin is dependant on</param>
+        /// <param name="minimumVersion">Minimum version of the required plugin</param>
+        /// <returns>True if plugin exists and it's version equals or is newer than minimumVersion, otherwise false</returns>
+        public static bool CheckRequiredPlugin(BaseUnityPlugin origin, string guid, Version minimumVersion)
+        {
+            var target = BepInEx.Bootstrap.Chainloader.Plugins
+                .Select(MetadataHelper.GetMetadata)
+                .FirstOrDefault(x => x.GUID == guid);
+            if (target == null)
+            {
+                Logger.Log(LogLevel.Message | LogLevel.Error, $"ERROR: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).Name}\" was not found!");
+                return false;
+            }
+            if (minimumVersion > target.Version)
+            {
+                Logger.Log(LogLevel.Message | LogLevel.Error, $"ERROR: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).Name}\" is outdated! At least v{minimumVersion} is needed!");
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Check if a plugin that is not compatible with your plugin is loaded. 
+        /// If the plugin is loaded, user is shown an error message on screen and true is returned.
+        /// Run from Awake or Start, not from constructor!
+        /// </summary>
+        /// <param name="origin">Your plugin</param>
+        /// <param name="guid">Guid of the plugin your plugin is incompatible with</param>
+        /// <returns>True if plugin exists, otherwise false</returns>
+        public static bool CheckIncompatiblePlugin(BaseUnityPlugin origin, string guid)
+        {
+            var target = BepInEx.Bootstrap.Chainloader.Plugins
+                .Select(MetadataHelper.GetMetadata)
+                .FirstOrDefault(x => x.GUID == guid);
+            if (target != null)
+            {
+                Logger.Log(LogLevel.Message | LogLevel.Error, $"ERROR: Plugin \"{guid}\" is incompatible with \"{MetadataHelper.GetMetadata(origin).Name}\" and can cause issues!");
+                return true;
+            }
+            return false;
         }
 
         #region Synchronization
@@ -69,7 +120,7 @@ namespace KKAPI
             // The invocation would also block any threads that call Invoke
             toRun();
         }
-        
+
         #endregion
     }
 }
