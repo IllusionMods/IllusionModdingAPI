@@ -72,7 +72,6 @@
     <Compile Include="Chara\Events\CharaReloadEventArgs.cs" />
     <Compile Include="Chara\Events\CoordinateEventArgs.cs" />
     <Compile Include="KoikatuAPI.cs" />
-    <Compile Include="Utilities\InvokeSynchronizer.cs" />
     <Compile Include="Maker\UI\MakerCoordinateLoadToggle.cs" />
     <Compile Include="Maker\Events\CharacterChangedEventArgs.cs" />
     <Compile Include="Chara\CharaCustomFunctionController.cs" />
