@@ -228,6 +228,8 @@ namespace KKAPI.Maker
         {
             //Logger.Log(LogLevel.Debug, "Character Maker Finished Loading");
             MakerFinishedLoading?.Invoke(KoikatuAPI.Instance, EventArgs.Empty);
+
+            _makerLoaded = true;
         }
 
         private static void OnMakerBaseLoaded()
@@ -317,10 +319,11 @@ namespace KKAPI.Maker
         }
 
         private static bool _insideMaker;
+        private static bool _makerLoaded;
         public static event EventHandler InsideMakerChanged;
 
         /// <summary>
-        /// Maker is currently loaded and running
+        /// The maker scene is currently loaded. It might still be loading!
         /// </summary>
         public static bool InsideMaker
         {
@@ -332,8 +335,16 @@ namespace KKAPI.Maker
                     _insideMaker = value;
                     InsideMakerChanged?.Invoke(KoikatuAPI.Instance, EventArgs.Empty);
                 }
+
+                if (!_insideMaker)
+                    _makerLoaded = false;
             }
         }
+
+        /// <summary>
+        /// Maker is fully loaded and running
+        /// </summary>
+        public static bool InsideAndLoaded => InsideMaker && _makerLoaded;
 
         /// <summary>
         /// Get values of the default partial load checkboxes present at the bottom of the 
