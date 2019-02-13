@@ -46,35 +46,7 @@ namespace KKAPI.Studio
 
             DebugControls();
         }
-
-        [Conditional("DEBUG")]
-        private static void DebugControls()
-        {
-            CreateCurrentStateCategory(new CurrentStateCategory("Control test category",
-                new[]
-                {
-                    new CurrentStateCategoryToggle("Test 1", 2, c =>
-                    {
-                        Logger.Log(LogLevel.Message, c?.charInfo?.name + " 1");
-                        return 2;
-                    }),
-                    new CurrentStateCategoryToggle("Test 2", 3, c =>
-                    {
-                        Logger.Log(LogLevel.Message, c?.charInfo?.name + " 2");
-                        return 1;
-                    }),
-                    new CurrentStateCategoryToggle("Test 3", 4, c =>
-                    {
-                        Logger.Log(LogLevel.Message, c?.charInfo?.name + " 3");
-                        return 1;
-                    })
-
-                }));
-        }
-
-        /// <summary>
-        /// If we are in the CharaStudio the API has very limited functionality
-        /// </summary>
+        
         public static bool InsideStudio { get; private set; }
 
         private static void SceneLoaded(Scene arg0, LoadSceneMode arg1)
@@ -99,6 +71,30 @@ namespace KKAPI.Studio
                         stateCategory.UpdateInfo(__instance.ociChar);
                 }
             }
+        }
+
+        [Conditional("DEBUG")]
+        private static void DebugControls()
+        {
+            CreateCurrentStateCategory(new CurrentStateCategory("Control test category",
+                new[]
+                {
+                    new CurrentStateCategoryToggle("Test 1", 2, c =>
+                    {
+                        Logger.Log(LogLevel.Message, c?.charInfo?.name + " 1");
+                        return 1;
+                    }),
+                    new CurrentStateCategoryToggle("Test 2", 3, c =>
+                    {
+                        Logger.Log(LogLevel.Message, c?.charInfo?.name + " 2");
+                        return 2;
+                    }),
+                    new CurrentStateCategoryToggle("Test 3", 4, c =>
+                    {
+                        Logger.Log(LogLevel.Message, c?.charInfo?.name + " 3");
+                        return 3;
+                    })
+                }));
         }
     }
 }
