@@ -75,7 +75,7 @@ namespace KKAPI
                 if (level != LogLevel.None)
                 {
                     Logger.Log(LogLevel.Message | level, 
-                        $"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).Name}\" was not found!");
+                        $"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).GUID}\" was not found!");
                 }
 
                 return false;
@@ -85,7 +85,7 @@ namespace KKAPI
                 if (level != LogLevel.None)
                 {
                     Logger.Log(LogLevel.Message | level, 
-                        $"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).Name}\" is outdated! At least v{minimumVersion} is needed!");
+                        $"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).GUID}\" is outdated! At least v{minimumVersion} is needed!");
                 }
 
                 return false;
@@ -112,7 +112,7 @@ namespace KKAPI
                 if (level != LogLevel.None)
                 {
                     Logger.Log(LogLevel.Message | level, 
-                        $"{level.ToString().ToUpper()}: Plugin \"{guid}\" is incompatible with \"{MetadataHelper.GetMetadata(origin).Name}\"!");
+                        $"{level.ToString().ToUpper()}: Plugin \"{guid}\" is incompatible with \"{MetadataHelper.GetMetadata(origin).GUID}\"!");
                 }
 
                 return true;
