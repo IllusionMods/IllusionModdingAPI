@@ -109,7 +109,7 @@ namespace KKAPI.Utilities
         /// </summary>
         /// <param name="onAccept">Action that gets called with results of user's selection. Returns list of selected files, or null if user cancelled the action.
         /// WARNING: This runs on another thread! Game will crash if you attempt to access unity methods.
-        /// You can use <code>GameAPI.SynchronizedInvoke</code> to go back to the main thread.</param>
+        /// You can use <code>KoikatuAPI.SynchronizedInvoke</code> to go back to the main thread.</param>
         /// <param name="title">
         /// A string to be placed in the title bar of the dialog box. If this member is NULL, the system uses
         /// the default title (that is, Save As or Open)
