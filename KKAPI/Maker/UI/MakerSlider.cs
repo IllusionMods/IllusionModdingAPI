@@ -21,7 +21,16 @@ namespace KKAPI.Maker.UI
         private readonly float _maxValue;
         private readonly float _minValue;
         private readonly float _defaultValue;
-        
+
+        /// <summary>
+        /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
+        /// </summary>
+        /// <param name="settingName">Text displayed next to the slider</param>
+        /// <param name="category">Category the control will be created under</param>
+        /// <param name="owner">Plugin that owns the control</param>
+        /// <param name="minValue">Lowest allowed value (inclusive)</param>
+        /// <param name="maxValue">Highest allowed value (inclusive)</param>
+        /// <param name="defaultValue">Value the slider will be set to after creation</param>
         public MakerSlider(MakerCategory category, string settingName, float minValue, float maxValue, float defaultValue, BaseUnityPlugin owner) : base(category, defaultValue, owner)
         {
             _settingName = settingName;

@@ -9,6 +9,10 @@ namespace KKAPI.Studio.UI
     /// </summary>
     public abstract class CurrentStateCategorySubItemBase
     {
+        /// <summary>
+        /// Create a new custom CurrentState control
+        /// </summary>
+        /// <param name="name">Name of the setting displayed on the left</param>
         protected CurrentStateCategorySubItemBase(string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));

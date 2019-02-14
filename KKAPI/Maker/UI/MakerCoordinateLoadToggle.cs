@@ -23,6 +23,12 @@ namespace KKAPI.Maker.UI
         private static int _createdCount;
         private static List<RectTransform> _baseToggles;
 
+        /// <summary>
+        /// Create a new coordinate load toggle. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/> 
+        /// with <see cref="RegisterCustomControlsEvent.AddCoordinateLoadToggle"/>.
+        /// </summary>
+        /// <param name="text">Text displayed next to the checkbox</param>
+        /// <param name="initialValue">Initial value of the toggle</param>
         public MakerCoordinateLoadToggle(string text, bool initialValue = true) : base(null, initialValue, null)
         {
             Text = text;

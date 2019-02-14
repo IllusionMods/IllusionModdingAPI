@@ -1,7 +1,11 @@
 ﻿using System;
+#pragma warning disable 1591
 
 namespace KKAPI.Chara
 {
+    /// <summary>
+    /// Event arguments used by character reload events
+    /// </summary>
     public sealed class CharaReloadEventArgs : EventArgs
     {
         public CharaReloadEventArgs(ChaControl reloadedCharacter)

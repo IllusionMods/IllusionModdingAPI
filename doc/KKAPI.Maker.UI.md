@@ -362,7 +362,7 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `String` | DisplayName | Name shown next to the checkbox | 
+| `String` | DisplayName | Text shown next to the checkbox | 
 
 
 Methods

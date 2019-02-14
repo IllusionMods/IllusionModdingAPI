@@ -14,6 +14,14 @@ namespace KKAPI.Maker.UI
     {
         private static Transform _dropdownCopy;
 
+        /// <summary>
+        /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
+        /// </summary>
+        /// <param name="settingName">Text displayed next to the dropdown</param>
+        /// <param name="options">Items for the dropdown menu</param>
+        /// <param name="category">Category the control will be created under</param>
+        /// <param name="initialValue">Initially selected item in the dropdown menu</param>
+        /// <param name="owner">Plugin that owns the control</param>
         public MakerDropdown(string settingName, string[] options, MakerCategory category, int initialValue, BaseUnityPlugin owner) 
             : base(category, initialValue, owner)
         {

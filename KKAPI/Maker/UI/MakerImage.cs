@@ -49,6 +49,12 @@ namespace KKAPI.Maker.UI
             }
         }
 
+        /// <summary>
+        /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
+        /// </summary>
+        /// <param name="texture">Texture to be displayed in the image box. Can be null for empty.</param>
+        /// <param name="category">Category the control will be created under</param>
+        /// <param name="owner">Plugin that owns the control</param>
         public MakerImage(Texture texture, MakerCategory category, BaseUnityPlugin owner) : base(category, owner)
         {
             _texture = new BehaviorSubject<Texture>(texture);

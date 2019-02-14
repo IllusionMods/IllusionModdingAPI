@@ -13,13 +13,19 @@ namespace KKAPI.Maker.UI
     {
         private static Transform _toggleCopy;
 
+        /// <summary>
+        /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
+        /// </summary>
+        /// <param name="displayName">Text shown next to the checkbox</param>
+        /// <param name="category">Category the control will be created under</param>
+        /// <param name="owner">Plugin that owns the control</param>
         public MakerToggle(MakerCategory category, string displayName, BaseUnityPlugin owner) : base(category, false, owner)
         {
             DisplayName = displayName;
         }
 
         /// <summary>
-        /// Name shown next to the checkbox
+        /// Text shown next to the checkbox
         /// </summary>
         public string DisplayName { get; }
 

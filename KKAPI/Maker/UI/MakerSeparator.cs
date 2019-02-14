@@ -48,6 +48,11 @@ namespace KKAPI.Maker.UI
             _sourceSeparator = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglAll/AllTop/Separate").transform;
         }
 
+        /// <summary>
+        /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
+        /// </summary>
+        /// <param name="category">Category the control will be created under</param>
+        /// <param name="owner">Plugin that owns the control</param>
         public MakerSeparator(MakerCategory category, BaseUnityPlugin owner) : base(category, owner)
         {
         }

@@ -22,6 +22,12 @@ namespace KKAPI.Maker.UI
 
         private static int _createdCount;
 
+        /// <summary>
+        /// Create a new load toggle. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/> 
+        /// with <see cref="RegisterCustomControlsEvent.AddLoadToggle"/>.
+        /// </summary>
+        /// <param name="text">Text displayed next to the checkbox</param>
+        /// <param name="initialValue">Initial value of the toggle</param>
         public MakerLoadToggle(string text, bool initialValue = true) : base(null, initialValue, null)
         {
             Text = text;

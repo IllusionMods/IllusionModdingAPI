@@ -12,6 +12,12 @@ namespace KKAPI.Maker.UI
     {
         private static Transform _buttonCopy;
 
+        /// <summary>
+        /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
+        /// </summary>
+        /// <param name="text">Text displayed on the button</param>
+        /// <param name="category">Category the control will be created under</param>
+        /// <param name="owner">Plugin that owns the control</param>
         public MakerButton(string text, MakerCategory category, BaseUnityPlugin owner) : base(category, owner)
         {
             Text = text;

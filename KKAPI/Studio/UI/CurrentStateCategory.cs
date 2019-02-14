@@ -11,6 +11,11 @@ namespace KKAPI.Studio.UI
     /// </summary>
     public class CurrentStateCategory
     {
+        /// <summary>
+        /// Create a new custom CurrentState category
+        /// </summary>
+        /// <param name="categoryName">Name of the category</param>
+        /// <param name="subItems">Controls under this category</param>
         public CurrentStateCategory(string categoryName, IEnumerable<CurrentStateCategorySubItemBase> subItems)
         {
             CategoryName = categoryName;

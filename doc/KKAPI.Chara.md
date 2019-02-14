@@ -68,6 +68,7 @@ Methods
 
 ## `CharaReloadEventArgs`
 
+Event arguments used by character reload events
 ```csharp
 public class KKAPI.Chara.CharaReloadEventArgs
     : EventArgs

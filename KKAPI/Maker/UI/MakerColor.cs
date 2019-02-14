@@ -14,6 +14,17 @@ namespace KKAPI.Maker.UI
     {
         private static Transform _colorCopy;
 
+        /// <summary>
+        /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
+        /// </summary>
+        /// <param name="settingName">Text displayed next to the control</param>
+        /// <param name="useAlpha">
+        /// If true, the color selector will allow the user to change alpha of the color.
+        /// If false, no color slider is shown and alpha is always 1f.
+        /// </param>
+        /// <param name="category">Category the control will be created under</param>
+        /// <param name="initialValue">Color set to the control when it is created</param>
+        /// <param name="owner">Plugin that owns the control</param>
         public MakerColor(string settingName, bool useAlpha, MakerCategory category, Color initialValue, BaseUnityPlugin owner) : base(category, initialValue, owner)
         {
             SettingName = settingName;
