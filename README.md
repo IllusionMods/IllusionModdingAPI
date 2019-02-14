@@ -15,5 +15,6 @@ KKAPI is a project that aims to make creating mods for Kokatsu! easier and less 
 
 ## Previews
 To get a good preview you can download one of the mods listed above, for example [Koikatu Overlay Mods](https://github.com/ManlyMarco/Koikatu-Overlay-Mods).
+
 ![kkapi preview 1](https://user-images.githubusercontent.com/39247311/52817863-74461d80-30a5-11e9-81fd-d68a530d066a.png)
 ![kkapi preview 2](https://user-images.githubusercontent.com/39247311/52817865-74461d80-30a5-11e9-9b4f-e42ef0dcc7ea.png)
