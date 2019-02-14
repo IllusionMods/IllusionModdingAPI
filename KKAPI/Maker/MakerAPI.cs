@@ -159,7 +159,7 @@ namespace KKAPI.Maker
         /// Add custom sub categories. They need to be added before maker starts loading,
         /// or in the RegisterCustomSubCategories event.
         /// </summary>
-        internal static  void AddSubCategory(MakerCategory category)
+        internal static void AddSubCategory(MakerCategory category)
         {
             if (!_categories.Contains(category))
                 _categories.Add(category);
@@ -228,28 +228,79 @@ namespace KKAPI.Maker
             MakerLoadToggle.Setup();
             MakerCoordinateLoadToggle.Setup();
 
-            //Logger.Log(LogLevel.Debug, "OnRegisterCustomSubCategories");
-            RegisterCustomSubCategories?.Invoke(KoikatuAPI.Instance, new RegisterSubCategoriesEvent());
+            if (RegisterCustomSubCategories != null)
+            {
+                var args = new RegisterSubCategoriesEvent();
+                foreach (var handler in RegisterCustomSubCategories.GetInvocationList())
+                {
+                    try
+                    {
+                        ((EventHandler<RegisterSubCategoriesEvent>)handler).Invoke(KoikatuAPI.Instance, args);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(LogLevel.Error, e);
+                    }
+                }
+            }
         }
 
         private static void OnMakerStartedLoading()
         {
-            //Logger.Log(LogLevel.Debug, "Character Maker Started Loading");
-            MakerStartedLoading?.Invoke(KoikatuAPI.Instance, new RegisterCustomControlsEvent());
+            if (MakerStartedLoading != null)
+            {
+                var args = new RegisterCustomControlsEvent();
+                foreach (var handler in MakerStartedLoading.GetInvocationList())
+                {
+                    try
+                    {
+                        ((EventHandler<RegisterCustomControlsEvent>)handler).Invoke(KoikatuAPI.Instance, args);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(LogLevel.Error, e);
+                    }
+                }
+            }
         }
 
         private static void OnMakerFinishedLoading()
         {
-            //Logger.Log(LogLevel.Debug, "Character Maker Finished Loading");
-            MakerFinishedLoading?.Invoke(KoikatuAPI.Instance, EventArgs.Empty);
+            if (MakerFinishedLoading != null)
+            {
+                foreach (var handler in MakerFinishedLoading.GetInvocationList())
+                {
+                    try
+                    {
+                        ((EventHandler)handler).Invoke(KoikatuAPI.Instance, EventArgs.Empty);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(LogLevel.Error, e);
+                    }
+                }
+            }
 
             _makerLoaded = true;
         }
 
         private static void OnMakerBaseLoaded()
         {
-            //Logger.Log(LogLevel.Debug, "Character Maker Base Loaded");
-            MakerBaseLoaded?.Invoke(KoikatuAPI.Instance, new RegisterCustomControlsEvent());
+            if (MakerBaseLoaded != null)
+            {
+                var args = new RegisterCustomControlsEvent();
+                foreach (var handler in MakerBaseLoaded.GetInvocationList())
+                {
+                    try
+                    {
+                        ((EventHandler<RegisterCustomControlsEvent>)handler).Invoke(KoikatuAPI.Instance, args);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(LogLevel.Error, e);
+                    }
+                }
+            }
 
             DebugControls();
 
@@ -266,8 +317,20 @@ namespace KKAPI.Maker
 
         private static void OnMakerExiting()
         {
-            //Logger.Log(LogLevel.Debug, "Character Maker is exiting");
-            MakerExiting?.Invoke(KoikatuAPI.Instance, EventArgs.Empty);
+            if (MakerExiting != null)
+            {
+                foreach (var handler in MakerExiting.GetInvocationList())
+                {
+                    try
+                    {
+                        ((EventHandler)handler).Invoke(KoikatuAPI.Instance, EventArgs.Empty);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(LogLevel.Error, e);
+                    }
+                }
+            }
 
             RemoveCustomControls();
             MakerLoadToggle.Reset();
@@ -329,7 +392,20 @@ namespace KKAPI.Maker
 
         private static void OnChaFileLoaded(ChaFileLoadedEventArgs chaFileLoadedEventArgs)
         {
-            ChaFileLoaded?.Invoke(KoikatuAPI.Instance, chaFileLoadedEventArgs);
+            if (ChaFileLoaded != null)
+            {
+                foreach (var handler in ChaFileLoaded.GetInvocationList())
+                {
+                    try
+                    {
+                        ((EventHandler<ChaFileLoadedEventArgs>)handler).Invoke(KoikatuAPI.Instance, chaFileLoadedEventArgs);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(LogLevel.Error, e);
+                    }
+                }
+            }
         }
 
         private static bool _insideMaker;
@@ -351,7 +427,21 @@ namespace KKAPI.Maker
                 if (_insideMaker != value)
                 {
                     _insideMaker = value;
-                    InsideMakerChanged?.Invoke(KoikatuAPI.Instance, EventArgs.Empty);
+
+                    if (InsideMakerChanged != null)
+                    {
+                        foreach (var handler in InsideMakerChanged.GetInvocationList())
+                        {
+                            try
+                            {
+                                ((EventHandler)handler).Invoke(KoikatuAPI.Instance, EventArgs.Empty);
+                            }
+                            catch (Exception e)
+                            {
+                                Logger.Log(LogLevel.Error, e);
+                            }
+                        }
+                    }
                 }
 
                 if (!_insideMaker)
@@ -390,7 +480,7 @@ namespace KKAPI.Maker
 
         internal static void Init(bool insideStudio)
         {
-            if(insideStudio) return;
+            if (insideStudio) return;
 
             HarmonyInstance.Create(typeof(Hooks).FullName).PatchAll(typeof(Hooks));
         }
