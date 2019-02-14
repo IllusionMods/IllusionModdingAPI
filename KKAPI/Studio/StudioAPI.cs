@@ -10,6 +10,9 @@ using Logger = BepInEx.Logger;
 
 namespace KKAPI.Studio
 {
+    /// <summary>
+    /// Provides a way to add custom menu items to CharaStudio, and gives useful methods for interfacing with the studio.
+    /// </summary>
     public static class StudioAPI
     {
         private static readonly List<CurrentStateCategory> CustomCurrentStateCategories = new List<CurrentStateCategory>();

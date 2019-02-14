@@ -11,6 +11,10 @@ using Logger = BepInEx.Logger;
 
 namespace KKAPI.Chara
 {
+    /// <summary>
+    /// Provides an easy way to add custom logic to all characters in the game and in studio. 
+    /// It takes care of all the error-prone plumbing and lets you easily save and load data to the character cards.
+    /// </summary>
     public static partial class CharacterApi
     {
         private static readonly HashSet<ChaControl> ChaControls = new HashSet<ChaControl>();
@@ -26,6 +30,9 @@ namespace KKAPI.Chara
         /// <param name="src">Current character to copy the data from</param>
         public delegate void CopyExtendedDataFunc(ChaFile dst, ChaFile src);
 
+        /// <summary>
+        /// Get ChaControl that is using the specified ChaFileControl.
+        /// </summary>
         public static ChaControl FileControlToChaControl(ChaFileControl fileControl)
         {
             return ChaControls.Single(x => x.chaFile == fileControl);

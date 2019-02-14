@@ -14,6 +14,7 @@ namespace KKAPI
     /// <summary>
     /// Provides overall information about the game and the API itself, and gives some useful tools 
     /// like synchronization of threads or checking if required plugins are installed.
+    /// More information is available in project wiki at https://github.com/ManlyMarco/KKAPI/wiki
     /// </summary>
     [BepInPlugin(GUID, "Modding API for Koikatsu!", VersionConst)]
     public class KoikatuAPI : BaseUnityPlugin
