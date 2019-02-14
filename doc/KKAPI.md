@@ -1,6 +1,6 @@
 ## `GameMode`
 
-Current mode the game is in.
+Current gameplay mode the game is in
 ```csharp
 public enum KKAPI.GameMode
     : Enum, IComparable, IFormattable, IConvertible
@@ -11,10 +11,10 @@ Enum
 
 | Value | Name | Summary | 
 | --- | --- | --- | 
-| `0` | Unknown | Anywhere else, including main menu. | 
-| `1` | Maker | Inside character maker started from main menu or from class roster. | 
-| `2` | Studio | Inside ChaStudio.exe | 
-| `3` | MainGame | Refers to anything after starting a new game from title screen, or loading a saved game.  This means this includes story scenes, night menu, roaming around and h scenes inside story mode. | 
+| `0` | Unknown | Anywhere else, including main menu | 
+| `1` | Maker | Inside character maker (can be started from main menu or from class roster) | 
+| `2` | Studio | Anywhere inside CharaStudio.exe | 
+| `3` | MainGame | Anywhere inside the main game.  Includes everything after starting a new game from title screen and after loading a saved game.  This means this includes story scenes, night menu, roaming around and h scenes inside story mode.  This does not hoverwer include the character maker launched from within the class menu. | 
 
 
 ## `KoikatuAPI`
