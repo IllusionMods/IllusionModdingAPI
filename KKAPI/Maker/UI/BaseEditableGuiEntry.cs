@@ -28,6 +28,7 @@ namespace KKAPI.Maker.UI
         }
 
         /// <summary>
+        /// Fired every time the value is changed, and once when the control is created.
         /// Buttons 1, 2, 3 are values 0, 1, 2
         /// </summary>
         public IObservable<TValue> ValueChanged => _outgoingValue;
