@@ -23,7 +23,7 @@ namespace KKAPI.Maker.UI
         /// </summary>
         public string DisplayName { get; }
 
-        public static Transform ToggleCopy
+        private static Transform ToggleCopy
         {
             get
             {
