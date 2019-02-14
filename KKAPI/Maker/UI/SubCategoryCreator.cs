@@ -11,7 +11,7 @@ using Logger = BepInEx.Logger;
 
 namespace KKAPI.Maker.UI
 {
-    internal class SubCategoryCreator
+    internal static class SubCategoryCreator
     {
         private static Transform _subCategoryCopy;
         private static Transform _scrollbarCopy;

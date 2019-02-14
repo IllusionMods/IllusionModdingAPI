@@ -157,7 +157,7 @@ namespace KKAPI.Maker
 
         /// <summary>
         /// Add custom sub categories. They need to be added before maker starts loading,
-        /// or in the RegisterCustomSubCategories event.
+        /// or in the <see cref="RegisterCustomSubCategories"/> event.
         /// </summary>
         internal static void AddSubCategory(MakerCategory category)
         {
@@ -190,9 +190,10 @@ namespace KKAPI.Maker
         public static ChaFileDefine.CoordinateType GetCurrentCoordinateType() => (ChaFileDefine.CoordinateType)GetMakerBase().chaCtrl.fileStatus.coordinateType;
 
         /// <summary>
-        /// Called at the very beginning of maker loading. This is the only chance to add custom sub categories.
-        /// Warning: All custom subcategories and custom controls are cleared on maker exit and need to be re-added on next maker
-        /// start.
+        /// This event is fired every time the character maker is being loaded, near the very beginning.
+        /// This is the only chance to add custom sub categories. Custom controls can be added now on later in <see cref="MakerBaseLoaded"/>.
+        /// Warning: All custom subcategories and custom controls are cleared on maker exit and need to be re-added on next maker start.
+        /// It's recommended to completely clear your GUI state in <see cref="MakerExiting"/> in preparation for loading into maker again.
         /// </summary>
         public static event EventHandler<RegisterSubCategoriesEvent> RegisterCustomSubCategories;
 
@@ -220,6 +221,7 @@ namespace KKAPI.Maker
 
         /// <summary>
         /// Fired after the user exits the maker. Use this to clean up any references and resources.
+        /// You want to return to the state you were in before maker was loaded.
         /// </summary>
         public static event EventHandler MakerExiting;
 
@@ -385,8 +387,10 @@ namespace KKAPI.Maker
         public static ChaFile LastLoadedChaFile => InsideMaker ? (Hooks.LastLoadedChaFile ?? GetCharacterControl()?.chaFile) : null;
 
         /// <summary>
-        /// Fired when the current ChaFile in maker is changed by loading other cards or coordinates.
-        /// Only fired when inside maker.
+        /// Fired when the current ChaFile in maker is being changed by loading other cards or coordinates.
+        /// This event is only fired when inside the character maker. It's best used to update the interface with new values.
+        /// 
+        /// You might need to wait for the next frame with <see cref="MonoBehaviour.StartCoroutine(IEnumerator)"/> before handling this.
         /// </summary>
         public static event EventHandler<ChaFileLoadedEventArgs> ChaFileLoaded;
 

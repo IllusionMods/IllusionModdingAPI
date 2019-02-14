@@ -8,7 +8,9 @@ using UnityEngine.UI;
 namespace KKAPI.Maker.UI
 {
     /// <summary>
-    /// Use with AddLoadToggle
+    /// Adds a toggle to the bottom of the coordinate/clothes card load window in character maker.
+    /// Use to allow user to not load data related to your mod.
+    /// Use with <see cref="AddLoadToggle"/>
     /// </summary>
     public class MakerCoordinateLoadToggle : BaseEditableGuiEntry<bool>
     {

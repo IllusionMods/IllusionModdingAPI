@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using ExtensibleSaveFormat;
 using KKAPI.Maker;
 using UniRx;
@@ -8,7 +9,11 @@ namespace KKAPI.Chara
 {
     /// <summary>
     /// Base type for custom character extensions.
-    /// Is automatically instantiated by the API on root gameObjects of all characters, next to their <code>ChaControl</code>s.
+    /// It provides many useful methods that abstract away the nasty hooks needed to figure out when
+    /// a character is changed or how to save and load your custom data to the character card.
+    /// 
+    /// This controller is a MonoBehaviour that is added to root gameObjects of ALL characters spawned into the game. 
+    /// It's recommended to not use constructors, Awake or Start in controllers. Use <see cref="OnReload"/> instead.
     /// </summary>
     public abstract class CharaCustomFunctionController : MonoBehaviour
     {
@@ -87,27 +92,35 @@ namespace KKAPI.Chara
         }
 
         /// <summary>
-        /// Card is about to be saved. Write any extended data now by using <code>SetExtendedData</code>.
-        /// Only fires in character maker, since that's the only time when a card can be modified.
+        /// Fired when the character information is being saved.
+        /// It handles all types of saving (to character card, to a scene etc.)
+        /// Write any of your extended data in this method by using <see cref="SetExtendedData"/>.
+        /// Avoid reusing old PluginData since we might no longer be pointed to the same character.
         /// </summary>
         protected internal abstract void OnCardBeingSaved(GameMode currentGameMode);
 
         /// <summary>
-        /// The character is being reloaded. Reset, load and set up your modifications here.
-        /// Called automatically on start, and whenever the character was changed in some way
+        /// OnReload is fired whenever the character's state needs to be updated.
+        /// This might be beacuse the character was just loaded into the game, 
+        /// was replaced with a different character, etc.
+        /// Use this method instead of Awake and Start. It will always get called
+        /// before other methods, but after the character is in a usable state.
+        /// WARNING: Make sure to completely reset your state in this method!
+        ///          Assume that all of your variables are no longer valid!
         /// </summary>
         protected internal abstract void OnReload(GameMode currentGameMode);
 
         /// <summary>
-        /// Fired just before current coordinate is saved to a coordinate card.
-        /// Use <code>SetCoordinateExtendedData</code> to save data to it.
-        /// You might need to wait for the next frame with <code>StartCoroutine</code> before handling this.
+        /// Fired just before current coordinate is saved to a coordinate card. Use <see cref="SetCoordinateExtendedData"/> to save data to it. 
+        /// You might need to wait for the next frame with <see cref="MonoBehaviour.StartCoroutine(IEnumerator)"/> before handling this.
+        /// Use <see cref="CurrentCoordinate"/> to figure out what clothes set your character is wearing right now.
         /// </summary>
         protected internal virtual void OnCoordinateBeingSaved(ChaFileCoordinate coordinate) { }
 
         /// <summary>
         /// Fired just after loading a coordinate card into the current coordinate slot.
-        /// Use <code>GetCoordinateExtendedData</code> to get save data of the loaded coordinate.
+        /// Use <see cref="GetCoordinateExtendedData"/> to get save data of the loaded coordinate.
+        /// Use <see cref="CurrentCoordinate"/> to figure out what clothes set your character is wearing right now.
         /// </summary>
         protected internal virtual void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate) { }
 

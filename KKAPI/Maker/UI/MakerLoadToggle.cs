@@ -7,6 +7,11 @@ using UnityEngine.UI;
 
 namespace KKAPI.Maker.UI
 {
+    /// <summary>
+    /// Adds a toggle to the bottom of the character card load window in character maker.
+    /// Use to allow user to not load data related to your mod.
+    /// Use with <see cref="AddLoadToggle"/>
+    /// </summary>
     public class MakerLoadToggle : BaseEditableGuiEntry<bool>
     {
         private const int TotalWidth = 380 + 292;

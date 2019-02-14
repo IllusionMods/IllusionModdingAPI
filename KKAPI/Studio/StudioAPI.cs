@@ -18,6 +18,10 @@ namespace KKAPI.Studio
         private static readonly List<CurrentStateCategory> CustomCurrentStateCategories = new List<CurrentStateCategory>();
         private static bool _studioLoaded;
 
+        /// <summary>
+        /// Add a new custom category to the Anim > CurrentState tab in the studio top-left menu.
+        /// Can use this at any point.
+        /// </summary>
         public static void CreateCurrentStateCategory(CurrentStateCategory category)
         {
             if (!InsideStudio)
@@ -50,6 +54,9 @@ namespace KKAPI.Studio
             DebugControls();
         }
         
+        /// <summary>
+        /// True if we are currently inside CharaStudio.exe
+        /// </summary>
         public static bool InsideStudio { get; private set; }
 
         private static void SceneLoaded(Scene arg0, LoadSceneMode arg1)
