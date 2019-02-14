@@ -3,6 +3,9 @@ using UniRx;
 
 namespace KKAPI.Maker.UI
 {
+    /// <summary>
+    /// Base of custom controls that have a value that can be changed and watched for changes.
+    /// </summary>
     public abstract class BaseEditableGuiEntry<TValue> : BaseGuiEntry
     {
         private readonly BehaviorSubject<TValue> _incomingValue;
@@ -23,7 +26,13 @@ namespace KKAPI.Maker.UI
             set
             {
                 if (!Equals(value, _incomingValue.Value))
-                    SetNewValue(value);
+                {
+                    _incomingValue.OnNext(value);
+
+                    // If the control is instantiated it will fire _outgoingValue by itself
+                    if (ControlObject == null)
+                        _outgoingValue.OnNext(value);
+                }
             }
         }
 
@@ -47,6 +56,7 @@ namespace KKAPI.Maker.UI
             _outgoingValue.OnNext(newValue);
         }
 
+        /// <inheritdoc />
         public override void Dispose()
         {
             _incomingValue.Dispose();
