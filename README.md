@@ -4,7 +4,7 @@
 [![Issues](https://img.shields.io/github/issues/ManlyMarco/KKAPI.svg?style=flat)](https://github.com/ManlyMarco/KKAPI/issues)
 [![License](https://img.shields.io/github/license/ManlyMarco/KKAPI.svg?style=flat)](https://github.com/ManlyMarco/KKAPI/blob/master/LICENSE)
 ## KKAPI - Koikatu modding API
-KKAPI is a project that aims to make creating mods for Kokatsu! easier and less bug-prone. It abstracts away a lot of the complexity of hooking the game save/load logic, of creating interface elements at runtime, and many other. All this while supplying many useful methods and tools.
+KKAPI is a project that aims to make creating mods for Kokatsu! easier and less bug-prone. It abstracts away a lot of the complexity of hooking the game save/load logic, creating interface elements at runtime, and many other tasks. All this while supplying many useful methods and tools.
 
 ## Some mods that use KKAPI
 * [Koikatu Overlay Mods](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) - Uses many different features like saving to coordinates, partial load toggles, advances maker interface elements, using Windows Open File dialogs, etc.
