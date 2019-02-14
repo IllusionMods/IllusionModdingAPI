@@ -15,6 +15,9 @@ using Object = UnityEngine.Object;
 
 namespace KKAPI.Maker
 {
+    /// <summary>
+    /// Provides a way to add custom items to the in-game Character Maker, and gives useful methods for interfacing with the maker.
+    /// </summary>
     public static partial class MakerAPI
     {
         private static readonly List<MakerCategory> _categories = new List<MakerCategory>();
@@ -169,8 +172,16 @@ namespace KKAPI.Maker
         /// </summary>
         public static int GetMakerSex() => GetMakerBase().modeSex;
 
+        /// <summary>
+        /// Returns current maker logic instance.
+        /// Same as <see cref="Singleton{CustomBase}.Instance"/>
+        /// </summary>
         public static CustomBase GetMakerBase() => CustomBase.Instance;
 
+        /// <summary>
+        /// Get the ChaControl of the character serving as a preview in character maker.
+        /// Outside of character maker and early on in maker load process this returns null.
+        /// </summary>
         public static ChaControl GetCharacterControl() => InsideMaker ? GetMakerBase()?.chaCtrl : null;
 
         /// <summary>
@@ -207,6 +218,9 @@ namespace KKAPI.Maker
         /// </summary>
         public static event EventHandler MakerFinishedLoading;
 
+        /// <summary>
+        /// Fired after the user exits the maker. Use this to clean up any references and resources.
+        /// </summary>
         public static event EventHandler MakerExiting;
 
         private static void OnRegisterCustomSubCategories()
@@ -320,6 +334,10 @@ namespace KKAPI.Maker
 
         private static bool _insideMaker;
         private static bool _makerLoaded;
+
+        /// <summary>
+        /// Firen whenever <see cref="InsideMaker"/> changes. This is the earliest event fired when user starts the character maker.
+        /// </summary>
         public static event EventHandler InsideMakerChanged;
 
         /// <summary>

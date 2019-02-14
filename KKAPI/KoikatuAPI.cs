@@ -11,6 +11,10 @@ using Logger = BepInEx.Logger;
 
 namespace KKAPI
 {
+    /// <summary>
+    /// Provides overall information about the game and the API itself, and gives some useful tools 
+    /// like synchronization of threads or checking if required plugins are installed.
+    /// </summary>
     [BepInPlugin(GUID, "Modding API for Koikatsu!", VersionConst)]
     public class KoikatuAPI : BaseUnityPlugin
     {
@@ -23,10 +27,17 @@ namespace KKAPI
         /// More info: https://stackoverflow.com/questions/55984/what-is-the-difference-between-const-and-readonly
         /// </summary>
         public const string VersionConst = "1.0";
+
+        /// <summary>
+        /// GUID of this plugin, use for checking dependancies with <see cref="BepInDependency"/> and <see cref="CheckRequiredPlugin"/>
+        /// </summary>
         public const string GUID = "marco.kkapi";
 
         internal static KoikatuAPI Instance { get; private set; }
 
+        /// <summary>
+        /// Don't use manually
+        /// </summary>
         public KoikatuAPI()
         {
             Instance = this;
@@ -48,6 +59,9 @@ namespace KKAPI
             CharacterApi.Init();
         }
 
+        /// <summary>
+        /// Get current game mode. 
+        /// </summary>
         public static GameMode GetCurrentGameMode()
         {
             if (StudioAPI.InsideStudio) return GameMode.Studio;

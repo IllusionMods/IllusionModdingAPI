@@ -12,10 +12,25 @@ namespace KKAPI.Chara
     /// </summary>
     public abstract class CharaCustomFunctionController : MonoBehaviour
     {
+        /// <summary>
+        /// ChaControl of the character this controller is attached to. It's on the same gameObject as this controller.
+        /// </summary>
         public ChaControl ChaControl { get; private set; }
+
+        /// <summary>
+        /// ChaFile of the character this controller is attached to.
+        /// </summary>
         public ChaFileControl ChaFileControl => ChaControl.chaFile;
 
+        /// <summary>
+        /// ID used for extended data by this controller. It's set when registering the controller
+        /// with <see cref="CharacterApi.RegisterExtraBehaviour{T}(string)"/>
+        /// </summary>
         public string ExtendedDataId { get; internal set; }
+
+        /// <summary>
+        /// True if this controller has been initialized
+        /// </summary>
         public bool Started { get; private set; }
 
         /// <summary>
@@ -27,7 +42,7 @@ namespace KKAPI.Chara
         }
 
         /// <summary>
-        /// Get extended data based on supplied ExtendedDataId.
+        /// Get extended data of the current character by using the ID you specified when registering this controller.
         /// </summary>
         /// <param name="getFromLoadedChara">If true, when in chara maker load data from character that's being loaded. 
         /// When outside maker or false, always grab current character's data.</param>
@@ -38,12 +53,20 @@ namespace KKAPI.Chara
             return ExtendedSave.GetExtendedDataById(chaFile, ExtendedDataId);
         }
 
+        /// <summary>
+        /// Save your custom data to the character card under the ID you specified when registering this controller.
+        /// </summary>
+        /// <param name="data">Your custom data to be written to the character card. Can be null to remove the data.</param>
         public void SetExtendedData(PluginData data)
         {
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
             ExtendedSave.SetExtendedDataById(ChaFileControl, ExtendedDataId, data);
         }
 
+        /// <summary>
+        /// Get extended data of the specified coordinate by using the ID you specified when registering this controller.
+        /// </summary>
+        /// <param name="coordinate">Coordinate you want to get the data from</param>
         public PluginData GetCoordinateExtendedData(ChaFileCoordinate coordinate)
         {
             if (coordinate == null) throw new ArgumentNullException(nameof(coordinate));
@@ -51,6 +74,11 @@ namespace KKAPI.Chara
             return ExtendedSave.GetExtendedDataById(coordinate, ExtendedDataId);
         }
 
+        /// <summary>
+        /// Set extended data to the specified coordinate by using the ID you specified when registering this controller.
+        /// </summary>
+        /// <param name="coordinate">Coordinate you want to set the data to</param>
+        /// <param name="data">Your custom data to be saved to the coordinate card</param>
         public void SetCoordinateExtendedData(ChaFileCoordinate coordinate, PluginData data)
         {
             if (coordinate == null) throw new ArgumentNullException(nameof(coordinate));
@@ -83,8 +111,14 @@ namespace KKAPI.Chara
         /// </summary>
         protected internal virtual void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate) { }
 
+        /// <summary>
+        /// Currently selected clothes on this character. Can subscribe to listen for changes.
+        /// </summary>
         public BehaviorSubject<ChaFileDefine.CoordinateType> CurrentCoordinate { get; private set; }
 
+        /// <summary>
+        /// Warning: When overriding make sure to call the base method at the end of your logic!
+        /// </summary>
         protected virtual void Update()
         {
             // TODO change into a separate trigger component?
@@ -93,6 +127,9 @@ namespace KKAPI.Chara
                 CurrentCoordinate.OnNext(currentCoordinate);
         }
 
+        /// <summary>
+        /// Warning: When overriding make sure to call the base method at the end of your logic!
+        /// </summary>
         protected virtual void OnDestroy()
         {
             CurrentCoordinate.Dispose();

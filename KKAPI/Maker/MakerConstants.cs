@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace KKAPI.Maker
 {
+    /// <summary>
+    /// Useful values from the character maker. Mostly built-in categories for use with registering custom controls.
+    /// </summary>
     public static class MakerConstants
     {
         private static readonly List<MakerCategory> _builtInCategories = new List<MakerCategory>
@@ -60,8 +63,15 @@ namespace KKAPI.Maker
 
         private static Dictionary<string, MakerCategory> _categoryLookup;
 
+        /// <summary>
+        /// All ategories that are built-into the character maker by default.
+        /// </summary>
         public static IEnumerable<MakerCategory> BuiltInCategories => _builtInCategories;
 
+        /// <summary>
+        /// Quick search for a built-in category. If you know what category you want to use at 
+        /// compile time you can use the shortcuts instead, e.g. <see cref="Face.Ear"/> 
+        /// </summary>
         public static MakerCategory GetBuiltInCategory(string category, string subCategory)
         {
             if (category == null)
