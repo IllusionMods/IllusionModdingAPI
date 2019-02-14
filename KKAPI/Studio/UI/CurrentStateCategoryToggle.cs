@@ -8,8 +8,14 @@ using Object = UnityEngine.Object;
 
 namespace KKAPI.Studio.UI
 {
+    /// <summary>
+    /// Custom control that draws from 2 to 4 radio buttons (they are drawn like toggles)
+    /// </summary>
     public class CurrentStateCategoryToggle : CurrentStateCategorySubItemBase
     {
+        /// <summary>
+        /// Number of the radio buttons, can be 2, 3 or 4
+        /// </summary>
         public int ToggleCount { get; }
 
         private readonly Func<OCIChar, int> _updateSelectionCallback;
@@ -31,8 +37,12 @@ namespace KKAPI.Studio.UI
             SelectedIndex = new BehaviorSubject<int>(0);
         }
 
+        /// <summary>
+        /// Currently selected button (starts at 0)
+        /// </summary>
         public BehaviorSubject<int> SelectedIndex { get; }
 
+        /// <inheritdoc />
         protected internal override void CreateItem(GameObject categoryObject)
         {
             var original = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Etc/Tears");
@@ -81,6 +91,7 @@ namespace KKAPI.Studio.UI
                 });
         }
 
+        /// <inheritdoc />
         protected internal override void OnUpdateInfo(OCIChar ociChar)
         {
             SelectedIndex.OnNext(_updateSelectionCallback.Invoke(ociChar));

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#pragma warning disable 1591
-
 namespace KKAPI.Maker
 {
     /// <summary>
@@ -96,6 +94,7 @@ namespace KKAPI.Maker
             return _categoryLookup.TryGetValue(MakeKey(category, subCategory), out var value) ? value : null;
         }
 
+#pragma warning disable 1591
         public static class Face
         {
             public static MakerCategory All => GetBuiltInCategory("00_FaceTop", "tglAll");
@@ -160,5 +159,6 @@ namespace KKAPI.Maker
             public static MakerCategory Attribute => GetBuiltInCategory("05_ParameterTop", "tglAttribute");
             public static MakerCategory ADK => GetBuiltInCategory("05_ParameterTop", "tglADK");
         }
+#pragma warning restore 1591
     }
 }

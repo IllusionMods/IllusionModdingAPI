@@ -3,6 +3,9 @@ using KKAPI.Maker.UI;
 
 namespace KKAPI.Maker
 {
+    /// <summary>
+    /// Event fired when character maker is starting and plugins are given an opportunity to register custom controls
+    /// </summary>
     public class RegisterCustomControlsEvent : EventArgs
     {
         /// <summary>
@@ -21,6 +24,9 @@ namespace KKAPI.Maker
             return MakerLoadToggle.AddLoadToggle(toggle);
         }
 
+        /// <summary>
+        /// Add a toggle to the bottom of the "Load coordinate/clothes" window that allows for partial loading of coordinate cards.
+        /// </summary>
         public MakerCoordinateLoadToggle AddCoordinateLoadToggle(MakerCoordinateLoadToggle toggle)
         {
             return MakerCoordinateLoadToggle.AddLoadToggle(toggle);

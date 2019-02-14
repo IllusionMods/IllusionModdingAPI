@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace KKAPI.Maker.UI
 {
+    /// <summary>
+    /// Custom control that displays a simple text
+    /// </summary>
     public class MakerText : BaseGuiEntry
     {
         private static Transform _textCopy;
@@ -13,6 +16,9 @@ namespace KKAPI.Maker.UI
             Text = text;
         }
 
+        /// <summary>
+        /// Displayed text
+        /// </summary>
         public string Text { get; }
 
         private static Transform TextCopy
@@ -34,14 +40,17 @@ namespace KKAPI.Maker.UI
             _textCopy.name = "txtCustom" + GuiApiNameAppendix;
         }
 
+        /// <inheritdoc />
         protected internal override void Initialize()
         {
             if (_textCopy == null)
                 MakeCopy();
         }
 
+        /// <inheritdoc />
         public override void Dispose() { }
 
+        /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var tr = Object.Instantiate(TextCopy, subCategoryList, true);

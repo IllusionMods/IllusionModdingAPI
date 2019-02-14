@@ -3,10 +3,14 @@ using UnityEngine;
 
 namespace KKAPI.Maker.UI
 {
+    /// <summary>
+    /// Custom control that draws a simple horizontal separator
+    /// </summary>
     public class MakerSeparator : BaseGuiEntry
     {
         private static Transform _sourceSeparator;
 
+        /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var s = Object.Instantiate(SourceSeparator, subCategoryList, false);
@@ -14,12 +18,14 @@ namespace KKAPI.Maker.UI
             return s.gameObject;
         }
 
+        /// <inheritdoc />
         protected internal override void Initialize()
         {
             if (_sourceSeparator == null)
                 MakeCopy();
         }
 
+        /// <inheritdoc />
         public override void Dispose()
         {
         }

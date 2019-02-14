@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace KKAPI.Maker.UI
 {
+    /// <summary>
+    /// Custom control that draws a simple blue button.
+    /// </summary>
     public class MakerButton : BaseGuiEntry
     {
         private static Transform _buttonCopy;
@@ -15,7 +18,14 @@ namespace KKAPI.Maker.UI
             OnClick = new Button.ButtonClickedEvent();
         }
 
+        /// <summary>
+        /// Fired when user clicks on the button
+        /// </summary>
         public Button.ButtonClickedEvent OnClick { get; }
+
+        /// <summary>
+        /// Text displayed on the button
+        /// </summary>
         public string Text { get; }
 
         private static Transform ButtonCopy
@@ -41,17 +51,20 @@ namespace KKAPI.Maker.UI
             button.targetGraphic.raycastTarget = true;
         }
 
+        /// <inheritdoc />
         protected internal override void Initialize()
         {
             if (_buttonCopy == null)
                 MakeCopy();
         }
 
+        /// <inheritdoc />
         public override void Dispose()
         {
             OnClick.RemoveAllListeners();
         }
 
+        /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var tr = Object.Instantiate(ButtonCopy, subCategoryList, true);

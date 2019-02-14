@@ -4,6 +4,9 @@ using ExtensibleSaveFormat;
 
 namespace KKAPI.Chara
 {
+    /// <summary>
+    /// Fired in events that deal with coordinate cards
+    /// </summary>
     public sealed class CoordinateEventArgs : EventArgs
     {
         public CoordinateEventArgs(ChaControl character, ChaFileCoordinate loadedCoordinate)
@@ -22,7 +25,16 @@ namespace KKAPI.Chara
         /// </summary>
         public ChaFileCoordinate LoadedCoordinate { get; }
 
+        /// <summary>
+        /// Get all exrtended data assigned to this coordinate card
+        /// </summary>
         public Dictionary<string, PluginData> GetCoordinateExtData() => ExtendedSave.GetAllExtendedData(LoadedCoordinate);
+
+        /// <summary>
+        /// Set extended data for this coordinate card
+        /// </summary>
+        /// <param name="dataId">Key to save the data under (usually plugin GUID)</param>
+        /// <param name="data">Data to set</param>
         public void SetCoordinateExtData(string dataId, PluginData data) => ExtendedSave.SetExtendedDataById(LoadedCoordinate, dataId, data);
     }
 }

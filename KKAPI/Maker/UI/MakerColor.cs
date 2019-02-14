@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 namespace KKAPI.Maker.UI
 {
+    /// <summary>
+    /// Control that allows user to change a <see cref="Color"/> in a separate color selector window
+    /// </summary>
     public class MakerColor : BaseEditableGuiEntry<Color>
     {
         private static Transform _colorCopy;
@@ -17,7 +20,15 @@ namespace KKAPI.Maker.UI
             UseAlpha = useAlpha;
         }
 
+        /// <summary>
+        /// Name of the setting
+        /// </summary>
         public string SettingName { get; }
+
+        /// <summary>
+        /// If true, the color selector will allow the user to change alpha of the color.
+        /// If false, no color slider is shown and alpha is always 1f.
+        /// </summary>
         public bool UseAlpha { get; }
 
         private static Transform ColorCopy
@@ -43,14 +54,17 @@ namespace KKAPI.Maker.UI
             button.targetGraphic.raycastTarget = true;
         }
 
+        /// <inheritdoc />
         protected internal override void Initialize()
         {
             if (_colorCopy == null)
                 MakeCopy();
         }
 
+        /// <inheritdoc />
         public override void Dispose() { }
 
+        /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var tr = Object.Instantiate(ColorCopy, subCategoryList, true);

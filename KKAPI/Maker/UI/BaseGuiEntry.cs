@@ -16,6 +16,11 @@ namespace KKAPI.Maker.UI
         public static readonly string GuiApiNameAppendix = "(GUIAPI)";
         private static Transform _guiCacheTransfrom;
 
+        /// <summary>
+        /// Create a new custom control
+        /// </summary>
+        /// <param name="category">Category the control will be created under</param>
+        /// <param name="owner">Plugin that owns the control</param>
         protected BaseGuiEntry(MakerCategory category, BaseUnityPlugin owner)
         {
             Category = category;
@@ -64,6 +69,7 @@ namespace KKAPI.Maker.UI
             ControlObject.SetActive(Visible.Value);
         }
         /// <summary>
+        /// Used by the API to actually create the custom control.
         /// Should return main GameObject of the control
         /// </summary>
         protected abstract GameObject OnCreateControl(Transform subCategoryList);

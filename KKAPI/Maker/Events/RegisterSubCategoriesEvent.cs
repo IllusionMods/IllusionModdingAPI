@@ -1,5 +1,8 @@
 ﻿namespace KKAPI.Maker
 {
+    /// <summary>
+    /// Event fired when character maker is starting and plugins are given an opportunity to register custom categories and controls
+    /// </summary>
     public class RegisterSubCategoriesEvent : RegisterCustomControlsEvent
     {
         /// <summary>

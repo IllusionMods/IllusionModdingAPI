@@ -14,7 +14,14 @@ namespace KKAPI.Utilities
     /// </summary>
     public class OpenFileDialog
     {
+        /// <summary>
+        /// Arguments used for opening a single file
+        /// </summary>
         public const OpenSaveFileDialgueFlags SingleFileFlags = OpenSaveFileDialgueFlags.OFN_FILEMUSTEXIST | OpenSaveFileDialgueFlags.OFN_LONGNAMES | OpenSaveFileDialgueFlags.OFN_EXPLORER;
+
+        /// <summary>
+        /// Arguments used for opening multiple files
+        /// </summary>
         public const OpenSaveFileDialgueFlags MultiFileFlags = SingleFileFlags | OpenSaveFileDialgueFlags.OFN_ALLOWMULTISELECT;
 
         /// <summary>
@@ -152,6 +159,7 @@ namespace KKAPI.Utilities
             public static extern IntPtr GetActiveWindow();
         }
 
+#pragma warning disable 1591
         [Flags]
         public enum OpenSaveFileDialgueFlags
         {
@@ -215,5 +223,6 @@ namespace KKAPI.Utilities
             public int reservedInt = 0;
             public int flagsEx = 0;
         }
+#pragma warning restore 1591
     }
 }

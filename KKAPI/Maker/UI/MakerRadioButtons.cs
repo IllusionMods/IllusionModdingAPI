@@ -10,12 +10,19 @@ using Object = UnityEngine.Object;
 
 namespace KKAPI.Maker.UI
 {
+    /// <summary>
+    /// Custom control that displays multiple radio buttons
+    /// </summary>
     public class MakerRadioButtons : BaseEditableGuiEntry<int>
     {
         private readonly string _settingName;
         private readonly string[] _buttons;
 
         private static Transform _radioCopy;
+
+        /// <summary>
+        /// Objects of all of the radio buttons
+        /// </summary>
         public ReadOnlyCollection<Toggle> Buttons { get; private set; }
 
         public MakerRadioButtons(MakerCategory category, BaseUnityPlugin owner, string settingName, params string[] buttons) : base(category, 0, owner)
@@ -26,12 +33,14 @@ namespace KKAPI.Maker.UI
             _buttons = buttons;
         }
 
+        /// <inheritdoc />
         protected internal override void Initialize()
         {
             if (_radioCopy == null)
                 MakeCopy();
         }
 
+        /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var tr = Object.Instantiate(RadioCopy, subCategoryList, true);

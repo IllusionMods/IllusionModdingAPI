@@ -11,6 +11,7 @@ namespace KKAPI.Maker.UI
         private readonly BehaviorSubject<TValue> _incomingValue;
         private readonly Subject<TValue> _outgoingValue;
 
+        /// <inheritdoc />
         protected BaseEditableGuiEntry(MakerCategory category, TValue initialValue, BaseUnityPlugin owner) : base(category, owner)
         {
             _incomingValue = new BehaviorSubject<TValue>(initialValue);

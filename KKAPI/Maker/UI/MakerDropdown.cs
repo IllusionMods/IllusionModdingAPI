@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 namespace KKAPI.Maker.UI
 {
+    /// <summary>
+    /// Custom control that draws a dropdown list
+    /// </summary>
     public class MakerDropdown : BaseEditableGuiEntry<int>
     {
         private static Transform _dropdownCopy;
@@ -18,7 +21,14 @@ namespace KKAPI.Maker.UI
             Options = options;
         }
 
+        /// <summary>
+        /// List of all options in the dropdown
+        /// </summary>
         public string[] Options { get; }
+        
+        /// <summary>
+        /// Name displayed next to the dropdown
+        /// </summary>
         public string SettingName { get; }
 
         private static Transform DropdownCopy
@@ -45,12 +55,14 @@ namespace KKAPI.Maker.UI
             dd.GetComponent<Image>().raycastTarget = true;
         }
 
+        /// <inheritdoc />
         protected internal override void Initialize()
         {
             if (_dropdownCopy == null)
                 MakeCopy();
         }
 
+        /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var tr = Object.Instantiate(DropdownCopy, subCategoryList, true);

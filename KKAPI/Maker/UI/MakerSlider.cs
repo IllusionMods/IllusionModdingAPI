@@ -9,6 +9,9 @@ using Object = UnityEngine.Object;
 
 namespace KKAPI.Maker.UI
 {
+    /// <summary>
+    /// Custom control that draws a slider and a text box (both are used to edit the same value)
+    /// </summary>
     public class MakerSlider : BaseEditableGuiEntry<float>
     {
         private static Transform _sliderCopy;
@@ -28,7 +31,16 @@ namespace KKAPI.Maker.UI
             _defaultValue = defaultValue;
         }
 
+        /// <summary>
+        /// Custom converter from text in the textbox to the slider value.
+        /// If not set, <code>float.Parse(txt) / 100f</code> is used.
+        /// </summary>
         public Func<string, float> StringToValue { get; set; }
+
+        /// <summary>
+        /// Custom converter from the slider value to what's displayed in the textbox.
+        /// If not set, <code>Mathf.RoundToInt(f * 100).ToString()</code> is used.
+        /// </summary>
         public Func<float, string> ValueToString { get; set; }
         
         private static Transform SliderCopy
@@ -66,12 +78,14 @@ namespace KKAPI.Maker.UI
                 renderer.raycastTarget = true;
         }
 
+        /// <inheritdoc />
         protected internal override void Initialize()
         {
             if (_sliderCopy == null)
                 MakeCopy();
         }
 
+        /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var tr = Object.Instantiate(SliderCopy, subCategoryList, true);

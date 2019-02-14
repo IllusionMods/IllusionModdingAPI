@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 namespace KKAPI.Studio.UI
 {
+    /// <summary>
+    /// Category under the Anim > CustomState tab
+    /// </summary>
     public class CurrentStateCategory
     {
         public CurrentStateCategory(string categoryName, IEnumerable<CurrentStateCategorySubItemBase> subItems)
@@ -13,9 +16,20 @@ namespace KKAPI.Studio.UI
             CategoryName = categoryName;
             SubItems = subItems.ToList();
         }
+
+        /// <summary>
+        /// Name of the category. Controls are drawn under it.
+        /// </summary>
         public string CategoryName { get; }
+
+        /// <summary>
+        /// All custom controls under this category.
+        /// </summary>
         public IEnumerable<CurrentStateCategorySubItemBase> SubItems { get; }
 
+        /// <summary>
+        /// Used by the API to actually create the custom control object
+        /// </summary>
         protected internal virtual void CreateCategory(GameObject containerObject)
         {
             var original = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Cos/Text");
@@ -39,6 +53,10 @@ namespace KKAPI.Studio.UI
                 subItem.CreateItem(catContents);
         }
 
+        /// <summary>
+        /// Fired when currently selected character changes and the controls need to be updated
+        /// </summary>
+        /// <param name="ociChar">Newly selected character</param>
         protected internal virtual void UpdateInfo(OCIChar ociChar)
         {
             foreach (var subItem in SubItems)

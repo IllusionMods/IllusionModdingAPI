@@ -5,18 +5,27 @@ using UnityEngine.UI;
 
 namespace KKAPI.Maker.UI
 {
+    /// <summary>
+    /// Custom control that displays a texture in a small preview thumbnail
+    /// </summary>
     public class MakerImage : BaseGuiEntry
     {
         private readonly BehaviorSubject<Texture> _texture;
         private int _width = 100;
         private int _height = 100;
 
+        /// <summary>
+        /// Texture to display in the preview
+        /// </summary>
         public Texture Texture
         {
             get => _texture.Value;
             set => _texture.OnNext(value);
         }
 
+        /// <summary>
+        /// Width of the texture preview
+        /// </summary>
         public int Width
         {
             get => _width;
@@ -27,6 +36,9 @@ namespace KKAPI.Maker.UI
             }
         }
 
+        /// <summary>
+        /// Height of the texture preview
+        /// </summary>
         public int Height
         {
             get => _height;
@@ -42,14 +54,18 @@ namespace KKAPI.Maker.UI
             _texture = new BehaviorSubject<Texture>(texture);
 
         }
+
+        /// <inheritdoc />
         protected internal override void Initialize()
         {
         }
 
+        /// <inheritdoc />
         public override void Dispose()
         {
         }
 
+        /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var go = new GameObject("image" + GuiApiNameAppendix, typeof(RectTransform), typeof(LayoutElement));

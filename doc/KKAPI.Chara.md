@@ -83,6 +83,7 @@ Properties
 
 ## `CoordinateEventArgs`
 
+Fired in events that deal with coordinate cards
 ```csharp
 public class KKAPI.Chara.CoordinateEventArgs
     : EventArgs
@@ -101,7 +102,7 @@ Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Dictionary<String, PluginData>` | GetCoordinateExtData() |  | 
-| `void` | SetCoordinateExtData(`String` dataId, `PluginData` data) |  | 
+| `Dictionary<String, PluginData>` | GetCoordinateExtData() | Get all exrtended data assigned to this coordinate card | 
+| `void` | SetCoordinateExtData(`String` dataId, `PluginData` data) | Set extended data for this coordinate card | 
 
 

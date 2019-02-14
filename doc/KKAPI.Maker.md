@@ -137,6 +137,7 @@ Static Methods
 
 ## `RegisterCustomControlsEvent`
 
+Event fired when character maker is starting and plugins are given an opportunity to register custom controls
 ```csharp
 public class KKAPI.Maker.RegisterCustomControlsEvent
     : EventArgs
@@ -148,12 +149,13 @@ Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `T` | AddControl(`T` control) | Add custom controls. If you want to use custom sub categories, register them by calling AddSubCategory. | 
-| `MakerCoordinateLoadToggle` | AddCoordinateLoadToggle(`MakerCoordinateLoadToggle` toggle) |  | 
+| `MakerCoordinateLoadToggle` | AddCoordinateLoadToggle(`MakerCoordinateLoadToggle` toggle) | Add a toggle to the bottom of the "Load coordinate/clothes" window that allows for partial loading of coordinate cards. | 
 | `MakerLoadToggle` | AddLoadToggle(`MakerLoadToggle` toggle) | Add a toggle to the bottom of the "Load character" window that allows for partial loading of characters. | 
 
 
 ## `RegisterSubCategoriesEvent`
 
+Event fired when character maker is starting and plugins are given an opportunity to register custom categories and controls
 ```csharp
 public class KKAPI.Maker.RegisterSubCategoriesEvent
     : RegisterCustomControlsEvent

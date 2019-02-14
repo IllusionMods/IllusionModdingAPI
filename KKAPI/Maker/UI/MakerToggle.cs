@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 namespace KKAPI.Maker.UI
 {
+    /// <summary>
+    /// Custom control that displays a toggle
+    /// </summary>
     public class MakerToggle : BaseEditableGuiEntry<bool>
     {
         private static Transform _toggleCopy;
@@ -15,6 +18,9 @@ namespace KKAPI.Maker.UI
             DisplayName = displayName;
         }
 
+        /// <summary>
+        /// Name shown next to the checkbox
+        /// </summary>
         public string DisplayName { get; }
 
         public static Transform ToggleCopy
@@ -46,12 +52,14 @@ namespace KKAPI.Maker.UI
             _toggleCopy = copy;
         }
 
+        /// <inheritdoc />
         protected internal override void Initialize()
         {
             if (_toggleCopy == null)
                 MakeCopy();
         }
 
+        /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var tr = Object.Instantiate(ToggleCopy, subCategoryList, true);

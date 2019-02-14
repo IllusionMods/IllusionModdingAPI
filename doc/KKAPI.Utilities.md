@@ -10,8 +10,8 @@ Static Fields
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `OpenSaveFileDialgueFlags` | MultiFileFlags |  | 
-| `OpenSaveFileDialgueFlags` | SingleFileFlags |  | 
+| `OpenSaveFileDialgueFlags` | MultiFileFlags | Arguments used for opening multiple files | 
+| `OpenSaveFileDialgueFlags` | SingleFileFlags | Arguments used for opening a single file | 
 
 
 Static Methods

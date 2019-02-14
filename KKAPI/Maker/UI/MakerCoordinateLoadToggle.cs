@@ -28,8 +28,16 @@ namespace KKAPI.Maker.UI
             Text = text;
         }
 
+        /// <summary>
+        /// Text displayed next to the toggle
+        /// </summary>
         public string Text { get; }
+
+        /// <summary>
+        /// Check if any of the custom toggles are checked
+        /// </summary>
         public static bool AnyEnabled => Toggles.Any(x => x.Value);
+
         internal static Button LoadButton { get; private set; }
 
         internal static void CreateCustomToggles()
@@ -46,6 +54,7 @@ namespace KKAPI.Maker.UI
             }
         }
 
+        /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform loadBoxTransform)
         {
             var copy = Object.Instantiate(_baseToggle, _root.transform);
@@ -72,6 +81,7 @@ namespace KKAPI.Maker.UI
             return copy.gameObject;
         }
 
+        /// <inheritdoc />
         protected internal override void Initialize() { }
 
         internal static MakerCoordinateLoadToggle AddLoadToggle(MakerCoordinateLoadToggle toggle)

@@ -52,7 +52,7 @@ Methods
 | `void` | CreateControl(`Transform` subCategoryList) |  | 
 | `void` | Dispose() | Remove the control. Called when maker is quitting. | 
 | `void` | Initialize() | Called before OnCreateControl to setup the object before instantiating the control. | 
-| `GameObject` | OnCreateControl(`Transform` subCategoryList) | Should return main GameObject of the control | 
+| `GameObject` | OnCreateControl(`Transform` subCategoryList) | Used by the API to actually create the custom control.  Should return main GameObject of the control | 
 
 
 Static Fields
@@ -71,6 +71,7 @@ Static Properties
 
 ## `MakerButton`
 
+Custom control that draws a simple blue button.
 ```csharp
 public class KKAPI.Maker.UI.MakerButton
     : BaseGuiEntry, IDisposable
@@ -81,8 +82,8 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `ButtonClickedEvent` | OnClick |  | 
-| `String` | Text |  | 
+| `ButtonClickedEvent` | OnClick | Fired when user clicks on the button | 
+| `String` | Text | Text displayed on the button | 
 
 
 Methods
@@ -96,6 +97,7 @@ Methods
 
 ## `MakerColor`
 
+Control that allows user to change a `UnityEngine.Color` in a separate color selector window
 ```csharp
 public class KKAPI.Maker.UI.MakerColor
     : BaseEditableGuiEntry<Color>, IDisposable
@@ -106,8 +108,8 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `String` | SettingName |  | 
-| `Boolean` | UseAlpha |  | 
+| `String` | SettingName | Name of the setting | 
+| `Boolean` | UseAlpha | If true, the color selector will allow the user to change alpha of the color.  If false, no color slider is shown and alpha is always 1f. | 
 
 
 Methods
@@ -132,7 +134,7 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `String` | Text |  | 
+| `String` | Text | Text displayed next to the toggle | 
 
 
 Methods
@@ -147,7 +149,7 @@ Static Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Boolean` | AnyEnabled |  | 
+| `Boolean` | AnyEnabled | Check if any of the custom toggles are checked | 
 | `Button` | LoadButton |  | 
 
 
@@ -163,6 +165,7 @@ Static Methods
 
 ## `MakerDropdown`
 
+Custom control that draws a dropdown list
 ```csharp
 public class KKAPI.Maker.UI.MakerDropdown
     : BaseEditableGuiEntry<Int32>, IDisposable
@@ -173,8 +176,8 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `String[]` | Options |  | 
-| `String` | SettingName |  | 
+| `String[]` | Options | List of all options in the dropdown | 
+| `String` | SettingName | Name displayed next to the dropdown | 
 
 
 Methods
@@ -187,6 +190,7 @@ Methods
 
 ## `MakerImage`
 
+Custom control that displays a texture in a small preview thumbnail
 ```csharp
 public class KKAPI.Maker.UI.MakerImage
     : BaseGuiEntry, IDisposable
@@ -197,9 +201,9 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Int32` | Height |  | 
-| `Texture` | Texture |  | 
-| `Int32` | Width |  | 
+| `Int32` | Height | Height of the texture preview | 
+| `Texture` | Texture | Texture to display in the preview | 
+| `Int32` | Width | Width of the texture preview | 
 
 
 Methods
@@ -224,7 +228,7 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `String` | Text |  | 
+| `String` | Text | Text displayed next to the toggle | 
 
 
 Methods
@@ -239,7 +243,7 @@ Static Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Boolean` | AnyEnabled |  | 
+| `Boolean` | AnyEnabled | Check if any of the custom toggles are checked | 
 | `Button` | LoadButton |  | 
 
 
@@ -255,6 +259,7 @@ Static Methods
 
 ## `MakerRadioButtons`
 
+Custom control that displays multiple radio buttons
 ```csharp
 public class KKAPI.Maker.UI.MakerRadioButtons
     : BaseEditableGuiEntry<Int32>, IDisposable
@@ -265,7 +270,7 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `ReadOnlyCollection<Toggle>` | Buttons |  | 
+| `ReadOnlyCollection<Toggle>` | Buttons | Objects of all of the radio buttons | 
 
 
 Methods
@@ -278,6 +283,7 @@ Methods
 
 ## `MakerSeparator`
 
+Custom control that draws a simple horizontal separator
 ```csharp
 public class KKAPI.Maker.UI.MakerSeparator
     : BaseGuiEntry, IDisposable
@@ -295,6 +301,7 @@ Methods
 
 ## `MakerSlider`
 
+Custom control that draws a slider and a text box (both are used to edit the same value)
 ```csharp
 public class KKAPI.Maker.UI.MakerSlider
     : BaseEditableGuiEntry<Single>, IDisposable
@@ -305,8 +312,8 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Func<String, Single>` | StringToValue |  | 
-| `Func<Single, String>` | ValueToString |  | 
+| `Func<String, Single>` | StringToValue | Custom converter from text in the textbox to the slider value.  If not set, <code>float.Parse(txt) / 100f</code> is used. | 
+| `Func<Single, String>` | ValueToString | Custom converter from the slider value to what's displayed in the textbox.  If not set, <code>Mathf.RoundToInt(f * 100).ToString()</code> is used. | 
 
 
 Methods
@@ -319,6 +326,7 @@ Methods
 
 ## `MakerText`
 
+Custom control that displays a simple text
 ```csharp
 public class KKAPI.Maker.UI.MakerText
     : BaseGuiEntry, IDisposable
@@ -329,7 +337,7 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `String` | Text |  | 
+| `String` | Text | Displayed text | 
 
 
 Methods
@@ -343,6 +351,7 @@ Methods
 
 ## `MakerToggle`
 
+Custom control that displays a toggle
 ```csharp
 public class KKAPI.Maker.UI.MakerToggle
     : BaseEditableGuiEntry<Boolean>, IDisposable
@@ -353,7 +362,7 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `String` | DisplayName |  | 
+| `String` | DisplayName | Name shown next to the checkbox | 
 
 
 Methods
@@ -362,12 +371,5 @@ Methods
 | --- | --- | --- | 
 | `void` | Initialize() |  | 
 | `GameObject` | OnCreateControl(`Transform` subCategoryList) |  | 
-
-
-Static Properties
-
-| Type | Name | Summary | 
-| --- | --- | --- | 
-| `Transform` | ToggleCopy |  | 
 
 
