@@ -13,14 +13,18 @@ namespace KKAPI.Maker.UI
             _incomingValue = new BehaviorSubject<TValue>(initialValue);
             _outgoingValue = new Subject<TValue>();
         }
-            
+
         /// <summary>
         /// Buttons 1, 2, 3 are values 0, 1, 2
         /// </summary>
         public TValue Value
         {
             get => _incomingValue.Value;
-            set => SetNewValue(value); //_incomingValue.OnNext(value);
+            set
+            {
+                if (!Equals(value, _incomingValue.Value))
+                    SetNewValue(value);
+            }
         }
 
         /// <summary>
