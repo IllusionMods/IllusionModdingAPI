@@ -15,7 +15,7 @@
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj is MakerCategory && Equals((MakerCategory) obj);
+            return obj is MakerCategory mc && Equals(mc);
         }
 
         /// <inheritdoc />

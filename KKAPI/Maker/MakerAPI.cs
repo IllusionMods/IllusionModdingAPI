@@ -95,11 +95,8 @@ namespace KKAPI.Maker
             {
                 if (categoryTransfrom.name != category.CategoryName) continue;
 
-                var categorySubTransform = categoryTransfrom.Find(category.SubCategoryName);
-                if (categorySubTransform == null)
-                {
-                    categorySubTransform = SubCategoryCreator.AddNewSubCategory(mainCategory, category);
-                }
+                var categorySubTransform = categoryTransfrom.Find(category.SubCategoryName) 
+                    ?? SubCategoryCreator.AddNewSubCategory(mainCategory, category);
 
                 transformsToSort.Add(new Tuple<Transform, int>(categorySubTransform, category.Position));
             }
@@ -384,7 +381,7 @@ namespace KKAPI.Maker
         /// ChaFile of the character currently opened in maker. Do not use to save extended data, or it will be lost when saving the card.
         /// Use ChaFile from <code>ExtendedSave.CardBeingSaved</code> event to save extended data instead.
         /// </summary>
-        public static ChaFile LastLoadedChaFile => InsideMaker ? (Hooks.LastLoadedChaFile ?? GetCharacterControl()?.chaFile) : null;
+        public static ChaFile LastLoadedChaFile => InsideMaker ? (Hooks.InternalLastLoadedChaFile ?? GetCharacterControl()?.chaFile) : null;
 
         /// <summary>
         /// Fired when the current ChaFile in maker is being changed by loading other cards or coordinates.
@@ -425,7 +422,7 @@ namespace KKAPI.Maker
         /// </summary>
         public static bool InsideMaker
         {
-            get { return _insideMaker; }
+            get => _insideMaker;
             private set
             {
                 if (_insideMaker != value)

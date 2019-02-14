@@ -72,7 +72,7 @@ namespace KKAPI.Maker
             {
                 OnMakerExiting();
                 InsideMaker = false;
-                LastLoadedChaFile = null;
+                InternalLastLoadedChaFile = null;
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(CustomCharaFile), "Initialize")]
@@ -92,12 +92,12 @@ namespace KKAPI.Maker
             public static void ChaFileLoadFilePreHook(ChaFile __instance, BinaryReader br, bool noLoadPNG, bool noLoadStatus)
             {
                 if (!CharaListIsLoading && InsideMaker)
-                    LastLoadedChaFile = __instance;
+                    InternalLastLoadedChaFile = __instance;
                 else
-                    LastLoadedChaFile = null;
+                    InternalLastLoadedChaFile = null;
             }
 
-            public static ChaFile LastLoadedChaFile;
+            public static ChaFile InternalLastLoadedChaFile;
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(ChaFileControl), "LoadFileLimited", new[]
@@ -114,7 +114,7 @@ namespace KKAPI.Maker
                 bool hair, bool parameter, bool coordinate, ChaFileControl __instance)
             {
                 if (!CharaListIsLoading && InsideMaker)
-                    OnChaFileLoaded(new ChaFileLoadedEventArgs(filename, sex, face, body, hair, parameter, coordinate, __instance, LastLoadedChaFile));
+                    OnChaFileLoaded(new ChaFileLoadedEventArgs(filename, sex, face, body, hair, parameter, coordinate, __instance, InternalLastLoadedChaFile));
             }
 
             /// <summary>
