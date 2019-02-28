@@ -80,9 +80,17 @@ namespace KKAPI.Maker.UI
             settingName.color = TextColor;
 
             var dropdown = tr.GetComponentInChildren<TMP_Dropdown>();
-            dropdown.onValueChanged.AddListener(SetNewValue);
             dropdown.options.AddRange(Options.Select(x => new TMP_Dropdown.OptionData(x)));
+
+            dropdown.onValueChanged.AddListener(SetNewValue);
             BufferedValueChanged.Subscribe(i => dropdown.value = i);
+
+            // Fix box not updating if BufferedValueChanged equals the default dropdown val
+            if (Value == dropdown.value)
+            {
+                dropdown.RefreshShownValue();
+                SetNewValue(dropdown.value);
+            }
 
             return tr.gameObject;
         }
