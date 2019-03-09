@@ -6,6 +6,13 @@ public static class KKAPI.Chara.CharacterApi
 
 ```
 
+Static Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `HashSet<ChaControl>` | ChaControls |  | 
+
+
 Static Methods
 
 | Type | Name | Summary | 
@@ -24,6 +31,21 @@ Static Events
 | `EventHandler<CharaReloadEventArgs>` | CharacterReloaded | Fired after all CharaCustomFunctionController have updated. | 
 | `EventHandler<CoordinateEventArgs>` | CoordinateLoaded | Fired after a coordinate card was loaded and all controllers were updated.  Not filed if the coordinate file was not loaded into a character (so not during list updates). | 
 | `EventHandler<CoordinateEventArgs>` | CoordinateSaving | Fired just before a coordinate card is saved, but after all controllers wrote their data. | 
+
+
+## `CharacterExtensions`
+
+Extensions for use with ChaControl, ChaFile and similar
+```csharp
+public static class KKAPI.Chara.CharacterExtensions
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `ChaControl` | GetChaControl(this `ChaFile` chaFile) | Get ChaControl that is using this ChaFile if any exist. | 
 
 
 ## `CharaCustomFunctionController`

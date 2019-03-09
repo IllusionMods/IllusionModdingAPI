@@ -8,6 +8,7 @@ using BepInEx.Logging;
 using ChaCustom;
 using Harmony;
 using KKAPI.Maker.UI;
+using KKAPI.Maker.UI.Sidebar;
 using UniRx;
 using UnityEngine;
 using Logger = BepInEx.Logger;
@@ -22,11 +23,28 @@ namespace KKAPI.Maker
     {
         private static readonly List<MakerCategory> _categories = new List<MakerCategory>();
         private static readonly List<BaseGuiEntry> _guiEntries = new List<BaseGuiEntry>();
+        private static readonly List<BaseGuiEntry> _sidebarEntries = new List<BaseGuiEntry>();
 
         private static void CreateCustomControls()
         {
+            // Craete controls in tabs
             foreach (Transform categoryTransfrom in GameObject.Find("CvsMenuTree").transform)
                 CreateCustomControlsInCategory(categoryTransfrom);
+
+            // Create sidebar controls
+            if (_sidebarEntries.Any())
+            {
+                var sidebarTop = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CvsDraw/Top").transform;
+
+                var sep = new SidebarSeparator(KoikatuAPI.Instance);
+                sep.CreateControl(sidebarTop);
+
+                foreach (var sidebarEntry in _sidebarEntries)
+                    sidebarEntry.CreateControl(sidebarTop);
+
+                Logger.Log(LogLevel.Debug, $"[MakerAPI] Added {_sidebarEntries.Count} custom controls " +
+                                           "to Control Panel sidebar");
+            }
         }
 
         private static void CreateCustomControlsInCategory(Transform categoryTransfrom)
@@ -64,11 +82,15 @@ namespace KKAPI.Maker
 
         private static void RemoveCustomControls()
         {
-            foreach (var guiEntry in _guiEntries)
+            foreach (var guiEntry in _guiEntries.Concat(_sidebarEntries))
                 guiEntry.Dispose();
 
             _guiEntries.Clear();
             _categories.Clear();
+            _sidebarEntries.Clear();
+
+            MakerLoadToggle.Reset();
+            MakerCoordinateLoadToggle.Reset();
         }
 
         private static Transform FindSubcategoryContentParent(Transform categorySubTransform)
@@ -95,7 +117,7 @@ namespace KKAPI.Maker
             {
                 if (categoryTransfrom.name != category.CategoryName) continue;
 
-                var categorySubTransform = categoryTransfrom.Find(category.SubCategoryName) 
+                var categorySubTransform = categoryTransfrom.Find(category.SubCategoryName)
                     ?? SubCategoryCreator.AddNewSubCategory(mainCategory, category);
 
                 transformsToSort.Add(new Tuple<Transform, int>(categorySubTransform, category.Position));
@@ -145,8 +167,8 @@ namespace KKAPI.Maker
         internal static T AddControl<T>(T control) where T : BaseGuiEntry
         {
             if (control == null) throw new ArgumentNullException(nameof(control));
-            if (control is MakerLoadToggle || control is MakerCoordinateLoadToggle)
-                throw new ArgumentException("Can't add a MakerLoadToggle as a control", nameof(control));
+            if (control is MakerLoadToggle || control is MakerCoordinateLoadToggle || control is ISidebarControl)
+                throw new ArgumentException("Can't add " + control.GetType().FullName + " as a normal control", nameof(control));
 
             _guiEntries.Add(control);
             return control;
@@ -162,6 +184,17 @@ namespace KKAPI.Maker
                 _categories.Add(category);
             else
                 Logger.Log(LogLevel.Info, $"[MakerAPI] Duplicate custom subcategory was added: {category} The duplicate will be ignored.");
+        }
+
+        /// <summary>
+        /// Add a control to the right sidebar in chara maker (the "Control Panel" where you set eye blinking, mouth expressions etc.)
+        /// </summary>
+        public static T AddSidebarControl<T>(T control) where T : BaseGuiEntry, ISidebarControl
+        {
+            if (control == null) throw new ArgumentNullException(nameof(control));
+
+            _sidebarEntries.Add(control);
+            return control;
         }
 
         /// <summary>
@@ -332,8 +365,6 @@ namespace KKAPI.Maker
             }
 
             RemoveCustomControls();
-            MakerLoadToggle.Reset();
-            MakerCoordinateLoadToggle.Reset();
         }
 
         [Conditional("DEBUG")]
@@ -368,6 +399,11 @@ namespace KKAPI.Maker
             MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle"))
                 .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
             MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle 2"))
+                .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
+
+            AddSidebarControl(new SidebarToggle("Test toggle", false, instance))
+                .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
+            AddSidebarControl(new SidebarToggle("Test toggle2", true, instance))
                 .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
         }
 

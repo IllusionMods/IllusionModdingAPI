@@ -75,11 +75,14 @@
     <Compile Include="Chara\Events\CharaReloadEventArgs.cs" />
     <Compile Include="Chara\Events\CoordinateEventArgs.cs" />
     <Compile Include="KoikatuAPI.cs" />
+    <Compile Include="Maker\UI\Sidebar\SidebarSeparator.cs" />
+    <Compile Include="Maker\UI\Sidebar\SidebarToggle.cs" />
     <Compile Include="Maker\UI\MakerCoordinateLoadToggle.cs" />
     <Compile Include="Maker\Events\CharacterChangedEventArgs.cs" />
     <Compile Include="Chara\CharaCustomFunctionController.cs" />
     <Compile Include="Maker\CharacterLoadFlags.cs" />
     <Compile Include="GameMode.cs" />
+    <Compile Include="Maker\UI\Sidebar\ISidebarControl.cs" />
     <Compile Include="Studio\StudioAPI.cs" />
     <Compile Include="Maker\UI\MakerButton.cs" />
     <Compile Include="Maker\UI\MakerColor.cs" />

@@ -8,6 +8,7 @@
 ## [KKAPI.Chara](KKAPI.Chara.md)
 
 - [`CharacterApi`](KKAPI.Chara.md#characterapi)
+- [`CharacterExtensions`](KKAPI.Chara.md#characterextensions)
 - [`CharaCustomFunctionController`](KKAPI.Chara.md#characustomfunctioncontroller)
 - [`CharaReloadEventArgs`](KKAPI.Chara.md#charareloadeventargs)
 - [`CoordinateEventArgs`](KKAPI.Chara.md#coordinateeventargs)
@@ -37,6 +38,12 @@
 - [`MakerSlider`](KKAPI.Maker.UI.md#makerslider)
 - [`MakerText`](KKAPI.Maker.UI.md#makertext)
 - [`MakerToggle`](KKAPI.Maker.UI.md#makertoggle)
+
+## [KKAPI.Maker.UI.Sidebar](KKAPI.Maker.UI.Sidebar.md)
+
+- [`ISidebarControl`](KKAPI.Maker.UI.Sidebar.md#isidebarcontrol)
+- [`SidebarSeparator`](KKAPI.Maker.UI.Sidebar.md#sidebarseparator)
+- [`SidebarToggle`](KKAPI.Maker.UI.Sidebar.md#sidebartoggle)
 
 ## [KKAPI.Studio](KKAPI.Studio.md)
 

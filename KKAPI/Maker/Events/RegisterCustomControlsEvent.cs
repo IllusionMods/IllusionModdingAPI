@@ -1,5 +1,6 @@
 ﻿using System;
 using KKAPI.Maker.UI;
+using KKAPI.Maker.UI.Sidebar;
 
 namespace KKAPI.Maker
 {
@@ -30,6 +31,14 @@ namespace KKAPI.Maker
         public MakerCoordinateLoadToggle AddCoordinateLoadToggle(MakerCoordinateLoadToggle toggle)
         {
             return MakerCoordinateLoadToggle.AddLoadToggle(toggle);
+        }
+
+        /// <summary>
+        /// Add a control to the right sidebar in chara maker (the "Control Panel" where you set eye blinking, mouth expressions etc.)
+        /// </summary>
+        public T AddSidebarControl<T>(T control) where T : BaseGuiEntry, ISidebarControl
+        {
+            return MakerAPI.AddSidebarControl(control);
         }
     }
 }
