@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="Chara\CharacterApi.cs" />
     <Compile Include="Chara\CharacterApi.Hooks.cs" />
+    <Compile Include="Chara\CharacterExtensions.cs" />
     <Compile Include="Chara\Events\CharaReloadEventArgs.cs" />
     <Compile Include="Chara\Events\CoordinateEventArgs.cs" />
     <Compile Include="KoikatuAPI.cs" />

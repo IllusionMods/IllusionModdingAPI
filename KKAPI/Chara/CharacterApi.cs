@@ -17,7 +17,7 @@ namespace KKAPI.Chara
     /// </summary>
     public static partial class CharacterApi
     {
-        private static readonly HashSet<ChaControl> ChaControls = new HashSet<ChaControl>();
+        internal static readonly HashSet<ChaControl> ChaControls = new HashSet<ChaControl>();
 
         private static readonly List<KeyValuePair<Type, string>> RegisteredHandlers = new List<KeyValuePair<Type, string>>();
         private static readonly List<CopyExtendedDataFunc> DataCopiers = new List<CopyExtendedDataFunc>();
@@ -245,7 +245,7 @@ namespace KKAPI.Chara
                 Logger.Log(LogLevel.Error, e);
             }
         }
-        
+
         /// <summary>
         /// Fired after all CharaCustomFunctionController have updated.
         /// </summary>
