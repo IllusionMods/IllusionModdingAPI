@@ -3,7 +3,6 @@ using System.Diagnostics;
 using BepInEx.Logging;
 using Harmony;
 using KKAPI.Studio.UI;
-using Studio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Logger = BepInEx.Logger;
@@ -13,9 +12,9 @@ namespace KKAPI.Studio
     /// <summary>
     /// Provides a way to add custom menu items to CharaStudio, and gives useful methods for interfacing with the studio.
     /// </summary>
-    public static class StudioAPI
+    public static partial class StudioAPI
     {
-        private static readonly List<CurrentStateCategory> CustomCurrentStateCategories = new List<CurrentStateCategory>();
+        private static readonly List<CurrentStateCategory> _customCurrentStateCategories = new List<CurrentStateCategory>();
         private static bool _studioLoaded;
 
         /// <summary>
@@ -33,7 +32,7 @@ namespace KKAPI.Studio
             if (_studioLoaded)
                 CreateCategory(category);
 
-            CustomCurrentStateCategories.Add(category);
+            _customCurrentStateCategories.Add(category);
         }
 
         private static void CreateCategory(CurrentStateCategory category)
@@ -64,22 +63,8 @@ namespace KKAPI.Studio
             if (!_studioLoaded && arg0.name == "Studio")
             {
                 _studioLoaded = true;
-                foreach (var cat in CustomCurrentStateCategories)
+                foreach (var cat in _customCurrentStateCategories)
                     CreateCategory(cat);
-            }
-        }
-
-        private static class Hooks
-        {
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(MPCharCtrl), nameof(MPCharCtrl.OnClickRoot), new[] { typeof(int) })]
-            public static void OnClickRoot(MPCharCtrl __instance, int _idx)
-            {
-                if (_idx == 0)
-                {
-                    foreach (var stateCategory in CustomCurrentStateCategories)
-                        stateCategory.UpdateInfo(__instance.ociChar);
-                }
             }
         }
 

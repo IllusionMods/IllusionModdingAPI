@@ -104,6 +104,7 @@
     <Compile Include="Maker\Events\RegisterCustomControlsEvent.cs" />
     <Compile Include="Maker\Events\RegisterSubCategoriesEvent.cs" />
     <Compile Include="Maker\UI\SubCategoryCreator.cs" />
+    <Compile Include="Studio\StudioAPI.Hooks.cs" />
     <Compile Include="Studio\UI\CurrentStateCategory.cs" />
     <Compile Include="Studio\UI\CurrentStateCategorySubItemBase.cs" />
     <Compile Include="Studio\UI\CurrentStateCategoryToggle.cs" />
