@@ -41,19 +41,25 @@ namespace KKAPI.Studio.UI
 
             var cat = Object.Instantiate(original, containerObject.transform, true);
             cat.AddComponent<LayoutElement>();
-            cat.name = "StudioAPI-Header-" + CategoryName;
+            cat.name = CategoryName + "_Header_SAPI";
 
             var t = cat.GetComponent<Text>();
             t.fontSize = 15;
             t.resizeTextMaxSize = 15;
             t.text = CategoryName;
-
-            var catContents = new GameObject("StudioAPI-Category-" + CategoryName);
+            
+            var catContents = new GameObject(CategoryName + "_Items_SAPI");
             catContents.transform.SetParent(containerObject.transform);
-            catContents.AddComponent<RectTransform>().anchorMin = new Vector2(0, 1.04f);
-            var vlg = catContents.AddComponent<VerticalLayoutGroup>();
-            vlg.padding = new RectOffset(0, 0, 4, 4);
 
+            var rt = catContents.AddComponent<RectTransform>();
+            // Fixes issue with left offset being wrong
+            rt.pivot = new Vector2(0, 0.5f);
+            rt.localScale = Vector3.one;
+
+            var vlg = catContents.AddComponent<VerticalLayoutGroup>();
+            vlg.padding = new RectOffset(0, 0, 0, 0); 
+            vlg.spacing = 4;
+            vlg.childAlignment = TextAnchor.UpperLeft;
             foreach (var subItem in SubItems)
                 subItem.CreateItem(catContents);
         }

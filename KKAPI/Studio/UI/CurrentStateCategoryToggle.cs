@@ -49,21 +49,15 @@ namespace KKAPI.Studio.UI
 
             var copy = Object.Instantiate(original, categoryObject.transform, true);
             copy.name = "CustomToggle-" + Name;
+            copy.transform.localScale = Vector3.one;
 
             var text = copy.transform.Find("Text Tears");
             text.name = "Text " + Name;
             var text1 = text.GetComponent<Text>();
             text1.text = Name;
 
-            var items = copy.transform.Cast<Transform>().ToList();
-
-            foreach (var transform in items.Select(x => x.GetComponent<RectTransform>()))
-            {
-                transform.offsetMin = new Vector2(transform.offsetMin.x + 21, transform.offsetMin.y);
-                transform.offsetMax = new Vector2(transform.offsetMax.x + 21, transform.offsetMax.y);
-            }
-
-            var buttons = items.Skip(1).Select(x => x.GetComponent<Button>()).ToList();
+            var subItems = copy.transform.Cast<Transform>();
+            var buttons = subItems.Skip(1).Select(x => x.GetComponent<Button>()).ToList();
             for (var i = 0; i < 4; i++)
             {
                 var btn = buttons[i];
