@@ -74,7 +74,7 @@ namespace KKAPI
         /// <summary>
         /// Check if a plugin is loaded and has at least the minimum version. 
         /// If the plugin is missing or older than minimumVersion, user is shown an error message on screen and false is returned.
-        /// Run from Awake or Start, not from constructor!
+        /// Warning: Run only from Start, not from constructor or Awake because some plugins might not be loaded yet!
         /// </summary>
         /// <param name="origin">Your plugin</param>
         /// <param name="guid">Guid of the plugin your plugin is dependant on</param>
@@ -112,7 +112,7 @@ namespace KKAPI
         /// <summary>
         /// Check if a plugin that is not compatible with your plugin is loaded. 
         /// If the plugin is loaded, user is shown a warning message on screen and true is returned.
-        /// Run from Awake or Start, not from constructor!
+        /// Warning: Run only from Start, not from constructor or Awake because some plugins might not be loaded yet!
         /// </summary>
         /// <param name="origin">Your plugin</param>
         /// <param name="guid">Guid of the plugin your plugin is incompatible with</param>
