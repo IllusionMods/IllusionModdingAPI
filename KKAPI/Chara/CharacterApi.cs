@@ -62,7 +62,8 @@ namespace KKAPI.Chara
             void BasicCopier(ChaFile dst, ChaFile src)
             {
                 var extendedData = ExtendedSave.GetExtendedDataById(src, extendedDataId);
-                ExtendedSave.SetExtendedDataById(dst, extendedDataId, extendedData);
+                if (extendedData != null && extendedData.data.Any())
+                    ExtendedSave.SetExtendedDataById(dst, extendedDataId, extendedData);
             }
 
             var copier = extendedDataId == null ? (CopyExtendedDataFunc)null : BasicCopier;
