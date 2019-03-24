@@ -46,7 +46,6 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `ChaControl` | GetChaControl(this `ChaFile` chaFile) | Get ChaControl that is using this ChaFile if any exist. | 
-| `OCIChar` | GetOCIChar(this `ChaControl` chaControl) | Get GetOCIChar that is assigned to this character. Only works in CharaStudio, returns null elsewhere. | 
 
 
 ## `CharaCustomFunctionController`
