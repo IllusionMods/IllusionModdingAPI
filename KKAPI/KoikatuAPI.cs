@@ -43,6 +43,9 @@ namespace KKAPI
         public KoikatuAPI()
         {
             Instance = this;
+            
+            Logger.Log(LogLevel.Debug, $"Game version {Game.Version} running under {System.Threading.Thread.CurrentThread.CurrentCulture.Name} culture");
+            Logger.Log(LogLevel.Debug, $"Processor: {SystemInfo.processorType} ({SystemInfo.processorCount} cores @ {SystemInfo.processorFrequency}MHz); RAM: {SystemInfo.systemMemorySize}MB; OS: {SystemInfo.operatingSystem}");
         }
 
         private void Start()

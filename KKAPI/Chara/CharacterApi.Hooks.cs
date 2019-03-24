@@ -28,6 +28,8 @@ namespace KKAPI.Chara
             public static void ChaControl_InitializePostHook(byte _sex, bool _hiPoly, GameObject _objRoot, int _id, int _no,
                 ChaFileControl _chaFile, ChaControl __instance)
             {
+                Logger.Log(LogLevel.Debug, $"[KKAPI] Character card load: {GetLogName(__instance)} {(MakerAPI.CharaListIsLoading ? "inside CharaList" : string.Empty)}");
+
                 ChaControls.Add(__instance);
 
                 if (!MakerAPI.CharaListIsLoading)
@@ -40,8 +42,7 @@ namespace KKAPI.Chara
             {
                 ChaControls.Remove(__instance);
             }
-
-
+            
             /// <summary>
             /// Needed for saving in class maker, rest is handled by ExtendedSave.CardBeingSaved
             /// </summary>

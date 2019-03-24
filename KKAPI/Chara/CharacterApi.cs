@@ -107,7 +107,7 @@ namespace KKAPI.Chara
                 var character = MakerAPI.GetCharacterControl();
                 if (character == null)
                 {
-                    Logger.Log(LogLevel.Error, "OnCoordinateBeingSaved fired outside chara maker for " + file.coordinateName);
+                    Logger.Log(LogLevel.Error, "[KKAPI] OnCoordinateBeingSaved fired outside chara maker for " + file.coordinateName);
                     Logger.Log(LogLevel.Info, new StackTrace());
                     return;
                 }
@@ -148,8 +148,10 @@ namespace KKAPI.Chara
             }
         }
 
-        private static void OnCardBeingSaved(ChaFile _)
+        private static void OnCardBeingSaved(ChaFile chaFile)
         {
+            Logger.Log(LogLevel.Debug, "[KKAPI] Character save: " + chaFile.parameter.fullname);
+
             var gamemode = KoikatuAPI.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(MakerAPI.GetCharacterControl()))
             {
@@ -166,6 +168,8 @@ namespace KKAPI.Chara
 
         private static void ReloadChara(ChaControl chaControl = null)
         {
+            Logger.Log(LogLevel.Debug, "[KKAPI] Character load/reload: " + GetLogName(chaControl));
+
             var gamemode = KoikatuAPI.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(chaControl))
             {
@@ -197,7 +201,8 @@ namespace KKAPI.Chara
 
         private static void OnCoordinateBeingSaved(ChaControl character, ChaFileCoordinate coordinateFile)
         {
-            Logger.Log(LogLevel.Debug, $"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{character.name}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+            Logger.Log(LogLevel.Debug, $"[KKAPI] Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"" +
+                                       $" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
 
             foreach (var controller in GetBehaviours(character))
             {
@@ -223,7 +228,8 @@ namespace KKAPI.Chara
 
         private static void OnCoordinateBeingLoaded(ChaControl character, ChaFileCoordinate coordinateFile)
         {
-            Logger.Log(LogLevel.Debug, $"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{character.name}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+            Logger.Log(LogLevel.Debug, $"[KKAPI] Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"" +
+                                       $" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
 
             foreach (var controller in GetBehaviours(character))
             {
@@ -245,6 +251,12 @@ namespace KKAPI.Chara
             {
                 Logger.Log(LogLevel.Error, e);
             }
+        }
+
+        private static string GetLogName(ChaInfo chaInfo)
+        {
+            if (chaInfo == null) return "NULL";
+            return chaInfo.chaFile?.charaFileName ?? chaInfo.fileParam?.fullname ?? "Unknown";
         }
 
         /// <summary>
