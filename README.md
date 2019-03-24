@@ -11,6 +11,7 @@ KKAPI is a project that aims to make creating mods for Kokatsu! easier and less 
 * [KK_BecomeTrap](https://github.com/ManlyMarco/KK_BecomeTrap) - Simple mod that give a good example of how clean and easy KKAPI makes things.
 * [KK_SkinEffects](https://github.com/ManlyMarco/KK_SkinEffects) - Uses StudioAPI to create custom controls in the studio interface.
 * [KKABMX](https://github.com/ManlyMarco/KKABMX) - Uses a lot of runtime-generated maker UI elements, fairly complex.
+* [KK_UncensorSelector, KK_EyeShaking, KK_RandomCharacterGenerator, more...](https://github.com/DeathWeasel1337/KK_Plugins)
 
 ## Getting started
 1. First of all, [download the latest release](https://github.com/ManlyMarco/KKAPI/releases).
