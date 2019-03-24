@@ -21,3 +21,20 @@ Static Methods
 | `void` | Init(`Boolean` insideStudio) |  | 
 
 
+## `StudioObjectExtensions`
+
+Useful extensions for studio metaobjects
+```csharp
+public static class KKAPI.Studio.StudioObjectExtensions
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `ObjectCtrlInfo` | GetObjectCtrlInfo(this `ObjectInfo` obj) | Get the ObjectCtrlInfo object that uses this ObjectInfo.  If the object was not found in current scene, null is returned. | 
+| `Int32` | GetSceneId(this `ObjectCtrlInfo` obj) | Get the ID of this object as used in the currently loaded scene.  If the object was not found in current scene, -1 is returned. | 
+| `Int32` | GetSceneId(this `ObjectInfo` obj) | Get the ID of this object as used in the currently loaded scene.  If the object was not found in current scene, -1 is returned. | 
+
+

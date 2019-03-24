@@ -86,6 +86,7 @@
     <Compile Include="Studio\SaveLoad\SceneCustomFunctionController.cs" />
     <Compile Include="Studio\SaveLoad\SceneLoadEventArgs.cs" />
     <Compile Include="Studio\SaveLoad\SceneOperationKind.cs" />
+    <Compile Include="Studio\StudioObjectExtensions.cs" />
     <Compile Include="Studio\StudioAPI.cs" />
     <Compile Include="Maker\UI\MakerButton.cs" />
     <Compile Include="Maker\UI\MakerColor.cs" />

@@ -48,6 +48,7 @@
 ## [KKAPI.Studio](KKAPI.Studio.md)
 
 - [`StudioAPI`](KKAPI.Studio.md#studioapi)
+- [`StudioObjectExtensions`](KKAPI.Studio.md#studioobjectextensions)
 
 ## [KKAPI.Studio.SaveLoad](KKAPI.Studio.SaveLoad.md)
 
