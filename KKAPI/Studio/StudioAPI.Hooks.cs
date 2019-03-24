@@ -7,6 +7,11 @@ namespace KKAPI.Studio
     {
         private static class Hooks
         {
+            public static void SetupHooks()
+            {
+                HarmonyInstance.Create(typeof(Hooks).FullName).PatchAll(typeof(Hooks));
+            }
+
             [HarmonyPostfix]
             [HarmonyPatch(typeof(MPCharCtrl), nameof(MPCharCtrl.OnClickRoot), new[] { typeof(int) })]
             public static void OnClickRoot(MPCharCtrl __instance, int _idx)

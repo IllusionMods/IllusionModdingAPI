@@ -39,11 +39,6 @@ namespace KKAPI.Chara
         public bool Started { get; private set; }
 
         /// <summary>
-        /// True when this character was added by importing a scene. Will revert to false after the controllers's first OnReload event.
-        /// </summary>
-        public bool AddedBySceneImport { get; internal set; }
-
-        /// <summary>
         /// Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. 
         /// </summary>
         public PluginData GetExtendedData()
@@ -170,8 +165,6 @@ namespace KKAPI.Chara
         {
             ChaControl = GetComponent<ChaControl>();
             CurrentCoordinate = new BehaviorSubject<ChaFileDefine.CoordinateType>((ChaFileDefine.CoordinateType)ChaControl.fileStatus.coordinateType);
-            if (CharacterApi.DoingImport)
-                AddedBySceneImport = true;
         }
 
         /// <summary>
@@ -181,7 +174,6 @@ namespace KKAPI.Chara
         {
             Started = true;
             OnReload(KoikatuAPI.GetCurrentGameMode());
-            AddedBySceneImport = false;
         }
     }
 }

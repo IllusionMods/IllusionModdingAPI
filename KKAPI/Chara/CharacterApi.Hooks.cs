@@ -4,10 +4,7 @@ using Harmony;
 using KKAPI.Maker;
 using Studio;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UI;
 using Logger = BepInEx.Logger;
@@ -144,66 +141,6 @@ namespace KKAPI.Chara
             public static void clothesFileControl_InitializePostHook()
             {
                 ClothesFileControlLoading = false;
-            }
-
-            [HarmonyPrefix, HarmonyPatch(typeof(global::Studio.Studio), nameof(global::Studio.Studio.ImportScene))]
-            public static void ImportScenePrefix()
-            {
-                ImportDictionary.Clear();
-                DoingImport = true;
-            }
-
-            [HarmonyPostfix, HarmonyPatch(typeof(global::Studio.Studio), nameof(global::Studio.Studio.ImportScene))]
-            public static void ImportScenePostfix()
-            {
-                DoingImport = false;
-            }
-
-            [HarmonyPrefix, HarmonyPatch(typeof(global::Studio.Studio), nameof(global::Studio.Studio.LoadScene))]
-            public static void LoadScenePrefix()
-            {
-                ImportDictionary.Clear();
-            }
-
-            [HarmonyPrefix, HarmonyPatch(typeof(global::Studio.Studio), nameof(global::Studio.Studio.LoadSceneCoroutine))]
-            public static void LoadSceneCoroutinePrefix()
-            {
-                ImportDictionary.Clear();
-            }
-
-            [HarmonyPrefix, HarmonyPatch(typeof(global::Studio.Studio), nameof(global::Studio.Studio.InitScene))]
-            public static void InitScenePrefix()
-            {
-                ImportDictionary.Clear();
-            }
-
-            [HarmonyPostfix, HarmonyPatch(typeof(global::Studio.Studio), nameof(global::Studio.Studio.GetNewIndex))]
-            public static void GetNewIndex(int __result)
-            {
-                NewIndex = __result;
-            }
-            /// <summary>
-            /// The original code reads the dicKey of an object on import and does nothing with it. Capture that variable and use it to construct an import dictionary.
-            /// </summary>
-            [HarmonyTranspiler, HarmonyPatch(typeof(ObjectInfo), nameof(ObjectInfo.Load))]
-            public static IEnumerable<CodeInstruction> InitBaseCustomTextureBodyTranspiler(IEnumerable<CodeInstruction> instructions)
-            {
-                List<CodeInstruction> instructionsList = instructions.ToList();
-
-                foreach (var x in instructionsList)
-                {
-                    if (x.opcode == OpCodes.Pop)
-                    {
-                        x.opcode = OpCodes.Call;
-                        x.operand = typeof(Hooks).GetMethod(nameof(Hooks.SetImportDictionary), AccessTools.all);
-                    }
-                }
-                return instructions;
-            }
-
-            private static void SetImportDictionary(int originalDicKey)
-            {
-                ImportDictionary[originalDicKey] = NewIndex;
             }
         }
     }

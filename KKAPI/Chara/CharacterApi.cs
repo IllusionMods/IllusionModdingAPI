@@ -21,12 +21,6 @@ namespace KKAPI.Chara
 
         private static readonly List<KeyValuePair<Type, string>> RegisteredHandlers = new List<KeyValuePair<Type, string>>();
         private static readonly List<CopyExtendedDataFunc> DataCopiers = new List<CopyExtendedDataFunc>();
-        internal static bool DoingImport = false;
-        /// <summary>
-        /// A dictionary of old dicKey and new dicKey generated on scene import
-        /// </summary>
-        public static Dictionary<int, int> ImportDictionary = new Dictionary<int, int>();
-        private static int NewIndex;
 
         /// <summary>
         /// Override to supply custom extended data copying logic.

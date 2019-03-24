@@ -5,6 +5,7 @@ using BepInEx.Logging;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio;
+using KKAPI.Studio.SaveLoad;
 using Manager;
 using UnityEngine;
 using Logger = BepInEx.Logger;
@@ -57,6 +58,7 @@ namespace KKAPI
 
             MakerAPI.Init(insideStudio);
             StudioAPI.Init(insideStudio);
+            StudioSaveLoadApi.Init(insideStudio);
             CharacterApi.Init();
         }
 

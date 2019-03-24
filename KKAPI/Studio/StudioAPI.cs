@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using BepInEx.Logging;
-using Harmony;
 using KKAPI.Studio.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -46,13 +45,13 @@ namespace KKAPI.Studio
 
             if (!insideStudio) return;
 
-            HarmonyInstance.Create(typeof(Hooks).FullName).PatchAll(typeof(Hooks));
+            Hooks.SetupHooks();
 
             SceneManager.sceneLoaded += SceneLoaded;
 
             DebugControls();
         }
-        
+
         /// <summary>
         /// True if we are currently inside CharaStudio.exe
         /// </summary>

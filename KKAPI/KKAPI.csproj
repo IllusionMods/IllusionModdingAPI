@@ -83,6 +83,9 @@
     <Compile Include="Maker\CharacterLoadFlags.cs" />
     <Compile Include="GameMode.cs" />
     <Compile Include="Maker\UI\Sidebar\ISidebarControl.cs" />
+    <Compile Include="Studio\SaveLoad\SceneCustomFunctionController.cs" />
+    <Compile Include="Studio\SaveLoad\SceneLoadEventArgs.cs" />
+    <Compile Include="Studio\SaveLoad\SceneOperationKind.cs" />
     <Compile Include="Studio\StudioAPI.cs" />
     <Compile Include="Maker\UI\MakerButton.cs" />
     <Compile Include="Maker\UI\MakerColor.cs" />
@@ -105,6 +108,9 @@
     <Compile Include="Maker\Events\RegisterSubCategoriesEvent.cs" />
     <Compile Include="Maker\UI\SubCategoryCreator.cs" />
     <Compile Include="Studio\StudioAPI.Hooks.cs" />
+    <Compile Include="Studio\SaveLoad\StudioSaveLoadApi.cs" />
+    <Compile Include="Studio\SaveLoad\StudioSaveLoadApi.Hooks.cs" />
+    <Compile Include="Studio\SaveLoad\TestSceneFunctionController.cs" />
     <Compile Include="Studio\UI\CurrentStateCategory.cs" />
     <Compile Include="Studio\UI\CurrentStateCategorySubItemBase.cs" />
     <Compile Include="Studio\UI\CurrentStateCategoryToggle.cs" />

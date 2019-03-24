@@ -49,6 +49,13 @@
 
 - [`StudioAPI`](KKAPI.Studio.md#studioapi)
 
+## [KKAPI.Studio.SaveLoad](KKAPI.Studio.SaveLoad.md)
+
+- [`SceneCustomFunctionController`](KKAPI.Studio.SaveLoad.md#scenecustomfunctioncontroller)
+- [`SceneLoadEventArgs`](KKAPI.Studio.SaveLoad.md#sceneloadeventargs)
+- [`SceneOperationKind`](KKAPI.Studio.SaveLoad.md#sceneoperationkind)
+- [`StudioSaveLoadApi`](KKAPI.Studio.SaveLoad.md#studiosaveloadapi)
+
 ## [KKAPI.Studio.UI](KKAPI.Studio.UI.md)
 
 - [`CurrentStateCategory`](KKAPI.Studio.UI.md#currentstatecategory)
@@ -57,5 +64,7 @@
 
 ## [KKAPI.Utilities](KKAPI.Utilities.md)
 
+- [`Extensions`](KKAPI.Utilities.md#extensions)
 - [`OpenFileDialog`](KKAPI.Utilities.md#openfiledialog)
+- [`ReadOnlyDictionary<TKey, TValue>`](KKAPI.Utilities.md#readonlydictionarytkey-tvalue)
 
