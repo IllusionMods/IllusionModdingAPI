@@ -1,6 +1,6 @@
 ## `SceneCustomFunctionController`
 
-Base type for custom scene/studio extensions.  It provides many useful methods that abstract away the nasty hooks needed to figure out when  a scene is loaded or imported, or how to save and load your custom data to the scene file.    This controller is a MonoBehaviour that is created upon registration in `KKAPI.Studio.SaveLoad.StudioSaveLoadApi.RegisterExtraBehaviour``1(System.String)`.  The controller is created only once. If it's created too late it might miss some scene load events.
+Base type for custom scene/studio extensions.  It provides many useful methods that abstract away the nasty hooks needed to figure out when  a scene is loaded or imported, or how to save and load your custom data to the scene file.    This controller is a MonoBehaviour that is created upon registration in `KKAPI.Studio.SaveLoad.StudioSaveLoadApi.RegisterExtraBehaviour``1(System.String)`.  The controller is created only once. If it's created too late it might miss some scene load events.  It's recommended to register controllers in your Start method.
 ```csharp
 public abstract class KKAPI.Studio.SaveLoad.SceneCustomFunctionController
     : MonoBehaviour
@@ -56,8 +56,8 @@ Enum
 | Value | Name | Summary | 
 | --- | --- | --- | 
 | `0` | Load | Scene is being loaded and will replace what's currently loaded. | 
-| `1` | Import | Scene is being loaded and will be added to what's currently loaded.  <remarks>IDs in the scene will be different from the IDs in the save file.</remarks> | 
-| `2` | Clear | Scene is being cleared of all state (by default, only user clicking the "Reset" button can trigger this). | 
+| `1` | Import | Scene is being loaded and will be added to what's currently loaded.  <remarks>IDs in the scene will be different from the IDs in the file of the scene being imported,  use `KKAPI.Studio.SaveLoad.SceneCustomFunctionController` to get IDs from the scene file.</remarks> | 
+| `2` | Clear | Scene is being cleared of all state (by default, only user clicking the "Reset" button can trigger this).  This is not triggered when studio starts. | 
 
 
 ## `StudioSaveLoadApi`

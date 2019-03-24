@@ -13,6 +13,7 @@ namespace KKAPI.Studio.SaveLoad
     /// 
     /// This controller is a MonoBehaviour that is created upon registration in <see cref="StudioSaveLoadApi.RegisterExtraBehaviour{T}"/>. 
     /// The controller is created only once. If it's created too late it might miss some scene load events.
+    /// It's recommended to register controllers in your Start method.
     /// </summary>
     public abstract class SceneCustomFunctionController : MonoBehaviour
     {
@@ -22,7 +23,8 @@ namespace KKAPI.Studio.SaveLoad
         /// <param name="operation">Operation that caused this event</param>
         /// <param name="loadedItems">A dictionary of items loaded by this operation and their original IDs.
         /// The IDs are identical to the IDs at the time of saving the scene, even during import.
-        /// Warning: The IDs here might not be the same as IDs of the objects in the scene!</param> //todo link to getid extension
+        /// Warning: The IDs here might not be the same as IDs of the objects in the scene!
+        /// To get current scene ID of the object call <see cref="StudioObjectExtensions.GetSceneId(ObjectCtrlInfo)"/></param>
         protected internal abstract void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems);
 
         /// <summary>
