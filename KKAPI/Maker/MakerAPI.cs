@@ -521,5 +521,34 @@ namespace KKAPI.Maker
 
             HarmonyInstance.Create(typeof(Hooks).FullName).PatchAll(typeof(Hooks));
         }
+
+        /// <summary>
+        /// Check if maker interface is currently visible and not obscured by settings screen or other things.
+        /// Useful for knowing when to display OnGui mod windows in maker.
+        /// </summary>
+        public static bool IsInterfaceVisible()
+        {
+            // Check if maker is loaded
+            if (!InsideMaker)
+                return false;
+            var mbase = GetMakerBase();
+            if (mbase == null || mbase.chaCtrl == null)
+                return false;
+
+            // Check if the loading screen is currently visible
+            if (Manager.Scene.Instance.IsNowLoadingFade)
+                return false;
+
+            // Check if UI is hidden (by pressing space)
+            if (!mbase.customCtrl.hideFrontUI)
+                return false;
+
+            // Check if settings screen, game exit message box or similar are on top of the maker UI
+            // In class maker the AddSceneName is set to CustomScene, but in normal maker it's empty
+            if (!string.IsNullOrEmpty(Manager.Scene.Instance.AddSceneName) && Manager.Scene.Instance.AddSceneName != "CustomScene")
+                return false;
+
+            return true;
+        }
     }
 }
