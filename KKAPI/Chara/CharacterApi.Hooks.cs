@@ -68,11 +68,14 @@ namespace KKAPI.Chara
             })]
             public static void ChaFile_CopyChaFilePostHook(ChaFile dst, ChaFile src)
             {
-                foreach (var copier in DataCopiers)
+                foreach (var handler in _registeredHandlers)
                 {
+                    if(handler.ExtendedDataCopier == null)
+                        continue;
+
                     try
                     {
-                        copier(dst, src);
+                        handler.ExtendedDataCopier(dst, src);
                     }
                     catch (Exception e)
                     {

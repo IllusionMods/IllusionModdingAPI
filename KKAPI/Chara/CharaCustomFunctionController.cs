@@ -2,8 +2,10 @@
 using KKAPI.Maker;
 using System;
 using System.Collections;
+using BepInEx.Logging;
 using UniRx;
 using UnityEngine;
+#pragma warning disable 618
 
 namespace KKAPI.Chara
 {
@@ -13,7 +15,7 @@ namespace KKAPI.Chara
     /// a character is changed or how to save and load your custom data to the character card.
     /// 
     /// This controller is a MonoBehaviour that is added to root gameObjects of ALL characters spawned into the game. 
-    /// It's recommended to not use constructors, Awake or Start in controllers. Use <see cref="OnReload"/> instead.
+    /// It's recommended to not use constructors, Awake or Start in controllers. Use <see cref="OnReload(GameMode,bool)"/> instead.
     /// </summary>
     public abstract class CharaCustomFunctionController : MonoBehaviour
     {
@@ -31,7 +33,12 @@ namespace KKAPI.Chara
         /// ID used for extended data by this controller. It's set when registering the controller
         /// with <see cref="CharacterApi.RegisterExtraBehaviour{T}(string)"/>
         /// </summary>
-        public string ExtendedDataId { get; internal set; }
+        public string ExtendedDataId => ControllerRegistration.ExtendedDataId;
+
+        /// <summary>
+        /// Definition of this kind of function controllers.
+        /// </summary>
+        public CharacterApi.ControllerRegistration ControllerRegistration { get; internal set; }
 
         /// <summary>
         /// True if this controller has been initialized
@@ -97,7 +104,19 @@ namespace KKAPI.Chara
         /// Write any of your extended data in this method by using <see cref="SetExtendedData"/>.
         /// Avoid reusing old PluginData since we might no longer be pointed to the same character.
         /// </summary>
-        protected internal abstract void OnCardBeingSaved(GameMode currentGameMode);
+        protected abstract void OnCardBeingSaved(GameMode currentGameMode);
+
+        internal void OnCardBeingSavedInternal(GameMode gamemode)
+        {
+            try
+            {
+                OnCardBeingSaved(gamemode);
+            }
+            catch (Exception e)
+            {
+                BepInEx.Logger.Log(LogLevel.Error, e);
+            }
+        }
 
         /// <summary>
         /// OnReload is fired whenever the character's state needs to be updated.
@@ -108,21 +127,81 @@ namespace KKAPI.Chara
         /// WARNING: Make sure to completely reset your state in this method!
         ///          Assume that all of your variables are no longer valid!
         /// </summary>
-        protected internal abstract void OnReload(GameMode currentGameMode);
+        /// <param name="currentGameMode">Game mode we are currently in</param>
+        /// <param name="maintainState">If true, the current state should be preserved.
+        /// Do not load new extended data, instead reuse what you currently have or do nothing.</param>
+        protected virtual void OnReload(GameMode currentGameMode, bool maintainState) { }
+
+        /// <summary>
+        /// Obsolete, use other overloads instead.
+        /// </summary>
+        [Obsolete("Use the other overloads instead")]
+        protected virtual void OnReload(GameMode currentGameMode) { }
+
+        internal void OnReloadInternal(GameMode currentGameMode)
+        {
+            try
+            {
+                if (!ControllerRegistration.MaintainState)
+                    OnReload(currentGameMode);
+
+                OnReload(currentGameMode, ControllerRegistration.MaintainState);
+            }
+            catch (Exception e)
+            {
+                BepInEx.Logger.Log(LogLevel.Error, e);
+            }
+        }
 
         /// <summary>
         /// Fired just before current coordinate is saved to a coordinate card. Use <see cref="SetCoordinateExtendedData"/> to save data to it. 
         /// You might need to wait for the next frame with <see cref="MonoBehaviour.StartCoroutine(IEnumerator)"/> before handling this.
         /// Use <see cref="CurrentCoordinate"/> to figure out what clothes set your character is wearing right now.
         /// </summary>
-        protected internal virtual void OnCoordinateBeingSaved(ChaFileCoordinate coordinate) { }
+        protected virtual void OnCoordinateBeingSaved(ChaFileCoordinate coordinate) { }
+
+        internal void OnCoordinateBeingSavedInternal(ChaFileCoordinate coordinate)
+        {
+            try
+            {
+                OnCoordinateBeingSaved(coordinate);
+            }
+            catch (Exception e)
+            {
+                BepInEx.Logger.Log(LogLevel.Error, e);
+            }
+        }
 
         /// <summary>
         /// Fired just after loading a coordinate card into the current coordinate slot.
         /// Use <see cref="GetCoordinateExtendedData"/> to get save data of the loaded coordinate.
         /// Use <see cref="CurrentCoordinate"/> to figure out what clothes set your character is wearing right now.
         /// </summary>
-        protected internal virtual void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate) { }
+        /// <param name="coordinate">Coordinate being currently loaded.</param>
+        /// <param name="maintainState">If true, the current state should be preserved.
+        /// Do not load new extended data, instead reuse what you currently have or do nothing.</param>
+        protected virtual void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate, bool maintainState) { }
+
+        /// <summary>
+        /// Obsolete, use other overloads instead.
+        /// </summary>
+        [Obsolete("Use the other overloads instead")]
+        protected virtual void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate) { }
+
+        internal void OnCoordinateBeingLoadedInternal(ChaFileCoordinate coordinate)
+        {
+            try
+            {
+                if (!ControllerRegistration.MaintainCoordinateState)
+                    OnCoordinateBeingLoaded(coordinate);
+
+                OnCoordinateBeingLoaded(coordinate, ControllerRegistration.MaintainState);
+            }
+            catch (Exception e)
+            {
+                BepInEx.Logger.Log(LogLevel.Error, e);
+            }
+        }
 
         /// <summary>
         /// Currently selected clothes on this character. Can subscribe to listen for changes.

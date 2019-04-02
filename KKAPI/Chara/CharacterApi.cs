@@ -19,8 +19,12 @@ namespace KKAPI.Chara
     {
         internal static readonly HashSet<ChaControl> ChaControls = new HashSet<ChaControl>();
 
-        private static readonly List<KeyValuePair<Type, string>> RegisteredHandlers = new List<KeyValuePair<Type, string>>();
-        private static readonly List<CopyExtendedDataFunc> DataCopiers = new List<CopyExtendedDataFunc>();
+        private static readonly List<ControllerRegistration> _registeredHandlers = new List<ControllerRegistration>();
+
+        /// <summary>
+        /// All currently registered kinds of <see cref="CharaCustomFunctionController"/> controllers.
+        /// </summary>
+        public static IEnumerable<ControllerRegistration> RegisteredHandlers => _registeredHandlers.AsReadOnly();
 
         /// <summary>
         /// Override to supply custom extended data copying logic.
@@ -44,7 +48,7 @@ namespace KKAPI.Chara
         public static IEnumerable<CharaCustomFunctionController> GetBehaviours(ChaControl character = null)
         {
             if (character == null)
-                return ChaControls.SelectMany(x => x.GetComponents<CharaCustomFunctionController>());
+                return _registeredHandlers.SelectMany(x => x.Instances);
 
             return character.GetComponents<CharaCustomFunctionController>();
         }
@@ -82,8 +86,7 @@ namespace KKAPI.Chara
         /// <param name="customDataCopier">Override default extended data copy logic</param>
         public static void RegisterExtraBehaviour<T>(string extendedDataId, CopyExtendedDataFunc customDataCopier) where T : CharaCustomFunctionController, new()
         {
-            RegisteredHandlers.Add(new KeyValuePair<Type, string>(typeof(T), extendedDataId));
-            if (customDataCopier != null) DataCopiers.Add(customDataCopier);
+            _registeredHandlers.Add(new ControllerRegistration(typeof(T), extendedDataId, customDataCopier));
         }
 
         internal static void Init()
@@ -127,18 +130,17 @@ namespace KKAPI.Chara
 
         private static void CreateOrAddBehaviours(ChaControl target)
         {
-            foreach (var handler in RegisteredHandlers)
+            foreach (var handler in _registeredHandlers)
             {
-                var existing = target.gameObject.GetComponents(handler.Key)
+                var existing = target.gameObject.GetComponents(handler.ControllerType)
                     .Cast<CharaCustomFunctionController>()
-                    .FirstOrDefault(x => x.ExtendedDataId == handler.Value);
+                    .FirstOrDefault(x => x.ExtendedDataId == handler.ExtendedDataId);
 
                 if (existing == null)
                 {
                     try
                     {
-                        var newBehaviour = (CharaCustomFunctionController)target.gameObject.AddComponent(handler.Key);
-                        newBehaviour.ExtendedDataId = handler.Value;
+                        handler.CreateInstance(target);
                     }
                     catch (Exception e)
                     {
@@ -154,16 +156,7 @@ namespace KKAPI.Chara
 
             var gamemode = KoikatuAPI.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(MakerAPI.GetCharacterControl()))
-            {
-                try
-                {
-                    behaviour.OnCardBeingSaved(gamemode);
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(LogLevel.Error, e);
-                }
-            }
+                behaviour.OnCardBeingSavedInternal(gamemode);
         }
 
         private static void ReloadChara(ChaControl chaControl = null)
@@ -172,16 +165,7 @@ namespace KKAPI.Chara
 
             var gamemode = KoikatuAPI.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(chaControl))
-            {
-                try
-                {
-                    behaviour.OnReload(gamemode);
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(LogLevel.Error, e);
-                }
-            }
+                behaviour.OnReloadInternal(gamemode);
 
             try
             {
@@ -205,16 +189,7 @@ namespace KKAPI.Chara
                                        $" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
 
             foreach (var controller in GetBehaviours(character))
-            {
-                try
-                {
-                    controller.OnCoordinateBeingSaved(coordinateFile);
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(LogLevel.Error, e);
-                }
-            }
+                controller.OnCoordinateBeingSavedInternal(coordinateFile);
 
             try
             {
@@ -232,16 +207,7 @@ namespace KKAPI.Chara
                                        $" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
 
             foreach (var controller in GetBehaviours(character))
-            {
-                try
-                {
-                    controller.OnCoordinateBeingLoaded(coordinateFile);
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(LogLevel.Error, e);
-                }
-            }
+                controller.OnCoordinateBeingLoadedInternal(coordinateFile);
 
             try
             {

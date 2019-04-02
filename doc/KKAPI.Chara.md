@@ -13,6 +13,13 @@ Static Fields
 | `HashSet<ChaControl>` | ChaControls |  | 
 
 
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `IEnumerable<ControllerRegistration>` | RegisteredHandlers | All currently registered kinds of `KKAPI.Chara.CharaCustomFunctionController` controllers. | 
+
+
 Static Methods
 
 | Type | Name | Summary | 
@@ -50,7 +57,7 @@ Static Methods
 
 ## `CharaCustomFunctionController`
 
-Base type for custom character extensions.  It provides many useful methods that abstract away the nasty hooks needed to figure out when  a character is changed or how to save and load your custom data to the character card.    This controller is a MonoBehaviour that is added to root gameObjects of ALL characters spawned into the game.  It's recommended to not use constructors, Awake or Start in controllers. Use `KKAPI.Chara.CharaCustomFunctionController.OnReload(KKAPI.GameMode)` instead.
+Base type for custom character extensions.  It provides many useful methods that abstract away the nasty hooks needed to figure out when  a character is changed or how to save and load your custom data to the character card.    This controller is a MonoBehaviour that is added to root gameObjects of ALL characters spawned into the game.  It's recommended to not use constructors, Awake or Start in controllers. Use `KKAPI.Chara.CharaCustomFunctionController.OnReload(KKAPI.GameMode,System.Boolean)` instead.
 ```csharp
 public abstract class KKAPI.Chara.CharaCustomFunctionController
     : MonoBehaviour
@@ -63,6 +70,7 @@ Properties
 | --- | --- | --- | 
 | `ChaControl` | ChaControl | ChaControl of the character this controller is attached to. It's on the same gameObject as this controller. | 
 | `ChaFileControl` | ChaFileControl | ChaFile of the character this controller is attached to. | 
+| `ControllerRegistration` | ControllerRegistration | Definition of this kind of function controllers. | 
 | `BehaviorSubject<CoordinateType>` | CurrentCoordinate | Currently selected clothes on this character. Can subscribe to listen for changes. | 
 | `String` | ExtendedDataId | ID used for extended data by this controller. It's set when registering the controller  with `KKAPI.Chara.CharacterApi.RegisterExtraBehaviour``1(System.String)` | 
 | `Boolean` | Started | True if this controller has been initialized | 
@@ -77,11 +85,15 @@ Methods
 | `PluginData` | GetExtendedData() | Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. | 
 | `PluginData` | GetExtendedData(`Boolean` getFromLoadedChara) | Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. | 
 | `void` | OnCardBeingSaved(`GameMode` currentGameMode) | Fired when the character information is being saved.  It handles all types of saving (to character card, to a scene etc.)  Write any of your extended data in this method by using `KKAPI.Chara.CharaCustomFunctionController.SetExtendedData(ExtensibleSaveFormat.PluginData)`.  Avoid reusing old PluginData since we might no longer be pointed to the same character. | 
-| `void` | OnCoordinateBeingLoaded(`ChaFileCoordinate` coordinate) | Fired just after loading a coordinate card into the current coordinate slot.  Use `KKAPI.Chara.CharaCustomFunctionController.GetCoordinateExtendedData(ChaFileCoordinate)` to get save data of the loaded coordinate.  Use `KKAPI.Chara.CharaCustomFunctionController.CurrentCoordinate` to figure out what clothes set your character is wearing right now. | 
+| `void` | OnCardBeingSavedInternal(`GameMode` gamemode) |  | 
+| `void` | OnCoordinateBeingLoaded(`ChaFileCoordinate` coordinate, `Boolean` maintainState) | Fired just after loading a coordinate card into the current coordinate slot.  Use `KKAPI.Chara.CharaCustomFunctionController.GetCoordinateExtendedData(ChaFileCoordinate)` to get save data of the loaded coordinate.  Use `KKAPI.Chara.CharaCustomFunctionController.CurrentCoordinate` to figure out what clothes set your character is wearing right now. | 
+| `void` | OnCoordinateBeingLoadedInternal(`ChaFileCoordinate` coordinate) |  | 
 | `void` | OnCoordinateBeingSaved(`ChaFileCoordinate` coordinate) | Fired just before current coordinate is saved to a coordinate card. Use `KKAPI.Chara.CharaCustomFunctionController.SetCoordinateExtendedData(ChaFileCoordinate,ExtensibleSaveFormat.PluginData)` to save data to it.  You might need to wait for the next frame with `UnityEngine.MonoBehaviour.StartCoroutine(System.Collections.IEnumerator)` before handling this.  Use `KKAPI.Chara.CharaCustomFunctionController.CurrentCoordinate` to figure out what clothes set your character is wearing right now. | 
+| `void` | OnCoordinateBeingSavedInternal(`ChaFileCoordinate` coordinate) |  | 
 | `void` | OnDestroy() | Warning: When overriding make sure to call the base method at the end of your logic! | 
 | `void` | OnEnable() | Warning: When overriding make sure to call the base method at the end of your logic! | 
-| `void` | OnReload(`GameMode` currentGameMode) | OnReload is fired whenever the character's state needs to be updated.  This might be beacuse the character was just loaded into the game,  was replaced with a different character, etc.  Use this method instead of Awake and Start. It will always get called  before other methods, but after the character is in a usable state.  WARNING: Make sure to completely reset your state in this method!  Assume that all of your variables are no longer valid! | 
+| `void` | OnReload(`GameMode` currentGameMode, `Boolean` maintainState) | OnReload is fired whenever the character's state needs to be updated.  This might be beacuse the character was just loaded into the game,  was replaced with a different character, etc.  Use this method instead of Awake and Start. It will always get called  before other methods, but after the character is in a usable state.  WARNING: Make sure to completely reset your state in this method!  Assume that all of your variables are no longer valid! | 
+| `void` | OnReloadInternal(`GameMode` currentGameMode) |  | 
 | `void` | SetCoordinateExtendedData(`ChaFileCoordinate` coordinate, `PluginData` data) | Set extended data to the specified coordinate by using the ID you specified when registering this controller. | 
 | `void` | SetExtendedData(`PluginData` data) | Save your custom data to the character card under the ID you specified when registering this controller. | 
 | `void` | Start() | Warning: When overriding make sure to call the base method at the end of your logic! | 
