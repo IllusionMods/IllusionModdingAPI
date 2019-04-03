@@ -32,7 +32,19 @@ namespace KKAPI.Maker.UI
         /// <param name="category">Category the control will be created under</param>
         /// <param name="owner">Plugin that owns the control</param>
         /// <param name="buttons">Names of the radio buttons. Need at least 2 buttons.</param>
-        public MakerRadioButtons(MakerCategory category, BaseUnityPlugin owner, string settingName, params string[] buttons) : base(category, 0, owner)
+        public MakerRadioButtons(MakerCategory category, BaseUnityPlugin owner, string settingName, params string[] buttons) : this(category, owner, settingName, 0, buttons)
+        {
+        }
+
+        /// <summary>
+        /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
+        /// </summary>
+        /// <param name="settingName">Text displayed next to the buttons</param>
+        /// <param name="category">Category the control will be created under</param>
+        /// <param name="owner">Plugin that owns the control</param>
+        /// <param name="initialValue">Initial value of the control</param>
+        /// <param name="buttons">Names of the radio buttons. Need at least 2 buttons.</param>
+        public MakerRadioButtons(MakerCategory category, BaseUnityPlugin owner, string settingName, int initialValue, params string[] buttons) : base(category, initialValue, owner)
         {
             if (buttons.Length < 2) throw new ArgumentException("Need at least two buttons.", nameof(buttons));
 
