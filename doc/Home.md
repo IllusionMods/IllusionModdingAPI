@@ -15,6 +15,7 @@
 
 ## [KKAPI.Maker](KKAPI.Maker.md)
 
+- [`AccessoriesApi`](KKAPI.Maker.md#accessoriesapi)
 - [`ChaFileLoadedEventArgs`](KKAPI.Maker.md#chafileloadedeventargs)
 - [`CharacterLoadFlags`](KKAPI.Maker.md#characterloadflags)
 - [`MakerAPI`](KKAPI.Maker.md#makerapi)

@@ -1,3 +1,32 @@
+## `AccessoriesApi`
+
+Collection of methods useful for interfacing with character accessories. Has methods both for chara maker and everywhere else.  Abstracts away MoreAccessories so you don't have to worry if it's installed or not.
+```csharp
+public static class KKAPI.Maker.AccessoriesApi
+
+```
+
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | AccessoryCanvasVisible | Returns true if the accessory tab in maker is currently selected. | 
+| `Boolean` | MoreAccessoriesInstalled | True if the MoreAccessories mod is installed.  Avoid relying on this and instead use other methods in this class since they will handle this for you. | 
+
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `ChaAccessoryComponent` | GetAccessory(this `ChaControl` character, `Int32` accessoryIndex) | Get the accessory given a slot index.  TODO Not finished, most likely buggy | 
+| `Int32` | GetAccessoryIndex(this `ChaAccessoryComponent` accessoryComponent) | Get slot index of his accessory, useful for referencing to the accesory in extended data.  TODO Not finished, most likely buggy | 
+| `CvsAccessory` | GetCvsAccessory(`Int32` index) | Get accessory UI entry in maker.  Only works inside chara maker. | 
+| `Int32` | GetCvsAccessoryCount() | Get count of the UI entries for accessories (accessory slots).  Returns 0 outside of chara maker. | 
+| `ChaControl` | GetOwningChaControl(this `ChaAccessoryComponent` accessoryComponent) | Get the ChaControl that owns this accessory | 
+| `Int32` | GetSelectedAccessoryIndex() | Get the index of the currently selected accessory tab under Accessories group in Chara Maker.  If none are selected or chara maker is not opened, returns -1. | 
+| `void` | Init() |  | 
+
+
 ## `ChaFileLoadedEventArgs`
 
 ```csharp

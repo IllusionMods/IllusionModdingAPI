@@ -517,6 +517,8 @@ namespace KKAPI.Maker
 
         internal static void Init(bool insideStudio)
         {
+            AccessoriesApi.Init();
+
             if (insideStudio) return;
 
             HarmonyInstance.Create(typeof(Hooks).FullName).PatchAll(typeof(Hooks));

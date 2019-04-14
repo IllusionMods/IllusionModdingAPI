@@ -69,6 +69,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Maker\AccessoriesApi.cs" />
     <Compile Include="Chara\CharacterApi.ControllerRegistration.cs" />
     <Compile Include="Chara\CharacterApi.cs" />
     <Compile Include="Chara\CharacterApi.Hooks.cs" />
