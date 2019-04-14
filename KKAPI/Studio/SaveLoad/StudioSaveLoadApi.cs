@@ -45,9 +45,12 @@ namespace KKAPI.Studio.SaveLoad
         /// <param name="extendedDataId">Extended data ID used by this behaviour. Set to null if not used.</param>
         public static void RegisterExtraBehaviour<T>(string extendedDataId) where T : SceneCustomFunctionController, new()
         {
-            var newBehaviour = _functionControllerContainer.AddComponent<T>();
-            newBehaviour.ExtendedDataId = extendedDataId;
-            _registeredHandlers.Add(newBehaviour, extendedDataId);
+            if (_functionControllerContainer != null)
+            {
+                var newBehaviour = _functionControllerContainer.AddComponent<T>();
+                newBehaviour.ExtendedDataId = extendedDataId;
+                _registeredHandlers.Add(newBehaviour, extendedDataId);
+            }
         }
 
         private static void OnSceneBeingSaved()
