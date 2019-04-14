@@ -3,11 +3,13 @@ using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
 using KKAPI.Chara;
+using KKAPI.MainGame;
 using KKAPI.Maker;
 using KKAPI.Studio;
 using KKAPI.Studio.SaveLoad;
 using Manager;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Logger = BepInEx.Logger;
 
 namespace KKAPI
@@ -43,9 +45,13 @@ namespace KKAPI
         public KoikatuAPI()
         {
             Instance = this;
-            
+
             Logger.Log(LogLevel.Debug, $"Game version {Game.Version} running under {System.Threading.Thread.CurrentThread.CurrentCulture.Name} culture");
             Logger.Log(LogLevel.Debug, $"Processor: {SystemInfo.processorType} ({SystemInfo.processorCount} cores @ {SystemInfo.processorFrequency}MHz); RAM: {SystemInfo.systemMemorySize}MB; OS: {SystemInfo.operatingSystem}");
+
+            SceneManager.sceneLoaded += (scene, mode) => Logger.Log(LogLevel.Debug, $"SceneManager.sceneLoaded - {scene.name} in {mode} mode");
+            SceneManager.sceneUnloaded += scene => Logger.Log(LogLevel.Debug, $"SceneManager.sceneUnloaded - {scene.name}");
+            SceneManager.activeSceneChanged += (prev, next) => Logger.Log(LogLevel.Debug, $"SceneManager.activeSceneChanged - from {prev.name} to {next.name}");
         }
 
         private void Start()
@@ -63,6 +69,7 @@ namespace KKAPI
             StudioAPI.Init(insideStudio);
             StudioSaveLoadApi.Init(insideStudio);
             CharacterApi.Init();
+            GameAPI.Init(insideStudio);
         }
 
         /// <summary>
@@ -95,7 +102,7 @@ namespace KKAPI
             {
                 if (level != LogLevel.None)
                 {
-                    Logger.Log(LogLevel.Message | level, 
+                    Logger.Log(LogLevel.Message | level,
                         $"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).GUID}\" was not found!");
                 }
 
@@ -105,7 +112,7 @@ namespace KKAPI
             {
                 if (level != LogLevel.None)
                 {
-                    Logger.Log(LogLevel.Message | level, 
+                    Logger.Log(LogLevel.Message | level,
                         $"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).GUID}\" is outdated! At least v{minimumVersion} is needed!");
                 }
 
@@ -132,7 +139,7 @@ namespace KKAPI
             {
                 if (level != LogLevel.None)
                 {
-                    Logger.Log(LogLevel.Message | level, 
+                    Logger.Log(LogLevel.Message | level,
                         $"{level.ToString().ToUpper()}: Plugin \"{guid}\" is incompatible with \"{MetadataHelper.GetMetadata(origin).GUID}\"!");
                 }
 

@@ -69,6 +69,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MainGame\GameApi.cs" />
+    <Compile Include="MainGame\GameAPI.Hooks.cs" />
+    <Compile Include="MainGame\GameCustomFunctionController.cs" />
+    <Compile Include="MainGame\Events\GameSaveLoadEventArgs.cs" />
+    <Compile Include="MainGame\GameExtensions.cs" />
+    <Compile Include="MainGame\TestGameFunctionController.cs" />
     <Compile Include="Maker\AccessoriesApi.cs" />
     <Compile Include="Chara\CharacterApi.ControllerRegistration.cs" />
     <Compile Include="Chara\CharacterApi.cs" />

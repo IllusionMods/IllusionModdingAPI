@@ -6,7 +6,7 @@ using Logger = BepInEx.Logger;
 
 namespace KKAPI.Studio.SaveLoad
 {
-    public class TestSceneFunctionController : SceneCustomFunctionController
+    internal class TestSceneFunctionController : SceneCustomFunctionController
     {
         protected internal override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
         {

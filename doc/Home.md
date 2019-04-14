@@ -13,6 +13,13 @@
 - [`CharaReloadEventArgs`](KKAPI.Chara.md#charareloadeventargs)
 - [`CoordinateEventArgs`](KKAPI.Chara.md#coordinateeventargs)
 
+## [KKAPI.MainGame](KKAPI.MainGame.md)
+
+- [`GameAPI`](KKAPI.MainGame.md#gameapi)
+- [`GameCustomFunctionController`](KKAPI.MainGame.md#gamecustomfunctioncontroller)
+- [`GameExtensions`](KKAPI.MainGame.md#gameextensions)
+- [`GameSaveLoadEventArgs`](KKAPI.MainGame.md#gamesaveloadeventargs)
+
 ## [KKAPI.Maker](KKAPI.Maker.md)
 
 - [`AccessoriesApi`](KKAPI.Maker.md#accessoriesapi)
@@ -57,6 +64,7 @@
 - [`SceneLoadEventArgs`](KKAPI.Studio.SaveLoad.md#sceneloadeventargs)
 - [`SceneOperationKind`](KKAPI.Studio.SaveLoad.md#sceneoperationkind)
 - [`StudioSaveLoadApi`](KKAPI.Studio.SaveLoad.md#studiosaveloadapi)
+- [`TestSceneFunctionController`](KKAPI.Studio.SaveLoad.md#testscenefunctioncontroller)
 
 ## [KKAPI.Studio.UI](KKAPI.Studio.UI.md)
 
