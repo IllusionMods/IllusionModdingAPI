@@ -64,7 +64,6 @@
 - [`SceneLoadEventArgs`](KKAPI.Studio.SaveLoad.md#sceneloadeventargs)
 - [`SceneOperationKind`](KKAPI.Studio.SaveLoad.md#sceneoperationkind)
 - [`StudioSaveLoadApi`](KKAPI.Studio.SaveLoad.md#studiosaveloadapi)
-- [`TestSceneFunctionController`](KKAPI.Studio.SaveLoad.md#testscenefunctioncontroller)
 
 ## [KKAPI.Studio.UI](KKAPI.Studio.UI.md)
 

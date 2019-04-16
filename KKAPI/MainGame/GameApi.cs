@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using ActionGame;
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using UnityEngine;
@@ -190,6 +191,36 @@ namespace KKAPI.MainGame
             catch (Exception e)
             {
                 Logger.Log(LogLevel.Error, e);
+            }
+        }
+
+        private static void OnDayChange(Cycle.Week day)
+        {
+            foreach (var behaviour in _registeredHandlers)
+            {
+                try
+                {
+                    behaviour.Key.OnDayChange(day);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(LogLevel.Error, e);
+                }
+            }
+        }
+
+        private static void OnPeriodChange(Cycle.Type period)
+        {
+            foreach (var behaviour in _registeredHandlers)
+            {
+                try
+                {
+                    behaviour.Key.OnPeriodChange(period);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(LogLevel.Error, e);
+                }
             }
         }
     }

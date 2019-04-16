@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using ActionGame;
 using Harmony;
 
 namespace KKAPI.MainGame
@@ -46,6 +48,20 @@ namespace KKAPI.MainGame
             public static void EndProcPost(HSceneProc __instance)
             {
                 OnHEnd(__instance);
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(Cycle), nameof(Cycle.Change), new Type[]{typeof(Cycle.Type)})]
+            public static void CycleChangeTypeHook(Cycle.Type type)
+            {
+                OnPeriodChange(type);
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(Cycle), nameof(Cycle.Change), new Type[]{typeof(Cycle.Week) })]
+            public static void CycleChangeWeekHook(Cycle.Week week)
+            {
+                OnDayChange(week);
             }
         }
     }

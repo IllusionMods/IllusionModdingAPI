@@ -13,5 +13,23 @@
         {
             return hFlag.mode == HFlag.EMode.peeping && hFlag.nowAnimationInfo.nameAnimation == "シャワー覗き";
         }
+
+        /// <summary>
+        /// Get the persisting heroine object that describes this character.
+        /// Returns null if the heroine could not be found. Works only in the main game.
+        /// </summary>
+        public static SaveData.Heroine GetHeroine(this ChaControl chaControl)
+        {
+            return Manager.Game.Instance?.HeroineList?.Find(heroine => heroine.chaCtrl == chaControl);
+        }
+
+        /// <summary>
+        /// Get the persisting heroine object that describes this character.
+        /// Returns null if the heroine could not be found. Works only in the main game.
+        /// </summary>
+        public static SaveData.Heroine GetHeroine(this ChaFileControl chaFile)
+        {
+            return Manager.Game.Instance?.HeroineList?.Find(heroine => heroine.charFile == chaFile);
+        }
     }
 }

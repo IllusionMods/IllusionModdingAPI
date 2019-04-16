@@ -66,5 +66,15 @@ namespace KKAPI.MainGame
                 _cycle = FindObjectOfType<Cycle>();
             return _cycle;
         }
+
+        /// <summary>
+        /// Triggered when the current day changes in story mode.
+        /// </summary>
+        protected internal virtual void OnDayChange(Cycle.Week day) { }
+
+        /// <summary>
+        /// Triggered when the current time of the day changes in story mode.
+        /// </summary>
+        protected internal virtual void OnPeriodChange(Cycle.Type period) { }
     }
 }

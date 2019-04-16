@@ -35,10 +35,12 @@ Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `void` | OnDayChange(`Week` day) |  | 
 | `void` | OnEndH(`HSceneProc` proc, `Boolean` freeH) |  | 
 | `void` | OnEnterNightMenu() |  | 
 | `void` | OnGameLoad(`GameSaveLoadEventArgs` args) |  | 
 | `void` | OnGameSave(`GameSaveLoadEventArgs` args) |  | 
+| `void` | OnPeriodChange(`Type` period) |  | 
 | `void` | OnStartH(`HSceneProc` proc, `Boolean` freeH) |  | 
 
 
@@ -60,6 +62,8 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `Heroine` | GetHeroine(this `ChaControl` chaControl) |  | 
+| `Heroine` | GetHeroine(this `ChaFileControl` chaFile) |  | 
 | `Boolean` | IsShowerPeeping(this `HFlag` hFlag) |  | 
 
 
