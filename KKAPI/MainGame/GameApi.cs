@@ -90,9 +90,8 @@ namespace KKAPI.MainGame
                 }
             };
 
-#if DEBUG
-            RegisterExtraBehaviour<TestGameFunctionController>(null);
-#endif
+            if (KoikatuAPI.EnableDebugLogging.Value)
+                RegisterExtraBehaviour<TestGameFunctionController>(null);
         }
 
         private static void OnGameBeingLoaded(string path, string fileName)

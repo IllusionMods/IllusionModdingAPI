@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
@@ -37,7 +38,16 @@ namespace KKAPI
         /// </summary>
         public const string GUID = "marco.kkapi";
 
+        [DisplayName("Show debug messages")]
+        [Description("Display additional log messages when certain events are triggered within KKAPI. Useful for plugin devs to understand what happens when.")]
+        public static ConfigWrapper<bool> EnableDebugLogging { get; }
+
         internal static KoikatuAPI Instance { get; private set; }
+
+        static KoikatuAPI()
+        {
+            EnableDebugLogging = new ConfigWrapper<bool>(nameof(EnableDebugLogging), GUID, false);
+        }
 
         /// <summary>
         /// Don't use manually

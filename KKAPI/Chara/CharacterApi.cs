@@ -126,6 +126,9 @@ namespace KKAPI.Chara
                 if (cf != null)
                     OnCoordinateBeingLoaded(cf, file);
             };
+
+            if(KoikatuAPI.EnableDebugLogging.Value)
+                RegisterExtraBehaviour<TestCharaCustomFunctionController>(null);
         }
 
         private static void CreateOrAddBehaviours(ChaControl target)

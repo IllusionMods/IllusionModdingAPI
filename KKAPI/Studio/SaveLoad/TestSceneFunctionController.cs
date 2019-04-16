@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using BepInEx.Logging;
+﻿using BepInEx.Logging;
 using KKAPI.Utilities;
 using Studio;
 using Logger = BepInEx.Logger;
@@ -19,4 +18,3 @@ namespace KKAPI.Studio.SaveLoad
         }
     }
 }
-#endif

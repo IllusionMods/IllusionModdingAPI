@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using ActionGame;
+﻿using ActionGame;
 using BepInEx;
 using BepInEx.Logging;
 
@@ -43,4 +42,3 @@ namespace KKAPI.MainGame
         }
     }
 }
-#endif
