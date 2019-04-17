@@ -54,6 +54,30 @@ namespace KKAPI.Chara
         }
 
         /// <summary>
+        /// Get the first controller that was registered with the specified extendedDataId.
+        /// </summary>
+        public static ControllerRegistration GetRegisteredBehaviour(string extendedDataId)
+        {
+            return _registeredHandlers.Find(registration => string.Equals(registration.ExtendedDataId, extendedDataId, StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// Get the first controller of the specified type that was registered. The type has to be an exact match.
+        /// </summary>
+        public static ControllerRegistration GetRegisteredBehaviour(Type controllerType)
+        {
+            return _registeredHandlers.Find(registration => registration.ControllerType == controllerType);
+        }
+
+        /// <summary>
+        /// Get the first controller of the specified type that was registered with the specified extendedDataId. The type has to be an exact match.
+        /// </summary>
+        public static ControllerRegistration GetRegisteredBehaviour(Type controllerType, string extendedDataId)
+        {
+            return _registeredHandlers.Find(registration => registration.ControllerType == controllerType && string.Equals(registration.ExtendedDataId, extendedDataId, StringComparison.Ordinal));
+        }
+
+        /// <summary>
         /// Register new functionality that will be automatically added to all characters (where applicable).
         /// Offers easy API for saving and loading extended data, and for running logic to apply it to the characters.
         /// All necessary hooking and event subscribing is done for you. All you have to do is create a type
