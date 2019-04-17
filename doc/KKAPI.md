@@ -38,6 +38,7 @@ Static Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `ConfigWrapper<Boolean>` | EnableDebugLogging |  | 
 | `KoikatuAPI` | Instance |  | 
 
 

@@ -39,7 +39,8 @@ namespace KKAPI
         public const string GUID = "marco.kkapi";
 
         [DisplayName("Show debug messages")]
-        [Description("Display additional log messages when certain events are triggered within KKAPI. Useful for plugin devs to understand what happens when.")]
+        [Description("Enables display of additional log messages when certain events are triggered within KKAPI. " +
+                     "Useful for plugin devs to understand when controller messages are fired.")]
         public static ConfigWrapper<bool> EnableDebugLogging { get; }
 
         internal static KoikatuAPI Instance { get; private set; }
