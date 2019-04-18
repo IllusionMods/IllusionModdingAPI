@@ -74,7 +74,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var go = new GameObject("image" + GuiApiNameAppendix, typeof(RectTransform), typeof(LayoutElement));
+            var go = new GameObject("image", typeof(RectTransform), typeof(LayoutElement));
             go.transform.SetParent(subCategoryList, false);
             go.layer = 5;
             var le = go.GetComponent<LayoutElement>();

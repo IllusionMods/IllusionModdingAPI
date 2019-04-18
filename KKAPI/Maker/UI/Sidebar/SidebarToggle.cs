@@ -33,9 +33,8 @@ namespace KKAPI.Maker.UI.Sidebar
             tgl.graphic.raycastTarget = true;
             tgl.onValueChanged.RemoveAllListeners();
 
-            BufferedValueChanged.Subscribe(val => tgl.isOn = val);
             tgl.onValueChanged.AddListener(SetNewValue);
-            SetNewValue(Value);
+            BufferedValueChanged.Subscribe(val => tgl.isOn = val);
 
             var txt = copy.GetComponentInChildren<TextMeshProUGUI>();
             txt.text = Text;

@@ -55,7 +55,7 @@ namespace KKAPI.Maker.UI
         protected override GameObject OnCreateControl(Transform loadBoxTransform)
         {
             var copy = Object.Instantiate(_baseToggle, _root.transform);
-            copy.name = "tglItem" + GuiApiNameAppendix;
+            copy.name = "tglItem";
 
             var tgl = copy.GetComponentInChildren<Toggle>();
             tgl.onValueChanged.AddListener(SetNewValue);

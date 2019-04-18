@@ -55,7 +55,7 @@ namespace KKAPI.Maker.UI
 
             _dropdownCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
             _dropdownCopy.gameObject.SetActive(false);
-            _dropdownCopy.name = "ddList" + GuiApiNameAppendix;
+            _dropdownCopy.name = "ddList";
 
             var dd = _dropdownCopy.GetComponentInChildren<TMP_Dropdown>();
             dd.onValueChanged.RemoveAllListeners();

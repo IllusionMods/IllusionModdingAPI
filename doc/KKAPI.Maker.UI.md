@@ -20,6 +20,7 @@ Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `void` | CreateControl(`Transform` subCategoryList) |  | 
 | `void` | Dispose() |  | 
 | `void` | SetNewValue(`TValue` newValue) | Trigger value changed events and set the value | 
 
@@ -39,6 +40,7 @@ Properties
 | --- | --- | --- | 
 | `MakerCategory` | Category | Category and subcategory that this control is inside of. | 
 | `GameObject` | ControlObject | GameObject of the control. Populated once instantiated | 
+| `IEnumerable<GameObject>` | ControlObjects |  | 
 | `Boolean` | Exists | True if the control is currently instantiated in the scene | 
 | `BaseUnityPlugin` | Owner | The plugin that owns this custom control. | 
 | `Color` | TextColor | Text color of the control's description text (usually on the left).  Can only set this before the control is created. | 

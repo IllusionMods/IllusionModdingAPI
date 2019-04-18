@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BepInEx;
 using UniRx;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace KKAPI.Maker.UI
 {
@@ -13,8 +16,9 @@ namespace KKAPI.Maker.UI
         /// <summary>
         /// Added to the end of most custom controls to mark them as being created by this API.
         /// </summary>
-        public static readonly string GuiApiNameAppendix = "(GUIAPI)";
+        public static readonly string GuiApiNameAppendix = "(MakerAPI)";
         private static Transform _guiCacheTransfrom;
+        private readonly List<GameObject> _controlObjects = new List<GameObject>(1);
 
         /// <summary>
         /// Create a new custom control
@@ -27,13 +31,17 @@ namespace KKAPI.Maker.UI
             Owner = owner;
 
             Visible = new BehaviorSubject<bool>(true);
-            Visible.Subscribe(b => ControlObject?.SetActive(b));
+            Visible.Subscribe(b =>
+            {
+                foreach (var controlObject in ControlObjects)
+                    controlObject.SetActive(b);
+            });
         }
 
         /// <summary>
         /// Category and subcategory that this control is inside of.
         /// </summary>
-        public MakerCategory Category { get; }
+        public MakerCategory Category { get; internal set; }
 
         /// <summary>
         /// Parent transform that holds temporary gui entries used to instantiate custom controls.
@@ -63,11 +71,20 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         public abstract void Dispose();
 
-        internal void CreateControl(Transform subCategoryList)
+        internal virtual void CreateControl(Transform subCategoryList)
         {
-            ControlObject = OnCreateControl(subCategoryList);
-            ControlObject.SetActive(Visible.Value);
+            var control = OnCreateControl(subCategoryList);
+
+            control.name += GuiApiNameAppendix;
+
+            // Play nice with the accessory window (lower max width)
+            var layoutElement = control.GetComponent<LayoutElement>();
+            if (layoutElement != null) layoutElement.minWidth = 300;
+
+            control.SetActive(Visible.Value);
+            _controlObjects.Add(control);
         }
+
         /// <summary>
         /// Used by the API to actually create the custom control.
         /// Should return main GameObject of the control
@@ -91,13 +108,20 @@ namespace KKAPI.Maker.UI
         public BehaviorSubject<bool> Visible { get; }
 
         /// <summary>
-        /// GameObject of the control. Populated once instantiated
+        /// GameObject(s) of the control. Populated once instantiated.
+        /// Contains 1 item in most cases, can contain multiple in case of accessory window controls.
         /// </summary>
-        public GameObject ControlObject { get; private set; }
+        public IEnumerable<GameObject> ControlObjects => _controlObjects.Where(x => x != null);
+
+        /// <summary>
+        /// GameObject of the control. Populated once instantiated.
+        /// If there are multiple objects, returns one of them. Use <see cref="ControlObjects"/> in that case.
+        /// </summary>
+        public GameObject ControlObject => _controlObjects.FirstOrDefault(x => x != null);
 
         /// <summary>
         /// True if the control is currently instantiated in the scene
         /// </summary>
-        public bool Exists => ControlObject != null;
+        public bool Exists => _controlObjects.Any(x => x != null);
     }
 }

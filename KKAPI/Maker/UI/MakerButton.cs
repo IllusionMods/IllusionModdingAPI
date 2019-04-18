@@ -50,7 +50,7 @@ namespace KKAPI.Maker.UI
 
             _buttonCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
             _buttonCopy.gameObject.SetActive(false);
-            _buttonCopy.name = "btnCustom" + GuiApiNameAppendix;
+            _buttonCopy.name = "btnCustom";
 
             var button = _buttonCopy.GetComponentInChildren<Button>();
             button.onClick.RemoveAllListeners();

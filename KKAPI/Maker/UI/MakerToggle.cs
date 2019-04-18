@@ -57,7 +57,7 @@ namespace KKAPI.Maker.UI
 
             var copy = Object.Instantiate(original, GuiCacheTransfrom, true);
             copy.gameObject.SetActive(false);
-            copy.name = "tglSingle" + GuiApiNameAppendix;
+            copy.name = "tglSingle";
 
             var toggle = copy.GetComponentInChildren<Toggle>();
             toggle.onValueChanged.RemoveAllListeners();

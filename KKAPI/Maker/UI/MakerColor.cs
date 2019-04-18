@@ -58,7 +58,7 @@ namespace KKAPI.Maker.UI
 
             _colorCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
             _colorCopy.gameObject.SetActive(false);
-            _colorCopy.name = "btnColor" + GuiApiNameAppendix;
+            _colorCopy.name = "btnColor";
 
             var button = _colorCopy.GetComponentInChildren<Button>();
             button.onClick.RemoveAllListeners();

@@ -70,7 +70,7 @@ namespace KKAPI.Maker.UI
 
             _sliderCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
             _sliderCopy.gameObject.SetActive(false);
-            _sliderCopy.name = "sldTemp" + GuiApiNameAppendix;
+            _sliderCopy.name = "sldTemp";
 
             var slider = _sliderCopy.Find("Slider").GetComponent<Slider>();
             slider.onValueChanged.RemoveAllListeners();
@@ -99,7 +99,7 @@ namespace KKAPI.Maker.UI
         {
             var tr = Object.Instantiate(SliderCopy, subCategoryList, true);
 
-            tr.name = "sldTemp" + GuiApiNameAppendix;
+            tr.name = "sldTemp";
 
             var textMesh = tr.Find("textShape").GetComponent<TextMeshProUGUI>();
             textMesh.text = _settingName;

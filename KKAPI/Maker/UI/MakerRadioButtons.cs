@@ -64,7 +64,7 @@ namespace KKAPI.Maker.UI
         {
             var tr = Object.Instantiate(RadioCopy, subCategoryList, true);
 
-            tr.name = "rb" + GuiApiNameAppendix;
+            tr.name = "rb";
 
             var settingName = tr.Find("textTglTitle").GetComponent<TextMeshProUGUI>();
             settingName.text = _settingName;
@@ -134,7 +134,7 @@ namespace KKAPI.Maker.UI
 
             _radioCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
             _radioCopy.gameObject.SetActive(false);
-            _radioCopy.name = "rbSide" + GuiApiNameAppendix;
+            _radioCopy.name = "rbSide";
 
             Object.DestroyImmediate(_radioCopy.GetComponent<ToggleGroup>());
 

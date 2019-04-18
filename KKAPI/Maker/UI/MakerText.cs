@@ -43,7 +43,7 @@ namespace KKAPI.Maker.UI
 
             _textCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
             _textCopy.gameObject.SetActive(false);
-            _textCopy.name = "txtCustom" + GuiApiNameAppendix;
+            _textCopy.name = "txtCustom";
         }
 
         /// <inheritdoc />

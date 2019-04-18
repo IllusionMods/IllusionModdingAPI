@@ -14,7 +14,7 @@ namespace KKAPI.Maker.UI
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var s = Object.Instantiate(SourceSeparator, subCategoryList, false);
-            s.name = "Separate" + GuiApiNameAppendix;
+            s.name = "Separate";
             return s.gameObject;
         }
 

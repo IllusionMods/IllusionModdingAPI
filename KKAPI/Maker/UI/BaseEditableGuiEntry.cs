@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using UniRx;
+using UnityEngine;
 
 namespace KKAPI.Maker.UI
 {
@@ -31,7 +32,7 @@ namespace KKAPI.Maker.UI
                     _incomingValue.OnNext(value);
 
                     // If the control is instantiated it will fire _outgoingValue by itself
-                    if (ControlObject == null)
+                    if (!Exists || !_firingEnabled)
                         _outgoingValue.OnNext(value);
                 }
             }
@@ -53,8 +54,32 @@ namespace KKAPI.Maker.UI
         /// </summary>
         protected void SetNewValue(TValue newValue)
         {
+            if (Equals(newValue, _incomingValue.Value))
+                return;
+
             _incomingValue.OnNext(newValue);
-            _outgoingValue.OnNext(newValue);
+
+            if (_firingEnabled)
+                _outgoingValue.OnNext(newValue);
+        }
+
+        private bool _firingEnabled;
+
+        internal override void CreateControl(Transform subCategoryList)
+        {
+            var wasCreated = Exists;
+
+            _firingEnabled = false;
+            base.CreateControl(subCategoryList);
+            _firingEnabled = true;
+
+            // Trigger value changed events after the control is created to make sure everything updates its state
+            // Make sure this only happens with the 1st copy of the control, so it's not fired for every accessory slot
+            if (!wasCreated)
+            {
+                _incomingValue.OnNext(_incomingValue.Value);
+                _outgoingValue.OnNext(_incomingValue.Value);
+            }
         }
 
         /// <inheritdoc />
