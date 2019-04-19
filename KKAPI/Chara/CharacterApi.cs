@@ -151,7 +151,7 @@ namespace KKAPI.Chara
                     OnCoordinateBeingLoaded(cf, file);
             };
 
-            if(KoikatuAPI.EnableDebugLogging.Value)
+            if(KoikatuAPI.EnableDebugLogging)
                 RegisterExtraBehaviour<TestCharaCustomFunctionController>(null);
         }
 

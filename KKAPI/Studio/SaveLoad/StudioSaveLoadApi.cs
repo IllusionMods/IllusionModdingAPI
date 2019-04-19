@@ -24,7 +24,7 @@ namespace KKAPI.Studio.SaveLoad
             _functionControllerContainer = new GameObject("SceneCustomFunctionController Zoo");
             _functionControllerContainer.transform.SetParent(BepInEx.Bootstrap.Chainloader.ManagerObject.transform, false);
 
-            if (KoikatuAPI.EnableDebugLogging.Value)
+            if (KoikatuAPI.EnableDebugLogging)
                 RegisterExtraBehaviour<TestSceneFunctionController>(null);
         }
 

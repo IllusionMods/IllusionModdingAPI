@@ -38,16 +38,37 @@ namespace KKAPI
         /// </summary>
         public const string GUID = "marco.kkapi";
 
+        /// <summary>
+        /// Enables display of additional log messages when certain events are triggered within KKAPI. 
+        /// Useful for plugin devs to understand when controller messages are fired.
+        /// </summary>
+        [Browsable(false)]
+        public static bool EnableDebugLogging
+        {
+            get
+            {
+#if DEBUG
+                return true;
+#endif
+                return EnableDebugLoggingSetting.Value;
+            }
+            set
+            {
+                EnableDebugLoggingSetting.Value = value;
+            }
+        }
+
         [DisplayName("Show debug messages")]
         [Description("Enables display of additional log messages when certain events are triggered within KKAPI. " +
-                     "Useful for plugin devs to understand when controller messages are fired.")]
-        public static ConfigWrapper<bool> EnableDebugLogging { get; }
+                     "Useful for plugin devs to understand when controller messages are fired.\n\n" +
+                     "Changes take effect after game restart.")]
+        private static ConfigWrapper<bool> EnableDebugLoggingSetting { get; }
 
         internal static KoikatuAPI Instance { get; private set; }
 
         static KoikatuAPI()
         {
-            EnableDebugLogging = new ConfigWrapper<bool>(nameof(EnableDebugLogging), GUID, false);
+            EnableDebugLoggingSetting = new ConfigWrapper<bool>("EnableDebugLogging", GUID, false);
         }
 
         /// <summary>
@@ -159,7 +180,7 @@ namespace KKAPI
             return false;
         }
 
-        #region Synchronization
+#region Synchronization
 
         private static readonly object _invokeLock = new object();
         private static Action _invokeList;
@@ -191,6 +212,6 @@ namespace KKAPI
             toRun();
         }
 
-        #endregion
+#endregion
     }
 }

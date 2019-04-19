@@ -90,7 +90,7 @@ namespace KKAPI.MainGame
                 }
             };
 
-            if (KoikatuAPI.EnableDebugLogging.Value)
+            if (KoikatuAPI.EnableDebugLogging)
                 RegisterExtraBehaviour<TestGameFunctionController>(null);
         }
 
