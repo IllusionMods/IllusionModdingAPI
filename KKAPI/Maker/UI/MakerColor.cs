@@ -14,6 +14,8 @@ namespace KKAPI.Maker.UI
     {
         private static Transform _colorCopy;
 
+        private readonly BehaviorSubject<int> _colorBoxWidth = new BehaviorSubject<int>(276);
+
         /// <summary>
         /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
         /// </summary>
@@ -41,6 +43,17 @@ namespace KKAPI.Maker.UI
         /// If false, no color slider is shown and alpha is always 1f.
         /// </summary>
         public bool UseAlpha { get; }
+
+        /// <summary>
+        /// Width of the color box. Can adjust this to allow for longer label text.
+        /// Default width is 276 and might need to get lowered to allow longer labels.
+        /// The default color boxes in accessory window are 230 wide.
+        /// </summary>
+        public int ColorBoxWidth
+        {
+            get => _colorBoxWidth.Value;
+            set => _colorBoxWidth.OnNext(value);
+        }
 
         private static Transform ColorCopy
         {
@@ -99,6 +112,9 @@ namespace KKAPI.Maker.UI
 
             var previewImg = tr.Find("backrect/alpha/imgColorSample").GetComponent<Image>();
             BufferedValueChanged.Subscribe(c => previewImg.color = c);
+
+            var boxRt = tr.Find("backrect").GetComponent<RectTransform>();
+            _colorBoxWidth.Subscribe(width => boxRt.offsetMin = new Vector2(width * -1, boxRt.offsetMin.y));
 
             return tr.gameObject;
         }

@@ -111,6 +111,7 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `Int32` | ColorBoxWidth | Width of the color box. Can adjust this to allow for longer label text.  Default width is 276 and might need to get lowered to allow longer labels.  The default color boxes in accessory window are 230 wide. | 
 | `String` | SettingName | Name of the setting | 
 | `Boolean` | UseAlpha | If true, the color selector will allow the user to change alpha of the color.  If false, no color slider is shown and alpha is always 1f. | 
 
