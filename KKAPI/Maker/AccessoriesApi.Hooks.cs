@@ -1,6 +1,4 @@
-﻿using System;
-using BepInEx.Logging;
-using ChaCustom;
+﻿using ChaCustom;
 using Harmony;
 
 namespace KKAPI.Maker
@@ -14,6 +12,13 @@ namespace KKAPI.Maker
             public static void ChangeSlotPostfix(CustomAcsSelectKind __instance, int _no, bool open)
             {
                 OnSelectedMakerSlotChanged(__instance, _no);
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryKind))]
+            public static void UpdateSelectAccessoryKindPostfix(CvsAccessory __instance)
+            {
+                OnAccessoryKindChanged(__instance, (int) __instance.slotNo);
             }
         }
     }

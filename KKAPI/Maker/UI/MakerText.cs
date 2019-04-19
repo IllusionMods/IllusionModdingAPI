@@ -54,9 +54,6 @@ namespace KKAPI.Maker.UI
         }
 
         /// <inheritdoc />
-        public override void Dispose() { }
-
-        /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var tr = Object.Instantiate(TextCopy, subCategoryList, true);

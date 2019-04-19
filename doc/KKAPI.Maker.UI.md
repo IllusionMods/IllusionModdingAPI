@@ -42,6 +42,7 @@ Properties
 | `GameObject` | ControlObject | GameObject of the control. Populated once instantiated.  If there are multiple objects, returns one of them. Use `KKAPI.Maker.UI.BaseGuiEntry.ControlObjects` in that case. | 
 | `IEnumerable<GameObject>` | ControlObjects | GameObject(s) of the control. Populated once instantiated.  Contains 1 item in most cases, can contain multiple in case of accessory window controls. | 
 | `Boolean` | Exists | True if the control is currently instantiated in the scene | 
+| `Boolean` | IsDisposed | If true, the control has been disposed and can no longer be used, likely because the character maker exited.  A new control has to be created to be used again. | 
 | `BaseUnityPlugin` | Owner | The plugin that owns this custom control. | 
 | `Color` | TextColor | Text color of the control's description text (usually on the left).  Can only set this before the control is created. | 
 | `BehaviorSubject<Boolean>` | Visible | The control is visible to the user (usually the same as it's GameObject being active). | 
@@ -118,7 +119,6 @@ Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `void` | Dispose() |  | 
 | `void` | Initialize() |  | 
 | `GameObject` | OnCreateControl(`Transform` subCategoryList) |  | 
 
@@ -212,7 +212,6 @@ Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `void` | Dispose() |  | 
 | `void` | Initialize() |  | 
 | `GameObject` | OnCreateControl(`Transform` subCategoryList) |  | 
 
@@ -296,7 +295,6 @@ Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `void` | Dispose() |  | 
 | `void` | Initialize() |  | 
 | `GameObject` | OnCreateControl(`Transform` subCategoryList) |  | 
 
@@ -346,7 +344,6 @@ Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `void` | Dispose() |  | 
 | `void` | Initialize() |  | 
 | `GameObject` | OnCreateControl(`Transform` subCategoryList) |  | 
 

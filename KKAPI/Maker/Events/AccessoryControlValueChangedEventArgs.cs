@@ -2,9 +2,13 @@
 
 namespace KKAPI.Maker
 {
-    public sealed class AccessoryControlValueChangedEventArgs<TVal> : EventArgs
+    /// <summary>
+    /// Event args used in <see cref="AccessoryControlWrapper{T,TVal}"/>.
+    /// </summary>
+    public sealed class AccessoryWindowControlValueChangedEventArgs<TVal> : EventArgs
     {
-        public AccessoryControlValueChangedEventArgs(TVal newValue, int accessoryIndex)
+        /// <inheritdoc />
+        public AccessoryWindowControlValueChangedEventArgs(TVal newValue, int accessoryIndex)
         {
             NewValue = newValue;
             AccessoryIndex = accessoryIndex;

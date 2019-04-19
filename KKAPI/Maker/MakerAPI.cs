@@ -242,6 +242,9 @@ namespace KKAPI.Maker
             return control;
         }
 
+        /// <summary>
+        /// Add a control to the accessory selection and settings window.
+        /// </summary>
         public static T AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
         {
             if (control == null) throw new ArgumentNullException(nameof(control));

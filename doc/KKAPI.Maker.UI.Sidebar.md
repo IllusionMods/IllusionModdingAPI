@@ -19,7 +19,6 @@ Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `void` | Dispose() |  | 
 | `void` | Initialize() |  | 
 | `GameObject` | OnCreateControl(`Transform` subCategoryList) |  | 
 

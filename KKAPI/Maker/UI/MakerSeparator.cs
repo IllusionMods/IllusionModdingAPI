@@ -25,11 +25,6 @@ namespace KKAPI.Maker.UI
                 MakeCopy();
         }
 
-        /// <inheritdoc />
-        public override void Dispose()
-        {
-        }
-
         private static Transform SourceSeparator
         {
             get

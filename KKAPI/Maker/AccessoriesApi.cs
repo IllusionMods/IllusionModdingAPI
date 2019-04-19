@@ -49,9 +49,17 @@ namespace KKAPI.Maker
         /// Fires whenever the index of the currently selected accessory slot under Accessories group in Chara Maker is changed.
         /// This happens when user click on another slot.
         /// </summary>
-        public static event EventHandler<AccessorySlotChangeEventArgs> SelectedMakerAccSlotChanged;
+        public static event EventHandler<AccessorySlotEventArgs> SelectedMakerAccSlotChanged;
 
-        public static event EventHandler<AccessorySlotChangeEventArgs> MakerAccSlotAdded;
+        /// <summary>
+        /// A new slot was added by MoreAccessories. Adding 10 slots triggers this 10 times.
+        /// </summary>
+        public static event EventHandler<AccessorySlotEventArgs> MakerAccSlotAdded;
+
+        /// <summary>
+        /// Fires when user selects a different accessory in the accessory window.
+        /// </summary>
+        public static event EventHandler<AccessorySlotEventArgs> AccessoryKindChanged;
 
         /// <summary>
         /// Get the accessory given a slot index.
@@ -203,7 +211,7 @@ namespace KKAPI.Maker
             if (SelectedMakerAccSlotChanged == null) return;
             try
             {
-                SelectedMakerAccSlotChanged(source, new AccessorySlotChangeEventArgs(newSlotIndex));
+                SelectedMakerAccSlotChanged(source, new AccessorySlotEventArgs(newSlotIndex));
             }
             catch (Exception ex)
             {
@@ -218,11 +226,24 @@ namespace KKAPI.Maker
             if (MakerAccSlotAdded == null) return;
             try
             {
-                MakerAccSlotAdded(source, new AccessorySlotChangeEventArgs(newSlotIndex));
+                MakerAccSlotAdded(source, new AccessorySlotEventArgs(newSlotIndex));
             }
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error, "Subscription to SelectedMakerSlot crashed: " + ex);
+            }
+        }
+
+        private static void OnAccessoryKindChanged(object source, int slotNo)
+        {
+            if (AccessoryKindChanged == null) return;
+            try
+            {
+                AccessoryKindChanged(source, new AccessorySlotEventArgs(slotNo));
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Subscription to AccessoryKindChanged crashed: " + ex);
             }
         }
     }

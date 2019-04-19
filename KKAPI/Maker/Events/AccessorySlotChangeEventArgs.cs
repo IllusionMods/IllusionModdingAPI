@@ -3,9 +3,13 @@ using ChaCustom;
 
 namespace KKAPI.Maker
 {
-    public class AccessorySlotChangeEventArgs : EventArgs
+    /// <summary>
+    /// Event args for events that are related to accessory slot indexes.
+    /// </summary>
+    public class AccessorySlotEventArgs : EventArgs
     {
-        public AccessorySlotChangeEventArgs(int slotIndex)
+        /// <inheritdoc />
+        public AccessorySlotEventArgs(int slotIndex)
         {
             SlotIndex = slotIndex;
         }

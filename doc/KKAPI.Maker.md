@@ -31,24 +31,9 @@ Static Events
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `EventHandler<AccessorySlotChangeEventArgs>` | MakerAccSlotAdded |  | 
-| `EventHandler<AccessorySlotChangeEventArgs>` | SelectedMakerAccSlotChanged | Fires whenever the index of the currently selected accessory slot under Accessories group in Chara Maker is changed.  This happens when user click on another slot. | 
-
-
-## `AccessoryControlValueChangedEventArgs<TVal>`
-
-```csharp
-public class KKAPI.Maker.AccessoryControlValueChangedEventArgs<TVal>
-    : EventArgs
-
-```
-
-Properties
-
-| Type | Name | Summary | 
-| --- | --- | --- | 
-| `Int32` | AccessoryIndex | Index of the accessory the value was assigned to. | 
-| `TVal` | NewValue | Newly assigned value. | 
+| `EventHandler<AccessorySlotEventArgs>` | AccessoryKindChanged | Fires when user selects a different accessory in the accessory window. | 
+| `EventHandler<AccessorySlotEventArgs>` | MakerAccSlotAdded | A new slot was added by MoreAccessories. Adding 10 slots triggers this 10 times. | 
+| `EventHandler<AccessorySlotEventArgs>` | SelectedMakerAccSlotChanged | Fires whenever the index of the currently selected accessory slot under Accessories group in Chara Maker is changed.  This happens when user click on another slot. | 
 
 
 ## `AccessoryControlWrapper<T, TVal>`
@@ -65,14 +50,15 @@ Properties
 | --- | --- | --- | 
 | `T` | Control | The wrapped control. | 
 | `Int32` | CurrentlySelectedIndex | Index of the currently selected accessory. | 
+| `Boolean` | IsDisposed | If true, the control has been disposed and can no longer be used, likely because the character maker exited.  A new control has to be created to be used again. | 
 
 
 Events
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `EventHandler<AccessoryControlValueChangedEventArgs<TVal>>` | ValueChanged | Fired when | 
-| `EventHandler<AccessorySlotChangeEventArgs>` | VisibleIndexChanged | Fired when the currently visible accessory was changed by the user clicking on one of the slots. | 
+| `EventHandler<AccessoryWindowControlValueChangedEventArgs<TVal>>` | ValueChanged | Fired when the value of this control changes for any of the accessories. | 
+| `EventHandler<AccessorySlotEventArgs>` | VisibleIndexChanged | Fired when the currently visible accessory was changed by the user clicking on one of the slots. | 
 
 
 Methods
@@ -85,10 +71,18 @@ Methods
 | `void` | SetValue(`Int32` accessoryIndex, `TVal` value) | Set value of the control for the specified accessory. | 
 
 
-## `AccessorySlotChangeEventArgs`
+Static Events
 
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `EventHandler<AccessorySlotEventArgs>` | AccessoryKindChanged | Fires when user selects a different accessory in the accessory window. | 
+
+
+## `AccessorySlotEventArgs`
+
+Event args for events that are related to accessory slot indexes.
 ```csharp
-public class KKAPI.Maker.AccessorySlotChangeEventArgs
+public class KKAPI.Maker.AccessorySlotEventArgs
     : EventArgs
 
 ```
@@ -100,6 +94,23 @@ Properties
 | `ChaAccessoryComponent` | AccessoryComponent | Get accessory component. | 
 | `CvsAccessory` | CvsAccessory | Get accessory UI entry in maker. | 
 | `Int32` | SlotIndex | Currently opened accessory slot index. 0-indexed. | 
+
+
+## `AccessoryWindowControlValueChangedEventArgs<TVal>`
+
+Event args used in `KKAPI.Maker.AccessoryControlWrapper`2`.
+```csharp
+public class KKAPI.Maker.AccessoryWindowControlValueChangedEventArgs<TVal>
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Int32` | AccessoryIndex | Index of the accessory the value was assigned to. | 
+| `TVal` | NewValue | Newly assigned value. | 
 
 
 ## `ChaFileLoadedEventArgs`
@@ -166,7 +177,7 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `T` | AddAccessoryWindowControl(`T` control) |  | 
+| `T` | AddAccessoryWindowControl(`T` control) | Add a control to the accessory selection and settings window. | 
 | `T` | AddControl(`T` control) | Add custom controls. If you want to use custom sub categories, register them by calling AddSubCategory. | 
 | `T` | AddSidebarControl(`T` control) | Add a control to the right sidebar in chara maker (the "Control Panel" where you set eye blinking, mouth expressions etc.) | 
 | `void` | AddSubCategory(`MakerCategory` category) | Add custom sub categories. They need to be added before maker starts loading,  or in the `KKAPI.Maker.MakerAPI.RegisterCustomSubCategories` event. | 

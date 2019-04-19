@@ -20,11 +20,6 @@ namespace KKAPI.Maker.UI.Sidebar
         }
 
         /// <inheritdoc />
-        public override void Dispose()
-        {
-        }
-
-        /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var orig = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CvsDraw/Top/Separate");

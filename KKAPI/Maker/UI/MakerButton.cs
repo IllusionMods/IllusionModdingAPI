@@ -68,6 +68,7 @@ namespace KKAPI.Maker.UI
         public override void Dispose()
         {
             OnClick.RemoveAllListeners();
+            base.Dispose();
         }
 
         /// <inheritdoc />

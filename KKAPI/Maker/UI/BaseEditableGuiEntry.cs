@@ -87,6 +87,7 @@ namespace KKAPI.Maker.UI
         {
             _incomingValue.Dispose();
             _outgoingValue.Dispose();
+            base.Dispose();
         }
     }
 }

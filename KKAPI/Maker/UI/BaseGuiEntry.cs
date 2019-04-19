@@ -69,7 +69,16 @@ namespace KKAPI.Maker.UI
         /// Remove the control. Called when maker is quitting.
         /// </summary>
         /// <inheritdoc />
-        public abstract void Dispose();
+        public virtual void Dispose()
+        {
+            IsDisposed = true;
+        }
+
+        /// <summary>
+        /// If true, the control has been disposed and can no longer be used, likely because the character maker exited.
+        /// A new control has to be created to be used again.
+        /// </summary>
+        public bool IsDisposed { get; private set; }
 
         internal virtual void CreateControl(Transform subCategoryList)
         {
