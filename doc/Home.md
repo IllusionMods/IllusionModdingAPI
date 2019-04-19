@@ -23,6 +23,7 @@
 ## [KKAPI.Maker](KKAPI.Maker.md)
 
 - [`AccessoriesApi`](KKAPI.Maker.md#accessoriesapi)
+- [`AccessorySlotChangeEventArgs`](KKAPI.Maker.md#accessoryslotchangeeventargs)
 - [`ChaFileLoadedEventArgs`](KKAPI.Maker.md#chafileloadedeventargs)
 - [`CharacterLoadFlags`](KKAPI.Maker.md#characterloadflags)
 - [`MakerAPI`](KKAPI.Maker.md#makerapi)

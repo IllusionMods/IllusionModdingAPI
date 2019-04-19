@@ -1,6 +1,6 @@
 ## `AccessoriesApi`
 
-Collection of methods useful for interfacing with character accessories. Has methods both for chara maker and everywhere else.  Abstracts away MoreAccessories so you don't have to worry if it's installed or not.
+Collection of methods useful for interfacing with character accessories. Has methods both for chara maker and  everywhere else.  Abstracts away MoreAccessories so you don't have to worry if it's installed or not.
 ```csharp
 public static class KKAPI.Maker.AccessoriesApi
 
@@ -12,6 +12,8 @@ Static Properties
 | --- | --- | --- | 
 | `Boolean` | AccessoryCanvasVisible | Returns true if the accessory tab in maker is currently selected. | 
 | `Boolean` | MoreAccessoriesInstalled | True if the MoreAccessories mod is installed.  Avoid relying on this and instead use other methods in this class since they will handle this for you. | 
+| `Int32` | SelectedMakerAccSlot | Get the index of the currently selected accessory slot under Accessories group in Chara Maker.  If none are selected or chara maker is not opened, returns -1. 0-indexed.  Use `KKAPI.Maker.AccessoriesApi.SelectedMakerAccSlotChanged` to get notified when the selected slot changes. | 
+| `IObservable<AccessorySlotChangeEventArgs>` | SelectedMakerAccSlotChanged | Fires whenever the index of the currently selected accessory slot under Accessories group in Chara Maker is changed.  This happens when user click on another slot. | 
 
 
 Static Methods
@@ -23,8 +25,24 @@ Static Methods
 | `CvsAccessory` | GetCvsAccessory(`Int32` index) | Get accessory UI entry in maker.  Only works inside chara maker. | 
 | `Int32` | GetCvsAccessoryCount() | Get count of the UI entries for accessories (accessory slots).  Returns 0 outside of chara maker. | 
 | `ChaControl` | GetOwningChaControl(this `ChaAccessoryComponent` accessoryComponent) | Get the ChaControl that owns this accessory | 
-| `Int32` | GetSelectedAccessoryIndex() | Get the index of the currently selected accessory tab under Accessories group in Chara Maker.  If none are selected or chara maker is not opened, returns -1. | 
 | `void` | Init() |  | 
+
+
+## `AccessorySlotChangeEventArgs`
+
+```csharp
+public class KKAPI.Maker.AccessorySlotChangeEventArgs
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `ChaAccessoryComponent` | AccessoryComponent | Get accessory component. | 
+| `CvsAccessory` | CvsAccessory | Get accessory UI entry in maker. | 
+| `Int32` | SlotIndex | Currently opened accessory slot index. 0-indexed. | 
 
 
 ## `ChaFileLoadedEventArgs`
@@ -91,6 +109,7 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `T` | AddAccessoryWindowControl(`T` control) |  | 
 | `T` | AddControl(`T` control) | Add custom controls. If you want to use custom sub categories, register them by calling AddSubCategory. | 
 | `T` | AddSidebarControl(`T` control) | Add a control to the right sidebar in chara maker (the "Control Panel" where you set eye blinking, mouth expressions etc.) | 
 | `void` | AddSubCategory(`MakerCategory` category) | Add custom sub categories. They need to be added before maker starts loading,  or in the `KKAPI.Maker.MakerAPI.RegisterCustomSubCategories` event. | 

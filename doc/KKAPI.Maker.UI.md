@@ -39,8 +39,8 @@ Properties
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `MakerCategory` | Category | Category and subcategory that this control is inside of. | 
-| `GameObject` | ControlObject | GameObject of the control. Populated once instantiated | 
-| `IEnumerable<GameObject>` | ControlObjects |  | 
+| `GameObject` | ControlObject | GameObject of the control. Populated once instantiated.  If there are multiple objects, returns one of them. Use `KKAPI.Maker.UI.BaseGuiEntry.ControlObjects` in that case. | 
+| `IEnumerable<GameObject>` | ControlObjects | GameObject(s) of the control. Populated once instantiated.  Contains 1 item in most cases, can contain multiple in case of accessory window controls. | 
 | `Boolean` | Exists | True if the control is currently instantiated in the scene | 
 | `BaseUnityPlugin` | Owner | The plugin that owns this custom control. | 
 | `Color` | TextColor | Text color of the control's description text (usually on the left).  Can only set this before the control is created. | 

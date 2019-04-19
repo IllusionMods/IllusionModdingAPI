@@ -26,9 +26,9 @@ Static Methods
 | --- | --- | --- | 
 | `ChaControl` | FileControlToChaControl(`ChaFileControl` fileControl) | Get ChaControl that is using the specified ChaFileControl. | 
 | `IEnumerable<CharaCustomFunctionController>` | GetBehaviours(`ChaControl` character = null) | Get all extra behaviours for specified character. If null, returns extra behaviours for all characters. | 
-| `ControllerRegistration` | GetRegisteredBehaviour(`String` extendedDataId) |  | 
-| `ControllerRegistration` | GetRegisteredBehaviour(`Type` controllerType) |  | 
-| `ControllerRegistration` | GetRegisteredBehaviour(`Type` controllerType, `String` extendedDataId) |  | 
+| `ControllerRegistration` | GetRegisteredBehaviour(`String` extendedDataId) | Get the first controller that was registered with the specified extendedDataId. | 
+| `ControllerRegistration` | GetRegisteredBehaviour(`Type` controllerType) | Get the first controller that was registered with the specified extendedDataId. | 
+| `ControllerRegistration` | GetRegisteredBehaviour(`Type` controllerType, `String` extendedDataId) | Get the first controller that was registered with the specified extendedDataId. | 
 | `void` | Init() |  | 
 | `void` | RegisterExtraBehaviour(`String` extendedDataId) | Register new functionality that will be automatically added to all characters (where applicable).  Offers easy API for saving and loading extended data, and for running logic to apply it to the characters.  All necessary hooking and event subscribing is done for you. All you have to do is create a type  that inherits from <code>CharaExtraBehaviour</code> (don't make instances, the API will make them for you). | 
 | `void` | RegisterExtraBehaviour(`String` extendedDataId, `CopyExtendedDataFunc` customDataCopier) | Register new functionality that will be automatically added to all characters (where applicable).  Offers easy API for saving and loading extended data, and for running logic to apply it to the characters.  All necessary hooking and event subscribing is done for you. All you have to do is create a type  that inherits from <code>CharaExtraBehaviour</code> (don't make instances, the API will make them for you). | 
