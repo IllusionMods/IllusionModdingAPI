@@ -85,6 +85,8 @@
     <Compile Include="Chara\Events\CharaReloadEventArgs.cs" />
     <Compile Include="Chara\Events\CoordinateEventArgs.cs" />
     <Compile Include="KoikatuAPI.cs" />
+    <Compile Include="Maker\AccessoriesApi.Hooks.cs" />
+    <Compile Include="Maker\Events\AccessorySlotChangeEventArgs.cs" />
     <Compile Include="Maker\UI\Sidebar\SidebarSeparator.cs" />
     <Compile Include="Maker\UI\Sidebar\SidebarToggle.cs" />
     <Compile Include="Maker\UI\MakerCoordinateLoadToggle.cs" />

@@ -11,6 +11,7 @@ using KKAPI.Maker.UI;
 using KKAPI.Maker.UI.Sidebar;
 using UniRx;
 using UnityEngine;
+using UnityEngine.UI;
 using Logger = BepInEx.Logger;
 using Object = UnityEngine.Object;
 
@@ -24,6 +25,9 @@ namespace KKAPI.Maker
         private static readonly List<MakerCategory> _categories = new List<MakerCategory>();
         private static readonly List<BaseGuiEntry> _guiEntries = new List<BaseGuiEntry>();
         private static readonly List<BaseGuiEntry> _sidebarEntries = new List<BaseGuiEntry>();
+        private static readonly List<BaseGuiEntry> _accessoryWindowEntries = new List<BaseGuiEntry>();
+
+        private static readonly MakerCategory _accessorySlotWindowCategory = new MakerCategory("04_AccessoryTop", "Slots");
 
         private static void CreateCustomControls()
         {
@@ -45,6 +49,9 @@ namespace KKAPI.Maker
                 Logger.Log(LogLevel.Debug, $"[MakerAPI] Added {_sidebarEntries.Count} custom controls " +
                                            "to Control Panel sidebar");
             }
+
+            if (_accessoryWindowEntries.Any())
+                CreateCustomAccessoryWindowControls();
         }
 
         private static void CreateCustomControlsInCategory(Transform categoryTransfrom)
@@ -57,20 +64,7 @@ namespace KKAPI.Maker
 
                 if (categorySubTransform != null)
                 {
-                    var contentParent = FindSubcategoryContentParent(categorySubTransform);
-
-                    BaseUnityPlugin lastOwner = contentParent.childCount > 1 ? KoikatuAPI.Instance : null;
-                    foreach (var customControl in subCategoryGroup)
-                    {
-                        if (lastOwner != customControl.Owner && lastOwner != null)
-                            new MakerSeparator(new MakerCategory(null, null), KoikatuAPI.Instance).CreateControl(contentParent);
-
-                        customControl.CreateControl(contentParent);
-                        lastOwner = customControl.Owner;
-                    }
-
-                    Logger.Log(LogLevel.Debug, $"[MakerAPI] Added {subCategoryGroup.Count()} custom controls " +
-                                               $"to {categoryTransfrom.name}/{subCategoryGroup.Key}");
+                    CreateCustomControlsInSubCategory(categorySubTransform, subCategoryGroup.ToList());
                 }
                 else
                 {
@@ -80,14 +74,51 @@ namespace KKAPI.Maker
             }
         }
 
+        private static void CreateCustomControlsInSubCategory(Transform subCategoryTransform, ICollection<BaseGuiEntry> entriesToAdd)
+        {
+            var contentParent = FindSubcategoryContentParent(subCategoryTransform);
+
+            BaseUnityPlugin lastOwner = contentParent.childCount > 1 ? KoikatuAPI.Instance : null;
+            foreach (var customControl in entriesToAdd)
+            {
+                if (lastOwner != customControl.Owner && lastOwner != null)
+                    new MakerSeparator(new MakerCategory(null, null), KoikatuAPI.Instance).CreateControl(contentParent);
+
+                customControl.CreateControl(contentParent);
+                lastOwner = customControl.Owner;
+            }
+
+            var category = entriesToAdd.First().Category;
+            Logger.Log(LogLevel.Debug, $"[MakerAPI] Added {entriesToAdd.Count()} custom controls " +
+                                       $"to {category.CategoryName}/{category.SubCategoryName}");
+        }
+
+        private static void CreateCustomAccessoryWindowControls()
+        {
+            //@"CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/04_AccessoryTop/Slots/Viewport/Content/tglSlot01";
+            // todo add to moreaccs windows?
+            var container = GameObject.Find("tglSlot01").transform.parent;
+            foreach (var slotTransform in container.Cast<Transform>().Where(x => x.name.StartsWith("tglSlot")).OrderBy(x => x.name))
+            {
+                // Remove the red info text at the bottom to free up some space
+                var contentParent = FindSubcategoryContentParent(slotTransform);
+                var text = contentParent.Find("txtExplanation");
+                text.GetComponent<LayoutElement>().enabled = false;
+                text.Cast<Transform>().First().gameObject.SetActive(false);
+
+                CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
+            }
+        }
+
         private static void RemoveCustomControls()
         {
-            foreach (var guiEntry in _guiEntries.Concat(_sidebarEntries))
+            foreach (var guiEntry in _guiEntries.Concat(_sidebarEntries).Concat(_accessoryWindowEntries))
                 guiEntry.Dispose();
 
             _guiEntries.Clear();
             _categories.Clear();
             _sidebarEntries.Clear();
+            _accessoryWindowEntries.Clear();
 
             MakerLoadToggle.Reset();
             MakerCoordinateLoadToggle.Reset();
@@ -194,6 +225,15 @@ namespace KKAPI.Maker
             if (control == null) throw new ArgumentNullException(nameof(control));
 
             _sidebarEntries.Add(control);
+            return control;
+        }
+
+        public static T AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
+        {
+            if (control == null) throw new ArgumentNullException(nameof(control));
+
+            control.Category = _accessorySlotWindowCategory;
+            _accessoryWindowEntries.Add(control);
             return control;
         }
 
@@ -405,6 +445,9 @@ namespace KKAPI.Maker
                 .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
             AddSidebarControl(new SidebarToggle("Test toggle2", true, instance))
                 .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, b));
+
+            AddAccessoryWindowControl(new MakerToggle(cat, "test toggle", null))
+                .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, $"Toggled to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
         }
 
         /// <summary>
