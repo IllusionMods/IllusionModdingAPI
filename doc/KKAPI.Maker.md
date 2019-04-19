@@ -10,22 +10,79 @@ Static Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Boolean` | AccessoryCanvasVisible | Returns true if the accessory tab in maker is currently selected. | 
+| `Boolean` | AccessoryCanvasVisible | Returns true if the accessory tab in maker is currently selected.  If you want to know if the user can actually see the tab on the screen check `KKAPI.Maker.MakerAPI.IsInterfaceVisible`. | 
 | `Boolean` | MoreAccessoriesInstalled | True if the MoreAccessories mod is installed.  Avoid relying on this and instead use other methods in this class since they will handle this for you. | 
 | `Int32` | SelectedMakerAccSlot | Get the index of the currently selected accessory slot under Accessories group in Chara Maker.  If none are selected or chara maker is not opened, returns -1. 0-indexed.  Use `KKAPI.Maker.AccessoriesApi.SelectedMakerAccSlotChanged` to get notified when the selected slot changes. | 
-| `IObservable<AccessorySlotChangeEventArgs>` | SelectedMakerAccSlotChanged | Fires whenever the index of the currently selected accessory slot under Accessories group in Chara Maker is changed.  This happens when user click on another slot. | 
 
 
 Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `ChaAccessoryComponent` | GetAccessory(this `ChaControl` character, `Int32` accessoryIndex) | Get the accessory given a slot index.  TODO Not finished, most likely buggy | 
-| `Int32` | GetAccessoryIndex(this `ChaAccessoryComponent` accessoryComponent) | Get slot index of his accessory, useful for referencing to the accesory in extended data.  TODO Not finished, most likely buggy | 
+| `ChaAccessoryComponent` | GetAccessory(this `ChaControl` character, `Int32` accessoryIndex) | Get the accessory given a slot index. | 
+| `Int32` | GetAccessoryIndex(this `ChaAccessoryComponent` accessoryComponent) | Get slot index of his accessory, useful for referencing to the accesory in extended data. | 
 | `CvsAccessory` | GetCvsAccessory(`Int32` index) | Get accessory UI entry in maker.  Only works inside chara maker. | 
 | `Int32` | GetCvsAccessoryCount() | Get count of the UI entries for accessories (accessory slots).  Returns 0 outside of chara maker. | 
 | `ChaControl` | GetOwningChaControl(this `ChaAccessoryComponent` accessoryComponent) | Get the ChaControl that owns this accessory | 
 | `void` | Init() |  | 
+
+
+Static Events
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `EventHandler<AccessorySlotChangeEventArgs>` | MakerAccSlotAdded |  | 
+| `EventHandler<AccessorySlotChangeEventArgs>` | SelectedMakerAccSlotChanged | Fires whenever the index of the currently selected accessory slot under Accessories group in Chara Maker is changed.  This happens when user click on another slot. | 
+
+
+## `AccessoryControlValueChangedEventArgs<TVal>`
+
+```csharp
+public class KKAPI.Maker.AccessoryControlValueChangedEventArgs<TVal>
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Int32` | AccessoryIndex | Index of the accessory the value was assigned to. | 
+| `TVal` | NewValue | Newly assigned value. | 
+
+
+## `AccessoryControlWrapper<T, TVal>`
+
+A wrapper for custom controls used in accessory window (added by using `KKAPI.Maker.MakerAPI.AddAccessoryWindowControl``1(``0)`).  It abstracts away switching between accessory slots and provides a simple list of values for each accessory.
+```csharp
+public class KKAPI.Maker.AccessoryControlWrapper<T, TVal>
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `T` | Control | The wrapped control. | 
+| `Int32` | CurrentlySelectedIndex | Index of the currently selected accessory. | 
+
+
+Events
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `EventHandler<AccessoryControlValueChangedEventArgs<TVal>>` | ValueChanged | Fired when | 
+| `EventHandler<AccessorySlotChangeEventArgs>` | VisibleIndexChanged | Fired when the currently visible accessory was changed by the user clicking on one of the slots. | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `TVal` | GetSelectedValue() | Get value of the control for the currently selected accessory. | 
+| `TVal` | GetValue(`Int32` accessoryIndex) | Get value of the control for the specified accessory. | 
+| `void` | SetSelectedValue(`TVal` value) | Set value of the control for the currently selected accessory. | 
+| `void` | SetValue(`Int32` accessoryIndex, `TVal` value) | Set value of the control for the specified accessory. | 
 
 
 ## `AccessorySlotChangeEventArgs`
@@ -120,6 +177,7 @@ Static Methods
 | `Int32` | GetMakerSex() | 0 is male, 1 is female | 
 | `void` | Init(`Boolean` insideStudio) |  | 
 | `Boolean` | IsInterfaceVisible() | Check if maker interface is currently visible and not obscured by settings screen or other things.  Useful for knowing when to display OnGui mod windows in maker. | 
+| `void` | OnMakerAccSlotAdded(`Transform` newSlotTransform) |  | 
 
 
 Static Events

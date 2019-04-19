@@ -3,7 +3,7 @@ using ChaCustom;
 
 namespace KKAPI.Maker
 {
-    public sealed class AccessorySlotChangeEventArgs : EventArgs
+    public class AccessorySlotChangeEventArgs : EventArgs
     {
         public AccessorySlotChangeEventArgs(int slotIndex)
         {

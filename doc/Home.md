@@ -23,6 +23,8 @@
 ## [KKAPI.Maker](KKAPI.Maker.md)
 
 - [`AccessoriesApi`](KKAPI.Maker.md#accessoriesapi)
+- [`AccessoryControlValueChangedEventArgs<TVal>`](KKAPI.Maker.md#accessorycontrolvaluechangedeventargstval)
+- [`AccessoryControlWrapper<T, TVal>`](KKAPI.Maker.md#accessorycontrolwrappert-tval)
 - [`AccessorySlotChangeEventArgs`](KKAPI.Maker.md#accessoryslotchangeeventargs)
 - [`ChaFileLoadedEventArgs`](KKAPI.Maker.md#chafileloadedeventargs)
 - [`CharacterLoadFlags`](KKAPI.Maker.md#characterloadflags)
