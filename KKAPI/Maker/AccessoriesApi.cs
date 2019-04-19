@@ -205,6 +205,9 @@ namespace KKAPI.Maker
 
         private static void OnSelectedMakerSlotChanged(object source, int newSlotIndex)
         {
+            if (KoikatuAPI.EnableDebugLogging)
+                Logger.Log(LogLevel.Message, "SelectedMakerSlotChanged - slot:" + newSlotIndex);
+
             if (newSlotIndex == SelectedMakerAccSlot) return;
             SelectedMakerAccSlot = newSlotIndex;
 
@@ -221,6 +224,9 @@ namespace KKAPI.Maker
 
         private static void OnMakerAccSlotAdded(object source, int newSlotIndex, Transform newSlotTransform)
         {
+            if (KoikatuAPI.EnableDebugLogging)
+                Logger.Log(LogLevel.Message, "MakerAccSlotAdded - slot:" + newSlotIndex);
+
             MakerAPI.OnMakerAccSlotAdded(newSlotTransform);
 
             if (MakerAccSlotAdded == null) return;
@@ -236,6 +242,9 @@ namespace KKAPI.Maker
 
         private static void OnAccessoryKindChanged(object source, int slotNo)
         {
+            if (KoikatuAPI.EnableDebugLogging)
+                Logger.Log(LogLevel.Message, "AccessoryKindChanged - slot:" + slotNo);
+
             if (AccessoryKindChanged == null) return;
             try
             {
