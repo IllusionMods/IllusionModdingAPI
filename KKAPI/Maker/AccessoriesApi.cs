@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Reflection;
 using BepInEx.Logging;
 using ChaCustom;
 using Harmony;
-using UniRx;
 using UnityEngine;
 using Logger = BepInEx.Logger;
 using Object = UnityEngine.Object;
@@ -18,19 +16,19 @@ namespace KKAPI.Maker
     /// </summary>
     public static partial class AccessoriesApi
     {
-        private static readonly Subject<AccessorySlotChangeEventArgs> _selectedMakerAccSlotSubject = new Subject<AccessorySlotChangeEventArgs>();
+        private static Object _moreAccessoriesInstance;
+        private static Type _moreAccessoriesType;
 
-        //private static Func<int> _getSelectedAccessoryIndex;
         private static CanvasGroup _accessorySlotCanvasGroup;
 
-        private static Func<int> _getAdditionalCvsAccessoryCount;
-
         private static Func<int, CvsAccessory> _getCvsAccessory;
-        private static Object _moreaAccessoriesInstance;
-        private static Type _moreAccsType;
+        private static Func<int> _getCvsAccessoryCount;
+        private static Func<ChaControl, int, ChaAccessoryComponent> _getChaAccessoryCmp;
+        private static Func<ChaControl, ChaAccessoryComponent, int> _getChaAccessoryCmpIndex;
 
         /// <summary>
         /// Returns true if the accessory tab in maker is currently selected.
+        /// If you want to know if the user can actually see the tab on the screen check <see cref="MakerAPI.IsInterfaceVisible"/>.
         /// </summary>
         public static bool AccessoryCanvasVisible => _accessorySlotCanvasGroup != null && _accessorySlotCanvasGroup.alpha.Equals(1f);
 
@@ -38,7 +36,7 @@ namespace KKAPI.Maker
         /// True if the MoreAccessories mod is installed.
         /// Avoid relying on this and instead use other methods in this class since they will handle this for you.
         /// </summary>
-        public static bool MoreAccessoriesInstalled => _moreAccsType != null;
+        public static bool MoreAccessoriesInstalled => _moreAccessoriesType != null;
 
         /// <summary>
         /// Get the index of the currently selected accessory slot under Accessories group in Chara Maker.
@@ -51,67 +49,25 @@ namespace KKAPI.Maker
         /// Fires whenever the index of the currently selected accessory slot under Accessories group in Chara Maker is changed.
         /// This happens when user click on another slot.
         /// </summary>
-        public static IObservable<AccessorySlotChangeEventArgs> SelectedMakerAccSlotChanged => _selectedMakerAccSlotSubject;
+        public static event EventHandler<AccessorySlotChangeEventArgs> SelectedMakerAccSlotChanged;
+
+        public static event EventHandler<AccessorySlotChangeEventArgs> MakerAccSlotAdded;
 
         /// <summary>
         /// Get the accessory given a slot index.
-        /// TODO Not finished, most likely buggy
         /// </summary>
         public static ChaAccessoryComponent GetAccessory(this ChaControl character, int accessoryIndex)
         {
-            if (accessoryIndex < 20)
-                return character.cusAcsCmp[accessoryIndex];
-
-            // todo ask joan to expose a method for getting this
-            if (MoreAccessoriesInstalled)
-            {
-                try
-                {
-                    var d = Traverse.Create(_moreaAccessoriesInstance).Field("_accessoriesByChar").GetValue<IDictionary>();
-                    var val = d[character.chaFile];
-                    var components = Traverse.Create(val).Field("cusAcsCmp").GetValue<List<ChaAccessoryComponent>>();
-
-                    return components[accessoryIndex + 20];
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log(LogLevel.Warning, ex);
-                }
-            }
-
-            return null;
+            return _getChaAccessoryCmp(character, accessoryIndex);
         }
 
         /// <summary>
         /// Get slot index of his accessory, useful for referencing to the accesory in extended data.
-        /// TODO Not finished, most likely buggy
         /// </summary>
         public static int GetAccessoryIndex(this ChaAccessoryComponent accessoryComponent)
         {
             var chaControl = GetOwningChaControl(accessoryComponent);
-            var index = Array.IndexOf(chaControl.cusAcsCmp, accessoryComponent);
-            if (index > 0)
-                return index;
-
-            // todo ask joan to expose a method for getting this
-            if (MoreAccessoriesInstalled)
-            {
-                try
-                {
-                    var d = Traverse.Create(_moreaAccessoriesInstance).Field("_accessoriesByChar").GetValue<IDictionary>();
-                    var val = d[chaControl.chaFile];
-                    var components = Traverse.Create(val).Field("cusAcsCmp").GetValue<List<ChaAccessoryComponent>>();
-
-                    index = components.IndexOf(accessoryComponent);
-                    return index < 0 ? index : index + 20;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log(LogLevel.Warning, ex);
-                }
-            }
-
-            return -1;
+            return _getChaAccessoryCmpIndex(chaControl, accessoryComponent);
         }
 
         /// <summary>
@@ -142,8 +98,7 @@ namespace KKAPI.Maker
         public static int GetCvsAccessoryCount()
         {
             if (!MakerAPI.InsideMaker) return 0;
-            if (_getAdditionalCvsAccessoryCount == null) return 20;
-            return _getAdditionalCvsAccessoryCount.Invoke() + 20;
+            return _getCvsAccessoryCount.Invoke();
         }
 
         /// <summary>
@@ -160,23 +115,39 @@ namespace KKAPI.Maker
 
             try
             {
-                _moreAccsType = Type.GetType("MoreAccessoriesKOI.MoreAccessories, MoreAccessories, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
+                _moreAccessoriesType = Type.GetType("MoreAccessoriesKOI.MoreAccessories, MoreAccessories, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
 
-                if (_moreAccsType != null)
-                    _moreaAccessoriesInstance = Object.FindObjectOfType(_moreAccsType);
+                if (_moreAccessoriesType != null)
+                {
+                    _moreAccessoriesInstance = Object.FindObjectOfType(_moreAccessoriesType);
+
+                    var slotAddEvent = _moreAccessoriesType.GetEvent("onCharaMakerSlotAdded", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    if (slotAddEvent != null)
+                    {
+                        slotAddEvent.AddEventHandler(_moreAccessoriesInstance,
+                            new Action<int, Transform>((i, transform) => OnMakerAccSlotAdded(_moreAccessoriesInstance, i, transform)));
+                    }
+                    else
+                    {
+                        _moreAccessoriesType = null;
+                        Logger.Log(LogLevel.Message | LogLevel.Error, "[KKAPI] WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
+                    }
+                }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _moreAccessoriesType = null;
+                Logger.Log(LogLevel.Error, e);
             }
 
             MakerAPI.InsideMakerChanged += MakerAPI_InsideMakerChanged;
-            MakerAPI.MakerFinishedLoading += (sender, args) => OnSelectedMakerSlotChanged(0);
+            MakerAPI.MakerFinishedLoading += (sender, args) => OnSelectedMakerSlotChanged(sender, 0);
 
-            SelectedMakerAccSlotChanged.Subscribe(
-                args => Logger.Log(
-                    LogLevel.Message,
-                    $"Acc slot changed to {args.SlotIndex}, cvs: {args.CvsAccessory.transform.name}, component: {args.AccessoryComponent?.name ?? "null"}"));
+            if (KoikatuAPI.EnableDebugLogging)
+            {
+                SelectedMakerAccSlotChanged += (sender, args) => Logger.Log(LogLevel.Message,
+                    $"SelectedMakerAccSlotChanged - index: {args.SlotIndex}, cvs: {args.CvsAccessory.transform.name}, component: {args.AccessoryComponent?.name ?? "null"}");
+            }
         }
 
         private static void MakerAPI_InsideMakerChanged(object sender, EventArgs e)
@@ -184,49 +155,74 @@ namespace KKAPI.Maker
             if (MakerAPI.InsideMaker)
             {
                 var cvsAccessoryField = AccessTools.Field(typeof(CustomAcsParentWindow), "cvsAccessory");
-                var cvsAccessories = (CvsAccessory[]) cvsAccessoryField.GetValue(Object.FindObjectOfType<CustomAcsParentWindow>());
+                var cvsAccessories = (CvsAccessory[])cvsAccessoryField.GetValue(Object.FindObjectOfType<CustomAcsParentWindow>());
 
                 var changeSlot = Object.FindObjectOfType<CustomAcsChangeSlot>();
                 _accessorySlotCanvasGroup = changeSlot.GetComponent<CanvasGroup>();
 
                 if (MoreAccessoriesInstalled)
                 {
-                    var m = AccessTools.Method(_moreAccsType, "GetCvsAccessory");
-                    _getCvsAccessory = i => i < 20 ? cvsAccessories[i] : (CvsAccessory) m.Invoke(_moreaAccessoriesInstance, new object[] {i});
+                    var getCvsM = AccessTools.Method(_moreAccessoriesType, "GetCvsAccessory");
+                    _getCvsAccessory = i => (CvsAccessory)getCvsM.Invoke(_moreAccessoriesInstance, new object[] { i });
 
-                    var slots = AccessTools.Field(_moreAccsType, "_additionalCharaMakerSlots");
-                    var additionalSlotCollection = (ICollection) slots.GetValue(_moreaAccessoriesInstance);
-                    _getAdditionalCvsAccessoryCount = () => additionalSlotCollection.Count;
+                    var cvsCountM = AccessTools.Method(_moreAccessoriesType, "GetCvsAccessoryCount");
+                    _getCvsAccessoryCount = () => (int)cvsCountM.Invoke(_moreAccessoriesInstance, null);
 
-                    //var getIndexMethod = AccessTools.Method(_moreAccsType, "GetSelectedMakerIndex");
-                    //_getSelectedAccessoryIndex = () => (int)getIndexMethod.Invoke(_moreaAccessoriesInstance, null);
+                    var getAccCmpIndexM = AccessTools.Method(_moreAccessoriesType, "GetChaAccessoryComponentIndex");
+                    _getChaAccessoryCmpIndex = (control, component) => (int)getAccCmpIndexM.Invoke(_moreAccessoriesInstance, new object[] { control, component });
+
+                    var getAccCmpM = AccessTools.Method(_moreAccessoriesType, "GetChaAccessoryComponent");
+                    _getChaAccessoryCmp = (control, componentIndex) => (ChaAccessoryComponent)getAccCmpM.Invoke(_moreAccessoriesInstance, new object[] { control, componentIndex });
                 }
                 else
                 {
                     _getCvsAccessory = i => cvsAccessories[i];
-                    //_getSelectedAccessoryIndex = () => Array.FindIndex(changeSlot.items, info => info.tglItem.isOn);
+                    _getCvsAccessoryCount = () => 20;
+                    _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cusAcsCmp, component);
+                    _getChaAccessoryCmp = (control, i) => control.cusAcsCmp[i];
                 }
             }
             else
             {
+                _accessorySlotCanvasGroup = null;
+
                 _getCvsAccessory = null;
-                _getAdditionalCvsAccessoryCount = null;
+                _getCvsAccessoryCount = null;
+                _getChaAccessoryCmpIndex = null;
+                _getChaAccessoryCmp = null;
+
                 SelectedMakerAccSlot = -1;
             }
         }
 
-        private static void OnSelectedMakerSlotChanged(int newSlotIndex)
+        private static void OnSelectedMakerSlotChanged(object source, int newSlotIndex)
         {
             if (newSlotIndex == SelectedMakerAccSlot) return;
             SelectedMakerAccSlot = newSlotIndex;
 
+            if (SelectedMakerAccSlotChanged == null) return;
             try
             {
-                _selectedMakerAccSlotSubject.OnNext(new AccessorySlotChangeEventArgs(newSlotIndex));
+                SelectedMakerAccSlotChanged(source, new AccessorySlotChangeEventArgs(newSlotIndex));
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, "Subscription to SelectedMakerSlot crashed! " + ex);
+                Logger.Log(LogLevel.Error, "Subscription to SelectedMakerSlot crashed: " + ex);
+            }
+        }
+
+        private static void OnMakerAccSlotAdded(object source, int newSlotIndex, Transform newSlotTransform)
+        {
+            MakerAPI.OnMakerAccSlotAdded(newSlotTransform);
+
+            if (MakerAccSlotAdded == null) return;
+            try
+            {
+                MakerAccSlotAdded(source, new AccessorySlotChangeEventArgs(newSlotIndex));
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Subscription to SelectedMakerSlot crashed: " + ex);
             }
         }
     }

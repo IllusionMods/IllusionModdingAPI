@@ -95,8 +95,6 @@ namespace KKAPI.Maker
 
         private static void CreateCustomAccessoryWindowControls()
         {
-            //@"CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/04_AccessoryTop/Slots/Viewport/Content/tglSlot01";
-            // todo add to moreaccs windows?
             var container = GameObject.Find("tglSlot01").transform.parent;
             foreach (var slotTransform in container.Cast<Transform>().Where(x => x.name.StartsWith("tglSlot")).OrderBy(x => x.name))
             {
@@ -108,6 +106,22 @@ namespace KKAPI.Maker
 
                 CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
             }
+        }
+
+        internal static void OnMakerAccSlotAdded(Transform newSlotTransform)
+        {
+            // Necessary because MoraAccessories copies existing slot, so controls get copied but with no events hooked up
+            RemoveCustomControlsInSubCategory(newSlotTransform);
+
+            CreateCustomControlsInSubCategory(newSlotTransform, _accessoryWindowEntries);
+        }
+
+        private static void RemoveCustomControlsInSubCategory(Transform newSlotTransform)
+        {
+            var contentParent = FindSubcategoryContentParent(newSlotTransform);
+
+            foreach (var customControl in contentParent.Cast<Transform>().Where(x => x.name.EndsWith(BaseGuiEntry.GuiApiNameAppendix)))
+                Object.Destroy(customControl.gameObject);
         }
 
         private static void RemoveCustomControls()

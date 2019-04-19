@@ -11,9 +11,9 @@ namespace KKAPI.Maker
         {
             [HarmonyPostfix]
             [HarmonyPatch(typeof(CustomAcsSelectKind), nameof(CustomAcsSelectKind.ChangeSlot))]
-            public static void ChangeSlotPostfix(int _no, bool open)
+            public static void ChangeSlotPostfix(CustomAcsSelectKind __instance, int _no, bool open)
             {
-                OnSelectedMakerSlotChanged(_no);
+                OnSelectedMakerSlotChanged(__instance, _no);
             }
         }
     }
