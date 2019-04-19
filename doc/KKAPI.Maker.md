@@ -103,8 +103,8 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Int32` | AccessoryIndex | Index of the accessory the value was assigned to. | 
 | `TVal` | NewValue | Newly assigned value. | 
+| `Int32` | SlotIndex | Index of the accessory the value was assigned to. | 
 
 
 ## `ChaFileLoadedEventArgs`

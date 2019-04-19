@@ -8,10 +8,10 @@ namespace KKAPI.Maker
     public sealed class AccessoryWindowControlValueChangedEventArgs<TVal> : EventArgs
     {
         /// <inheritdoc />
-        public AccessoryWindowControlValueChangedEventArgs(TVal newValue, int accessoryIndex)
+        public AccessoryWindowControlValueChangedEventArgs(TVal newValue, int slotIndex)
         {
             NewValue = newValue;
-            AccessoryIndex = accessoryIndex;
+            SlotIndex = slotIndex;
         }
 
         /// <summary>
@@ -22,6 +22,6 @@ namespace KKAPI.Maker
         /// <summary>
         /// Index of the accessory the value was assigned to.
         /// </summary>
-        public int AccessoryIndex { get; }
+        public int SlotIndex { get; }
     }
 }

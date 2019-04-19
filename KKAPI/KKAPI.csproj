@@ -87,7 +87,7 @@
     <Compile Include="KoikatuAPI.cs" />
     <Compile Include="Maker\AccessoriesApi.Hooks.cs" />
     <Compile Include="Maker\AccessoryControlWrapper.cs" />
-    <Compile Include="Maker\Events\AccessoryControlValueChangedEventArgs.cs" />
+    <Compile Include="Maker\Events\AccessoryWindowControlValueChangedEventArgs.cs" />
     <Compile Include="Maker\Events\AccessorySlotChangeEventArgs.cs" />
     <Compile Include="Maker\UI\Sidebar\SidebarSeparator.cs" />
     <Compile Include="Maker\UI\Sidebar\SidebarToggle.cs" />

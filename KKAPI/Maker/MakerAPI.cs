@@ -465,6 +465,8 @@ namespace KKAPI.Maker
 
             AddAccessoryWindowControl(new MakerToggle(cat, "test toggle", null))
                 .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, $"Toggled to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
+            AddAccessoryWindowControl(new MakerColor("test accessory color", false, cat, Color.cyan, instance){ColorBoxWidth = 230})
+                .ValueChanged.Subscribe(b => Logger.Log(LogLevel.Message, $"Color to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
         }
 
         /// <summary>

@@ -205,12 +205,12 @@ namespace KKAPI.Maker
 
         private static void OnSelectedMakerSlotChanged(object source, int newSlotIndex)
         {
-            if (KoikatuAPI.EnableDebugLogging)
-                Logger.Log(LogLevel.Message, "SelectedMakerSlotChanged - slot:" + newSlotIndex);
-
             if (newSlotIndex == SelectedMakerAccSlot) return;
             SelectedMakerAccSlot = newSlotIndex;
 
+            if (KoikatuAPI.EnableDebugLogging)
+                Logger.Log(LogLevel.Message, "SelectedMakerSlotChanged - slot:" + newSlotIndex);
+            
             if (SelectedMakerAccSlotChanged == null) return;
             try
             {
