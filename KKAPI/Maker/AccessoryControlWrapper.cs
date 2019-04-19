@@ -120,7 +120,7 @@ namespace KKAPI.Maker
         /// <summary>
         /// Fires when user selects a different accessory in the accessory window.
         /// </summary>
-        public static event EventHandler<AccessorySlotEventArgs> AccessoryKindChanged;
+        public event EventHandler<AccessorySlotEventArgs> AccessoryKindChanged;
 
         private static void CheckIndexRangeThrow(int accessoryIndex)
         {

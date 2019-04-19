@@ -57,6 +57,7 @@ Events
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `EventHandler<AccessorySlotEventArgs>` | AccessoryKindChanged | Fires when user selects a different accessory in the accessory window. | 
 | `EventHandler<AccessoryWindowControlValueChangedEventArgs<TVal>>` | ValueChanged | Fired when the value of this control changes for any of the accessories. | 
 | `EventHandler<AccessorySlotEventArgs>` | VisibleIndexChanged | Fired when the currently visible accessory was changed by the user clicking on one of the slots. | 
 
@@ -69,13 +70,6 @@ Methods
 | `TVal` | GetValue(`Int32` accessoryIndex) | Get value of the control for the specified accessory. | 
 | `void` | SetSelectedValue(`TVal` value) | Set value of the control for the currently selected accessory. | 
 | `void` | SetValue(`Int32` accessoryIndex, `TVal` value) | Set value of the control for the specified accessory. | 
-
-
-Static Events
-
-| Type | Name | Summary | 
-| --- | --- | --- | 
-| `EventHandler<AccessorySlotEventArgs>` | AccessoryKindChanged | Fires when user selects a different accessory in the accessory window. | 
 
 
 ## `AccessorySlotEventArgs`
