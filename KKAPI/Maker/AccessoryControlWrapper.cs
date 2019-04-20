@@ -85,6 +85,13 @@ namespace KKAPI.Maker
 
             _values[accessoryIndex] = value;
 
+            if (AccessoriesApi.SelectedMakerAccSlot == accessoryIndex)
+            {
+                _changingValue = true;
+                Control.Value = value;
+                _changingValue = false;
+            }
+
             if (!_changingValue)
                 ValueChanged?.Invoke(this, new AccessoryWindowControlValueChangedEventArgs<TVal>(value, CurrentlySelectedIndex));
         }

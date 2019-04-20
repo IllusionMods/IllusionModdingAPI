@@ -84,7 +84,7 @@ namespace KKAPI.Maker
         /// </summary>
         public static CvsAccessory GetCvsAccessory(int index)
         {
-            if (!MakerAPI.InsideMaker) throw new InvalidOperationException("Can only call GetCvsAccessory when inside Chara Maker");
+            if (_getCvsAccessory == null) throw new InvalidOperationException("Can only call GetCvsAccessory when inside Chara Maker");
             return _getCvsAccessory(index);
         }
 
@@ -105,7 +105,7 @@ namespace KKAPI.Maker
         /// </summary>
         public static int GetCvsAccessoryCount()
         {
-            if (!MakerAPI.InsideMaker) return 0;
+            if (_getCvsAccessoryCount == null) return 0;
             return _getCvsAccessoryCount.Invoke();
         }
 
@@ -119,8 +119,36 @@ namespace KKAPI.Maker
 
         internal static void Init()
         {
-            HarmonyInstance.Create(typeof(Hooks).FullName).PatchAll(typeof(Hooks));
+            DetectMoreAccessories();
 
+            HarmonyInstance.Create(typeof(Hooks).FullName).PatchAll(typeof(Hooks));
+            
+            MakerAPI.InsideMakerChanged += MakerAPI_InsideMakerChanged;
+            MakerAPI.MakerFinishedLoading += (sender, args) => OnSelectedMakerSlotChanged(sender, 0);
+
+            if (MoreAccessoriesInstalled)
+            {
+                var getAccCmpM = AccessTools.Method(_moreAccessoriesType, "GetChaAccessoryComponent");
+                _getChaAccessoryCmp = (control, componentIndex) => (ChaAccessoryComponent)getAccCmpM.Invoke(_moreAccessoriesInstance, new object[] { control, componentIndex });
+
+                var getAccCmpIndexM = AccessTools.Method(_moreAccessoriesType, "GetChaAccessoryComponentIndex");
+                _getChaAccessoryCmpIndex = (control, component) => (int)getAccCmpIndexM.Invoke(_moreAccessoriesInstance, new object[] { control, component });
+            }
+            else
+            {
+                _getChaAccessoryCmp = (control, i) => control.cusAcsCmp[i];
+                _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cusAcsCmp, component);
+            }
+
+            if (KoikatuAPI.EnableDebugLogging)
+            {
+                SelectedMakerAccSlotChanged += (sender, args) => Logger.Log(LogLevel.Message,
+                    $"SelectedMakerAccSlotChanged - index: {args.SlotIndex}, cvs: {args.CvsAccessory.transform.name}, component: {args.AccessoryComponent?.name ?? "null"}");
+            }
+        }
+
+        private static void DetectMoreAccessories()
+        {
             try
             {
                 _moreAccessoriesType = Type.GetType("MoreAccessoriesKOI.MoreAccessories, MoreAccessories, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
@@ -147,15 +175,6 @@ namespace KKAPI.Maker
                 _moreAccessoriesType = null;
                 Logger.Log(LogLevel.Error, e);
             }
-
-            MakerAPI.InsideMakerChanged += MakerAPI_InsideMakerChanged;
-            MakerAPI.MakerFinishedLoading += (sender, args) => OnSelectedMakerSlotChanged(sender, 0);
-
-            if (KoikatuAPI.EnableDebugLogging)
-            {
-                SelectedMakerAccSlotChanged += (sender, args) => Logger.Log(LogLevel.Message,
-                    $"SelectedMakerAccSlotChanged - index: {args.SlotIndex}, cvs: {args.CvsAccessory.transform.name}, component: {args.AccessoryComponent?.name ?? "null"}");
-            }
         }
 
         private static void MakerAPI_InsideMakerChanged(object sender, EventArgs e)
@@ -175,19 +194,11 @@ namespace KKAPI.Maker
 
                     var cvsCountM = AccessTools.Method(_moreAccessoriesType, "GetCvsAccessoryCount");
                     _getCvsAccessoryCount = () => (int)cvsCountM.Invoke(_moreAccessoriesInstance, null);
-
-                    var getAccCmpIndexM = AccessTools.Method(_moreAccessoriesType, "GetChaAccessoryComponentIndex");
-                    _getChaAccessoryCmpIndex = (control, component) => (int)getAccCmpIndexM.Invoke(_moreAccessoriesInstance, new object[] { control, component });
-
-                    var getAccCmpM = AccessTools.Method(_moreAccessoriesType, "GetChaAccessoryComponent");
-                    _getChaAccessoryCmp = (control, componentIndex) => (ChaAccessoryComponent)getAccCmpM.Invoke(_moreAccessoriesInstance, new object[] { control, componentIndex });
                 }
                 else
                 {
                     _getCvsAccessory = i => cvsAccessories[i];
                     _getCvsAccessoryCount = () => 20;
-                    _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cusAcsCmp, component);
-                    _getChaAccessoryCmp = (control, i) => control.cusAcsCmp[i];
                 }
             }
             else
@@ -196,8 +207,6 @@ namespace KKAPI.Maker
 
                 _getCvsAccessory = null;
                 _getCvsAccessoryCount = null;
-                _getChaAccessoryCmpIndex = null;
-                _getChaAccessoryCmp = null;
 
                 SelectedMakerAccSlot = -1;
             }
