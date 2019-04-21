@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using BepInEx.Logging;
 using ChaCustom;
 using Harmony;
+using TMPro;
 using UnityEngine;
 using Logger = BepInEx.Logger;
 using Object = UnityEngine.Object;
@@ -60,6 +62,16 @@ namespace KKAPI.Maker
         /// Fires when user selects a different accessory in the accessory window.
         /// </summary>
         public static event EventHandler<AccessorySlotEventArgs> AccessoryKindChanged;
+
+        /// <summary>
+        /// Fires after user copies accessories between coordinates by using the Copy window.
+        /// </summary>
+        public static event EventHandler<AccessoryCopyEventArgs> AccessoriesCopied;
+
+        /// <summary>
+        /// Fires after user copies an accessory within a single coordinate by using the Transfer window.
+        /// </summary>
+        public static event EventHandler<AccessoryTransferEventArgs> AccessoryTransferred;
 
         /// <summary>
         /// Get the accessory given a slot index.
@@ -122,7 +134,7 @@ namespace KKAPI.Maker
             DetectMoreAccessories();
 
             HarmonyInstance.Create(typeof(Hooks).FullName).PatchAll(typeof(Hooks));
-            
+
             MakerAPI.InsideMakerChanged += MakerAPI_InsideMakerChanged;
             MakerAPI.MakerFinishedLoading += (sender, args) => OnSelectedMakerSlotChanged(sender, 0);
 
@@ -143,7 +155,11 @@ namespace KKAPI.Maker
             if (KoikatuAPI.EnableDebugLogging)
             {
                 SelectedMakerAccSlotChanged += (sender, args) => Logger.Log(LogLevel.Message,
-                    $"SelectedMakerAccSlotChanged - index: {args.SlotIndex}, cvs: {args.CvsAccessory.transform.name}, component: {args.AccessoryComponent?.name ?? "null"}");
+                    $"SelectedMakerAccSlotChanged - id: {args.SlotIndex}, cvs: {args.CvsAccessory.transform.name}, component: {args.AccessoryComponent?.name ?? "null"}");
+                AccessoriesCopied += (sender, args) => Logger.Log(LogLevel.Message,
+                    $"AccessoriesCopied - ids: {string.Join(", ", args.CopiedSlotIndexes.Select(x => x.ToString()).ToArray())}, src:{args.CopySource}, dst:{args.CopyDestination}");
+                AccessoryTransferred += (sender, args) => Logger.Log(LogLevel.Message, 
+                    $"AccessoryTransferred - srcId:{args.SourceSlotIndex}, dstId:{args.DestinationSlotIndex}");
             }
         }
 
@@ -219,7 +235,7 @@ namespace KKAPI.Maker
 
             if (KoikatuAPI.EnableDebugLogging)
                 Logger.Log(LogLevel.Message, "SelectedMakerSlotChanged - slot:" + newSlotIndex);
-            
+
             if (SelectedMakerAccSlotChanged == null) return;
             try
             {
@@ -262,6 +278,50 @@ namespace KKAPI.Maker
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error, "Subscription to AccessoryKindChanged crashed: " + ex);
+            }
+        }
+
+        private static void OnCopyAcs(CvsAccessoryCopy instance)
+        {
+            if (AccessoriesCopied == null) return;
+
+            try
+            {
+                var selected = instance.GetComponentsInChildren<UnityEngine.UI.Toggle>()
+                    .Where(x => x.isOn)
+                    .Select(x => x.transform.parent.name)
+                    .Select(n => int.Parse(n.Substring("kind".Length)))
+                    .ToList();
+
+                var dropdowns = Traverse.Create(instance).Field("ddCoordeType").GetValue<TMP_Dropdown[]>();
+
+                var args = new AccessoryCopyEventArgs(selected, (ChaFileDefine.CoordinateType)dropdowns[1].value, (ChaFileDefine.CoordinateType)dropdowns[0].value);
+
+                AccessoriesCopied(instance, args);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Crash in AccessoriesCopied event: " + ex);
+            }
+        }
+
+        private static void OnChangeAcs(CvsAccessoryChange instance)
+        {
+            if (AccessoryTransferred == null) return;
+
+            try
+            {
+                var traverse = Traverse.Create(instance);
+                var selSrc = traverse.Field("selSrc").GetValue<int>();
+                var selDst = traverse.Field("selDst").GetValue<int>();
+
+                var args = new AccessoryTransferEventArgs(selSrc, selDst);
+
+                AccessoryTransferred(instance, args);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Crash in AccessoryTransferred event: " + ex);
             }
         }
     }

@@ -28,6 +28,20 @@ namespace KKAPI.Maker
 
             AccessoriesApi.SelectedMakerAccSlotChanged += OnSelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += OnAccessoryKindChanged;
+            AccessoriesApi.AccessoriesCopied += OnAccessoriesCopied;
+            AccessoriesApi.AccessoryTransferred += OnAccessoryTransferred;
+        }
+
+        private void OnAccessoryTransferred(object sender, AccessoryTransferEventArgs e)
+        {
+            if (CheckDisposed()) return;
+            AccessoryTransferred?.Invoke(sender, e);
+        }
+
+        private void OnAccessoriesCopied(object sender, AccessoryCopyEventArgs e)
+        {
+            if (CheckDisposed()) return;
+            AccessoriesCopied?.Invoke(sender, e);
         }
 
         private void OnAccessoryKindChanged(object sender, AccessorySlotEventArgs accessorySlotEventArgs)
@@ -129,6 +143,16 @@ namespace KKAPI.Maker
         /// </summary>
         public event EventHandler<AccessorySlotEventArgs> AccessoryKindChanged;
 
+        /// <summary>
+        /// Fires after user copies accessories between coordinates by using the Copy window.
+        /// </summary>
+        public static event EventHandler<AccessoryCopyEventArgs> AccessoriesCopied;
+
+        /// <summary>
+        /// Fires after user copies an accessory within a single coordinate by using the Transfer window.
+        /// </summary>
+        public static event EventHandler<AccessoryTransferEventArgs> AccessoryTransferred;
+
         private static void CheckIndexRangeThrow(int accessoryIndex)
         {
             if (accessoryIndex < 0 || accessoryIndex >= AccessoriesApi.GetCvsAccessoryCount())
@@ -154,9 +178,13 @@ namespace KKAPI.Maker
                 ValueChanged = null;
                 VisibleIndexChanged = null;
                 AccessoryKindChanged = null;
+                AccessoriesCopied = null;
+                AccessoryTransferred = null;
 
                 AccessoriesApi.SelectedMakerAccSlotChanged -= OnSelectedMakerAccSlotChanged;
                 AccessoriesApi.AccessoryKindChanged -= OnAccessoryKindChanged;
+                AccessoriesApi.AccessoriesCopied -= OnAccessoriesCopied;
+                AccessoriesApi.AccessoryTransferred -= OnAccessoryTransferred;
                 return true;
             }
 
@@ -167,13 +195,6 @@ namespace KKAPI.Maker
         /// If true, the control has been disposed and can no longer be used, likely because the character maker exited.
         /// A new control has to be created to be used again.
         /// </summary>
-        public bool IsDisposed
-        {
-            get
-            {
-                CheckDisposed();
-                return _isDisposed;
-            }
-        }
+        public bool IsDisposed => CheckDisposed();
     }
 }

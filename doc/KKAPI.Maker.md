@@ -31,7 +31,9 @@ Static Events
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `EventHandler<AccessoryCopyEventArgs>` | AccessoriesCopied | Fires after user copies accessories between coordinates by using the Copy window. | 
 | `EventHandler<AccessorySlotEventArgs>` | AccessoryKindChanged | Fires when user selects a different accessory in the accessory window. | 
+| `EventHandler<AccessoryTransferEventArgs>` | AccessoryTransferred | Fires after user copies an accessory within a single coordinate by using the Transfer window. | 
 | `EventHandler<AccessorySlotEventArgs>` | MakerAccSlotAdded | A new slot was added by MoreAccessories. Adding 10 slots triggers this 10 times. | 
 | `EventHandler<AccessorySlotEventArgs>` | SelectedMakerAccSlotChanged | Fires whenever the index of the currently selected accessory slot under Accessories group in Chara Maker is changed.  This happens when user click on another slot. | 
 
@@ -72,6 +74,32 @@ Methods
 | `void` | SetValue(`Int32` accessoryIndex, `TVal` value) | Set value of the control for the specified accessory. | 
 
 
+Static Events
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `EventHandler<AccessoryCopyEventArgs>` | AccessoriesCopied | Fires after user copies accessories between coordinates by using the Copy window. | 
+| `EventHandler<AccessoryTransferEventArgs>` | AccessoryTransferred | Fires after user copies an accessory within a single coordinate by using the Transfer window. | 
+
+
+## `AccessoryCopyEventArgs`
+
+Event args for accessory copy events.
+```csharp
+public class KKAPI.Maker.AccessoryCopyEventArgs
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `IEnumerable<Int32>` | CopiedSlotIndexes | Indexes of accessories that were selected to be copied. | 
+| `CoordinateType` | CopyDestination | Coordinate the accessories are copied into. | 
+| `CoordinateType` | CopySource | Coordinate the accessories are copied from. | 
+
+
 ## `AccessorySlotEventArgs`
 
 Event args for events that are related to accessory slot indexes.
@@ -88,6 +116,23 @@ Properties
 | `ChaAccessoryComponent` | AccessoryComponent | Get accessory component. | 
 | `CvsAccessory` | CvsAccessory | Get accessory UI entry in maker. | 
 | `Int32` | SlotIndex | Currently opened accessory slot index. 0-indexed. | 
+
+
+## `AccessoryTransferEventArgs`
+
+Event args for accessory transfer events.
+```csharp
+public class KKAPI.Maker.AccessoryTransferEventArgs
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Int32` | DestinationSlotIndex | Index the source accessory is copied to. | 
+| `Int32` | SourceSlotIndex | Index of the source accessory. | 
 
 
 ## `AccessoryWindowControlValueChangedEventArgs<TVal>`

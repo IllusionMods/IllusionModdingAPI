@@ -24,7 +24,9 @@
 
 - [`AccessoriesApi`](KKAPI.Maker.md#accessoriesapi)
 - [`AccessoryControlWrapper<T, TVal>`](KKAPI.Maker.md#accessorycontrolwrappert-tval)
+- [`AccessoryCopyEventArgs`](KKAPI.Maker.md#accessorycopyeventargs)
 - [`AccessorySlotEventArgs`](KKAPI.Maker.md#accessorysloteventargs)
+- [`AccessoryTransferEventArgs`](KKAPI.Maker.md#accessorytransfereventargs)
 - [`AccessoryWindowControlValueChangedEventArgs<TVal>`](KKAPI.Maker.md#accessorywindowcontrolvaluechangedeventargstval)
 - [`ChaFileLoadedEventArgs`](KKAPI.Maker.md#chafileloadedeventargs)
 - [`CharacterLoadFlags`](KKAPI.Maker.md#characterloadflags)

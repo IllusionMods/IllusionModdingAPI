@@ -18,7 +18,21 @@ namespace KKAPI.Maker
             [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryKind))]
             public static void UpdateSelectAccessoryKindPostfix(CvsAccessory __instance)
             {
-                OnAccessoryKindChanged(__instance, (int) __instance.slotNo);
+                OnAccessoryKindChanged(__instance, (int)__instance.slotNo);
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(CvsAccessoryCopy), "CopyAcs")]
+            public static void CopyCopyAcsPostfix(CvsAccessoryCopy __instance)
+            {
+                OnCopyAcs(__instance);
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(CvsAccessoryChange), "CopyAcs")]
+            public static void ChangeCopyAcsPostfix(CvsAccessoryChange __instance)
+            {
+                OnChangeAcs(__instance);
             }
         }
     }
