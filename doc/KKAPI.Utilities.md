@@ -67,3 +67,19 @@ Methods
 | `Boolean` | TryGetValue(`TKey` key, `TValue&` value) |  | 
 
 
+## `RecycleBinUtil`
+
+Allows to move files to recycle bin instead of completely removing them.  https://stackoverflow.com/questions/3282418/send-a-file-to-the-recycle-bin?answertab=votes#tab-top
+```csharp
+public static class KKAPI.Utilities.RecycleBinUtil
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | MoveToRecycleBin(`String` path, `FileOperationFlags` flags) | Send file to recycle bin | 
+| `Boolean` | MoveToRecycleBin(`String` path) | Send file to recycle bin | 
+
+

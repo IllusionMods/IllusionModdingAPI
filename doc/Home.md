@@ -81,4 +81,5 @@
 - [`Extensions`](KKAPI.Utilities.md#extensions)
 - [`OpenFileDialog`](KKAPI.Utilities.md#openfiledialog)
 - [`ReadOnlyDictionary<TKey, TValue>`](KKAPI.Utilities.md#readonlydictionarytkey-tvalue)
+- [`RecycleBinUtil`](KKAPI.Utilities.md#recyclebinutil)
 

@@ -131,6 +131,7 @@
     <Compile Include="Studio\UI\CurrentStateCategory.cs" />
     <Compile Include="Studio\UI\CurrentStateCategorySubItemBase.cs" />
     <Compile Include="Studio\UI\CurrentStateCategoryToggle.cs" />
+    <Compile Include="Utilities\RecycleBinUtil.cs" />
     <Compile Include="Utilities\OpenFileDialog.cs" />
     <Compile Include="Utilities\Utils.cs" />
   </ItemGroup>
