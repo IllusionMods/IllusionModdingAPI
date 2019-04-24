@@ -82,14 +82,14 @@ namespace KKAPI.Maker.UI
             var dropdown = tr.GetComponentInChildren<TMP_Dropdown>();
             dropdown.options.AddRange(Options.Select(x => new TMP_Dropdown.OptionData(x)));
 
-            dropdown.onValueChanged.AddListener(SetNewValue);
+            dropdown.onValueChanged.AddListener(SetValue);
             BufferedValueChanged.Subscribe(i => dropdown.value = i);
 
             // Fix box not updating if BufferedValueChanged equals the default dropdown val
             if (Value == dropdown.value)
             {
                 dropdown.RefreshShownValue();
-                SetNewValue(dropdown.value);
+                SetValue(dropdown.value);
             }
 
             return tr.gameObject;

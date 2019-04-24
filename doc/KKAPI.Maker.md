@@ -71,7 +71,9 @@ Methods
 | `TVal` | GetSelectedValue() | Get value of the control for the currently selected accessory. | 
 | `TVal` | GetValue(`Int32` accessoryIndex) | Get value of the control for the specified accessory. | 
 | `void` | SetSelectedValue(`TVal` value) | Set value of the control for the currently selected accessory. | 
+| `void` | SetSelectedValue(`TVal` value, `Boolean` fireEvents) | Set value of the control for the currently selected accessory. | 
 | `void` | SetValue(`Int32` accessoryIndex, `TVal` value) | Set value of the control for the specified accessory. | 
+| `void` | SetValue(`Int32` accessoryIndex, `TVal` value, `Boolean` fireEvents) | Set value of the control for the specified accessory. | 
 
 
 Static Events

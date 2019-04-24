@@ -82,7 +82,7 @@ namespace KKAPI.Maker.UI
             var tr = Object.Instantiate(ToggleCopy, subCategoryList, true);
 
             var tgl = tr.GetComponentInChildren<Toggle>();
-            tgl.onValueChanged.AddListener(SetNewValue);
+            tgl.onValueChanged.AddListener(SetValue);
 
             BufferedValueChanged.Subscribe(b => tgl.isOn = b);
 

@@ -50,15 +50,11 @@ namespace KKAPI.Maker
             AccessoryKindChanged?.Invoke(sender, accessorySlotEventArgs);
         }
 
-        private bool _changingValue;
-
         private void OnSelectedMakerAccSlotChanged(object o, AccessorySlotEventArgs accessorySlotEventArgs)
         {
             if (CheckDisposed()) return;
 
-            _changingValue = true;
-            Control.Value = GetValue(accessorySlotEventArgs.SlotIndex);
-            _changingValue = false;
+            Control.SetValue(GetValue(accessorySlotEventArgs.SlotIndex), false);
 
             VisibleIndexChanged?.Invoke(o, accessorySlotEventArgs);
         }
@@ -92,7 +88,20 @@ namespace KKAPI.Maker
         /// <summary>
         /// Set value of the control for the specified accessory.
         /// </summary>
+        /// <param name="accessoryIndex">Index of the accessory to set the value for</param>
+        /// <param name="value">Value to set</param>
         public void SetValue(int accessoryIndex, TVal value)
+        {
+            SetValue(accessoryIndex, value, true);
+        }
+
+        /// <summary>
+        /// Set value of the control for the specified accessory.
+        /// </summary>
+        /// <param name="accessoryIndex">Index of the accessory to set the value for</param>
+        /// <param name="value">Value to set</param>
+        /// <param name="fireEvents">Fire the <see cref="ValueChanged"/> event if the value actually changed.</param>
+        public void SetValue(int accessoryIndex, TVal value, bool fireEvents)
         {
             CheckDisposedThrow();
             CheckIndexRangeThrow(accessoryIndex);
@@ -100,22 +109,29 @@ namespace KKAPI.Maker
             _values[accessoryIndex] = value;
 
             if (AccessoriesApi.SelectedMakerAccSlot == accessoryIndex)
-            {
-                _changingValue = true;
-                Control.Value = value;
-                _changingValue = false;
-            }
+                Control.SetValue(value, false);
 
-            if (!_changingValue)
+            if (fireEvents)
                 ValueChanged?.Invoke(this, new AccessoryWindowControlValueChangedEventArgs<TVal>(value, CurrentlySelectedIndex));
         }
 
         /// <summary>
         /// Set value of the control for the currently selected accessory.
         /// </summary>
+        /// <param name="value">Value to set</param>
         public void SetSelectedValue(TVal value)
         {
-            SetValue(CurrentlySelectedIndex, value);
+            SetSelectedValue(value, false);
+        }
+
+        /// <summary>
+        /// Set value of the control for the currently selected accessory.
+        /// </summary>
+        /// <param name="value">Value to set</param>
+        /// <param name="fireEvents">Fire the <see cref="ValueChanged"/> event if the value actually changed.</param>
+        public void SetSelectedValue(TVal value, bool fireEvents)
+        {
+            SetValue(CurrentlySelectedIndex, value, fireEvents);
         }
 
         /// <summary>

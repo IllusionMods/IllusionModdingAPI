@@ -100,7 +100,7 @@ namespace KKAPI.Maker.UI
                 toggle.onValueChanged.AddListener(a =>
                 {
                     if (a || indexCopy == Value)
-                        SetNewValue(indexCopy);
+                        SetValue(indexCopy);
                 });
             }
             

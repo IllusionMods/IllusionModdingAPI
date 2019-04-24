@@ -108,7 +108,7 @@ namespace KKAPI.Maker.UI
             var slider = tr.Find("Slider").GetComponent<Slider>();
             slider.minValue = _minValue;
             slider.maxValue = _maxValue;
-            slider.onValueChanged.AddListener(SetNewValue);
+            slider.onValueChanged.AddListener(SetValue);
 
             slider.GetComponent<ObservableScrollTrigger>().OnScrollAsObservable().Subscribe(data =>
             {

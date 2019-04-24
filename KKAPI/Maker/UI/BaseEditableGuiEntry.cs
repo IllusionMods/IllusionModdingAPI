@@ -25,17 +25,7 @@ namespace KKAPI.Maker.UI
         public TValue Value
         {
             get => _incomingValue.Value;
-            set
-            {
-                if (!Equals(value, _incomingValue.Value))
-                {
-                    _incomingValue.OnNext(value);
-
-                    // If the control is instantiated it will fire _outgoingValue by itself
-                    if (!Exists || !_firingEnabled)
-                        _outgoingValue.OnNext(value);
-                }
-            }
+            set => SetValue(value);
         }
 
         /// <summary>
@@ -50,16 +40,27 @@ namespace KKAPI.Maker.UI
         protected IObservable<TValue> BufferedValueChanged => _incomingValue;
 
         /// <summary>
-        /// Trigger value changed events and set the value
+        /// Set the new value and trigger the <see cref="ValueChanged"/> event if the control has been created and the value actually changed.
         /// </summary>
-        protected void SetNewValue(TValue newValue)
+        /// <param name="newValue">Value to set</param>
+        public void SetValue(TValue newValue)
+        {
+            SetValue(newValue, true);
+        }
+
+        /// <summary>
+        /// Set the new value and optionally trigger the <see cref="ValueChanged"/> event if the control has been created.
+        /// </summary>
+        /// <param name="newValue">Value to set</param>
+        /// <param name="fireEvents">Fire the <see cref="ValueChanged"/> event if the value actually changed.</param>
+        public void SetValue(TValue newValue, bool fireEvents)
         {
             if (Equals(newValue, _incomingValue.Value))
                 return;
 
             _incomingValue.OnNext(newValue);
 
-            if (_firingEnabled)
+            if (_firingEnabled && fireEvents)
                 _outgoingValue.OnNext(newValue);
         }
 

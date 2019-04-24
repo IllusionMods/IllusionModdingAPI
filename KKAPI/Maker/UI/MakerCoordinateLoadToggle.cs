@@ -67,7 +67,7 @@ namespace KKAPI.Maker.UI
             copy.name = "tglItem";
 
             var tgl = copy.GetComponentInChildren<Toggle>();
-            tgl.onValueChanged.AddListener(SetNewValue);
+            tgl.onValueChanged.AddListener(SetValue);
             BufferedValueChanged.Subscribe(b => tgl.isOn = b);
             tgl.image.raycastTarget = true;
             tgl.graphic.raycastTarget = true;

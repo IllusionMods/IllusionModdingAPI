@@ -106,7 +106,7 @@ namespace KKAPI.Maker.UI
                     else
                     {
                         // TODO is history callback useful?
-                        cvsColor.Setup(SettingName, connectColorKind, Value, SetNewValue, () => { }, UseAlpha);
+                        cvsColor.Setup(SettingName, connectColorKind, Value, SetValue, () => { }, UseAlpha);
                     }
                 });
 

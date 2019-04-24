@@ -22,7 +22,8 @@ Methods
 | --- | --- | --- | 
 | `void` | CreateControl(`Transform` subCategoryList) |  | 
 | `void` | Dispose() |  | 
-| `void` | SetNewValue(`TValue` newValue) | Trigger value changed events and set the value | 
+| `void` | SetValue(`TValue` newValue) | Set the new value and trigger the `KKAPI.Maker.UI.BaseEditableGuiEntry`1.ValueChanged` event if the control has been created and the value actually changed. | 
+| `void` | SetValue(`TValue` newValue, `Boolean` fireEvents) | Set the new value and trigger the `KKAPI.Maker.UI.BaseEditableGuiEntry`1.ValueChanged` event if the control has been created and the value actually changed. | 
 
 
 ## `BaseGuiEntry`
