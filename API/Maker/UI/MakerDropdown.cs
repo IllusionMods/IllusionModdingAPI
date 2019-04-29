@@ -22,7 +22,7 @@ namespace KKAPI.Maker.UI
         /// <param name="category">Category the control will be created under</param>
         /// <param name="initialValue">Initially selected item in the dropdown menu</param>
         /// <param name="owner">Plugin that owns the control</param>
-        public MakerDropdown(string settingName, string[] options, MakerCategory category, int initialValue, BaseUnityPlugin owner) 
+        public MakerDropdown(string settingName, string[] options, MakerCategory category, int initialValue, BaseUnityPlugin owner)
             : base(category, initialValue, owner)
         {
             SettingName = settingName;
@@ -33,7 +33,7 @@ namespace KKAPI.Maker.UI
         /// List of all options in the dropdown
         /// </summary>
         public string[] Options { get; }
-        
+
         /// <summary>
         /// Name displayed next to the dropdown
         /// </summary>
@@ -51,7 +51,7 @@ namespace KKAPI.Maker.UI
 
         private static void MakeCopy()
         {
-            var originalSlider = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/tglConfig/ConfigTop/ddRamp").transform;
+            var originalSlider = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/tglConfig", "ddRamp");
 
             _dropdownCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
             _dropdownCopy.gameObject.SetActive(false);

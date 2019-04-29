@@ -6,7 +6,6 @@ using ChaCustom;
 using Harmony;
 using TMPro;
 using UnityEngine;
-using Logger = BepInEx.Logger;
 using Object = UnityEngine.Object;
 
 namespace KKAPI.Maker
@@ -63,10 +62,12 @@ namespace KKAPI.Maker
         /// </summary>
         public static event EventHandler<AccessorySlotEventArgs> AccessoryKindChanged;
 
+#if KK
         /// <summary>
         /// Fires after user copies accessories between coordinates by using the Copy window.
         /// </summary>
         public static event EventHandler<AccessoryCopyEventArgs> AccessoriesCopied;
+#endif
 
         /// <summary>
         /// Fires after user copies an accessory within a single coordinate by using the Transfer window.
@@ -133,7 +134,7 @@ namespace KKAPI.Maker
         {
             DetectMoreAccessories();
 
-            HarmonyInstance.Create(typeof(Hooks).FullName).PatchAll(typeof(Hooks));
+            HarmonyPatcher.PatchAll(typeof(Hooks));
 
             MakerAPI.InsideMakerChanged += MakerAPI_InsideMakerChanged;
             MakerAPI.MakerFinishedLoading += (sender, args) => OnSelectedMakerSlotChanged(sender, 0);
@@ -154,11 +155,13 @@ namespace KKAPI.Maker
 
             if (KoikatuAPI.EnableDebugLogging)
             {
-                SelectedMakerAccSlotChanged += (sender, args) => Logger.Log(LogLevel.Message,
+                SelectedMakerAccSlotChanged += (sender, args) => KoikatuAPI.Log(LogLevel.Message,
                     $"SelectedMakerAccSlotChanged - id: {args.SlotIndex}, cvs: {args.CvsAccessory.transform.name}, component: {args.AccessoryComponent?.name ?? "null"}");
-                AccessoriesCopied += (sender, args) => Logger.Log(LogLevel.Message,
+#if KK
+                AccessoriesCopied += (sender, args) => KoikatuAPI.Log(LogLevel.Message,
                     $"AccessoriesCopied - ids: {string.Join(", ", args.CopiedSlotIndexes.Select(x => x.ToString()).ToArray())}, src:{args.CopySource}, dst:{args.CopyDestination}");
-                AccessoryTransferred += (sender, args) => Logger.Log(LogLevel.Message, 
+#endif
+                AccessoryTransferred += (sender, args) => KoikatuAPI.Log(LogLevel.Message, 
                     $"AccessoryTransferred - srcId:{args.SourceSlotIndex}, dstId:{args.DestinationSlotIndex}");
             }
         }
@@ -182,14 +185,14 @@ namespace KKAPI.Maker
                     else
                     {
                         _moreAccessoriesType = null;
-                        Logger.Log(LogLevel.Message | LogLevel.Error, "[KKAPI] WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
+                        KoikatuAPI.Log(LogLevel.Message | LogLevel.Error, "[KKAPI] WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
                     }
                 }
             }
             catch (Exception e)
             {
                 _moreAccessoriesType = null;
-                Logger.Log(LogLevel.Error, e);
+                KoikatuAPI.Log(LogLevel.Error, e);
             }
         }
 
@@ -234,7 +237,7 @@ namespace KKAPI.Maker
             SelectedMakerAccSlot = newSlotIndex;
 
             if (KoikatuAPI.EnableDebugLogging)
-                Logger.Log(LogLevel.Message, "SelectedMakerSlotChanged - slot:" + newSlotIndex);
+                KoikatuAPI.Log(LogLevel.Message, "SelectedMakerSlotChanged - slot:" + newSlotIndex);
 
             if (SelectedMakerAccSlotChanged == null) return;
             try
@@ -243,14 +246,14 @@ namespace KKAPI.Maker
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, "Subscription to SelectedMakerSlot crashed: " + ex);
+                KoikatuAPI.Log(LogLevel.Error, "Subscription to SelectedMakerSlot crashed: " + ex);
             }
         }
 
         private static void OnMakerAccSlotAdded(object source, int newSlotIndex, Transform newSlotTransform)
         {
             if (KoikatuAPI.EnableDebugLogging)
-                Logger.Log(LogLevel.Message, "MakerAccSlotAdded - slot:" + newSlotIndex);
+                KoikatuAPI.Log(LogLevel.Message, "MakerAccSlotAdded - slot:" + newSlotIndex);
 
             MakerAPI.OnMakerAccSlotAdded(newSlotTransform);
 
@@ -261,14 +264,14 @@ namespace KKAPI.Maker
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, "Subscription to SelectedMakerSlot crashed: " + ex);
+                KoikatuAPI.Log(LogLevel.Error, "Subscription to SelectedMakerSlot crashed: " + ex);
             }
         }
 
         private static void OnAccessoryKindChanged(object source, int slotNo)
         {
             if (KoikatuAPI.EnableDebugLogging)
-                Logger.Log(LogLevel.Message, "AccessoryKindChanged - slot:" + slotNo);
+                KoikatuAPI.Log(LogLevel.Message, "AccessoryKindChanged - slot:" + slotNo);
 
             if (AccessoryKindChanged == null) return;
             try
@@ -277,10 +280,11 @@ namespace KKAPI.Maker
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, "Subscription to AccessoryKindChanged crashed: " + ex);
+                KoikatuAPI.Log(LogLevel.Error, "Subscription to AccessoryKindChanged crashed: " + ex);
             }
         }
 
+#if KK
         private static void OnCopyAcs(CvsAccessoryCopy instance)
         {
             if (AccessoriesCopied == null) return;
@@ -301,9 +305,10 @@ namespace KKAPI.Maker
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, "Crash in AccessoriesCopied event: " + ex);
+                KoikatuAPI.Log(LogLevel.Error, "Crash in AccessoriesCopied event: " + ex);
             }
         }
+#endif
 
         private static void OnChangeAcs(CvsAccessoryChange instance)
         {
@@ -321,7 +326,7 @@ namespace KKAPI.Maker
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, "Crash in AccessoryTransferred event: " + ex);
+                KoikatuAPI.Log(LogLevel.Error, "Crash in AccessoryTransferred event: " + ex);
             }
         }
     }

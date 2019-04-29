@@ -53,7 +53,7 @@ namespace KKAPI.Maker.UI
         private static void MakeCopy()
         {
             // Exists in male and female maker
-            var original = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglMouth/MouthTop/tglCanine").transform;
+            var original = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglMouth", "tglCanine");
 
             var copy = Object.Instantiate(original, GuiCacheTransfrom, true);
             copy.gameObject.SetActive(false);

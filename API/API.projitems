@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>bd697c6c-a7d7-4307-a227-ccafc95c8744</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>API</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.ControllerRegistration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Chara\CharaCustomFunctionController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Chara\Events\CharaReloadEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Chara\Events\CoordinateEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Chara\TestCharaCustomFunctionController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HarmonyPatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoryControlWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\CharacterLoadFlags.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessorySlotChangeEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryTransferEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryWindowControlValueChangedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\CharacterChangedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\RegisterCustomControlsEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\RegisterSubCategoriesEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerAPI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerAPI.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\BaseEditableGuiEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\BaseGuiEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerColor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerCoordinateLoadToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerDropdown.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerImage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerLoadToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerRadioButtons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerSeparator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerSlider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\ISidebarControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\SidebarSeparator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\SidebarToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\SubCategoryCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\OpenFileDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\RecycleBinUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Utils.cs" />
+  </ItemGroup>
+</Project>

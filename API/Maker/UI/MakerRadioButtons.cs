@@ -130,8 +130,7 @@ namespace KKAPI.Maker.UI
         private static void MakeCopy()
         {
             // Exists in male and female maker
-            var originalSlider = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglEye02/Eye02Top/rbEyeSettingType").transform;
-
+            var originalSlider = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglEye02", "rbEyeSettingType");
             _radioCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
             _radioCopy.gameObject.SetActive(false);
             _radioCopy.name = "rbSide";

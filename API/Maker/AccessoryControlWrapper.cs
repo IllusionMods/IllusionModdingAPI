@@ -28,7 +28,9 @@ namespace KKAPI.Maker
 
             AccessoriesApi.SelectedMakerAccSlotChanged += OnSelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += OnAccessoryKindChanged;
+#if KK
             AccessoriesApi.AccessoriesCopied += OnAccessoriesCopied;
+#endif
             AccessoriesApi.AccessoryTransferred += OnAccessoryTransferred;
         }
 
@@ -38,11 +40,13 @@ namespace KKAPI.Maker
             AccessoryTransferred?.Invoke(sender, e);
         }
 
+#if KK
         private void OnAccessoriesCopied(object sender, AccessoryCopyEventArgs e)
         {
             if (CheckDisposed()) return;
             AccessoriesCopied?.Invoke(sender, e);
         }
+#endif
 
         private void OnAccessoryKindChanged(object sender, AccessorySlotEventArgs accessorySlotEventArgs)
         {
@@ -159,10 +163,12 @@ namespace KKAPI.Maker
         /// </summary>
         public event EventHandler<AccessorySlotEventArgs> AccessoryKindChanged;
 
+#if KK
         /// <summary>
         /// Fires after user copies accessories between coordinates by using the Copy window.
         /// </summary>
         public static event EventHandler<AccessoryCopyEventArgs> AccessoriesCopied;
+#endif
 
         /// <summary>
         /// Fires after user copies an accessory within a single coordinate by using the Transfer window.
@@ -194,13 +200,17 @@ namespace KKAPI.Maker
                 ValueChanged = null;
                 VisibleIndexChanged = null;
                 AccessoryKindChanged = null;
-                AccessoriesCopied = null;
                 AccessoryTransferred = null;
 
                 AccessoriesApi.SelectedMakerAccSlotChanged -= OnSelectedMakerAccSlotChanged;
                 AccessoriesApi.AccessoryKindChanged -= OnAccessoryKindChanged;
-                AccessoriesApi.AccessoriesCopied -= OnAccessoriesCopied;
                 AccessoriesApi.AccessoryTransferred -= OnAccessoryTransferred;
+
+#if KK
+                AccessoriesCopied = null;
+                AccessoriesApi.AccessoriesCopied -= OnAccessoriesCopied;
+#endif
+
                 return true;
             }
 

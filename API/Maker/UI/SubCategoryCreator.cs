@@ -7,7 +7,6 @@ using Harmony;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Logger = BepInEx.Logger;
 
 namespace KKAPI.Maker.UI
 {
@@ -66,7 +65,7 @@ namespace KKAPI.Maker.UI
                     }
                     else
                     {
-                        Logger.Log(LogLevel.Error, "Failed to get imgRaycastTargetOn\n" + new StackTrace());
+                        KoikatuAPI.Log(LogLevel.Error, "Failed to get imgRaycastTargetOn\n" + new StackTrace());
                     }
                 }
                 return _subCategoryCopy;
@@ -81,7 +80,7 @@ namespace KKAPI.Maker.UI
 
         public static Transform AddNewSubCategory(UI_ToggleGroupCtrl mainCategory, MakerCategory subCategory)
         {
-            Logger.Log(LogLevel.Debug, $"[MakerAPI] Adding custom subcategory {subCategory.SubCategoryName} to {mainCategory.transform.name}");
+            KoikatuAPI.Log(LogLevel.Debug, $"[MakerAPI] Adding custom subcategory {subCategory.SubCategoryName} to {mainCategory.transform.name}");
 
             var tr = Object.Instantiate(SubCategoryCopy.gameObject, mainCategory.transform, true).transform;
             tr.name = subCategory.SubCategoryName;

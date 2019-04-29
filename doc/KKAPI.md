@@ -49,6 +49,7 @@ Static Methods
 | `Boolean` | CheckIncompatiblePlugin(`BaseUnityPlugin` origin, `String` guid, `LogLevel` level = Warning) | Check if a plugin that is not compatible with your plugin is loaded.  If the plugin is loaded, user is shown a warning message on screen and true is returned.  Warning: Run only from Start, not from constructor or Awake because some plugins might not be loaded yet! | 
 | `Boolean` | CheckRequiredPlugin(`BaseUnityPlugin` origin, `String` guid, `Version` minimumVersion, `LogLevel` level = Error) | Check if a plugin is loaded and has at least the minimum version.  If the plugin is missing or older than minimumVersion, user is shown an error message on screen and false is returned.  Warning: Run only from Start, not from constructor or Awake because some plugins might not be loaded yet! | 
 | `GameMode` | GetCurrentGameMode() | Get current game mode. | 
+| `void` | Log(`LogLevel` level, `Object` obj) |  | 
 | `void` | SynchronizedInvoke(`Action` callback) | Invoke the Action on the main unity thread. Use to synchronize your threads. | 
 
 

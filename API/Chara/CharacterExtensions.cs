@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using KKAPI.Studio;
-using Studio;
 
 namespace KKAPI.Chara
 {

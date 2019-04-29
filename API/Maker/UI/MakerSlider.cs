@@ -51,7 +51,7 @@ namespace KKAPI.Maker.UI
         /// If not set, <code>Mathf.RoundToInt(f * 100).ToString()</code> is used.
         /// </summary>
         public Func<float, string> ValueToString { get; set; }
-        
+
         private static Transform SliderCopy
         {
             get
@@ -66,7 +66,7 @@ namespace KKAPI.Maker.UI
         private static void MakeCopy()
         {
             // Exists in male and female maker
-            var originalSlider = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglAll/AllTop/sldTemp").transform;
+            var originalSlider = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglAll", "sldTemp");
 
             _sliderCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
             _sliderCopy.gameObject.SetActive(false);

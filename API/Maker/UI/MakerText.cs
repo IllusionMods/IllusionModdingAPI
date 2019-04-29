@@ -39,7 +39,7 @@ namespace KKAPI.Maker.UI
 
         private static void MakeCopy()
         {
-            var original = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/tglConfig/ConfigTop/txtExplanation").transform;
+            var original = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/tglConfig", "txtExplanation");
 
             _textCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
             _textCopy.gameObject.SetActive(false);

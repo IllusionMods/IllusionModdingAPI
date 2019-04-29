@@ -1,13 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using KKAPI.Chara;
-using KKAPI.MainGame;
 using KKAPI.Maker;
-using KKAPI.Studio;
-using KKAPI.Studio.SaveLoad;
 using Manager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,7 +16,7 @@ namespace KKAPI
     /// like synchronization of threads or checking if required plugins are installed.
     /// More information is available in project wiki at https://github.com/ManlyMarco/KKAPI/wiki
     /// </summary>
-    [BepInPlugin(GUID, "Modding API for Koikatsu!", VersionConst)]
+    [BepInPlugin(GUID, "Modding API for Emotion Creators!", VersionConst)]
     public class KoikatuAPI : BaseUnityPlugin
     {
         /// <summary>
@@ -35,13 +32,13 @@ namespace KKAPI
         /// <summary>
         /// GUID of this plugin, use for checking dependancies with <see cref="BepInDependency"/> and <see cref="CheckRequiredPlugin"/>
         /// </summary>
+        // Avoid changing anything that could break the interface with original KKAPI
         public const string GUID = "marco.kkapi";
 
         /// <summary>
         /// Enables display of additional log messages when certain events are triggered within KKAPI. 
         /// Useful for plugin devs to understand when controller messages are fired.
         /// </summary>
-        [Browsable(false)]
         public static bool EnableDebugLogging
         {
             get
@@ -57,19 +54,10 @@ namespace KKAPI
             }
         }
 
-        [DisplayName("Show debug messages")]
-        [Description("Enables display of additional log messages when certain events are triggered within KKAPI. " +
-                     "Useful for plugin devs to understand when controller messages are fired.\n\n" +
-                     "Changes take effect after game restart.")]
-        private static ConfigWrapper<bool> EnableDebugLoggingSetting { get; }
+        private static ConfigWrapper<bool> EnableDebugLoggingSetting { get; set; }
 
         internal static KoikatuAPI Instance { get; private set; }
-        internal static void Log(LogLevel level, object obj) => BepInEx.Logger.Log(level, obj);
-
-        static KoikatuAPI()
-        {
-            EnableDebugLoggingSetting = new ConfigWrapper<bool>("EnableDebugLogging", GUID, false);
-        }
+        internal static void Log(LogLevel level, object obj) => Instance.Logger.Log(level, obj);
 
         /// <summary>
         /// Don't use manually
@@ -78,30 +66,29 @@ namespace KKAPI
         {
             Instance = this;
 
-            Log(LogLevel.Debug, $"Game version {Game.Version} running under {System.Threading.Thread.CurrentThread.CurrentCulture.Name} culture");
-            Log(LogLevel.Debug, $"Processor: {SystemInfo.processorType} ({SystemInfo.processorCount} cores @ {SystemInfo.processorFrequency}MHz); RAM: {SystemInfo.systemMemorySize}MB; OS: {SystemInfo.operatingSystem}");
+            EnableDebugLoggingSetting = Config.Wrap("", "Show debug messages", "Enables display of additional log messages when certain events are triggered within KKAPI. Useful for plugin devs to understand when controller messages are fired. Changes take effect after game restart.", false);
 
-            SceneManager.sceneLoaded += (scene, mode) => Log(LogLevel.Debug, $"SceneManager.sceneLoaded - {scene.name} in {mode} mode");
-            SceneManager.sceneUnloaded += scene => Log(LogLevel.Debug, $"SceneManager.sceneUnloaded - {scene.name}");
-            SceneManager.activeSceneChanged += (prev, next) => Log(LogLevel.Debug, $"SceneManager.activeSceneChanged - from {prev.name} to {next.name}");
+            Logger.Log(LogLevel.Debug, $"Game version {GameSystem.GameSystemVersion} running under {System.Threading.Thread.CurrentThread.CurrentCulture.Name} culture");
+            Logger.Log(LogLevel.Debug, $"Processor: {SystemInfo.processorType} ({SystemInfo.processorCount} cores @ {SystemInfo.processorFrequency}MHz); RAM: {SystemInfo.systemMemorySize}MB; OS: {SystemInfo.operatingSystem}");
+
+            SceneManager.sceneLoaded += (scene, mode) => Logger.Log(LogLevel.Debug, $"SceneManager.sceneLoaded - {scene.name} in {mode} mode");
+            SceneManager.sceneUnloaded += scene => Logger.Log(LogLevel.Debug, $"SceneManager.sceneUnloaded - {scene.name}");
+            SceneManager.activeSceneChanged += (prev, next) => Logger.Log(LogLevel.Debug, $"SceneManager.activeSceneChanged - from {prev.name} to {next.name}");
         }
 
         private void Start()
         {
             if (CheckIncompatiblePlugin(this, "com.bepis.makerapi", LogLevel.Error))
             {
-                Log(LogLevel.Error | LogLevel.Message, "MakerAPI is no longer supported and is preventing KKAPI from loading!");
-                Log(LogLevel.Error | LogLevel.Message, "Remove MakerAPI.dll and update all mods that used it to fix this.");
+                Logger.Log(LogLevel.Error | LogLevel.Message, "MakerAPI is no longer supported and is preventing KKAPI from loading!");
+                Logger.Log(LogLevel.Error | LogLevel.Message, "Remove MakerAPI.dll and update all mods that used it to fix this.");
                 return;
             }
 
             var insideStudio = Application.productName == "CharaStudio";
 
             MakerAPI.Init(insideStudio);
-            StudioAPI.Init(insideStudio);
-            StudioSaveLoadApi.Init(insideStudio);
             CharacterApi.Init();
-            GameAPI.Init(insideStudio);
         }
 
         /// <summary>
@@ -109,9 +96,7 @@ namespace KKAPI
         /// </summary>
         public static GameMode GetCurrentGameMode()
         {
-            if (StudioAPI.InsideStudio) return GameMode.Studio;
             if (MakerAPI.InsideMaker) return GameMode.Maker;
-            if (Game.Instance != null) return GameMode.MainGame;
             return GameMode.Unknown;
         }
 

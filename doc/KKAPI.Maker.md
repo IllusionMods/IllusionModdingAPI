@@ -222,6 +222,7 @@ Static Methods
 | `T` | AddControl(`T` control) | Add custom controls. If you want to use custom sub categories, register them by calling AddSubCategory. | 
 | `T` | AddSidebarControl(`T` control) | Add a control to the right sidebar in chara maker (the "Control Panel" where you set eye blinking, mouth expressions etc.) | 
 | `void` | AddSubCategory(`MakerCategory` category) | Add custom sub categories. They need to be added before maker starts loading,  or in the `KKAPI.Maker.MakerAPI.RegisterCustomSubCategories` event. | 
+| `Transform` | FindSubcategoryContentParent(`Transform` categorySubTransform) |  | 
 | `ChaControl` | GetCharacterControl() | Get the ChaControl of the character serving as a preview in character maker.  Outside of character maker and early on in maker load process this returns null. | 
 | `CharacterLoadFlags` | GetCharacterLoadFlags() | Get values of the default partial load checkboxes present at the bottom of the  character load window (load face, body, hair, parameters, clothes).  Returns null if the values could not be collected (safe to assume it's the same as being enabled). | 
 | `CoordinateType` | GetCurrentCoordinateType() | Currently selected maker coordinate | 

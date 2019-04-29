@@ -38,9 +38,7 @@ namespace KKAPI.Maker.UI
 
         private static void MakeCopy()
         {
-
-            // Exists in male and female maker
-            _sourceSeparator = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglAll/AllTop/Separate").transform;
+            _sourceSeparator = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglAll", "Separate").transform;
         }
 
         /// <summary>

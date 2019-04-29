@@ -67,7 +67,7 @@ namespace KKAPI.Maker.UI
 
         private static void MakeCopy()
         {
-            var original = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglMole/MoleTop/btnMoleColor").transform;
+            var original = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglMole", "btnMoleColor");
 
             _colorCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
             _colorCopy.gameObject.SetActive(false);
@@ -105,8 +105,11 @@ namespace KKAPI.Maker.UI
                         cvsColor.Close();
                     else
                     {
-                        // TODO is history callback useful?
+#if EC
+                        cvsColor.Setup(SettingName, connectColorKind, Value, SetValue, UseAlpha);
+#else
                         cvsColor.Setup(SettingName, connectColorKind, Value, SetValue, () => { }, UseAlpha);
+#endif
                     }
                 });
 

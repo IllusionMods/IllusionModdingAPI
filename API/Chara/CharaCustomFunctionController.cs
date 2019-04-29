@@ -1,10 +1,15 @@
-﻿using ExtensibleSaveFormat;
-using KKAPI.Maker;
+﻿using KKAPI.Maker;
 using System;
 using System.Collections;
 using BepInEx.Logging;
 using UniRx;
+#if EC
+using EC.Core.ExtensibleSaveFormat;
+#else
+using ExtensibleSaveFormat;
+#endif
 using UnityEngine;
+
 #pragma warning disable 618
 
 namespace KKAPI.Chara
@@ -114,7 +119,7 @@ namespace KKAPI.Chara
             }
             catch (Exception e)
             {
-                BepInEx.Logger.Log(LogLevel.Error, e);
+                KoikatuAPI.Log(LogLevel.Error, e);
             }
         }
 
@@ -149,14 +154,13 @@ namespace KKAPI.Chara
             }
             catch (Exception e)
             {
-                BepInEx.Logger.Log(LogLevel.Error, e);
+                KoikatuAPI.Log(LogLevel.Error, e);
             }
         }
 
         /// <summary>
         /// Fired just before current coordinate is saved to a coordinate card. Use <see cref="SetCoordinateExtendedData"/> to save data to it. 
         /// You might need to wait for the next frame with <see cref="MonoBehaviour.StartCoroutine(IEnumerator)"/> before handling this.
-        /// Use <see cref="CurrentCoordinate"/> to figure out what clothes set your character is wearing right now.
         /// </summary>
         protected virtual void OnCoordinateBeingSaved(ChaFileCoordinate coordinate) { }
 
@@ -168,14 +172,13 @@ namespace KKAPI.Chara
             }
             catch (Exception e)
             {
-                BepInEx.Logger.Log(LogLevel.Error, e);
+                KoikatuAPI.Log(LogLevel.Error, e);
             }
         }
 
         /// <summary>
         /// Fired just after loading a coordinate card into the current coordinate slot.
         /// Use <see cref="GetCoordinateExtendedData"/> to get save data of the loaded coordinate.
-        /// Use <see cref="CurrentCoordinate"/> to figure out what clothes set your character is wearing right now.
         /// </summary>
         /// <param name="coordinate">Coordinate being currently loaded.</param>
         /// <param name="maintainState">If true, the current state should be preserved.
@@ -199,10 +202,11 @@ namespace KKAPI.Chara
             }
             catch (Exception e)
             {
-                BepInEx.Logger.Log(LogLevel.Error, e);
+                KoikatuAPI.Log(LogLevel.Error, e);
             }
         }
 
+#if KK
         /// <summary>
         /// Currently selected clothes on this character. Can subscribe to listen for changes.
         /// </summary>
@@ -226,6 +230,7 @@ namespace KKAPI.Chara
         {
             CurrentCoordinate.Dispose();
         }
+#endif
 
         /// <summary>
         /// Warning: When overriding make sure to call the base method at the end of your logic!
@@ -243,7 +248,9 @@ namespace KKAPI.Chara
         protected virtual void Awake()
         {
             ChaControl = GetComponent<ChaControl>();
+#if KK
             CurrentCoordinate = new BehaviorSubject<ChaFileDefine.CoordinateType>((ChaFileDefine.CoordinateType)ChaControl.fileStatus.coordinateType);
+#endif
         }
 
         /// <summary>

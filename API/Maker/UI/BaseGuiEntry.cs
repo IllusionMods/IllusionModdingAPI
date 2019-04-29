@@ -60,6 +60,13 @@ namespace KKAPI.Maker.UI
             }
         }
 
+        protected static Transform GetExistingControl(string categoryPath, string controlName)
+        {
+            var cat = GameObject.Find(categoryPath);
+            var catTop = MakerAPI.FindSubcategoryContentParent(cat.transform);
+            return catTop.Find(controlName);
+        }
+
         /// <summary>
         /// Called before OnCreateControl to setup the object before instantiating the control.
         /// </summary>

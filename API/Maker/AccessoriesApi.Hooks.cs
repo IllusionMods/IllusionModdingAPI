@@ -21,12 +21,14 @@ namespace KKAPI.Maker
                 OnAccessoryKindChanged(__instance, (int)__instance.slotNo);
             }
 
+#if KK
             [HarmonyPostfix]
             [HarmonyPatch(typeof(CvsAccessoryCopy), "CopyAcs")]
             public static void CopyCopyAcsPostfix(CvsAccessoryCopy __instance)
             {
                 OnCopyAcs(__instance);
             }
+#endif
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(CvsAccessoryChange), "CopyAcs")]

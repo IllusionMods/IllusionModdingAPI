@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+#if EC
+using EC.Core.ExtensibleSaveFormat;
+#else
 using ExtensibleSaveFormat;
+#endif
+
 #pragma warning disable 1591
 
 namespace KKAPI.Chara

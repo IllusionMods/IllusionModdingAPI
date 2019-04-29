@@ -46,7 +46,7 @@ namespace KKAPI.Maker.UI
 
         private static void MakeCopy()
         {
-            var original = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/02_HairTop/tglBack/BackTop/grpBtn").transform;
+            var original = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/02_HairTop/tglBack", "grpBtn");
 
             _buttonCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
             _buttonCopy.gameObject.SetActive(false);

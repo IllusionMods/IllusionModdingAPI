@@ -2,12 +2,13 @@
 using ChaCustom;
 using Harmony;
 using KKAPI.Maker;
+#if KK
 using Studio;
-using System;
 using System.Reflection;
-using UnityEngine;
 using UnityEngine.UI;
-using Logger = BepInEx.Logger;
+#endif
+using System;
+using UnityEngine;
 
 namespace KKAPI.Chara
 {
@@ -16,6 +17,7 @@ namespace KKAPI.Chara
         private static class Hooks
         {
             [HarmonyPostfix]
+#if KK
             [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Initialize), new[]
             {
                 typeof(byte),
@@ -25,10 +27,12 @@ namespace KKAPI.Chara
                 typeof(int),
                 typeof(ChaFileControl)
             })]
-            public static void ChaControl_InitializePostHook(byte _sex, bool _hiPoly, GameObject _objRoot, int _id, int _no,
-                ChaFileControl _chaFile, ChaControl __instance)
+#elif EC
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Initialize), typeof(byte), typeof(int), typeof(UnityEngine.GameObject), typeof(int), typeof(int), typeof(ChaFileControl))]
+#endif
+            public static void ChaControl_InitializePostHook(ChaControl __instance)
             {
-                Logger.Log(LogLevel.Debug, $"[KKAPI] Character card load: {GetLogName(__instance)} {(MakerAPI.CharaListIsLoading ? "inside CharaList" : string.Empty)}");
+                KoikatuAPI.Log(LogLevel.Debug, $"[KKAPI] Character card load: {GetLogName(__instance)} {(MakerAPI.CharaListIsLoading ? "inside CharaList" : string.Empty)}");
 
                 ChaControls.Add(__instance);
 
@@ -79,11 +83,12 @@ namespace KKAPI.Chara
                     }
                     catch (Exception e)
                     {
-                        Logger.Log(LogLevel.Error, e);
+                        KoikatuAPI.Log(LogLevel.Error, e);
                     }
                 }
             }
 
+#if KK
             /// <summary>
             /// Needed for studio
             /// </summary>
@@ -127,6 +132,7 @@ namespace KKAPI.Chara
             {
                 __instance.StartCoroutine(DelayedReloadChara(null));
             }
+#endif
 
             /// <summary>
             /// Prevents firing coordinate load events when the coordinate window is populating

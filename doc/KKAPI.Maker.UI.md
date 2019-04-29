@@ -73,6 +73,13 @@ Static Properties
 | `Transform` | GuiCacheTransfrom | Parent transform that holds temporary gui entries used to instantiate custom controls. | 
 
 
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Transform` | GetExistingControl(`String` categoryPath, `String` controlName) |  | 
+
+
 ## `MakerButton`
 
 Custom control that draws a simple blue button.
