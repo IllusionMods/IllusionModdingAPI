@@ -211,16 +211,19 @@ namespace KKAPI.Chara
         /// Currently selected clothes on this character. Can subscribe to listen for changes.
         /// </summary>
         public BehaviorSubject<ChaFileDefine.CoordinateType> CurrentCoordinate { get; private set; }
+#endif
 
         /// <summary>
         /// Warning: When overriding make sure to call the base method at the end of your logic!
         /// </summary>
         protected virtual void Update()
         {
+#if KK
             // TODO change into a separate trigger component?
             var currentCoordinate = (ChaFileDefine.CoordinateType)ChaControl.fileStatus.coordinateType;
             if (currentCoordinate != CurrentCoordinate.Value)
                 CurrentCoordinate.OnNext(currentCoordinate);
+#endif
         }
 
         /// <summary>
@@ -228,9 +231,10 @@ namespace KKAPI.Chara
         /// </summary>
         protected virtual void OnDestroy()
         {
+#if KK
             CurrentCoordinate.Dispose();
-        }
 #endif
+        }
 
         /// <summary>
         /// Warning: When overriding make sure to call the base method at the end of your logic!
