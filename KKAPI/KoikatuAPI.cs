@@ -19,7 +19,7 @@ namespace KKAPI
     /// like synchronization of threads or checking if required plugins are installed.
     /// More information is available in project wiki at https://github.com/ManlyMarco/KKAPI/wiki
     /// </summary>
-    [BepInPlugin(GUID, "Modding API for Koikatsu!", VersionConst)]
+    [BepInPlugin(GUID, "Modding API", VersionConst)]
     public class KoikatuAPI : BaseUnityPlugin
     {
         /// <summary>

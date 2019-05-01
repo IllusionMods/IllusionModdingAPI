@@ -60,6 +60,9 @@ namespace KKAPI.Maker.UI
             }
         }
 
+        /// <summary>
+        /// Find first control of this name under the specified category transform
+        /// </summary>
         protected static Transform GetExistingControl(string categoryPath, string controlName)
         {
             var cat = GameObject.Find(categoryPath);

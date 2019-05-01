@@ -69,7 +69,7 @@ namespace KKAPI.Maker.UI
             var singleItemWidth = TotalWidth / Toggles.Count;
 
             var rt = copy.GetComponent<RectTransform>();
-            rt.localPosition = new Vector3(-380 + singleItemWidth * _createdCount, 26);
+            rt.localPosition = new Vector3(_baseToggle.localPosition.x + singleItemWidth * _createdCount, 26);
             rt.offsetMax = new Vector2(rt.offsetMin.x + singleItemWidth, rt.offsetMin.y + 26);
 
             copy.gameObject.SetActive(true);
@@ -101,20 +101,21 @@ namespace KKAPI.Maker.UI
             Reset();
 
             _root = GetRootObject();
-            var baseToggles = _root.transform.Cast<Transform>()
+            var allChildren = _root.transform.Cast<Transform>().Select(x => x.GetComponent<RectTransform>()).ToList();
+
+            var baseToggles = allChildren
                 .Where(x => x.name.StartsWith("tglItem"))
-                .Select(x => x.GetComponent<RectTransform>())
                 .ToList();
+
+            _baseToggle = _root.transform.Find("tglItem01");
 
             var singleWidth = TotalWidth / baseToggles.Count;
             for (var index = 0; index < baseToggles.Count; index++)
             {
                 var baseToggle = baseToggles[index];
-                baseToggle.localPosition = new Vector3(-380 + singleWidth * index, 52, 0);
+                baseToggle.localPosition = new Vector3(_baseToggle.localPosition.x + singleWidth * index, 52, 0);
                 baseToggle.offsetMax = new Vector2(baseToggle.offsetMin.x + singleWidth, baseToggle.offsetMin.y + 26);
             }
-
-            _baseToggle = _root.transform.Find("tglItem01");
 
             var allon = _root.transform.Find("btnAllOn");
             allon.GetComponentInChildren<Button>().onClick.AddListener(OnAllOn);

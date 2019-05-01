@@ -7,12 +7,9 @@ using KKAPI;
 // associated with an assembly.
 [assembly: AssemblyTitle("KKAPI")]
 [assembly: AssemblyDescription("Modding API for Koikatsu!")]
-[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ManlyMarco")]
 [assembly: AssemblyProduct("KKAPI")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from

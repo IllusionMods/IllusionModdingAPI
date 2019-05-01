@@ -55,7 +55,7 @@ namespace KKAPI.Maker.UI
             for (var index = 0; index < _baseToggles.Count; index++)
             {
                 var baseToggle = _baseToggles[index];
-                baseToggle.localPosition = new Vector3(-380 + singleWidth * index, 52, 0);
+                baseToggle.localPosition = new Vector3(_baseToggle.localPosition.x + singleWidth * index, 52, 0);
                 baseToggle.offsetMax = new Vector2(baseToggle.offsetMin.x + singleWidth, baseToggle.offsetMin.y + 26);
             }
         }
@@ -78,7 +78,7 @@ namespace KKAPI.Maker.UI
             var singleWidth = TotalWidth / (_baseToggles.Count + Toggles.Count);
 
             var rt = copy.GetComponent<RectTransform>();
-            rt.localPosition = new Vector3(-380 + singleWidth * _createdCount, 52, 0);
+            rt.localPosition = new Vector3(_baseToggle.localPosition.x + singleWidth * _createdCount, 52, 0);
             rt.offsetMax = new Vector2(rt.offsetMin.x + singleWidth, rt.offsetMin.y + 26);
 
             copy.gameObject.SetActive(true);
@@ -110,15 +110,19 @@ namespace KKAPI.Maker.UI
             Reset();
 
             _root = GetRootObject();
+            var allChildren = _root.transform.Cast<Transform>().Select(x => x.GetComponent<RectTransform>()).ToList();
 
-            _baseToggles = _root.transform.Cast<Transform>()
-                .Where(x => x.name.StartsWith("tglItem0"))
-                .Select(x => x.GetComponent<RectTransform>())
+            _baseToggles = allChildren
+                .Where(x => x.name.StartsWith("tglItem"))
                 .ToList();
-
             _createdCount = _baseToggles.Count;
-            
+
             _baseToggle = _root.transform.Find("tglItem01");
+            
+#if EC
+            // Disable the text since there's no space
+            allChildren.FirstOrDefault(x => x.name.StartsWith("Text"))?.gameObject.SetActive(false);
+#endif
 
             /*var allon = _root.transform.Find("btnAllOn");
             allon.GetComponentInChildren<Button>().onClick.AddListener(OnAllOn);

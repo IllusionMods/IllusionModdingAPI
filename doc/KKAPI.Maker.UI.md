@@ -77,7 +77,7 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Transform` | GetExistingControl(`String` categoryPath, `String` controlName) |  | 
+| `Transform` | GetExistingControl(`String` categoryPath, `String` controlName) | Find first control of this name under the specified category transform | 
 
 
 ## `MakerButton`
