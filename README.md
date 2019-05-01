@@ -14,7 +14,7 @@ KKAPI is a project that aims to make creating mods for Kokatsu! and Emotion Crea
 * [KK_UncensorSelector, KK_EyeShaking, KK_RandomCharacterGenerator, more...](https://github.com/DeathWeasel1337/KK_Plugins)
 
 ## Getting started
-1. First of all, [download the latest release](https://github.com/ManlyMarco/KKAPI/releases).
+1. First of all, [download the latest release](https://github.com/ManlyMarco/KKAPI/releases). KKAPI.dll goes inside `BepInEx` directory, while `ECAPI.dll` goes inside BepInEx\plugins. You only need the version specific for your game.
 2. KKAPI requires latest version of [BepInEx v4](https://github.com/BepInEx/BepInEx) and [BepisPlugins](https://github.com/bbepis/BepisPlugins). ECAPI requires a latest version of [BepInEx v5](https://github.com/BepInEx/BepInEx) and [EC_CorePlugins](https://github.com/ManlyMarco/EC_CorePlugins). If MoreAccessories is used, the latest version of it is required for all features to function correctly.
 3. Basic construction of the API is [explained in the introduction](https://github.com/ManlyMarco/KKAPI/wiki/Introduction).
 4. A short tutorial on how the API can be used to make a plugin [can be found here](https://github.com/ManlyMarco/KKAPI/wiki/Typical-usage-example-and-explanation).
