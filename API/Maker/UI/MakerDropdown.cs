@@ -61,6 +61,7 @@ namespace KKAPI.Maker.UI
             dd.onValueChanged.RemoveAllListeners();
             dd.ClearOptions();
             dd.GetComponent<Image>().raycastTarget = true;
+            dd.template.GetComponentInChildren<Toggle>().image.raycastTarget = true;
         }
 
         /// <inheritdoc />
