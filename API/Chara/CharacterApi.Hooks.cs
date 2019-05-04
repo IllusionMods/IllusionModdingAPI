@@ -8,6 +8,7 @@ using System.Reflection;
 using UnityEngine.UI;
 #endif
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace KKAPI.Chara
@@ -46,7 +47,7 @@ namespace KKAPI.Chara
             {
                 ChaControls.Remove(__instance);
             }
-            
+
             /// <summary>
             /// Needed for saving in class maker, rest is handled by ExtendedSave.CardBeingSaved
             /// </summary>
@@ -74,7 +75,7 @@ namespace KKAPI.Chara
             {
                 foreach (var handler in _registeredHandlers)
                 {
-                    if(handler.ExtendedDataCopier == null)
+                    if (handler.ExtendedDataCopier == null)
                         continue;
 
                     try
@@ -89,22 +90,6 @@ namespace KKAPI.Chara
             }
 
 #if KK
-            /// <summary>
-            /// Needed for studio
-            /// </summary>
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(OCIChar), nameof(OCIChar.ChangeChara), new[]
-            {
-                typeof(string)
-            })]
-            public static void OCIChar_ChangeCharaPostHook(string _path, OCIChar __instance)
-            {
-                var component = __instance.charInfo;
-                if (component != null)
-                    component.StartCoroutine(DelayedReloadChara(component));
-            }
-
-
             private static readonly FieldInfo IdolBackButton = typeof(LiveCharaSelectSprite).GetField("btnIdolBack", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
             /// <summary>
@@ -115,11 +100,7 @@ namespace KKAPI.Chara
             public static void LiveCharaSelectSprite_StartPostHook(LiveCharaSelectSprite __instance)
             {
                 var button = IdolBackButton?.GetValue(__instance) as Button;
-                button?.onClick.AddListener(
-                    () =>
-                    {
-                        __instance.StartCoroutine(DelayedReloadChara(__instance.heroine.chaCtrl));
-                    });
+                button?.onClick.AddListener(() => __instance.StartCoroutine(DelayedReloadChara(__instance.heroine.chaCtrl)));
             }
 
             /// <summary>
@@ -133,6 +114,20 @@ namespace KKAPI.Chara
                 __instance.StartCoroutine(DelayedReloadChara(null));
             }
 #endif
+
+            /// <summary>
+            /// Needed for some edge cases, replacing characters in scene maker in EC
+            /// </summary>
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ReloadAsync), new[] { typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool) })]
+            public static void ReloadAsyncPostHook(bool noChangeClothes, bool noChangeHead, bool noChangeHair, bool noChangeBody, ChaControl __instance, ref IEnumerator __result)
+            {
+                if (noChangeClothes || noChangeHead || noChangeHair || noChangeBody) return;
+                if (IsCurrentlyReloading(__instance)) return;
+
+                var original = __result;
+                __result = new[] { original, DelayedReloadChara(__instance) }.GetEnumerator();
+            }
 
             /// <summary>
             /// Prevents firing coordinate load events when the coordinate window is populating

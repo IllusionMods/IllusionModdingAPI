@@ -153,7 +153,7 @@ namespace KKAPI.Chara
                     OnCoordinateBeingLoaded(cf, file);
             };
 
-            if(KoikatuAPI.EnableDebugLogging)
+            if (KoikatuAPI.EnableDebugLogging)
                 RegisterExtraBehaviour<TestCharaCustomFunctionController>(null);
         }
 
@@ -188,10 +188,21 @@ namespace KKAPI.Chara
                 behaviour.OnCardBeingSavedInternal(gamemode);
         }
 
+        private static readonly HashSet<ChaControl> _currentlyReloading = new HashSet<ChaControl>();
+
         private static void ReloadChara(ChaControl chaControl = null)
         {
+            if (IsCurrentlyReloading(chaControl))
+                return;
+
+            if (chaControl == null)
+                _currentlyReloading.UnionWith(ChaControls);
+            else
+                _currentlyReloading.Add(chaControl);
+
             KoikatuAPI.Log(LogLevel.Debug, "[KKAPI] Character load/reload: " + GetLogName(chaControl));
 
+            // Always send events to controllers before subscribers of CharacterReloaded
             var gamemode = KoikatuAPI.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(chaControl))
                 behaviour.OnReloadInternal(gamemode);
@@ -204,10 +215,22 @@ namespace KKAPI.Chara
             {
                 KoikatuAPI.Log(LogLevel.Error, e);
             }
+
+            if (chaControl == null)
+                _currentlyReloading.Clear();
+            else
+                _currentlyReloading.Remove(chaControl);
+        }
+
+        private static bool IsCurrentlyReloading(ChaControl chaControl)
+        {
+            return (chaControl == null && _currentlyReloading.Count > 0) || _currentlyReloading.Contains(chaControl);
         }
 
         private static IEnumerator DelayedReloadChara(ChaControl chaControl)
         {
+            if (IsCurrentlyReloading(chaControl)) yield break;
+
             yield return null;
             ReloadChara(chaControl);
         }
