@@ -13,6 +13,7 @@
         /// Inside character maker (can be started from main menu or from class roster)
         /// </summary>
         Maker,
+#if KK
         /// <summary>
         /// Anywhere inside CharaStudio.exe
         /// </summary>
@@ -24,5 +25,6 @@
         /// This does not hoverwer include the character maker launched from within the class menu.
         /// </summary>
         MainGame
+#endif
     }
 }

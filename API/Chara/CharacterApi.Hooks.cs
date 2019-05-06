@@ -3,7 +3,6 @@ using ChaCustom;
 using Harmony;
 using KKAPI.Maker;
 #if KK
-using Studio;
 using System.Reflection;
 using UnityEngine.UI;
 #endif

@@ -17,7 +17,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Chara\Events\CharaReloadEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\Events\CoordinateEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\TestCharaCustomFunctionController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GameMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HarmonyPatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)KoikatuAPIBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoryControlWrapper.cs" />

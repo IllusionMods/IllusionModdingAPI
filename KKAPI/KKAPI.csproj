@@ -80,7 +80,6 @@
     <Compile Include="MainGame\GameExtensions.cs" />
     <Compile Include="MainGame\TestGameFunctionController.cs" />
     <Compile Include="KoikatuAPI.cs" />
-    <Compile Include="GameMode.cs" />
     <Compile Include="Studio\SaveLoad\SceneCustomFunctionController.cs" />
     <Compile Include="Studio\SaveLoad\SceneLoadEventArgs.cs" />
     <Compile Include="Studio\SaveLoad\SceneOperationKind.cs" />
