@@ -74,6 +74,8 @@ namespace KKAPI.Maker
 
         private static void CreateCustomControlsInSubCategory(Transform subCategoryTransform, ICollection<BaseGuiEntry> entriesToAdd)
         {
+            if(entriesToAdd.Count == 0) return;
+
             var contentParent = FindSubcategoryContentParent(subCategoryTransform);
 
             BaseUnityPlugin lastOwner = contentParent.childCount > 1 ? KoikatuAPI.Instance : null;
