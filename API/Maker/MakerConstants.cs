@@ -162,7 +162,7 @@ namespace KKAPI.Maker
         {
             public static MakerCategory Character => GetBuiltInCategory("05_ParameterTop", "tglCharactor");
             public static MakerCategory CharacterEx => GetBuiltInCategory("05_ParameterTop", "tglCharactorEx");
-            public static MakerCategory H => GetBuiltInCategory("03_ClothesTop", "tglH");
+            public static MakerCategory H => GetBuiltInCategory("05_ParameterTop", "tglH");
             public static MakerCategory QA => GetBuiltInCategory("05_ParameterTop", "tglQA");
             public static MakerCategory Attribute => GetBuiltInCategory("05_ParameterTop", "tglAttribute");
             public static MakerCategory ADK => GetBuiltInCategory("05_ParameterTop", "tglADK");
