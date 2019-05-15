@@ -229,6 +229,7 @@ Static Methods
 | `CustomBase` | GetMakerBase() | Returns current maker logic instance.  Same as `Singleton`1.Instance` | 
 | `Int32` | GetMakerSex() | 0 is male, 1 is female | 
 | `void` | Init(`Boolean` insideStudio) |  | 
+| `Boolean` | IsInsideClassMaker() | Check if the maker was loaded from within classroom select screen in main game | 
 | `Boolean` | IsInterfaceVisible() | Check if maker interface is currently visible and not obscured by settings screen or other things.  Useful for knowing when to display OnGui mod windows in maker. | 
 | `void` | OnMakerAccSlotAdded(`Transform` newSlotTransform) |  | 
 

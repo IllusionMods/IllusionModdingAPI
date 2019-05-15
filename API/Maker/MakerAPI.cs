@@ -74,7 +74,7 @@ namespace KKAPI.Maker
 
         private static void CreateCustomControlsInSubCategory(Transform subCategoryTransform, ICollection<BaseGuiEntry> entriesToAdd)
         {
-            if(entriesToAdd.Count == 0) return;
+            if (entriesToAdd.Count == 0) return;
 
             var contentParent = FindSubcategoryContentParent(subCategoryTransform);
 
@@ -279,6 +279,11 @@ namespace KKAPI.Maker
 
 #if KK
         /// <summary>
+        /// Check if the maker was loaded from within classroom select screen in main game
+        /// </summary>
+        public static bool IsInsideClassMaker() => InsideMaker && Manager.Scene.Instance.NowSceneNames.Contains("ClassRoomSelect");
+
+        /// <summary>
         /// Currently selected maker coordinate
         /// </summary>
         public static ChaFileDefine.CoordinateType GetCurrentCoordinateType() => (ChaFileDefine.CoordinateType)GetMakerBase().chaCtrl.fileStatus.coordinateType;
@@ -410,6 +415,12 @@ namespace KKAPI.Maker
             CreateCustomControls();
             MakerLoadToggle.CreateCustomToggles();
             MakerCoordinateLoadToggle.CreateCustomToggles();
+
+#if KK
+            // Fix some plugins failing to update interface and losing state
+            if (IsInsideClassMaker())
+                OnChaFileLoaded(new ChaFileLoadedEventArgs(null, (byte)GetMakerSex(), true, true, true, true, true, GetCharacterControl().chaFile, LastLoadedChaFile));
+#endif
         }
 
         private static void OnMakerExiting()
@@ -473,7 +484,7 @@ namespace KKAPI.Maker
 
             AddAccessoryWindowControl(new MakerToggle(cat, "test toggle", null))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, $"Toggled to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
-            AddAccessoryWindowControl(new MakerColor("test accessory color", false, cat, Color.cyan, instance){ColorBoxWidth = 230})
+            AddAccessoryWindowControl(new MakerColor("test accessory color", false, cat, Color.cyan, instance) { ColorBoxWidth = 230 })
                 .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, $"Color to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
         }
 
