@@ -70,7 +70,7 @@ namespace KKAPI.Chara
                 typeof(ChaFile),
                 typeof(ChaFile)
             })]
-            public static void ChaFile_CopyChaFilePostHook(ChaFile dst, ChaFile src)
+            public static void ChaFile_CopyChaFileHook(ChaFile dst, ChaFile src)
             {
                 foreach (var handler in _registeredHandlers)
                 {
