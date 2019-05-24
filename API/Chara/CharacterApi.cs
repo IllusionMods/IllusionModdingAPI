@@ -116,7 +116,7 @@ namespace KKAPI.Chara
 
         internal static void Init()
         {
-            HarmonyPatcher.PatchAll(typeof(Hooks));
+            Hooks.InitHooks();
 
             // Cards -------------------------
             ExtendedSave.CardBeingSaved += OnCardBeingSaved;

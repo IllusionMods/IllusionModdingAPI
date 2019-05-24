@@ -2,13 +2,9 @@
 using ChaCustom;
 using Harmony;
 using KKAPI.Maker;
-#if KK
-using System.Reflection;
-using UnityEngine.UI;
-#endif
 using System;
 using System.Collections;
-using UnityEngine;
+using System.Linq;
 
 namespace KKAPI.Chara
 {
@@ -16,20 +12,19 @@ namespace KKAPI.Chara
     {
         private static class Hooks
         {
-            [HarmonyPostfix]
-#if KK
-            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Initialize), new[]
+            public static void InitHooks()
             {
-                typeof(byte),
-                typeof(bool),
-                typeof(GameObject),
-                typeof(int),
-                typeof(int),
-                typeof(ChaFileControl)
-            })]
-#elif EC
-            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.Initialize), typeof(byte), typeof(int), typeof(UnityEngine.GameObject), typeof(int), typeof(int), typeof(ChaFileControl))]
-#endif
+                HarmonyPatcher.PatchAll(typeof(Hooks));
+
+                var i = HarmonyInstance.Create(typeof(Hooks).FullName);
+
+                var target = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.Initialize) && info.GetParameters().Length >= 5);
+                i.Patch(target, null, new HarmonyMethod(typeof(Hooks), nameof(Hooks.ChaControl_InitializePostHook)));
+
+                var target2 = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.ReloadAsync) && info.GetParameters().Length >= 5);
+                i.Patch(target2, null, new HarmonyMethod(typeof(Hooks), nameof(Hooks.ReloadAsyncPostHook)));
+            }
+            
             public static void ChaControl_InitializePostHook(ChaControl __instance)
             {
                 KoikatuAPI.Log(LogLevel.Debug, $"[KKAPI] Character card load: {GetLogName(__instance)} {(MakerAPI.CharaListIsLoading ? "inside CharaList" : string.Empty)}");
@@ -89,8 +84,6 @@ namespace KKAPI.Chara
             }
 
 #if KK
-            private static readonly FieldInfo IdolBackButton = typeof(LiveCharaSelectSprite).GetField("btnIdolBack", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
             /// <summary>
             /// Update changes when selecting live mode character
             /// </summary>
@@ -98,7 +91,7 @@ namespace KKAPI.Chara
             [HarmonyPatch(typeof(LiveCharaSelectSprite), "Start")]
             public static void LiveCharaSelectSprite_StartPostHook(LiveCharaSelectSprite __instance)
             {
-                var button = IdolBackButton?.GetValue(__instance) as Button;
+                var button = (UnityEngine.UI.Button) Traverse.Create(__instance).Field("btnIdolBack").GetValue();
                 button?.onClick.AddListener(() => __instance.StartCoroutine(DelayedReloadChara(__instance.heroine.chaCtrl)));
             }
 
@@ -117,8 +110,6 @@ namespace KKAPI.Chara
             /// <summary>
             /// Needed for some edge cases, replacing characters in scene maker in EC
             /// </summary>
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ReloadAsync), new[] { typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool) })]
             public static void ReloadAsyncPostHook(bool noChangeClothes, bool noChangeHead, bool noChangeHair, bool noChangeBody, ChaControl __instance, ref IEnumerator __result)
             {
                 if (noChangeClothes || noChangeHead || noChangeHair || noChangeBody) return;

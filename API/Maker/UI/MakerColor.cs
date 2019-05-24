@@ -1,9 +1,12 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using ChaCustom;
+using Harmony;
 using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace KKAPI.Maker.UI
 {
@@ -105,11 +108,18 @@ namespace KKAPI.Maker.UI
                         cvsColor.Close();
                     else
                     {
-#if EC
-                        cvsColor.Setup(SettingName, connectColorKind, Value, SetValue, UseAlpha);
-#else
-                        cvsColor.Setup(SettingName, connectColorKind, Value, SetValue, () => { }, UseAlpha);
-#endif
+                        var m = AccessTools.Method(typeof(CvsColor), nameof(CvsColor.Setup));
+                        switch (m.GetParameters().Length)
+                        {
+                            case 5:
+                                m.Invoke(cvsColor, new object[] { SettingName, connectColorKind, Value, (Action<Color>)SetValue, UseAlpha });
+                                break;
+                            case 6:
+                                m.Invoke(cvsColor, new object[] { SettingName, connectColorKind, Value, (Action<Color>)SetValue, (Action)(() => { }), UseAlpha });
+                                break;
+                            default:
+                                throw new InvalidOperationException("Where am I what is this help me");
+                        }
                     }
                 });
 
