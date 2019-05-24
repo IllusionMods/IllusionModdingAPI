@@ -192,7 +192,8 @@ namespace KKAPI.Maker
             catch (Exception e)
             {
                 _moreAccessoriesType = null;
-                KoikatuAPI.Log(LogLevel.Error, e);
+                KoikatuAPI.Log(LogLevel.Warning, "Failed to detect MoreAccessories!");
+                KoikatuAPI.Log(LogLevel.Debug, e);
             }
         }
 
