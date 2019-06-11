@@ -327,9 +327,6 @@ namespace KKAPI.Maker
 
         private static void OnRegisterCustomSubCategories()
         {
-            MakerLoadToggle.Setup();
-            MakerCoordinateLoadToggle.Setup();
-
             if (RegisterCustomSubCategories != null)
             {
                 var args = new RegisterSubCategoriesEvent();
@@ -408,6 +405,9 @@ namespace KKAPI.Maker
 
             foreach (var baseGuiEntry in _guiEntries)
                 baseGuiEntry.Initialize();
+
+            MakerLoadToggle.Setup();
+            MakerCoordinateLoadToggle.Setup();
         }
 
         private static void OnCreateCustomControls()

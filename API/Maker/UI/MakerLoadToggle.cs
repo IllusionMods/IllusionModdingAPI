@@ -101,13 +101,8 @@ namespace KKAPI.Maker.UI
             Reset();
 
             _root = GetRootObject();
-            var allChildren = _root.transform.Cast<Transform>().Select(x => x.GetComponent<RectTransform>()).ToList();
-
-            var baseToggles = allChildren
-                .Where(x => x.name.StartsWith("tglItem"))
-                .ToList();
-
-            _baseToggle = _root.transform.Find("tglItem01");
+            var baseToggles = GetBaseToggles(_root.transform);
+            _baseToggle = baseToggles[0]; //.Single(x=>x.name == "tglItem01");
 
             var singleWidth = TotalWidth / baseToggles.Count;
             for (var index = 0; index < baseToggles.Count; index++)
@@ -123,6 +118,29 @@ namespace KKAPI.Maker.UI
             alloff.GetComponentInChildren<Button>().onClick.AddListener(OnAllOff);
 
             LoadButton = _root.transform.parent.Find("btnLoad").GetComponent<Button>();
+        }
+
+        internal static List<RectTransform> GetBaseToggles(Transform root)
+        {
+            var baseToggles = new List<RectTransform>();
+            foreach (var child in root.transform.Cast<Transform>().ToList())
+            {
+                if (child.name.StartsWith("tglHeader"))
+                {
+                    // Fix for Koikatsu Party, the toggles are now grouped
+                    foreach (Transform tglItem in child.Cast<Transform>().ToList())
+                    {
+                        tglItem.SetParent(root.transform, false);
+                        baseToggles.Add(tglItem.GetComponent<RectTransform>());
+                    }
+                }
+                else if (child.name.StartsWith("tglItem"))
+                {
+                    baseToggles.Add(child.GetComponent<RectTransform>());
+                }
+            }
+
+            return baseToggles;
         }
 
         private static GameObject GetRootObject()

@@ -263,6 +263,7 @@ Static Methods
 | --- | --- | --- | 
 | `MakerLoadToggle` | AddLoadToggle(`MakerLoadToggle` toggle) |  | 
 | `void` | CreateCustomToggles() |  | 
+| `List<RectTransform>` | GetBaseToggles(`Transform` root) |  | 
 | `void` | Reset() |  | 
 | `void` | Setup() |  | 
 

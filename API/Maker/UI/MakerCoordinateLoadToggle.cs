@@ -110,19 +110,15 @@ namespace KKAPI.Maker.UI
             Reset();
 
             _root = GetRootObject();
-            var allChildren = _root.transform.Cast<Transform>().Select(x => x.GetComponent<RectTransform>()).ToList();
-
-            _baseToggles = allChildren
-                .Where(x => x.name.StartsWith("tglItem"))
-                .ToList();
+            _baseToggles = MakerLoadToggle.GetBaseToggles(_root.transform);
             _createdCount = _baseToggles.Count;
+            _baseToggle = _baseToggles[0];
 
-            _baseToggle = _root.transform.Find("tglItem01");
-            
-#if EC
-            // Disable the text since there's no space
-            allChildren.FirstOrDefault(x => x.name.StartsWith("Text"))?.gameObject.SetActive(false);
-#endif
+            if (BepInEx.Bootstrap.Chainloader.Plugins.Select(BepInEx.MetadataHelper.GetMetadata).Any(x => x.GUID == "KK_ClothesLoadOption"))
+            {
+                // Disable the text since there's no space unless KK_ClothesLoadOption makes it
+                _root.transform.Cast<Transform>().FirstOrDefault(x => x.name.StartsWith("Text"))?.gameObject.SetActive(false);
+            }
 
             /*var allon = _root.transform.Find("btnAllOn");
             allon.GetComponentInChildren<Button>().onClick.AddListener(OnAllOn);
