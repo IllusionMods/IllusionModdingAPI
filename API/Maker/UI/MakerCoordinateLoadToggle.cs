@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UniRx;
@@ -66,6 +67,8 @@ namespace KKAPI.Maker.UI
             var copy = Object.Instantiate(_baseToggle, _root.transform);
             copy.name = "tglItem";
 
+            RemoveLocalisation(copy.gameObject);
+
             var tgl = copy.GetComponentInChildren<Toggle>();
             tgl.onValueChanged.AddListener(SetValue);
             BufferedValueChanged.Subscribe(b => tgl.isOn = b);
@@ -84,7 +87,17 @@ namespace KKAPI.Maker.UI
             copy.gameObject.SetActive(true);
             _createdCount++;
 
+            KoikatuAPI.Instance.StartCoroutine(FixLayout(rt));
+
             return copy.gameObject;
+        }
+
+        private static IEnumerator FixLayout(RectTransform rt)
+        {
+            yield return new WaitUntil(() => rt.gameObject.activeInHierarchy);
+            yield return null;
+
+            LayoutRebuilder.MarkLayoutForRebuild(rt);
         }
 
         /// <inheritdoc />
