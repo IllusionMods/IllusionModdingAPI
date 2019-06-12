@@ -15,7 +15,7 @@ namespace KKAPI.Maker.UI
     /// </summary>
     public class MakerLoadToggle : BaseEditableGuiEntry<bool>
     {
-        private const int TotalWidth = 380 + 292;
+        private const int TotalWidth = 380 + 292 - 5; // -5 for KKP
 
         private static readonly List<MakerLoadToggle> Toggles = new List<MakerLoadToggle>();
         private static Transform _baseToggle;

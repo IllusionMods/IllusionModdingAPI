@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BepInEx;
+using BepInEx.Bootstrap;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -15,8 +17,14 @@ namespace KKAPI.Maker.UI
     /// </summary>
     public class MakerCoordinateLoadToggle : BaseEditableGuiEntry<bool>
     {
-        private const int TotalWidth = 380 + 292;
+        static MakerCoordinateLoadToggle()
+        {
+            var cloInstalled = Chainloader.Plugins.Select(MetadataHelper.GetMetadata).Any(x => x.GUID == "KK_ClothesLoadOption");
+            _verticalOffset = cloInstalled ? 52 : 26;
+        }
 
+        private const int TotalWidth = 380 + 292;
+        private static readonly int _verticalOffset;
         private static readonly List<MakerCoordinateLoadToggle> Toggles = new List<MakerCoordinateLoadToggle>();
         private static Transform _baseToggle;
         private static GameObject _root;
@@ -56,7 +64,7 @@ namespace KKAPI.Maker.UI
             for (var index = 0; index < _baseToggles.Count; index++)
             {
                 var baseToggle = _baseToggles[index];
-                baseToggle.localPosition = new Vector3(_baseToggle.localPosition.x + singleWidth * index, 52, 0);
+                baseToggle.localPosition = new Vector3(_baseToggle.localPosition.x + singleWidth * index, _verticalOffset, 0);
                 baseToggle.offsetMax = new Vector2(baseToggle.offsetMin.x + singleWidth, baseToggle.offsetMin.y + 26);
             }
         }
@@ -81,7 +89,7 @@ namespace KKAPI.Maker.UI
             var singleWidth = TotalWidth / (_baseToggles.Count + Toggles.Count);
 
             var rt = copy.GetComponent<RectTransform>();
-            rt.localPosition = new Vector3(_baseToggle.localPosition.x + singleWidth * _createdCount, 52, 0);
+            rt.localPosition = new Vector3(_baseToggle.localPosition.x + singleWidth * _createdCount, _verticalOffset, 0);
             rt.offsetMax = new Vector2(rt.offsetMin.x + singleWidth, rt.offsetMin.y + 26);
 
             copy.gameObject.SetActive(true);
@@ -126,12 +134,6 @@ namespace KKAPI.Maker.UI
             _baseToggles = MakerLoadToggle.GetBaseToggles(_root.transform);
             _createdCount = _baseToggles.Count;
             _baseToggle = _baseToggles[0];
-
-            if (BepInEx.Bootstrap.Chainloader.Plugins.Select(BepInEx.MetadataHelper.GetMetadata).Any(x => x.GUID == "KK_ClothesLoadOption"))
-            {
-                // Disable the text since there's no space unless KK_ClothesLoadOption makes it
-                _root.transform.Cast<Transform>().FirstOrDefault(x => x.name.StartsWith("Text"))?.gameObject.SetActive(false);
-            }
 
             /*var allon = _root.transform.Find("btnAllOn");
             allon.GetComponentInChildren<Button>().onClick.AddListener(OnAllOn);
