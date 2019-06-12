@@ -29,6 +29,8 @@ namespace KKAPI.Maker.UI.Sidebar
             var origTgl = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CvsDraw/Top/tglBlink");
             var copy = Object.Instantiate(origTgl, origTgl.transform.parent);
 
+            RemoveLocalisation(copy);
+
             var tgl = copy.GetComponentInChildren<Toggle>();
             tgl.graphic.raycastTarget = true;
             tgl.onValueChanged.RemoveAllListeners();

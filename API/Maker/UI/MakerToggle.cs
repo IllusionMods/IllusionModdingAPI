@@ -67,6 +67,8 @@ namespace KKAPI.Maker.UI
             toggle.GetComponent<RectTransform>().offsetMax = new Vector2(460, -8);
 
             _toggleCopy = copy;
+
+            RemoveLocalisation(_toggleCopy.gameObject);
         }
 
         /// <inheritdoc />

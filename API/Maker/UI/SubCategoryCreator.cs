@@ -27,6 +27,8 @@ namespace KKAPI.Maker.UI
                     _subCategoryCopy = Object.Instantiate(original, BaseGuiEntry.GuiCacheTransfrom, true);
                     _subCategoryCopy.gameObject.SetActive(false);
 
+                    BaseGuiEntry.RemoveLocalisation(_subCategoryCopy.gameObject);
+
                     var toggle = _subCategoryCopy.GetComponent<Toggle>();
                     toggle.onValueChanged.RemoveAllListeners();
                     toggle.isOn = false;

@@ -44,6 +44,8 @@ namespace KKAPI.Maker.UI
             _textCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
             _textCopy.gameObject.SetActive(false);
             _textCopy.name = "txtCustom";
+
+            RemoveLocalisation(_textCopy.gameObject);
         }
 
         /// <inheritdoc />

@@ -79,6 +79,8 @@ namespace KKAPI.Maker.UI
             var button = _colorCopy.GetComponentInChildren<Button>();
             button.onClick.RemoveAllListeners();
             button.targetGraphic.raycastTarget = true;
+
+            RemoveLocalisation(_colorCopy.gameObject);
         }
 
         /// <inheritdoc />

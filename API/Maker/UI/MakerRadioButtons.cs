@@ -153,6 +153,8 @@ namespace KKAPI.Maker.UI
                     Object.Destroy(toggle.gameObject);
                 }
             }
+
+            RemoveLocalisation(_radioCopy.gameObject);
         }
     }
 }

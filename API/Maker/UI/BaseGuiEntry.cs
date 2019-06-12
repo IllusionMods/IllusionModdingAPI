@@ -20,6 +20,11 @@ namespace KKAPI.Maker.UI
         private static Transform _guiCacheTransfrom;
         private readonly List<GameObject> _controlObjects = new List<GameObject>(1);
 
+        private static readonly Type[] _localisationComponentTypes = typeof(Manager.Scene).Assembly.GetTypes()
+            .Where(t => string.Equals(t.Namespace, "Localize.Translate", StringComparison.Ordinal))
+            .Where(t => typeof(Component).IsAssignableFrom(t))
+            .ToArray();
+
         /// <summary>
         /// Create a new custom control
         /// </summary>
@@ -57,6 +62,15 @@ namespace KKAPI.Maker.UI
                     _guiCacheTransfrom = obj.transform;
                 }
                 return _guiCacheTransfrom;
+            }
+        }
+
+        internal static void RemoveLocalisation(GameObject control)
+        {
+            foreach (var localisationComponentType in _localisationComponentTypes)
+            {
+                foreach (var localisationComponent in control.GetComponentsInChildren(localisationComponentType, true))
+                    UnityEngine.Object.DestroyImmediate(localisationComponent, false);
             }
         }
 

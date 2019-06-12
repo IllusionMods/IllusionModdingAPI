@@ -85,6 +85,8 @@ namespace KKAPI.Maker.UI
 
             foreach (var renderer in _sliderCopy.GetComponentsInChildren<Image>())
                 renderer.raycastTarget = true;
+
+            RemoveLocalisation(_sliderCopy.gameObject);
         }
 
         /// <inheritdoc />

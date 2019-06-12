@@ -62,6 +62,8 @@ namespace KKAPI.Maker.UI
             dd.ClearOptions();
             dd.GetComponent<Image>().raycastTarget = true;
             dd.template.GetComponentInChildren<Toggle>().image.raycastTarget = true;
+
+            RemoveLocalisation(_dropdownCopy.gameObject);
         }
 
         /// <inheritdoc />
