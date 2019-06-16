@@ -102,7 +102,7 @@ namespace KKAPI.Maker.UI
 
         private static IEnumerator FixLayout(RectTransform rt)
         {
-            yield return new WaitUntil(() => rt.gameObject.activeInHierarchy);
+            yield return new WaitUntil(() => rt == null || rt.gameObject.activeInHierarchy);
             yield return null;
 
             LayoutRebuilder.MarkLayoutForRebuild(rt);
