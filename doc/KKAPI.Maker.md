@@ -24,6 +24,7 @@ Static Methods
 | `CvsAccessory` | GetCvsAccessory(`Int32` index) | Get accessory UI entry in maker.  Only works inside chara maker. | 
 | `Int32` | GetCvsAccessoryCount() | Get count of the UI entries for accessories (accessory slots).  Returns 0 outside of chara maker. | 
 | `ChaControl` | GetOwningChaControl(this `ChaAccessoryComponent` accessoryComponent) | Get the ChaControl that owns this accessory | 
+| `PartsInfo` | GetPartsInfo(`Int32` index) | Get accessory PartsInfo entry in maker.  Only works inside chara maker. | 
 | `void` | Init() |  | 
 
 

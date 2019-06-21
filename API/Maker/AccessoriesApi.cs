@@ -23,6 +23,7 @@ namespace KKAPI.Maker
         private static CanvasGroup _accessorySlotCanvasGroup;
 
         private static Func<int, CvsAccessory> _getCvsAccessory;
+        private static Func<int, ChaFileAccessory.PartsInfo> _getPartsInfo;
         private static Func<int> _getCvsAccessoryCount;
         private static Func<ChaControl, int, ChaAccessoryComponent> _getChaAccessoryCmp;
         private static Func<ChaControl, ChaAccessoryComponent, int> _getChaAccessoryCmpIndex;
@@ -112,6 +113,17 @@ namespace KKAPI.Maker
             return _getSelectedAccessoryIndex.Invoke();
         }*/
 
+
+        /// <summary>
+        /// Get accessory PartsInfo entry in maker.
+        /// Only works inside chara maker.
+        /// </summary>
+        public static ChaFileAccessory.PartsInfo GetPartsInfo(int index)
+        {
+            if (_getPartsInfo == null) throw new InvalidOperationException("Can only call GetPartsInfo when inside Chara Maker");
+            return _getPartsInfo(index);
+        }
+
         /// <summary>
         /// Get count of the UI entries for accessories (accessory slots).
         /// Returns 0 outside of chara maker.
@@ -146,11 +158,15 @@ namespace KKAPI.Maker
 
                 var getAccCmpIndexM = AccessTools.Method(_moreAccessoriesType, "GetChaAccessoryComponentIndex");
                 _getChaAccessoryCmpIndex = (control, component) => (int)getAccCmpIndexM.Invoke(_moreAccessoriesInstance, new object[] { control, component });
+                
+                var getPartsInfoM = AccessTools.Method(_moreAccessoriesType, "GetPart");
+                _getPartsInfo = i => (ChaFileAccessory.PartsInfo) getPartsInfoM.Invoke(_moreAccessoriesInstance, new object[]{i});
             }
             else
             {
                 _getChaAccessoryCmp = (control, i) => control.cusAcsCmp[i];
                 _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cusAcsCmp, component);
+                _getPartsInfo = i => MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[i];
             }
 
             if (KoikatuAPI.EnableDebugLogging)

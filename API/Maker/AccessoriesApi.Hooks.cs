@@ -14,11 +14,21 @@ namespace KKAPI.Maker
                 OnSelectedMakerSlotChanged(__instance, _no);
             }
 
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryKind))]
+            public static void UpdateSelectAccessoryKindPrefix(CvsAccessory __instance, ref int __state)
+            {
+                // Used to see if the kind actually changed
+                __state = GetPartsInfo((int)__instance.slotNo).id;
+            }
+
             [HarmonyPostfix]
             [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryKind))]
-            public static void UpdateSelectAccessoryKindPostfix(CvsAccessory __instance)
+            public static void UpdateSelectAccessoryKindPostfix(CvsAccessory __instance, ref int __state)
             {
-                OnAccessoryKindChanged(__instance, (int)__instance.slotNo);
+                // Only send the event if the kind actually changed
+                if (__state != GetPartsInfo((int)__instance.slotNo).id)
+                    OnAccessoryKindChanged(__instance, (int)__instance.slotNo);
             }
 
 #if KK
