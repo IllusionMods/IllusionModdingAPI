@@ -14,6 +14,7 @@ namespace KKAPI.Maker
                 OnSelectedMakerSlotChanged(__instance, _no);
             }
 
+            [HarmonyBefore(new string[] { "com.joan6694.kkplugins.moreaccessories" })]
             [HarmonyPrefix]
             [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryKind))]
             public static void UpdateSelectAccessoryKindPrefix(CvsAccessory __instance, ref int __state)
