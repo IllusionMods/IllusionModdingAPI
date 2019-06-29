@@ -24,17 +24,14 @@ namespace KKAPI
         [Description("Enables display of additional log messages when certain events are triggered within KKAPI. " +
                      "Useful for plugin devs to understand when controller messages are fired.\n\n" +
                      "Changes take effect after game restart.")]
-        private static ConfigWrapper<bool> EnableDebugLoggingSetting { get; }
+        private static ConfigWrapper<bool> EnableDebugLoggingSetting { get; set; }
 
         internal static void Log(LogLevel level, object obj) => BepInEx.Logger.Log(level, obj);
 
-        static KoikatuAPI()
+        private void Awake()
         {
             EnableDebugLoggingSetting = new ConfigWrapper<bool>("EnableDebugLogging", GUID, false);
-        }
 
-        private void Start()
-        {
             if (!CheckIncompatibilities()) return;
 
             var insideStudio = Application.productName == "CharaStudio";

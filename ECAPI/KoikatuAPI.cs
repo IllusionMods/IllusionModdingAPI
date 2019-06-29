@@ -21,22 +21,9 @@ namespace KKAPI
 
         internal static void Log(LogLevel level, object obj) => Instance.Logger.Log(level, obj);
 
-        /// <summary>
-        /// Don't use manually
-        /// </summary>
-        public KoikatuAPI()
+        private void Awake()
         {
             EnableDebugLoggingSetting = Config.Wrap("", "Show debug messages", "Enables display of additional log messages when certain events are triggered within KKAPI. Useful for plugin devs to understand when controller messages are fired. Changes take effect after game restart.", false);
-        }
-
-        private void Start()
-        {
-            if (CheckIncompatiblePlugin(this, "com.bepis.makerapi", LogLevel.Error))
-            {
-                Logger.Log(LogLevel.Error | LogLevel.Message, "MakerAPI is no longer supported and is preventing KKAPI from loading!");
-                Logger.Log(LogLevel.Error | LogLevel.Message, "Remove MakerAPI.dll and update all mods that used it to fix this.");
-                return;
-            }
 
             var insideStudio = Application.productName == "CharaStudio";
 

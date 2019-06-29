@@ -49,12 +49,9 @@ namespace KKAPI.MainGame
         /// <param name="extendedDataId">Extended data ID used by this behaviour. Set to null if not used.</param>
         public static void RegisterExtraBehaviour<T>(string extendedDataId) where T : GameCustomFunctionController, new()
         {
-            if (_functionControllerContainer != null)
-            {
-                var newBehaviour = _functionControllerContainer.AddComponent<T>();
-                newBehaviour.ExtendedDataId = extendedDataId;
-                _registeredHandlers.Add(newBehaviour, extendedDataId);
-            }
+            var newBehaviour = _functionControllerContainer.AddComponent<T>();
+            newBehaviour.ExtendedDataId = extendedDataId;
+            _registeredHandlers.Add(newBehaviour, extendedDataId);
         }
 
         /// <summary>

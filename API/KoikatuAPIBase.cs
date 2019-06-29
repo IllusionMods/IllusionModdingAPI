@@ -31,9 +31,7 @@ namespace KKAPI
         /// Enables display of additional log messages when certain events are triggered within KKAPI. 
         /// Useful for plugin devs to understand when controller messages are fired.
         /// </summary>
-#if KK
         [System.ComponentModel.Browsable(false)]
-#endif
         public static bool EnableDebugLogging
         {
             get
@@ -51,7 +49,10 @@ namespace KKAPI
 
         internal static KoikatuAPI Instance { get; private set; }
 
-        private void Awake()
+        /// <summary>
+        /// Don't use manually
+        /// </summary>
+        public KoikatuAPI()
         {
             Instance = this;
 
