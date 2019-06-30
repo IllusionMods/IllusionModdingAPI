@@ -598,8 +598,6 @@ namespace KKAPI.Maker
 
         internal static void Init(bool insideStudio)
         {
-            AccessoriesApi.Init();
-
             if (insideStudio) return;
 
             HarmonyPatcher.PatchAll(typeof(Hooks));

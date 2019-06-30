@@ -2,11 +2,13 @@
 using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
+using KKAPI.Maker;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace KKAPI
 {
+    [BepInDependency("com.joan6694.illusionplugins.moreaccessories", BepInDependency.DependencyFlags.SoftDependency)]
     public partial class KoikatuAPI
     {
         private static readonly object _invokeLock = new object();
@@ -62,6 +64,12 @@ namespace KKAPI
             SceneManager.sceneLoaded += (scene, mode) => Log(LogLevel.Debug, $"SceneManager.sceneLoaded - {scene.name} in {mode} mode");
             SceneManager.sceneUnloaded += scene => Log(LogLevel.Debug, $"SceneManager.sceneUnloaded - {scene.name}");
             SceneManager.activeSceneChanged += (prev, next) => Log(LogLevel.Debug, $"SceneManager.activeSceneChanged - from {prev.name} to {next.name}");
+        }
+
+        private void Start()
+        {
+            // Needs to be called after moreaccessories has a chance to load
+            AccessoriesApi.Init();
         }
 
         private bool CheckIncompatibilities()
