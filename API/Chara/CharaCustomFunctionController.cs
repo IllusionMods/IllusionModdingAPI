@@ -6,6 +6,7 @@ using UniRx;
 #if EC
 using EC.Core.ExtensibleSaveFormat;
 #else
+using KKAPI.MainGame;
 using ExtensibleSaveFormat;
 #endif
 using UnityEngine;
@@ -78,6 +79,34 @@ namespace KKAPI.Chara
         {
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
             ExtendedSave.SetExtendedDataById(ChaFileControl, ExtendedDataId, data);
+
+#if KK
+            // Needed for propagating changes back to the original charFile since they don't get copied back.
+            var heroine = ChaControl.GetHeroine();
+            if (heroine != null)
+            {
+                ExtendedSave.SetExtendedDataById(heroine.charFile, ExtendedDataId, data);
+
+                if (ChaControl != heroine.chaCtrl)
+                {
+                    ExtendedSave.SetExtendedDataById(heroine.chaCtrl.chaFile, ExtendedDataId, data);
+
+                    // Update other instance to reflect the new ext data
+                    var other = heroine.chaCtrl.GetComponent(GetType()) as CharaCustomFunctionController;
+                    if (other != null) other.OnReloadInternal(KoikatuAPI.GetCurrentGameMode());
+                }
+
+                var npc = heroine.GetNPC();
+                if(npc != null && npc.chaCtrl != null && npc.chaCtrl != ChaControl)
+                {
+                    ExtendedSave.SetExtendedDataById(npc.chaCtrl.chaFile, ExtendedDataId, data);
+
+                    // Update other instance to reflect the new ext data
+                    var other = npc.chaCtrl.GetComponent(GetType()) as CharaCustomFunctionController;
+                    if (other != null) other.OnReloadInternal(KoikatuAPI.GetCurrentGameMode());
+                }
+            }
+#endif
         }
 
         /// <summary>
