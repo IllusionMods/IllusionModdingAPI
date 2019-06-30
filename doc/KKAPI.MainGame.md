@@ -67,6 +67,8 @@ Static Methods
 | --- | --- | --- | 
 | `Heroine` | GetHeroine(this `ChaControl` chaControl) | Get the persisting heroine object that describes this character.  Returns null if the heroine could not be found. Works only in the main game. | 
 | `Heroine` | GetHeroine(this `ChaFileControl` chaFile) | Get the persisting heroine object that describes this character.  Returns null if the heroine could not be found. Works only in the main game. | 
+| `NPC` | GetNPC(this `Heroine` heroine) | Get the NPC that represents this heroine in the game. Works only in the main game.  If the heroine has not been spawned into the game it returns null. | 
+| `IEnumerable<ChaFileControl>` | GetRelatedChaFiles(this `Heroine` heroine) | Get ChaFiles that are related to this heroine. Warning: It might not return some copies. | 
 | `Boolean` | IsShowerPeeping(this `HFlag` hFlag) | Returns true if the H scene is peeping in the shower.  Use `HFlag.mode` to get info on what mode the H scene is in. | 
 
 
