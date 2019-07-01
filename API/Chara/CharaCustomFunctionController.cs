@@ -167,9 +167,17 @@ namespace KKAPI.Chara
         protected virtual void OnReload(GameMode currentGameMode, bool maintainState) { }
 
         /// <summary>
-        /// Obsolete, use other overloads instead.
+        /// OnReload is fired whenever the character's state needs to be updated.
+        /// This might be beacuse the character was just loaded into the game, 
+        /// was replaced with a different character, etc.
+        /// Use this method instead of Awake and Start. It will always get called
+        /// before other methods, but after the character is in a usable state.
+        /// WARNING: Make sure to completely reset your state in this method!
+        ///          Assume that all of your variables are no longer valid!
+        /// WARNING: Will not get fired if disabled in <see cref="CharacterApi.RegisteredHandlers"/>, 
+        /// use overloads with maintainState parameter in that case.
         /// </summary>
-        [Obsolete("Use the other overloads instead")]
+        /// <param name="currentGameMode">Game mode we are currently in</param>
         protected virtual void OnReload(GameMode currentGameMode) { }
 
         internal void OnReloadInternal(GameMode currentGameMode)
@@ -215,9 +223,12 @@ namespace KKAPI.Chara
         protected virtual void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate, bool maintainState) { }
 
         /// <summary>
-        /// Obsolete, use other overloads instead.
+        /// Fired just after loading a coordinate card into the current coordinate slot.
+        /// Use <see cref="GetCoordinateExtendedData"/> to get save data of the loaded coordinate.
+        /// Will not get fired if disabled in <see cref="CharacterApi.RegisteredHandlers"/>, 
+        /// use overloads with maintainState parameter in that case.
         /// </summary>
-        [Obsolete("Use the other overloads instead")]
+        /// <param name="coordinate">Coordinate being currently loaded.</param>
         protected virtual void OnCoordinateBeingLoaded(ChaFileCoordinate coordinate) { }
 
         internal void OnCoordinateBeingLoadedInternal(ChaFileCoordinate coordinate)
