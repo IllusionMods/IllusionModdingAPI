@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using BepInEx.Logging;
 using KKAPI.Studio.UI;
@@ -22,9 +23,11 @@ namespace KKAPI.Studio
         /// </summary>
         public static void CreateCurrentStateCategory(CurrentStateCategory category)
         {
+            if (category == null) throw new ArgumentNullException(nameof(category));
+
             if (!InsideStudio)
             {
-                Logger.Log(LogLevel.Warning, "[StudioAPI] Tried to run CreateCurrentStateCategory outside of studio!");
+                Logger.Log(LogLevel.Debug, "[StudioAPI] Tried to run CreateCurrentStateCategory outside of studio!");
                 return;
             }
 
