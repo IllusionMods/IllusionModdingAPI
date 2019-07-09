@@ -102,6 +102,32 @@ namespace KKAPI.Studio.SaveLoad
             }
         }
 
+        private static void OnObjectsBeingCopied()
+        {
+            var readonlyDict = GetLoadedObjects( SceneOperationKind.Import).ToReadOnlyDictionary();
+
+            foreach (var behaviour in _registeredHandlers)
+            {
+                try
+                {
+                    behaviour.Key.OnObjectsCopied(readonlyDict);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(LogLevel.Error, e);
+                }
+            }
+
+            try
+            {
+                ObjectsCopied?.Invoke(KoikatuAPI.Instance, new ObjectsCopiedEventArgs(readonlyDict));
+            }
+            catch (Exception e)
+            {
+                Logger.Log(LogLevel.Error, e);
+            }
+        }
+
         private static Dictionary<int, ObjectCtrlInfo> GetLoadedObjects(SceneOperationKind operation)
         {
             Dictionary<int, ObjectCtrlInfo> results;
@@ -136,6 +162,11 @@ namespace KKAPI.Studio.SaveLoad
         /// Runs immediately after all <see cref="SceneCustomFunctionController"/> objects trigger their events.
         /// </summary>
         public static event EventHandler SceneSave;
+
+        /// <summary>
+        /// Fired when objects in the scene are copied
+        /// </summary>
+        public static event EventHandler<ObjectsCopiedEventArgs> ObjectsCopied;
 
         /// <summary>
         /// A scene is currently being imported

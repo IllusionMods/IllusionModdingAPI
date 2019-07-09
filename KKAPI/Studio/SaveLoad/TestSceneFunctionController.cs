@@ -16,5 +16,10 @@ namespace KKAPI.Studio.SaveLoad
         {
             Logger.Log(LogLevel.Warning | LogLevel.Message, $"OnSceneSave");
         }
+
+        protected internal override void OnObjectsCopied(ReadOnlyDictionary<int, ObjectCtrlInfo> copiedItems)
+        {
+            Logger.Log(LogLevel.Warning | LogLevel.Message, $"OnObjectsCopied");
+        }
     }
 }

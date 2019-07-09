@@ -33,6 +33,14 @@ namespace KKAPI.Studio.SaveLoad
         protected internal abstract void OnSceneSave();
 
         /// <summary>
+        /// Fired when objects are copied.
+        /// </summary>
+        /// <param name="copiedItems">A dictionary of items loaded by this operation and their original IDs.
+        /// The IDs match the original object in the scene.
+        /// To get current scene ID of the object call <see cref="StudioObjectExtensions.GetSceneId(ObjectCtrlInfo)"/></param>
+        protected internal virtual void OnObjectsCopied(ReadOnlyDictionary<int, ObjectCtrlInfo> copiedItems) { }
+
+        /// <summary>
         /// ID used for extended data by this controller. It's set when registering the controller
         /// with <see cref="StudioSaveLoadApi.RegisterExtraBehaviour{T}(string)"/>
         /// </summary>
