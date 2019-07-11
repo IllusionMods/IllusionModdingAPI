@@ -25,6 +25,7 @@ namespace KKAPI.Maker.UI
                     var original = GameObject.Find("00_FaceTop").transform.Find("tglEar");
 
                     _subCategoryCopy = Object.Instantiate(original, BaseGuiEntry.GuiCacheTransfrom, true);
+                    _subCategoryCopy.name = "CustomSubcategory" + BaseGuiEntry.GuiApiNameAppendix;
                     _subCategoryCopy.gameObject.SetActive(false);
 
                     BaseGuiEntry.RemoveLocalisation(_subCategoryCopy.gameObject);
@@ -33,11 +34,14 @@ namespace KKAPI.Maker.UI
                     toggle.onValueChanged.RemoveAllListeners();
                     toggle.isOn = false;
 
-                    _subCategoryCopy.name = "CustomSubcategory" + BaseGuiEntry.GuiApiNameAppendix;
                     var copyTop = _subCategoryCopy.Find("EarTop");
                     copyTop.name = "CustomSubcategoryTop";
 
                     Object.DestroyImmediate(copyTop.GetComponent<CvsEar>());
+                    Object.DestroyImmediate(copyTop.GetComponent<Image>());
+                    Object.DestroyImmediate(copyTop.GetComponent<ContentSizeFitter>());
+                    Object.DestroyImmediate(copyTop.GetComponent<VerticalLayoutGroup>());
+                    Object.DestroyImmediate(copyTop.GetComponent<CanvasRenderer>());
 
                     // This doesn't happen until after we return from the hook, 
                     // so these will still be copied and need to be deleted afterwards
@@ -54,20 +58,14 @@ namespace KKAPI.Maker.UI
                     foreach (Transform tr in _scrollbarCopy.Find("Viewport/Content"))
                         Object.Destroy(tr.gameObject);
 
-                    Object.DestroyImmediate(copyTop.GetComponent<Image>());
-                    Object.DestroyImmediate(copyTop.GetComponent<ContentSizeFitter>());
-                    Object.DestroyImmediate(copyTop.GetComponent<VerticalLayoutGroup>());
-                    Object.DestroyImmediate(copyTop.GetComponent<CanvasRenderer>());
-
-                    var targets = typeof(UI_RaycastCtrl).GetField("imgRaycastTargetOn", BindingFlags.NonPublic | BindingFlags.Instance);
-                    if (targets != null)
+                    var canvasGrpInfo = typeof(UI_RaycastCtrl).GetField("canvasGrp", BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (canvasGrpInfo == null) KoikatuAPI.Log(LogLevel.Error, "Failed to get canvasGrp:\n" + new StackTrace());
+                    var imgRaycastTargetOnInfo = typeof(UI_RaycastCtrl).GetField("imgRaycastTargetOn", BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (canvasGrpInfo == null) KoikatuAPI.Log(LogLevel.Error, "Failed to get imgRaycastTargetOn:\n" + new StackTrace());
+                    foreach (var raycastCtrl in _subCategoryCopy.GetComponentsInChildren<UI_RaycastCtrl>(true))
                     {
-                        foreach (var raycastCtrl in _subCategoryCopy.GetComponentsInChildren<UI_RaycastCtrl>())
-                            targets.SetValue(raycastCtrl, null);
-                    }
-                    else
-                    {
-                        KoikatuAPI.Log(LogLevel.Error, "Failed to get imgRaycastTargetOn\n" + new StackTrace());
+                        canvasGrpInfo?.SetValue(raycastCtrl, null);
+                        imgRaycastTargetOnInfo?.SetValue(raycastCtrl, null);
                     }
                 }
                 return _subCategoryCopy;
@@ -99,9 +97,6 @@ namespace KKAPI.Maker.UI
 
             var cgroup = trTop.GetComponent<CanvasGroup>();
             mainCategory.items = mainCategory.items.AddToArray(new UI_ToggleGroupCtrl.ItemInfo { tglItem = tgl, cgItem = cgroup });
-
-            foreach (var raycastCtrl in _subCategoryCopy.GetComponentsInChildren<UI_RaycastCtrl>())
-                raycastCtrl.Reset();
 
             KoikatuAPI.Instance.StartCoroutine(FinishInit(trTop));
 
