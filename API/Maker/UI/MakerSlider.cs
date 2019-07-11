@@ -124,6 +124,7 @@ namespace KKAPI.Maker.UI
             });
 
             var inputField = tr.Find("InputField").GetComponent<TMP_InputField>();
+            if (MakerAPI.InsideMaker) Singleton<ChaCustom.CustomBase>.Instance.lstTmpInputField.Add(inputField);
             inputField.onEndEdit.AddListener(txt =>
             {
                 var result = StringToValue?.Invoke(txt) ?? float.Parse(txt) / 100f;
