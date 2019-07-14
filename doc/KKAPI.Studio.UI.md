@@ -42,9 +42,34 @@ Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `T` | AddControl(`T` control) | Add new control to this category | 
 | `void` | AddControls(`CurrentStateCategorySubItemBase[]` controls) | Add new controls to this category | 
 | `void` | CreateCategory(`GameObject` containerObject) | Used by the API to actually create the custom control object | 
 | `void` | UpdateInfo(`OCIChar` ociChar) | Fired when currently selected character changes and the controls need to be updated | 
+
+
+## `CurrentStateCategorySlider`
+
+Custom control that draws a slider in the Chara &gt; CurrentState studio menu.
+```csharp
+public class KKAPI.Studio.UI.CurrentStateCategorySlider
+    : BaseCurrentStateEditableGuiEntry<Single>
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Single` | MaxValue | Maximum value of the slider | 
+| `Single` | MinValue | Minimum value of the slider | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `GameObject` | CreateItem(`GameObject` categoryObject) |  | 
 
 
 ## `CurrentStateCategorySubItemBase`
@@ -75,7 +100,7 @@ Methods
 
 ## `CurrentStateCategorySwitch`
 
-Custom control that draws a single, circular button with an on/off state.
+Custom control that draws a single, circular button with an on/off state in the Chara &gt; CurrentState studio menu.
 ```csharp
 public class KKAPI.Studio.UI.CurrentStateCategorySwitch
     : BaseCurrentStateEditableGuiEntry<Boolean>

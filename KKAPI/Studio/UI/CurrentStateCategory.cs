@@ -103,6 +103,19 @@ namespace KKAPI.Studio.UI
         }
 
         /// <summary>
+        /// Add new control to this category
+        /// </summary>
+        public T AddControl<T>(T control) where T : CurrentStateCategorySubItemBase
+        {
+            _subItems.Add(control);
+
+            if (StudioAPI.StudioLoaded)
+                CreateControls(new CurrentStateCategorySubItemBase[] { control });
+
+            return control;
+        }
+
+        /// <summary>
         /// Add new controls to this category
         /// </summary>
         public void AddControls(params CurrentStateCategorySubItemBase[] controls)

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using BepInEx.Logging;
 using KKAPI.Studio.UI;
+using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Logger = BepInEx.Logger;
@@ -118,7 +119,7 @@ namespace KKAPI.Studio
                     {
                         try
                         {
-                            ((EventHandler) callback)(KoikatuAPI.Instance, EventArgs.Empty);
+                            ((EventHandler)callback)(KoikatuAPI.Instance, EventArgs.Empty);
                         }
                         catch (Exception e)
                         {
@@ -136,15 +137,14 @@ namespace KKAPI.Studio
         private static void DebugControls()
         {
             var cat = GetOrCreateCurrentStateCategory("Control test category");
-            cat.AddControls(
-                new CurrentStateCategoryToggle("Test 1", 2, c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " 1"); return 1; }),
-                new CurrentStateCategoryToggle("Test 2", 3, c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " 2"); return 2; }),
-                new CurrentStateCategoryToggle("Test 3", 4, c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " 3"); return 3; })
-                );
+            cat.AddControl(new CurrentStateCategoryToggle("Test 1", 2, c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " - updateValue"); return 1; }))
+                .Value.Subscribe(val => Logger.Log(LogLevel.Message, val));
+            cat.AddControl(new CurrentStateCategoryToggle("Test 2", 3, c => 2)).Value.Subscribe(val => Logger.Log(LogLevel.Message, val));
+            cat.AddControl(new CurrentStateCategoryToggle("Test 3", 4, c => 3)).Value.Subscribe(val => Logger.Log(LogLevel.Message, val));
 
             var cat2 = GetOrCreateCurrentStateCategory("Control test category");
-            cat2.AddControls(new CurrentStateCategorySwitch("Test add", c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " tgl"); return true; }));
-            cat2.AddControls(new CurrentStateCategorySlider("Test slider", c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " slider"); return 0.75f; }));
+            cat2.AddControl(new CurrentStateCategorySwitch("Test add", c => true)).Value.Subscribe(val => Logger.Log(LogLevel.Message, val));
+            cat2.AddControl(new CurrentStateCategorySlider("Test slider", c => 0.75f)).Value.Subscribe(val => Logger.Log(LogLevel.Message, val));
         }
     }
 }
