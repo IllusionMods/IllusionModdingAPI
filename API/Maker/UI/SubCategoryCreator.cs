@@ -58,14 +58,12 @@ namespace KKAPI.Maker.UI
                     foreach (Transform tr in _scrollbarCopy.Find("Viewport/Content"))
                         Object.Destroy(tr.gameObject);
 
-                    var canvasGrpInfo = typeof(UI_RaycastCtrl).GetField("canvasGrp", BindingFlags.NonPublic | BindingFlags.Instance);
-                    if (canvasGrpInfo == null) KoikatuAPI.Log(LogLevel.Error, "Failed to get canvasGrp:\n" + new StackTrace());
-                    var imgRaycastTargetOnInfo = typeof(UI_RaycastCtrl).GetField("imgRaycastTargetOn", BindingFlags.NonPublic | BindingFlags.Instance);
-                    if (canvasGrpInfo == null) KoikatuAPI.Log(LogLevel.Error, "Failed to get imgRaycastTargetOn:\n" + new StackTrace());
+                    // Clear state of UI_RaycastCtrl objects to prevent exceptions on missing objects we just deleted
                     foreach (var raycastCtrl in _subCategoryCopy.GetComponentsInChildren<UI_RaycastCtrl>(true))
                     {
-                        canvasGrpInfo?.SetValue(raycastCtrl, null);
-                        imgRaycastTargetOnInfo?.SetValue(raycastCtrl, null);
+                        var tr = Traverse.Create(raycastCtrl);
+                        tr.Field("canvasGrp").SetValue(null);
+                        tr.Field("imgRaycastTargetOn").SetValue(null);
                     }
                 }
                 return _subCategoryCopy;
@@ -116,7 +114,9 @@ namespace KKAPI.Maker.UI
             scrl.Find("Viewport/Content").GetComponent<Image>().raycastTarget = true;
             scrl.Find("Scrollbar Vertical").GetComponent<Image>().raycastTarget = true;
             scrl.gameObject.SetActive(true);
-
+            
+            // Wait until all custom controls were added to gather all created image controls
+            yield return new WaitUntil(() => MakerAPI.InsideAndLoaded);
             trTop.GetComponentInChildren<UI_RaycastCtrl>(true)?.Reset();
         }
     }
