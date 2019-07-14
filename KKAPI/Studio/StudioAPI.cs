@@ -23,7 +23,7 @@ namespace KKAPI.Studio
         /// Add a new custom category to the Anim > CurrentState tab in the studio top-left menu.
         /// Can use this at any point.
         /// </summary>
-        [Obsolete]
+        [Obsolete("Use GetOrCreateCurrentStateCategory instead")]
         public static void CreateCurrentStateCategory(CurrentStateCategory category)
         {
             if (category == null) throw new ArgumentNullException(nameof(category));

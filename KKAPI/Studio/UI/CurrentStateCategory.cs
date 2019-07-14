@@ -23,7 +23,7 @@ namespace KKAPI.Studio.UI
         /// </summary>
         /// <param name="categoryName">Name of the category</param>
         /// <param name="subItems">Controls under this category</param>
-        [Obsolete]
+        [Obsolete("Manually creating categories is no longer supported")]
         public CurrentStateCategory(string categoryName, IEnumerable<CurrentStateCategorySubItemBase> subItems)
         {
             CategoryName = categoryName;
