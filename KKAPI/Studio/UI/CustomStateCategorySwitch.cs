@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 namespace KKAPI.Studio.UI
 {
     /// <summary>
-    /// Custom control that draws a single, circular button with an on/off state.
+    /// Custom control that draws a single, circular button with an on/off state in the Chara > CurrentState studio menu.
     /// </summary>
     public class CurrentStateCategorySwitch : BaseCurrentStateEditableGuiEntry<bool>
     {
@@ -29,25 +29,24 @@ namespace KKAPI.Studio.UI
                 _originalObject = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Etc/Son");
 
             var copy = Object.Instantiate(_originalObject, categoryObject.transform, true);
-            copy.name = "CustomSwitch " + Name;
-            copy.transform.localScale = Vector3.one;
             copy.gameObject.SetActive(true);
-            var text = copy.transform.Find("Text");
-            text.name = "Text " + Name;
-            var text1 = text.GetComponent<Text>();
-            text1.text = Name;
+            copy.transform.localScale = Vector3.one;
+            copy.name = "CustomSwitch " + Name;
 
-            Toggle toggle = copy.GetComponentInChildren<Toggle>(true);
+            var text = copy.GetComponentInChildren<Text>(true);
+            text.gameObject.SetActive(true);
+            text.gameObject.name = "Text " + Name;
+            text.text = Name;
 
-            toggle.transform.name = $"Button {Name}";
+            var toggle = copy.GetComponentInChildren<Toggle>(true);
             toggle.gameObject.SetActive(true);
+            toggle.gameObject.name = $"Button {Name}";
+
             toggle.isOn = Value.Value;
-            Value.Subscribe(newSet =>
-            {
-                toggle.onValueChanged.RemoveAllListeners();
-                toggle.isOn = newSet;
-                toggle.onValueChanged.AddListener(_ => Value.OnNext(toggle.isOn));
-            });
+
+            toggle.onValueChanged.RemoveAllListeners();
+            toggle.onValueChanged.AddListener(Value.OnNext);
+            Value.Subscribe(newSet => toggle.isOn = newSet);
 
             return copy;
         }
