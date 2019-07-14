@@ -143,7 +143,8 @@ namespace KKAPI.Studio
                 );
 
             var cat2 = GetOrCreateCurrentStateCategory("Control test category");
-            cat2.AddControls(new CurrentStateCategoryToggle("Test add", 2, c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " 3"); return 0; }));
+            cat2.AddControls(new CurrentStateCategorySwitch("Test add", c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " tgl"); return true; }));
+            cat2.AddControls(new CurrentStateCategorySlider("Test slider", c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " slider"); return 0.75f; }));
         }
     }
 }

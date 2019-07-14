@@ -93,6 +93,7 @@
     <Compile Include="Studio\SaveLoad\TestSceneFunctionController.cs" />
     <Compile Include="Studio\UI\BaseCurrentStateEditableGuiEntry.cs" />
     <Compile Include="Studio\UI\CurrentStateCategory.cs" />
+    <Compile Include="Studio\UI\CurrentStateCategorySlider.cs" />
     <Compile Include="Studio\UI\CurrentStateCategorySubItemBase.cs" />
     <Compile Include="Studio\UI\CurrentStateCategoryToggle.cs" />
     <Compile Include="Studio\UI\CustomStateCategorySwitch.cs" />
