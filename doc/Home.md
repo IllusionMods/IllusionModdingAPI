@@ -65,6 +65,7 @@
 
 ## [KKAPI.Studio.SaveLoad](KKAPI.Studio.SaveLoad.md)
 
+- [`ObjectsCopiedEventArgs`](KKAPI.Studio.SaveLoad.md#objectscopiedeventargs)
 - [`SceneCustomFunctionController`](KKAPI.Studio.SaveLoad.md#scenecustomfunctioncontroller)
 - [`SceneLoadEventArgs`](KKAPI.Studio.SaveLoad.md#sceneloadeventargs)
 - [`SceneOperationKind`](KKAPI.Studio.SaveLoad.md#sceneoperationkind)

@@ -1,3 +1,19 @@
+## `ObjectsCopiedEventArgs`
+
+Arguments used in objects copied events
+```csharp
+public class KKAPI.Studio.SaveLoad.ObjectsCopiedEventArgs
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `ReadOnlyDictionary<Int32, ObjectCtrlInfo>` | LoadedObjects | Objects copied by the event and their original IDs | 
+
+
 ## `SceneCustomFunctionController`
 
 Base type for custom scene/studio extensions.  It provides many useful methods that abstract away the nasty hooks needed to figure out when  a scene is loaded or imported, or how to save and load your custom data to the scene file.    This controller is a MonoBehaviour that is created upon registration in `KKAPI.Studio.SaveLoad.StudioSaveLoadApi.RegisterExtraBehaviour``1(System.String)`.  The controller is created only once. If it's created too late it might miss some scene load events.  It's recommended to register controllers in your Start method.
@@ -20,6 +36,7 @@ Methods
 | --- | --- | --- | 
 | `PluginData` | GetExtendedData() | Get extended data of the last loaded scene by using the ID you specified when registering this controller. | 
 | `Studio` | GetStudio() | Get the instance of the Studio game manager object. | 
+| `void` | OnObjectsCopied(`ReadOnlyDictionary<Int32, ObjectCtrlInfo>` copiedItems) | Fired when objects are copied. | 
 | `void` | OnSceneLoad(`SceneOperationKind` operation, `ReadOnlyDictionary<Int32, ObjectCtrlInfo>` loadedItems) | Fired when a scene is successfully changed, either by loading, importing or resetting. | 
 | `void` | OnSceneSave() | Fired when a scene is about to be saved and any exteneded data needs to be written. | 
 | `void` | SetExtendedData(`PluginData` data) | Save your custom data to the scene under the ID you specified when registering this controller. | 
@@ -88,6 +105,7 @@ Static Events
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `EventHandler<ObjectsCopiedEventArgs>` | ObjectsCopied | Fired when objects in the scene are copied | 
 | `EventHandler<SceneLoadEventArgs>` | SceneLoad | Fired right after a scene is succesfully imported, loaded or cleared.  Runs immediately after all `KKAPI.Studio.SaveLoad.SceneCustomFunctionController` objects trigger their events. | 
 | `EventHandler` | SceneSave | Fired right before a scene is saved to file.  Runs immediately after all `KKAPI.Studio.SaveLoad.SceneCustomFunctionController` objects trigger their events. | 
 
