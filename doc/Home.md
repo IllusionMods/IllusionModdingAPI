@@ -73,8 +73,10 @@
 
 ## [KKAPI.Studio.UI](KKAPI.Studio.UI.md)
 
+- [`BaseCurrentStateEditableGuiEntry<T>`](KKAPI.Studio.UI.md#basecurrentstateeditableguientryt)
 - [`CurrentStateCategory`](KKAPI.Studio.UI.md#currentstatecategory)
 - [`CurrentStateCategorySubItemBase`](KKAPI.Studio.UI.md#currentstatecategorysubitembase)
+- [`CurrentStateCategorySwitch`](KKAPI.Studio.UI.md#currentstatecategoryswitch)
 - [`CurrentStateCategoryToggle`](KKAPI.Studio.UI.md#currentstatecategorytoggle)
 
 ## [KKAPI.Utilities](KKAPI.Utilities.md)

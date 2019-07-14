@@ -11,14 +11,22 @@ Static Properties
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `Boolean` | InsideStudio | True if we are currently inside CharaStudio.exe | 
+| `Boolean` | StudioLoaded | True inside studio after it finishes loading the interface (when the starting loading screen finishes),  right before custom controls are created. | 
 
 
 Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `void` | CreateCurrentStateCategory(`CurrentStateCategory` category) | Add a new custom category to the Anim &gt; CurrentState tab in the studio top-left menu.  Can use this at any point. | 
+| `CurrentStateCategory` | GetOrCreateCurrentStateCategory(`String` name) | Add a new custom category to the Anim &gt; CurrentState tab in the studio top-left menu.  Can use this at any point. Always returns null outside of studio.  If the name is empty or null, the Misc/Other category is returned. | 
 | `void` | Init(`Boolean` insideStudio) |  | 
+
+
+Static Events
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `EventHandler` | StudioLoadedChanged | Fires once after studio finished loading the interface, right before custom controls are created. | 
 
 
 ## `StudioObjectExtensions`

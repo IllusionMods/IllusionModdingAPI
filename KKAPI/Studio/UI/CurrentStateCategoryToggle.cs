@@ -11,7 +11,7 @@ namespace KKAPI.Studio.UI
     /// <summary>
     /// Custom control that draws from 2 to 4 radio buttons (they are drawn like toggles)
     /// </summary>
-    public class CurrentStateCategoryToggle : CurrentStateCategorySubItemBase
+    public class CurrentStateCategoryToggle : BaseCurrentStateEditableGuiEntry<int>
     {
         private static GameObject _originalToggle;
         
@@ -20,29 +20,24 @@ namespace KKAPI.Studio.UI
         /// </summary>
         public int ToggleCount { get; }
 
-        private readonly Func<OCIChar, int> _updateSelectionCallback;
-
         /// <summary>
-        /// A toggle list for the Chara > CurrentState studio menu.
+        /// A toggle list for the Chara &gt; CurrentState studio menu.
         /// </summary>
         /// <param name="name">Name of the list, shown on left</param>
         /// <param name="toggleCount">Number of the toggles, can be 2, 3 or 4</param>
         /// <param name="onUpdateSelection">Function called when the current character changes and the selected index needs to be updated.
         /// <code>OCIChar</code> is the newly selected character. Return the new selected index. Can't be null.</param>
-        public CurrentStateCategoryToggle(string name, int toggleCount, Func<OCIChar, int> onUpdateSelection) : base(name)
+        public CurrentStateCategoryToggle(string name, int toggleCount, Func<OCIChar, int> onUpdateSelection) : base(name, onUpdateSelection)
         {
             if (toggleCount > 4 || toggleCount < 2) throw new ArgumentException("Need to set 2 to 4 toggle buttons", nameof(toggleCount));
             ToggleCount = toggleCount;
-
-            _updateSelectionCallback = onUpdateSelection ?? throw new ArgumentNullException(nameof(onUpdateSelection));
-
-            SelectedIndex = new BehaviorSubject<int>(0);
         }
 
         /// <summary>
         /// Currently selected button (starts at 0)
         /// </summary>
-        public BehaviorSubject<int> SelectedIndex { get; }
+        [Obsolete("Use Value instead")]
+        public BehaviorSubject<int> SelectedIndex => Value;
 
         /// <inheritdoc />
         protected override GameObject CreateItem(GameObject categoryObject)
@@ -70,13 +65,13 @@ namespace KKAPI.Studio.UI
                 if (ToggleCount > i)
                 {
                     btn.gameObject.SetActive(true);
-                    btn.onClick.AddListener(() => SelectedIndex.OnNext(buttons.IndexOf(btn)));
+                    btn.onClick.AddListener(() => Value.OnNext(buttons.IndexOf(btn)));
                 }
                 else
                     Object.Destroy(btn.gameObject);
             }
 
-            SelectedIndex.Subscribe(
+            Value.Subscribe(
                 newval =>
                 {
                     for (var i = 0; i < buttons.Count; i++)
@@ -88,12 +83,6 @@ namespace KKAPI.Studio.UI
                 });
 
             return copy;
-        }
-
-        /// <inheritdoc />
-        protected internal override void OnUpdateInfo(OCIChar ociChar)
-        {
-            SelectedIndex.OnNext(_updateSelectionCallback.Invoke(ociChar));
         }
     }
 }
