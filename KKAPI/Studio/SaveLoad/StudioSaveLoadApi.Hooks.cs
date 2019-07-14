@@ -43,7 +43,7 @@ namespace KKAPI.Studio.SaveLoad
             /// </summary>
             [HarmonyTranspiler]
             [HarmonyPatch(typeof(ObjectInfo), nameof(ObjectInfo.Load))]
-            public static IEnumerable<CodeInstruction> InitBaseCustomTextureBodyTranspiler(IEnumerable<CodeInstruction> instructions)
+            public static IEnumerable<CodeInstruction> ObjectInfoLoadTranspiler(IEnumerable<CodeInstruction> instructions)
             {
                 foreach (var x in instructions)
                 {
@@ -131,6 +131,13 @@ namespace KKAPI.Studio.SaveLoad
             {
                 ImportDictionary.Clear();
                 LoadInProgress = true;
+            }
+
+            [HarmonyPostfix, HarmonyPatch(typeof(global::Studio.Studio), nameof(global::Studio.Studio.Duplicate))]
+            public static void DuplicatePostfix()
+            {
+                OnObjectsBeingCopied();
+                ImportDictionary.Clear();
             }
 
             private static void SceneLoadComplete(SceneOperationKind operation)
