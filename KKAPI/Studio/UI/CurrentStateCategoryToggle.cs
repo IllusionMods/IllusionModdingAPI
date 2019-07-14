@@ -13,6 +13,8 @@ namespace KKAPI.Studio.UI
     /// </summary>
     public class CurrentStateCategoryToggle : CurrentStateCategorySubItemBase
     {
+        private static GameObject _originalToggle;
+        
         /// <summary>
         /// Number of the radio buttons, can be 2, 3 or 4
         /// </summary>
@@ -43,11 +45,12 @@ namespace KKAPI.Studio.UI
         public BehaviorSubject<int> SelectedIndex { get; }
 
         /// <inheritdoc />
-        protected internal override void CreateItem(GameObject categoryObject)
+        protected override GameObject CreateItem(GameObject categoryObject)
         {
-            var original = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Etc/Tears");
+            if (_originalToggle == null)
+                _originalToggle = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Etc/Tears");
 
-            var copy = Object.Instantiate(original, categoryObject.transform, true);
+            var copy = Object.Instantiate(_originalToggle, categoryObject.transform, true);
             copy.name = "CustomToggle-" + Name;
             copy.transform.localScale = Vector3.one;
 
@@ -83,6 +86,8 @@ namespace KKAPI.Studio.UI
                         b.image.color = !b.interactable || i != newval ? Color.white : Color.green;
                     }
                 });
+
+            return copy;
         }
 
         /// <inheritdoc />

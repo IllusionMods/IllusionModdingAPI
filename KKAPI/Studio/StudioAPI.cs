@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using BepInEx.Logging;
 using KKAPI.Studio.UI;
 using UnityEngine;
@@ -15,12 +16,13 @@ namespace KKAPI.Studio
     public static partial class StudioAPI
     {
         private static readonly List<CurrentStateCategory> _customCurrentStateCategories = new List<CurrentStateCategory>();
-        private static bool _studioLoaded;
+        private static GameObject _customStateRoot;
 
         /// <summary>
         /// Add a new custom category to the Anim > CurrentState tab in the studio top-left menu.
         /// Can use this at any point.
         /// </summary>
+        [Obsolete]
         public static void CreateCurrentStateCategory(CurrentStateCategory category)
         {
             if (category == null) throw new ArgumentNullException(nameof(category));
@@ -31,15 +33,48 @@ namespace KKAPI.Studio
                 return;
             }
 
-            if (_studioLoaded)
+            if (StudioLoaded)
                 CreateCategory(category);
 
             _customCurrentStateCategories.Add(category);
         }
 
+        /// <summary>
+        /// Add a new custom category to the Anim > CurrentState tab in the studio top-left menu.
+        /// Can use this at any point. Always returns null outside of studio.
+        /// If the name is empty or null, the Misc/Other category is returned.
+        /// </summary>
+        public static CurrentStateCategory GetOrCreateCurrentStateCategory(string name)
+        {
+            if (!InsideStudio)
+            {
+                Logger.Log(LogLevel.Debug, "[StudioAPI] Tried to run CreateCurrentStateCategory outside of studio!");
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(name)) name = "Misc/Other";
+
+            var existing = _customCurrentStateCategories.FirstOrDefault(x => x.CategoryName == name);
+            if (existing != null) return existing;
+
+            var newCategory = new CurrentStateCategory(name);
+
+            if (StudioLoaded)
+                CreateCategory(newCategory);
+
+            _customCurrentStateCategories.Add(newCategory);
+
+            return newCategory;
+        }
+
         private static void CreateCategory(CurrentStateCategory category)
         {
-            category.CreateCategory(GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content"));
+            if (category == null) throw new ArgumentNullException(nameof(category));
+
+            if (_customStateRoot == null)
+                _customStateRoot = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content");
+
+            category.CreateCategory(_customStateRoot);
         }
 
         internal static void Init(bool insideStudio)
@@ -60,11 +95,38 @@ namespace KKAPI.Studio
         /// </summary>
         public static bool InsideStudio { get; private set; }
 
-        private static void SceneLoaded(Scene arg0, LoadSceneMode arg1)
+        /// <summary>
+        /// True inside studio after it finishes loading the interface (when the starting loading screen finishes), 
+        /// right before custom controls are created.
+        /// </summary>
+        public static bool StudioLoaded { get; private set; }
+
+        /// <summary>
+        /// Fires once after studio finished loading the interface, right before custom controls are created.
+        /// </summary>
+        public static event EventHandler StudioLoadedChanged;
+
+        private static void SceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {
-            if (!_studioLoaded && arg0.name == "Studio")
+            if (!StudioLoaded && scene.name == "Studio")
             {
-                _studioLoaded = true;
+                StudioLoaded = true;
+
+                if (StudioLoadedChanged != null)
+                {
+                    foreach (var callback in StudioLoadedChanged.GetInvocationList())
+                    {
+                        try
+                        {
+                            ((EventHandler) callback)(KoikatuAPI.Instance, EventArgs.Empty);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Log(LogLevel.Error, e);
+                        }
+                    }
+                }
+
                 foreach (var cat in _customCurrentStateCategories)
                     CreateCategory(cat);
             }
@@ -73,25 +135,15 @@ namespace KKAPI.Studio
         [Conditional("DEBUG")]
         private static void DebugControls()
         {
-            CreateCurrentStateCategory(new CurrentStateCategory("Control test category",
-                new[]
-                {
-                    new CurrentStateCategoryToggle("Test 1", 2, c =>
-                    {
-                        Logger.Log(LogLevel.Message, c?.charInfo?.name + " 1");
-                        return 1;
-                    }),
-                    new CurrentStateCategoryToggle("Test 2", 3, c =>
-                    {
-                        Logger.Log(LogLevel.Message, c?.charInfo?.name + " 2");
-                        return 2;
-                    }),
-                    new CurrentStateCategoryToggle("Test 3", 4, c =>
-                    {
-                        Logger.Log(LogLevel.Message, c?.charInfo?.name + " 3");
-                        return 3;
-                    })
-                }));
+            var cat = GetOrCreateCurrentStateCategory("Control test category");
+            cat.AddControls(
+                new CurrentStateCategoryToggle("Test 1", 2, c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " 1"); return 1; }),
+                new CurrentStateCategoryToggle("Test 2", 3, c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " 2"); return 2; }),
+                new CurrentStateCategoryToggle("Test 3", 4, c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " 3"); return 3; })
+                );
+
+            var cat2 = GetOrCreateCurrentStateCategory("Control test category");
+            cat2.AddControls(new CurrentStateCategoryToggle("Test add", 2, c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " 3"); return 0; }));
         }
     }
 }

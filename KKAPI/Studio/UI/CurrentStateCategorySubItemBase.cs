@@ -24,15 +24,37 @@ namespace KKAPI.Studio.UI
         public string Name { get; }
 
         /// <summary>
-        /// Fired when API wants to create the control
+        /// Fired when API wants to create the control. Should return the control's root GameObject
         /// </summary>
         /// <param name="categoryObject">Parent object of the control to be created</param>
-        protected internal abstract void CreateItem(GameObject categoryObject);
+        protected abstract GameObject CreateItem(GameObject categoryObject);
+
+        internal void CreateItemInt(GameObject categoryObject)
+        {
+            if (categoryObject == null) throw new ArgumentNullException(nameof(categoryObject));
+            if (!StudioAPI.StudioLoaded) throw new InvalidOperationException("Called before studio was loaded");
+
+            if (Created) return;
+
+            var rootGameObject = CreateItem(categoryObject);
+            if (rootGameObject == null) throw new ArgumentException("CreateItem has to return a GameObject, check its overload in " + GetType().FullName);
+            RootGameObject = rootGameObject;
+        }
 
         /// <summary>
         /// Fired when currently selected character changes and the control need to be updated
         /// </summary>
         /// <param name="ociChar">Newly selected character</param>
         protected internal abstract void OnUpdateInfo(OCIChar ociChar);
+
+        /// <summary>
+        /// The control's root gameobject. null if the control was not created yet.
+        /// </summary>
+        public GameObject RootGameObject { get; private set; }
+
+        /// <summary>
+        /// The control was created and still exists.
+        /// </summary>
+        public bool Created => RootGameObject != null;
     }
 }
