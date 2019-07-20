@@ -81,6 +81,7 @@ namespace KKAPI.Studio.SaveLoad
             public static void ImportScenePostfix()
             {
                 SceneLoadComplete(SceneOperationKind.Import);
+                ImportDictionary.Clear();
             }
 
             [HarmonyPrefix]
