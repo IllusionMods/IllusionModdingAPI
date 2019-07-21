@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using KKAPI.Chara;
 using Studio;
 
 namespace KKAPI.Studio
@@ -68,14 +66,6 @@ namespace KKAPI.Studio
             var infos = global::Studio.Studio.Instance.dicInfo;
             var charas = infos.Values.OfType<OCIChar>();
             return charas.FirstOrDefault(x => x.charInfo == chaControl);
-        }
-
-        /// <summary>
-        /// Get all instances of this controller that belong to characters that are selected in Studio's Workspace.
-        /// </summary>
-        public static IEnumerable<T> GetSelectedInstancesInStudio<T>(this T controller) where T : CharaCustomFunctionController
-        {
-            return StudioAPI.GetSelectedCharacters().Select(x => x.charInfo?.GetComponent<T>()).Where(x => x != null);
         }
     }
 }
