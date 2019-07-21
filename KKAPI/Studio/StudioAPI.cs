@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using BepInEx.Logging;
 using Harmony;
+using KKAPI.Chara;
 using KKAPI.Studio.UI;
 using Studio;
 using UniRx;
@@ -68,6 +69,14 @@ namespace KKAPI.Studio
             _customCurrentStateCategories.Add(newCategory);
 
             return newCategory;
+        }
+
+        /// <summary>
+        /// Get all instances of this controller that belong to characters that are selected in Studio's Workspace.
+        /// </summary>
+        public static IEnumerable<T> GetSelectedControllers<T>() where T : CharaCustomFunctionController
+        {
+            return GetSelectedCharacters().Select(x => x.charInfo?.GetComponent<T>()).Where(x => x != null);
         }
 
         /// <summary>

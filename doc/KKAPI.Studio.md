@@ -20,6 +20,7 @@ Static Methods
 | --- | --- | --- | 
 | `CurrentStateCategory` | GetOrCreateCurrentStateCategory(`String` name) | Add a new custom category to the Anim &gt; CurrentState tab in the studio top-left menu.  Can use this at any point. Always returns null outside of studio.  If the name is empty or null, the Misc/Other category is returned. | 
 | `IEnumerable<OCIChar>` | GetSelectedCharacters() | Get all character objects currently selected in Studio's Workspace. | 
+| `IEnumerable<T>` | GetSelectedControllers() | Get all instances of this controller that belong to characters that are selected in Studio's Workspace. | 
 | `IEnumerable<ObjectCtrlInfo>` | GetSelectedObjects() | Get all objects (all types) currently selected in Studio's Workspace. | 
 | `void` | Init(`Boolean` insideStudio) |  | 
 
@@ -47,5 +48,6 @@ Static Methods
 | `OCIChar` | GetOCIChar(this `ChaControl` chaControl) | Get GetOCIChar that is assigned to this character. Only works in CharaStudio, returns null elsewhere. | 
 | `Int32` | GetSceneId(this `ObjectCtrlInfo` obj) | Get the ID of this object as used in the currently loaded scene.  If the object was not found in current scene, -1 is returned. | 
 | `Int32` | GetSceneId(this `ObjectInfo` obj) | Get the ID of this object as used in the currently loaded scene.  If the object was not found in current scene, -1 is returned. | 
+| `IEnumerable<T>` | GetSelectedInstancesInStudio(this `T` controller) | Get all instances of this controller that belong to characters that are selected in Studio's Workspace. | 
 
 
