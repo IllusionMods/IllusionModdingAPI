@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using BepInEx.Logging;
+using Harmony;
 using KKAPI.Studio.UI;
+using Studio;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -66,6 +68,23 @@ namespace KKAPI.Studio
             _customCurrentStateCategories.Add(newCategory);
 
             return newCategory;
+        }
+
+        /// <summary>
+        /// Get all character objects currently selected in Studio's Workspace.
+        /// </summary>
+        public static IEnumerable<OCIChar> GetSelectedCharacters()
+        {
+            return GetSelectedObjects().OfType<OCIChar>();
+        }
+
+        /// <summary>
+        /// Get all objects (all types) currently selected in Studio's Workspace.
+        /// </summary>
+        public static IEnumerable<ObjectCtrlInfo> GetSelectedObjects()
+        {
+            if (!StudioLoaded) return Enumerable.Empty<ObjectCtrlInfo>();
+            return GuideObjectManager.Instance.selectObjectKey.Select(global::Studio.Studio.GetCtrlInfo).Where(x => x != null);
         }
 
         private static void CreateCategory(CurrentStateCategory category)
