@@ -24,7 +24,7 @@ namespace KKAPI.Chara
                 var target2 = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.ReloadAsync) && info.GetParameters().Length >= 5);
                 i.Patch(target2, null, new HarmonyMethod(typeof(Hooks), nameof(Hooks.ReloadAsyncPostHook)));
             }
-            
+
             public static void ChaControl_InitializePostHook(ChaControl __instance)
             {
                 KoikatuAPI.Log(LogLevel.Debug, $"[KKAPI] Character card load: {GetLogName(__instance)} {(MakerAPI.CharaListIsLoading ? "inside CharaList" : string.Empty)}");
@@ -60,12 +60,8 @@ namespace KKAPI.Chara
             /// (the character data gets transferred to predefined slots instead of creating new characters)
             /// </summary>
             [HarmonyPrefix]
-            [HarmonyPatch(typeof(ChaFile), nameof(ChaFile.CopyChaFile), new[]
-            {
-                typeof(ChaFile),
-                typeof(ChaFile)
-            })]
-            public static void ChaFile_CopyChaFileHook(ChaFile dst, ChaFile src)
+            [HarmonyPatch(typeof(ChaFile), nameof(ChaFile.CopyAll), new[] { typeof(ChaFile) })]
+            public static void ChaFile_CopyChaFileHook(ChaFile __instance, ChaFile _chafile)
             {
                 foreach (var handler in _registeredHandlers)
                 {
@@ -74,7 +70,7 @@ namespace KKAPI.Chara
 
                     try
                     {
-                        handler.ExtendedDataCopier(dst, src);
+                        handler.ExtendedDataCopier(__instance, _chafile);
                     }
                     catch (Exception e)
                     {
@@ -91,7 +87,7 @@ namespace KKAPI.Chara
             [HarmonyPatch(typeof(LiveCharaSelectSprite), "Start")]
             public static void LiveCharaSelectSprite_StartPostHook(LiveCharaSelectSprite __instance)
             {
-                var button = (UnityEngine.UI.Button) Traverse.Create(__instance).Field("btnIdolBack").GetValue();
+                var button = (UnityEngine.UI.Button)Traverse.Create(__instance).Field("btnIdolBack").GetValue();
                 button?.onClick.AddListener(() => __instance.StartCoroutine(DelayedReloadChara(__instance.heroine.chaCtrl)));
             }
 
