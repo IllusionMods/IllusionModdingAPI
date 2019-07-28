@@ -51,6 +51,5 @@ Static Methods
 | `GameMode` | GetCurrentGameMode() | Get current game mode. | 
 | `Version` | GetGameVersion() | Get current version of the game. | 
 | `void` | Log(`LogLevel` level, `Object` obj) |  | 
-| `void` | SynchronizedInvoke(`Action` callback) | Invoke the Action on the main unity thread. Use to synchronize your threads. | 
 
 

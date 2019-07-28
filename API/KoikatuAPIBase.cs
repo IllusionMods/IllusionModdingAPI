@@ -3,6 +3,7 @@ using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
 using KKAPI.Maker;
+using KKAPI.Utilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,9 +12,6 @@ namespace KKAPI
     [BepInDependency("com.joan6694.illusionplugins.moreaccessories", BepInDependency.DependencyFlags.SoftDependency)]
     public partial class KoikatuAPI
     {
-        private static readonly object _invokeLock = new object();
-        private static Action _invokeList;
-
         /// <summary>
         /// Version of this assembly/plugin.
         /// WARNING: This is a const field, therefore it will be copied to your assembly!
@@ -148,35 +146,13 @@ namespace KKAPI
             return false;
         }
 
-        #region Synchronization
-
         /// <summary>
         /// Invoke the Action on the main unity thread. Use to synchronize your threads.
         /// </summary>
-        public static void SynchronizedInvoke(Action callback)
+        [Obsolete("Use KKAPI.Utilities.ThreadingHelper.StartSyncInvoke instead")]
+        public static void SynchronizedInvoke(Action action)
         {
-            if (callback == null) throw new ArgumentNullException(nameof(callback));
-
-            lock (_invokeLock) _invokeList += callback;
+            ThreadingHelper.StartSyncInvoke(action);
         }
-
-        private void Update()
-        {
-            // Safe to do outside of lock because nothing can remove callbacks, at worst we execute with 1 frame delay
-            if (_invokeList == null) return;
-
-            Action toRun;
-            lock (_invokeLock)
-            {
-                toRun = _invokeList;
-                _invokeList = null;
-            }
-
-            // Need to execute outside of the lock in case the callback itself calls Invoke we could deadlock
-            // The invocation would also block any threads that call Invoke
-            toRun();
-        }
-
-        #endregion
     }
 }

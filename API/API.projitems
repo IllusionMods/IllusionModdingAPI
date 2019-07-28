@@ -51,6 +51,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\SidebarSeparator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\SidebarToggle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\SubCategoryCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ThreadingHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\OpenFileDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\RecycleBinUtil.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Utils.cs" />

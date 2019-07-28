@@ -83,3 +83,20 @@ Static Methods
 | `Boolean` | MoveToRecycleBin(`String` path) | Send file to recycle bin | 
 
 
+## `ThreadingHelper`
+
+Provides methods for running code on other threads and synchronizing with the main thread.
+```csharp
+public class KKAPI.Utilities.ThreadingHelper
+    : MonoBehaviour
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `void` | StartAsyncInvoke(`Func<Action>` action) | Queue the delegate to be invoked on a background thread. Use this to run slow tasks without affecting the game.  NOTE: Most of Unity API can not be accessed while running on another thread! | 
+| `void` | StartSyncInvoke(`Action` action) | Queue the delegate to be invoked on the main unity thread. Use to synchronize your threads. | 
+
+
