@@ -4,7 +4,10 @@ using Harmony;
 using KKAPI.Maker;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
+using ADV;
 
 namespace KKAPI.Chara
 {
@@ -18,11 +21,20 @@ namespace KKAPI.Chara
 
                 var i = HarmonyInstance.Create(typeof(Hooks).FullName);
 
+                // Fuzzy argument lengths are needed for darkness compatibility
                 var target = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.Initialize) && info.GetParameters().Length >= 5);
-                i.Patch(target, null, new HarmonyMethod(typeof(Hooks), nameof(Hooks.ChaControl_InitializePostHook)));
+                i.Patch(target, null, new HarmonyMethod(typeof(Hooks), nameof(ChaControl_InitializePostHook)));
 
                 var target2 = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.ReloadAsync) && info.GetParameters().Length >= 5);
-                i.Patch(target2, null, new HarmonyMethod(typeof(Hooks), nameof(Hooks.ReloadAsyncPostHook)));
+                i.Patch(target2, null, new HarmonyMethod(typeof(Hooks), nameof(ReloadAsyncPostHook)));
+
+#if KK
+                // Get the ADV character load lambda to hook for extended data copying
+                var lambdaOuter = AccessTools.Inner(typeof(FixEventSceneEx), "<Start>c__AnonStorey1");
+                var lambdaInner = AccessTools.Inner(lambdaOuter, "<Start>c__AnonStorey7");
+                var lambdaMethod = AccessTools.Method(lambdaInner, "<>m__0");
+                i.Patch(lambdaMethod, null, null, new HarmonyMethod(typeof(Hooks), nameof(FixEventSceneLambdaTpl)));
+#endif
             }
 
             public static void ChaControl_InitializePostHook(ChaControl __instance)
@@ -63,6 +75,11 @@ namespace KKAPI.Chara
             [HarmonyPatch(typeof(ChaFile), nameof(ChaFile.CopyAll), new[] { typeof(ChaFile) })]
             public static void ChaFile_CopyChaFileHook(ChaFile __instance, ChaFile _chafile)
             {
+                OnCopyChaFile(__instance, _chafile);
+            }
+
+            private static void OnCopyChaFile(ChaFile destination, ChaFile source)
+            {
                 foreach (var handler in _registeredHandlers)
                 {
                     if (handler.ExtendedDataCopier == null)
@@ -70,7 +87,7 @@ namespace KKAPI.Chara
 
                     try
                     {
-                        handler.ExtendedDataCopier(__instance, _chafile);
+                        handler.ExtendedDataCopier(destination, source);
                     }
                     catch (Exception e)
                     {
@@ -81,7 +98,55 @@ namespace KKAPI.Chara
 
 #if KK
             /// <summary>
-            /// Update changes when selecting live mode character
+            /// Fix extended data being lost in ADV by copying it over when chara data is copied
+            /// </summary>
+            public static IEnumerable<CodeInstruction> FixEventSceneLambdaTpl(IEnumerable<CodeInstruction> instructions)
+            {
+                /* 1 is the source ChaFileControl to copy from, 2 is CharaData that has the destination ChaFile. Below code after which we hook in
+                 60	00B8	ldloc.2
+                 61	00B9	callvirt	instance class ChaFileControl SaveData/CharaData::get_charFile()
+                 62	00BE	ldloc.1
+                 63	00BF	ldfld	uint8[] ChaFile::pngData
+                 64	00C4	stfld	uint8[] ChaFile::pngData
+                 */
+
+                var il = instructions.ToList();
+
+                var target = AccessTools.Field(typeof(ChaFile), nameof(ChaFile.pngData));
+                if (target == null) throw new ArgumentNullException(nameof(target));
+
+                var targetIndex = il.FindIndex(instruction => instruction.opcode == OpCodes.Stfld && instruction.operand == target);
+                if (targetIndex < 10) throw new ArgumentException("Failed to find reference point - stfld uint8[] ChaFile::pngData");
+
+                il.InsertRange(
+                    targetIndex + 1, new[]
+                    {
+                        // Target
+                        new CodeInstruction(OpCodes.Ldloc_2),
+                        new CodeInstruction(OpCodes.Callvirt, AccessTools.Property(typeof(SaveData.CharaData), nameof(SaveData.CharaData.charFile)).GetGetMethod()),
+                        // Source
+                        new CodeInstruction(OpCodes.Ldloc_1),
+                        // Call the data copy
+                        new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Hooks), nameof(OnCopyChaFile))),
+                    });
+
+                return il;
+            }
+
+            /// <summary>
+            /// Needed to update controllers after ADV scene finishes loading since characters get loaded async so other events fire too early
+            /// </summary>
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(CharaData), nameof(CharaData.Initialize))]
+            public static void CharaData_InitializePost(CharaData __instance)
+            {
+                // Only run reload if the character was newly created
+                if (Traverse.Create(__instance).Property("isADVCreateChara").GetValue<bool>())
+                    ReloadChara(__instance.chaCtrl);
+            }
+
+            /// <summary>
+            /// Update controllers after selecting live mode character
             /// </summary>
             [HarmonyPostfix]
             [HarmonyPatch(typeof(LiveCharaSelectSprite), "Start")]
