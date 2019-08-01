@@ -82,9 +82,16 @@
 
 ## [KKAPI.Utilities](KKAPI.Utilities.md)
 
+- [`CoroutineUtils`](KKAPI.Utilities.md#coroutineutils)
 - [`Extensions`](KKAPI.Utilities.md#extensions)
+- [`HSceneUtils`](KKAPI.Utilities.md#hsceneutils)
+- [`IMGUIUtils`](KKAPI.Utilities.md#imguiutils)
 - [`OpenFileDialog`](KKAPI.Utilities.md#openfiledialog)
 - [`ReadOnlyDictionary<TKey, TValue>`](KKAPI.Utilities.md#readonlydictionarytkey-tvalue)
 - [`RecycleBinUtil`](KKAPI.Utilities.md#recyclebinutil)
+- [`ResourceUtils`](KKAPI.Utilities.md#resourceutils)
+- [`TextureUtils`](KKAPI.Utilities.md#textureutils)
+- [`TextUtils`](KKAPI.Utilities.md#textutils)
 - [`ThreadingHelper`](KKAPI.Utilities.md#threadinghelper)
+- [`WindowsStringComparer`](KKAPI.Utilities.md#windowsstringcomparer)
 

@@ -6,18 +6,6 @@ using System.Collections.Generic;
 
 namespace KKAPI.Utilities
 {
-    public static class Extensions
-    {
-        /// <summary>
-        /// Wrap this dictionary in a read-only wrapper that will prevent any changes to it. 
-        /// Warning: Any reference types inside the dictionary can still be modified.
-        /// </summary>
-        public static ReadOnlyDictionary<TKey, TValue> ToReadOnlyDictionary<TKey, TValue>(this IDictionary<TKey, TValue> original)
-        {
-            return new ReadOnlyDictionary<TKey, TValue>(original);
-        }
-    }
-
     /// <summary>
     /// Read-only dictionary wrapper. Will protect the base dictionary from being changed.
     /// Warning: Any reference types inside the dictionary can still be modified.

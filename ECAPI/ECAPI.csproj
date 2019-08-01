@@ -87,6 +87,14 @@
       <HintPath>..\..\..\EC\EC_CorePlugins\lib\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\..\..\EC\EC_CorePlugins\lib\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\EC\EC_CorePlugins\lib\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\..\..\EC\EC_CorePlugins\lib\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>

@@ -51,9 +51,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\SidebarSeparator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\SidebarToggle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\SubCategoryCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CoroutineUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\HSceneUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\IMGUIUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ResourceUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\TextureUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\TextUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ThreadingHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\OpenFileDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\RecycleBinUtil.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Utils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\WindowsStringComparer.cs" />
   </ItemGroup>
 </Project>
