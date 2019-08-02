@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using ADV;
 
@@ -29,11 +30,17 @@ namespace KKAPI.Chara
                 i.Patch(target2, null, new HarmonyMethod(typeof(Hooks), nameof(ReloadAsyncPostHook)));
 
 #if KK
-                // Get the ADV character load lambda to hook for extended data copying
+                // Find the ADV character Start lambda to hook for extended data copying. The inner type names change between versions so try them all.
+                var transpiler = new HarmonyMethod(typeof(Hooks), nameof(FixEventSceneLambdaTpl));
                 var lambdaOuter = AccessTools.Inner(typeof(FixEventSceneEx), "<Start>c__AnonStorey1");
-                var lambdaInner = AccessTools.Inner(lambdaOuter, "<Start>c__AnonStorey7");
-                var lambdaMethod = AccessTools.Method(lambdaInner, "<>m__0");
-                i.Patch(lambdaMethod, null, null, new HarmonyMethod(typeof(Hooks), nameof(FixEventSceneLambdaTpl)));
+                foreach (var nestedType in lambdaOuter.GetNestedTypes(AccessTools.all))
+                {
+                    if (!nestedType.IsClass) continue;
+
+                    var lambdaMethod = AccessTools.Method(nestedType, "<>m__0");
+                    if (lambdaMethod != null)
+                        i.Patch(lambdaMethod, null, null, transpiler);
+                }
 #endif
             }
 
@@ -100,7 +107,7 @@ namespace KKAPI.Chara
             /// <summary>
             /// Fix extended data being lost in ADV by copying it over when chara data is copied
             /// </summary>
-            public static IEnumerable<CodeInstruction> FixEventSceneLambdaTpl(IEnumerable<CodeInstruction> instructions)
+            public static IEnumerable<CodeInstruction> FixEventSceneLambdaTpl(MethodBase original, IEnumerable<CodeInstruction> instructions)
             {
                 /* 1 is the source ChaFileControl to copy from, 2 is CharaData that has the destination ChaFile. Below code after which we hook in
                  60	00B8	ldloc.2
@@ -115,20 +122,25 @@ namespace KKAPI.Chara
                 var target = AccessTools.Field(typeof(ChaFile), nameof(ChaFile.pngData));
                 if (target == null) throw new ArgumentNullException(nameof(target));
 
+                // This can get called on lambdas that are not the one we need to patch, only one of them uses Stfld on ChaFile.pngData
                 var targetIndex = il.FindIndex(instruction => instruction.opcode == OpCodes.Stfld && instruction.operand == target);
-                if (targetIndex < 10) throw new ArgumentException("Failed to find reference point - stfld uint8[] ChaFile::pngData");
+                if (targetIndex > 0)
+                {
+                    il.InsertRange(
+                        targetIndex + 1, new[]
+                        {
+                            // Target
+                            new CodeInstruction(OpCodes.Ldloc_2),
+                            new CodeInstruction(OpCodes.Callvirt, AccessTools.Property(typeof(SaveData.CharaData), nameof(SaveData.CharaData.charFile)).GetGetMethod()),
+                            // Source
+                            new CodeInstruction(OpCodes.Ldloc_1),
+                            // Call the data copy
+                            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Hooks), nameof(OnCopyChaFile))),
+                        });
 
-                il.InsertRange(
-                    targetIndex + 1, new[]
-                    {
-                        // Target
-                        new CodeInstruction(OpCodes.Ldloc_2),
-                        new CodeInstruction(OpCodes.Callvirt, AccessTools.Property(typeof(SaveData.CharaData), nameof(SaveData.CharaData.charFile)).GetGetMethod()),
-                        // Source
-                        new CodeInstruction(OpCodes.Ldloc_1),
-                        // Call the data copy
-                        new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Hooks), nameof(OnCopyChaFile))),
-                    });
+                    if (KoikatuAPI.EnableDebugLogging)
+                        KoikatuAPI.Log(LogLevel.Debug, "FixEventSceneLambdaTpl success on " + original.FullDescription());
+                }
 
                 return il;
             }
