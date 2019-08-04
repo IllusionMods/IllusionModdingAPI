@@ -6,6 +6,7 @@ using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
 using ChaCustom;
+using KKAPI.Chara;
 using KKAPI.Maker.UI;
 using KKAPI.Maker.UI.Sidebar;
 using UniRx;
@@ -419,7 +420,10 @@ namespace KKAPI.Maker
 #if KK
             // Fix some plugins failing to update interface and losing state
             if (IsInsideClassMaker())
+            {
                 OnChaFileLoaded(new ChaFileLoadedEventArgs(null, (byte)GetMakerSex(), true, true, true, true, true, GetCharacterControl().chaFile, LastLoadedChaFile));
+                OnReloadInterface(new CharaReloadEventArgs(GetCharacterControl()));
+            }
 #endif
         }
 
@@ -502,10 +506,11 @@ namespace KKAPI.Maker
 
         /// <summary>
         /// Fired when the current ChaFile in maker is being changed by loading other cards or coordinates.
-        /// This event is only fired when inside the character maker. It's best used to update the interface with new values.
+        /// This event is only fired when inside the character maker.
         /// 
         /// You might need to wait for the next frame with <see cref="MonoBehaviour.StartCoroutine(IEnumerator)"/> before handling this.
         /// </summary>
+        [Obsolete("Use ReloadCustomInterface instead")]
         public static event EventHandler<ChaFileLoadedEventArgs> ChaFileLoaded;
 
         private static void OnChaFileLoaded(ChaFileLoadedEventArgs chaFileLoadedEventArgs)
@@ -517,6 +522,31 @@ namespace KKAPI.Maker
                     try
                     {
                         ((EventHandler<ChaFileLoadedEventArgs>)handler).Invoke(KoikatuAPI.Instance, chaFileLoadedEventArgs);
+                    }
+                    catch (Exception e)
+                    {
+                        KoikatuAPI.Log(LogLevel.Error, e);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fired after character or coordinate is loaded in maker, after all controllers had their events fired.
+        /// This event is only fired when inside the character maker. Use this to update values of custom controls.
+        /// EventArgs can be either <see cref="CharaReloadEventArgs"/> or <see cref="CoordinateEventArgs"/> depending on why the reload happened.
+        /// </summary>
+        public static event EventHandler ReloadCustomInterface;
+
+        internal static void OnReloadInterface(EventArgs args)
+        {
+            if (ReloadCustomInterface != null)
+            {
+                foreach (var handler in ReloadCustomInterface.GetInvocationList())
+                {
+                    try
+                    {
+                        ((EventHandler)handler).Invoke(KoikatuAPI.Instance, args);
                     }
                     catch (Exception e)
                     {

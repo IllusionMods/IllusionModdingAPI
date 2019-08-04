@@ -206,14 +206,18 @@ namespace KKAPI.Chara
             foreach (var behaviour in GetBehaviours(chaControl))
                 behaviour.OnReloadInternal(gamemode);
 
+            var args = new CharaReloadEventArgs(chaControl);
             try
             {
-                CharacterReloaded?.Invoke(null, new CharaReloadEventArgs(chaControl));
+                CharacterReloaded?.Invoke(null, args);
             }
             catch (Exception e)
             {
                 KoikatuAPI.Log(LogLevel.Error, e);
             }
+
+            if (MakerAPI.InsideAndLoaded)
+                MakerAPI.OnReloadInterface(args);
 
             if (chaControl == null)
                 _currentlyReloading.Clear();
@@ -267,14 +271,18 @@ namespace KKAPI.Chara
             foreach (var controller in GetBehaviours(character))
                 controller.OnCoordinateBeingLoadedInternal(coordinateFile);
 
+            var args = new CoordinateEventArgs(character, coordinateFile);
             try
             {
-                CoordinateLoaded?.Invoke(null, new CoordinateEventArgs(character, coordinateFile));
+                CoordinateLoaded?.Invoke(null, args);
             }
             catch (Exception e)
             {
                 KoikatuAPI.Log(LogLevel.Error, e);
             }
+
+            if (MakerAPI.InsideAndLoaded)
+                MakerAPI.OnReloadInterface(args);
         }
 
         private static string GetLogName(ChaInfo chaInfo)
