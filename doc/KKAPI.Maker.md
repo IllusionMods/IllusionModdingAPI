@@ -233,19 +233,20 @@ Static Methods
 | `Boolean` | IsInsideClassMaker() | Check if the maker was loaded from within classroom select screen in main game | 
 | `Boolean` | IsInterfaceVisible() | Check if maker interface is currently visible and not obscured by settings screen or other things.  Useful for knowing when to display OnGui mod windows in maker. | 
 | `void` | OnMakerAccSlotAdded(`Transform` newSlotTransform) |  | 
+| `void` | OnReloadInterface(`EventArgs` args) |  | 
 
 
 Static Events
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `EventHandler<ChaFileLoadedEventArgs>` | ChaFileLoaded | Fired when the current ChaFile in maker is being changed by loading other cards or coordinates.  This event is only fired when inside the character maker. It's best used to update the interface with new values.    You might need to wait for the next frame with `UnityEngine.MonoBehaviour.StartCoroutine(System.Collections.IEnumerator)` before handling this. | 
 | `EventHandler` | InsideMakerChanged | Firen whenever `KKAPI.Maker.MakerAPI.InsideMaker` changes. This is the earliest event fired when user starts the character maker. | 
 | `EventHandler<RegisterCustomControlsEvent>` | MakerBaseLoaded | Maker is fully loaded. Use to load mods that rely on something that is loaded late, else use MakerStartedLoading.  This is the last chance to add custom controls!  Warning: All custom subcategories and custom controls are cleared on maker exit and need to be re-added on next maker  start. | 
 | `EventHandler` | MakerExiting | Fired after the user exits the maker. Use this to clean up any references and resources.  You want to return to the state you were in before maker was loaded. | 
 | `EventHandler` | MakerFinishedLoading | Maker is fully loaded and the user has control.  Warning: Avoid loading mods or doing anything heavy in this event, use EarlyMakerFinishedLoading instead. | 
 | `EventHandler<RegisterCustomControlsEvent>` | MakerStartedLoading | Early in the process of maker loading. Most game components are initialized and had their Start methods ran.  Warning: Some components and objects might not be loaded or initialized yet, especially if they are mods.  Warning: All custom subcategories and custom controls are cleared on maker exit and need to be re-added on next maker  start. | 
 | `EventHandler<RegisterSubCategoriesEvent>` | RegisterCustomSubCategories | This event is fired every time the character maker is being loaded, near the very beginning.  This is the only chance to add custom sub categories. Custom controls can be added now on later in `KKAPI.Maker.MakerAPI.MakerBaseLoaded`.  Warning: All custom subcategories and custom controls are cleared on maker exit and need to be re-added on next maker start.  It's recommended to completely clear your GUI state in `KKAPI.Maker.MakerAPI.MakerExiting` in preparation for loading into maker again. | 
+| `EventHandler` | ReloadCustomInterface | Fired after character or coordinate is loaded in maker, after all controllers had their events fired.  This event is only fired when inside the character maker. Use this to update values of custom controls.  EventArgs can be either `KKAPI.Chara.CharaReloadEventArgs` or `KKAPI.Chara.CoordinateEventArgs` depending on why the reload happened. | 
 
 
 ## `MakerCategory`

@@ -27,54 +27,75 @@ namespace KKAPI.Utilities
             GUI.Box(boxRect, GUIContent.none, new GUIStyle { normal = new GUIStyleState { background = SolidBoxTex } });
         }
 
-        public static void DrawLabelWithOutline(Rect rect, string text, GUIStyle style, Color outColor, Color inColor, float size)
-        {
-            var halfSize = size * 0.5F;
-
-            var backupGuiColor = GUI.color;
-            var backupTextColor = style.normal.textColor;
-
-            style.normal.textColor = outColor;
-            GUI.color = outColor;
-
-            rect.x -= halfSize;
-            GUI.Label(rect, text, style);
-
-            rect.x += size;
-            GUI.Label(rect, text, style);
-
-            rect.x -= halfSize;
-            rect.y -= halfSize;
-            GUI.Label(rect, text, style);
-
-            rect.y += size;
-            GUI.Label(rect, text, style);
-
-            rect.y -= halfSize;
-            style.normal.textColor = inColor;
-            GUI.color = backupGuiColor;
-            GUI.Label(rect, text, style);
-
-            style.normal.textColor = backupTextColor;
-        }
-
-        public static void DrawLabelWithShadow(Rect rect, GUIContent content, GUIStyle style, Color txtColor, Color shadowColor, Vector2 direction)
+        /// <summary>
+        /// Draw a label with an outline
+        /// </summary>
+        /// <param name="rect">Size of the control</param>
+        /// <param name="text">Text of the label</param>
+        /// <param name="style">Style to be applied to the label</param>
+        /// <param name="txtColor">Color of the text</param>
+        /// <param name="outlineColor">Color of the outline</param>
+        /// <param name="outlineThickness">Thickness of the outline in pixels</param>
+        public static void DrawLabelWithOutline(Rect rect, string text, GUIStyle style, Color txtColor, Color outlineColor, int outlineThickness)
         {
             var backupColor = style.normal.textColor;
+            //Color backupGuiColor = GUI.color;
 
-            style.normal.textColor = shadowColor;
-            rect.x += direction.x;
-            rect.y += direction.y;
-            GUI.Label(rect, content, style);
+            style.normal.textColor = outlineColor;
+            GUI.color = outlineColor;
+
+            var baseRect = rect;
+
+            rect.x -= outlineThickness;
+            rect.y -= outlineThickness;
+
+            while (rect.x++ < baseRect.x + outlineThickness)
+                GUI.Label(rect, text, style);
+            rect.x--;
+
+            while (rect.y++ < baseRect.y + outlineThickness)
+                GUI.Label(rect, text, style);
+            rect.y--;
+
+            while (rect.x-- > baseRect.x - outlineThickness)
+                GUI.Label(rect, text, style);
+            rect.x++;
+
+            while (rect.y-- > baseRect.y - outlineThickness)
+                GUI.Label(rect, text, style);
 
             style.normal.textColor = txtColor;
-            rect.x -= direction.x;
-            rect.y -= direction.y;
-            GUI.Label(rect, content, style);
+            //GUI.color = backupGuiColor;
+            GUI.Label(baseRect, text, style);
 
             style.normal.textColor = backupColor;
         }
 
+        /// <summary>
+        /// Draw a label with a shadow
+        /// </summary>        
+        /// <param name="rect">Size of the control</param>
+        /// <param name="content">Contents of the label</param>
+        /// <param name="style">Style to be applied to the label</param>
+        /// <param name="txtColor">Color of the outline</param>
+        /// <param name="shadowColor">Color of the text</param>
+        /// <param name="shadowOffset">Offset of the shadow in pixels</param>
+        public static void DrawLabelWithShadow(Rect rect, GUIContent content, GUIStyle style, Color txtColor, Color shadowColor, Vector2 shadowOffset)
+        {
+            var backupColor = style.normal.textColor;
+
+            style.normal.textColor = shadowColor;
+            rect.x += shadowOffset.x;
+            rect.y += shadowOffset.y;
+            GUI.Label(rect, content, style);
+
+            style.normal.textColor = txtColor;
+            rect.x -= shadowOffset.x;
+            rect.y -= shadowOffset.y;
+            GUI.Label(rect, content, style);
+
+            style.normal.textColor = backupColor;
+        }
         public static void DrawLayoutLabelWithShadow(GUIContent content, GUIStyle style, Color txtColor, Color shadowColor, Vector2 direction, params GUILayoutOption[] options)
         {
             DrawLabelWithShadow(GUILayoutUtility.GetRect(content, style, options), content, style, txtColor, shadowColor, direction);
@@ -82,14 +103,14 @@ namespace KKAPI.Utilities
 
         public static bool DrawButtonWithShadow(Rect r, GUIContent content, GUIStyle style, float shadowAlpha, Vector2 direction)
         {
-            var letters = new GUIStyle(style);
+            GUIStyle letters = new GUIStyle(style);
             letters.normal.background = null;
             letters.hover.background = null;
             letters.active.background = null;
 
-            var result = GUI.Button(r, content, style);
+            bool result = GUI.Button(r, content, style);
 
-            var color = r.Contains(Event.current.mousePosition) ? letters.hover.textColor : letters.normal.textColor;
+            Color color = r.Contains(Event.current.mousePosition) ? letters.hover.textColor : letters.normal.textColor;
 
             DrawLabelWithShadow(r, content, letters, color, new Color(0f, 0f, 0f, shadowAlpha), direction);
 

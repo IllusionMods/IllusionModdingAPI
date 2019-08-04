@@ -64,8 +64,8 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `Boolean` | DrawButtonWithShadow(`Rect` r, `GUIContent` content, `GUIStyle` style, `Single` shadowAlpha, `Vector2` direction) |  | 
-| `void` | DrawLabelWithOutline(`Rect` rect, `String` text, `GUIStyle` style, `Color` outColor, `Color` inColor, `Single` size) |  | 
-| `void` | DrawLabelWithShadow(`Rect` rect, `GUIContent` content, `GUIStyle` style, `Color` txtColor, `Color` shadowColor, `Vector2` direction) |  | 
+| `void` | DrawLabelWithOutline(`Rect` rect, `String` text, `GUIStyle` style, `Color` txtColor, `Color` outlineColor, `Int32` outlineThickness) | Draw a label with an outline | 
+| `void` | DrawLabelWithShadow(`Rect` rect, `GUIContent` content, `GUIStyle` style, `Color` txtColor, `Color` shadowColor, `Vector2` shadowOffset) | Draw a label with a shadow | 
 | `Boolean` | DrawLayoutButtonWithShadow(`GUIContent` content, `GUIStyle` style, `Single` shadowAlpha, `Vector2` direction, `GUILayoutOption[]` options) |  | 
 | `void` | DrawLayoutLabelWithShadow(`GUIContent` content, `GUIStyle` style, `Color` txtColor, `Color` shadowColor, `Vector2` direction, `GUILayoutOption[]` options) |  | 
 | `void` | DrawSolidBox(`Rect` boxRect) | Draw a gray non-transparent GUI.Box at the specified rect. Use before a window or other controls to get rid of  the default transparency and make the GUI easier to read. | 
