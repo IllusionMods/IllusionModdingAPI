@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace KKAPI.Utilities
 {
@@ -25,6 +26,17 @@ namespace KKAPI.Utilities
         {
             if (target == null) throw new ArgumentNullException(nameof(target));
             target.gameObject.name += "(XUAIGNORE)";
+        }
+
+        /// <summary>
+        /// Same as RemoveAllListeners but also disables all PersistentListeners.
+        /// To avoid frustration always use this instead of RemoveAllListeners, unless you want to keep the PersistentListeners.
+        /// </summary>
+        public static void ActuallyRemoveAllListeners(this UnityEventBase evt)
+        {
+            evt.RemoveAllListeners();
+            for (var i = 0; i < evt.GetPersistentEventCount(); i++)
+                evt.SetPersistentListenerState(i, UnityEventCallState.Off);
         }
     }
 }
