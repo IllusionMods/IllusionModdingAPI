@@ -3,10 +3,14 @@ using System.Linq;
 using System.Reflection;
 using BepInEx.Logging;
 using ChaCustom;
-using Harmony;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
+#if KK
+using Harmony;
+#else
+using HarmonyLib;
+#endif
 
 namespace KKAPI.Maker
 {

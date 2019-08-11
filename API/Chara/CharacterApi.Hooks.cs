@@ -1,6 +1,5 @@
 ﻿using BepInEx.Logging;
 using ChaCustom;
-using Harmony;
 using KKAPI.Maker;
 using System;
 using System.Collections;
@@ -9,6 +8,11 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using ADV;
+#if KK
+using Harmony;
+#else
+using HarmonyLib;
+#endif
 
 namespace KKAPI.Chara
 {
@@ -18,9 +22,7 @@ namespace KKAPI.Chara
         {
             public static void InitHooks()
             {
-                HarmonyPatcher.PatchAll(typeof(Hooks));
-
-                var i = HarmonyInstance.Create(typeof(Hooks).FullName);
+                var i = HarmonyPatcher.PatchAll(typeof(Hooks));
 
                 // Fuzzy argument lengths are needed for darkness compatibility
                 var target = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.Initialize) && info.GetParameters().Length >= 5);

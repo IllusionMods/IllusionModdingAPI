@@ -1,10 +1,14 @@
 ﻿using System.Collections;
 using System.IO;
 using ChaCustom;
-using Harmony;
 using KKAPI.Maker.UI;
 using UnityEngine;
 using UnityEngine.UI;
+#if KK
+using Harmony;
+#else
+using HarmonyLib;
+#endif
 
 namespace KKAPI.Maker
 {

@@ -1,16 +1,27 @@
 ﻿using System;
+#if KK
+using Harmony;
+#else
+using HarmonyLib;
+using BepInEx.Harmony;
+#endif
 
 namespace KKAPI
 {
     internal static class HarmonyPatcher
     {
-        public static void PatchAll(Type t)
+#if KK
+        public static HarmonyInstance PatchAll(Type t)
         {
-#if EC
-            BepInEx.Harmony.HarmonyWrapper.PatchAll(t);
-#elif KK
-            Harmony.HarmonyInstance.Create(t.FullName).PatchAll(t);
-#endif
+            var harmonyInstance = Harmony.HarmonyInstance.Create(t.FullName);
+            harmonyInstance.PatchAll(t);
+            return harmonyInstance;
         }
+#elif EC
+        public static Harmony PatchAll(Type t)
+        {
+            return HarmonyWrapper.PatchAll(t);
+        }
+#endif
     }
 }

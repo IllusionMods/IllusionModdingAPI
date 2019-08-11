@@ -1,5 +1,9 @@
 ﻿using ChaCustom;
+#if KK
 using Harmony;
+#else
+using HarmonyLib;
+#endif
 
 namespace KKAPI.Maker
 {

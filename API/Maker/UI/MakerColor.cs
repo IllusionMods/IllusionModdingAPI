@@ -1,12 +1,16 @@
 ﻿using System;
 using BepInEx;
 using ChaCustom;
-using Harmony;
 using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+#if KK
+using Harmony;
+#else
+using HarmonyLib;
+#endif
 
 namespace KKAPI.Maker.UI
 {

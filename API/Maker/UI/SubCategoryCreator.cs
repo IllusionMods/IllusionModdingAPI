@@ -3,10 +3,14 @@ using System.Diagnostics;
 using System.Reflection;
 using BepInEx.Logging;
 using ChaCustom;
-using Harmony;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+#if KK
+using Harmony;
+#else
+using HarmonyLib;
+#endif
 
 namespace KKAPI.Maker.UI
 {

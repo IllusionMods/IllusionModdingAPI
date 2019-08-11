@@ -3,11 +3,9 @@ using System;
 using System.Collections;
 using BepInEx.Logging;
 using UniRx;
-#if EC
-using EC.Core.ExtensibleSaveFormat;
-#else
-using KKAPI.MainGame;
 using ExtensibleSaveFormat;
+#if KK
+using KKAPI.MainGame;
 #endif
 using UnityEngine;
 
