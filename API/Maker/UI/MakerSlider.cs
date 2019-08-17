@@ -127,8 +127,15 @@ namespace KKAPI.Maker.UI
             if (MakerAPI.InsideMaker) Singleton<ChaCustom.CustomBase>.Instance.lstTmpInputField.Add(inputField);
             inputField.onEndEdit.AddListener(txt =>
             {
-                var result = StringToValue?.Invoke(txt) ?? float.Parse(txt) / 100f;
-                slider.value = Mathf.Clamp(result, slider.minValue, slider.maxValue);
+                try
+                {
+                    var result = StringToValue?.Invoke(txt) ?? float.Parse(txt) / 100f;
+                    slider.value = Mathf.Clamp(result, slider.minValue, slider.maxValue);
+                }
+                catch
+                {
+                    // Ignore parsing errors, lets user keep typing
+                }
             });
 
             slider.onValueChanged.AddListener(f =>
