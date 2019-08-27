@@ -9,7 +9,15 @@ namespace KKAPI.Maker.UI
     /// </summary>
     public class MakerText : BaseGuiEntry
     {
+        /// <summary>
+        /// Light gray color best used for text explaining another setting
+        /// </summary>
+        public static Color ExplanationGray => new Color(0.7f, 0.7f, 0.7f);
+
         private static Transform _textCopy;
+
+        private string _text;
+        private TextMeshProUGUI _instance;
 
         /// <summary>
         /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
@@ -25,7 +33,17 @@ namespace KKAPI.Maker.UI
         /// <summary>
         /// Displayed text
         /// </summary>
-        public string Text { get; }
+        public string Text
+        {
+            get => _text;
+            set
+            {
+                _text = value;
+
+                if (_instance != null)
+                    _instance.text = value;
+            }
+        }
 
         private static Transform TextCopy
         {
@@ -60,9 +78,9 @@ namespace KKAPI.Maker.UI
         {
             var tr = Object.Instantiate(TextCopy, subCategoryList, true);
 
-            var settingName = tr.GetComponentInChildren<TextMeshProUGUI>();
-            settingName.text = Text;
-            settingName.color = TextColor;
+            _instance = tr.GetComponentInChildren<TextMeshProUGUI>();
+            _instance.text = Text;
+            _instance.color = TextColor;
 
             return tr.gameObject;
         }

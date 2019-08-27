@@ -359,6 +359,13 @@ Methods
 | `GameObject` | OnCreateControl(`Transform` subCategoryList) |  | 
 
 
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Color` | ExplanationGray | Light gray color best used for text explaining another setting | 
+
+
 ## `MakerTextbox`
 
 Custom control that draws a single-line text box.
