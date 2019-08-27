@@ -61,7 +61,7 @@ namespace KKAPI.Maker.UI
             _textboxCopy.gameObject.SetActive(false);
             _textboxCopy.name = "textboxTemp";
 
-            var slider = _textboxCopy.Find("Slider");
+            var slider = _textboxCopy.Find("Slider").gameObject;
             Object.Destroy(slider);
 
             var inputFieldObj = _textboxCopy.Find("InputField");
@@ -95,9 +95,6 @@ namespace KKAPI.Maker.UI
             var tr = Object.Instantiate(TextboxCopy, subCategoryList, true);
 
             tr.name = "sldTextbox";
-
-            var slider = _textboxCopy.Find("Slider");
-            Object.Destroy(slider);
 
             var textMesh = tr.Find("textShape").GetComponent<TextMeshProUGUI>();
             textMesh.text = _settingName;
