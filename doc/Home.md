@@ -50,6 +50,7 @@
 - [`MakerSeparator`](KKAPI.Maker.UI.md#makerseparator)
 - [`MakerSlider`](KKAPI.Maker.UI.md#makerslider)
 - [`MakerText`](KKAPI.Maker.UI.md#makertext)
+- [`MakerTextbox`](KKAPI.Maker.UI.md#makertextbox)
 - [`MakerToggle`](KKAPI.Maker.UI.md#makertoggle)
 
 ## [KKAPI.Maker.UI.Sidebar](KKAPI.Maker.UI.Sidebar.md)

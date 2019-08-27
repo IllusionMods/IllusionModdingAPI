@@ -470,6 +470,8 @@ namespace KKAPI.Maker
                 .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
             AddControl(new MakerText("test text test text test text test text test text test " +
                                      "text test text test text test text test text", cat, instance));
+            AddControl(new MakerTextbox(cat, "test textbox", "String test", instance))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
 
             MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle"))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));

@@ -46,6 +46,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerSeparator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerSlider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerTextbox.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerToggle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\ISidebarControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\SidebarSeparator.cs" />

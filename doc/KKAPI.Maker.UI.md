@@ -359,6 +359,31 @@ Methods
 | `GameObject` | OnCreateControl(`Transform` subCategoryList) |  | 
 
 
+## `MakerTextbox`
+
+Custom control that draws a single-line text box.
+```csharp
+public class KKAPI.Maker.UI.MakerTextbox
+    : BaseEditableGuiEntry<String>, IDisposable
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Int32` | CharacterLimit | Maximum number of characters, about 22 are visible at once. | 
+| `ContentType` | ContentType | Type of content filtering to do on the input. | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `void` | Initialize() |  | 
+| `GameObject` | OnCreateControl(`Transform` subCategoryList) |  | 
+
+
 ## `MakerToggle`
 
 Custom control that displays a toggle
