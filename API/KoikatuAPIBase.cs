@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
@@ -57,6 +58,23 @@ namespace KKAPI
             Instance = this;
 
             Log(LogLevel.Debug, $"Game version {GetGameVersion()} running under {System.Threading.Thread.CurrentThread.CurrentCulture.Name} culture");
+
+            var abdata = Path.Combine(Paths.GameRootPath, "abdata");
+            if (Directory.Exists(abdata))
+            {
+                var addFiles = Directory.GetFiles(abdata, "add*", SearchOption.TopDirectoryOnly);
+                if (addFiles.Any())
+                {
+                    var addFileNumbers = addFiles.Select(Path.GetFileName)
+                        .Where(x => x?.Length > 3)
+                        .Select(x => x.Substring(3))
+                        .OrderBy(x => x, WindowsStringComparer.LogicalCompare)
+                        .ToArray();
+
+                    Log(LogLevel.Debug, "Installed DLC: " + string.Join(" ", addFileNumbers));
+                }
+            }
+
             Log(LogLevel.Debug, $"Processor: {SystemInfo.processorType} ({SystemInfo.processorCount} cores @ {SystemInfo.processorFrequency}MHz); RAM: {SystemInfo.systemMemorySize}MB; OS: {SystemInfo.operatingSystem}");
 
             SceneManager.sceneLoaded += (scene, mode) => Log(LogLevel.Debug, $"SceneManager.sceneLoaded - {scene.name} in {mode} mode");
