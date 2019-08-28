@@ -614,7 +614,7 @@ namespace KKAPI.Maker
         /// </summary>
         public static CharacterLoadFlags GetCharacterLoadFlags()
         {
-            if (!InsideMaker) return null;
+            if (!InsideAndLoaded) return null;
 
             var cfw = Object.FindObjectsOfType<CustomFileWindow>()
                 .FirstOrDefault(i => i.fwType == CustomFileWindow.FileWindowType.CharaLoad);
