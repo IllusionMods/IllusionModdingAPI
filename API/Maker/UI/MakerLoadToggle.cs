@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace KKAPI.Maker.UI
 {
@@ -96,6 +98,9 @@ namespace KKAPI.Maker.UI
 
         internal static MakerLoadToggle AddLoadToggle(MakerLoadToggle toggle)
         {
+            if (toggle == null) throw new ArgumentNullException(nameof(toggle));
+            if (toggle.IsDisposed) throw new ObjectDisposedException(nameof(toggle), "A new control has to be created every time maker is started");
+
             Toggles.Add(toggle);
             return toggle;
         }

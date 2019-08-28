@@ -219,6 +219,7 @@ namespace KKAPI.Maker
         internal static T AddControl<T>(T control) where T : BaseGuiEntry
         {
             if (control == null) throw new ArgumentNullException(nameof(control));
+            if (control.IsDisposed) throw new ObjectDisposedException(nameof(control), "A new control has to be created every time maker is started");
             if (control is MakerLoadToggle || control is MakerCoordinateLoadToggle || control is ISidebarControl)
                 throw new ArgumentException("Can't add " + control.GetType().FullName + " as a normal control", nameof(control));
 
@@ -244,6 +245,7 @@ namespace KKAPI.Maker
         public static T AddSidebarControl<T>(T control) where T : BaseGuiEntry, ISidebarControl
         {
             if (control == null) throw new ArgumentNullException(nameof(control));
+            if (control.IsDisposed) throw new ObjectDisposedException(nameof(control), "A new control has to be created every time maker is started");
 
             _sidebarEntries.Add(control);
             return control;
@@ -255,6 +257,7 @@ namespace KKAPI.Maker
         public static T AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
         {
             if (control == null) throw new ArgumentNullException(nameof(control));
+            if (control.IsDisposed) throw new ObjectDisposedException(nameof(control), "A new control has to be created every time maker is started");
 
             control.Category = _accessorySlotWindowCategory;
             _accessoryWindowEntries.Add(control);
