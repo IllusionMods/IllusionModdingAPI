@@ -1,7 +1,13 @@
 ﻿using System.Collections;
 using System.IO;
+#if KK || EC
 using ChaCustom;
-using Harmony;
+#elif AI
+using AIChara;
+
+#endif
+using CharaCustom;
+using HarmonyLib;
 using KKAPI.Maker.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -86,6 +92,8 @@ namespace KKAPI.Maker
             {
                 CharaListIsLoading = false;
             }
+
+            //todo find dynamically
             [HarmonyPrefix]
 #if KK
             [HarmonyPatch(typeof(ChaFile), "LoadFile", new[] { typeof(BinaryReader), typeof(bool), typeof(bool) })]

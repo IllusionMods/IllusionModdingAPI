@@ -1,7 +1,6 @@
 ﻿using System;
 using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Logging;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using Manager;
@@ -14,11 +13,13 @@ namespace KKAPI
     {
         private static ConfigWrapper<bool> EnableDebugLoggingSetting { get; set; }
 
-        internal static void Log(LogLevel level, object obj) => Instance.Logger.Log(level, obj);
+        // todo unify in all versions
+        internal static void Log(BepInEx.Logging.LogLevel level, object obj) => Instance.Logger.Log(level, obj);
 
         private void Awake()
         {
-            EnableDebugLoggingSetting = Config.Wrap("", "Show debug messages", "Enables display of additional log messages when certain events are triggered within KKAPI. Useful for plugin devs to understand when controller messages are fired. Changes take effect after game restart.", false);
+            // todo unify in all versions
+            EnableDebugLoggingSetting = Config.Wrap("Debug", "Show debug messages", "Enables display of additional log messages when certain events are triggered within KKAPI. Useful for plugin devs to understand when controller messages are fired. Changes take effect after game restart.", false);
 
             var insideStudio = Application.productName == "CharaStudio";
 

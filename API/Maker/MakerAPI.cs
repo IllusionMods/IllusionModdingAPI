@@ -3,16 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using AIChara;
 using BepInEx;
-using BepInEx.Logging;
-using ChaCustom;
 using KKAPI.Chara;
 using KKAPI.Maker.UI;
 using KKAPI.Maker.UI.Sidebar;
-using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+#if KK || EC
+using ChaCustom;
+using UniRx;
+#elif AI
+using CharaCustom;
+#endif
 
 namespace KKAPI.Maker
 {
@@ -45,7 +49,7 @@ namespace KKAPI.Maker
                 foreach (var sidebarEntry in _sidebarEntries)
                     sidebarEntry.CreateControl(sidebarTop);
 
-                KoikatuAPI.Log(LogLevel.Debug, $"[MakerAPI] Added {_sidebarEntries.Count} custom controls " +
+                KoikatuAPI.Log(BepInEx.Logging.LogLevel.Debug, $"[MakerAPI] Added {_sidebarEntries.Count} custom controls " +
                                            "to Control Panel sidebar");
             }
 
@@ -164,7 +168,7 @@ namespace KKAPI.Maker
             // Sorting breaks hair selector layout, too lazy to fix
             var noSorting = categoryTransfrom.name == "02_HairTop";
 
-            var transformsToSort = new List<UniRx.Tuple<Transform, int>>();
+            var transformsToSort = new List<KeyValuePair<Transform, int>>();
             foreach (var category in _categories)
             {
                 if (categoryTransfrom.name != category.CategoryName) continue;
@@ -172,25 +176,25 @@ namespace KKAPI.Maker
                 var categorySubTransform = categoryTransfrom.Find(category.SubCategoryName)
                     ?? SubCategoryCreator.AddNewSubCategory(mainCategory, category);
 
-                transformsToSort.Add(new UniRx.Tuple<Transform, int>(categorySubTransform, category.Position));
+                transformsToSort.Add(new KeyValuePair<Transform, int>(categorySubTransform, category.Position));
             }
 
             if (noSorting) return;
 
             foreach (Transform subTransform in categoryTransfrom)
             {
-                if (transformsToSort.Any(x => x.Item1 == subTransform)) continue;
+                if (transformsToSort.Any(x => x.Key == subTransform)) continue;
 
                 var builtInCategory = MakerConstants.GetBuiltInCategory(categoryTransfrom.name, subTransform.name);
                 if (builtInCategory != null)
-                    transformsToSort.Add(new UniRx.Tuple<Transform, int>(subTransform, builtInCategory.Position));
+                    transformsToSort.Add(new KeyValuePair<Transform, int>(subTransform, builtInCategory.Position));
                 else
                     KoikatuAPI.Log(LogLevel.Warning, $"[MakerAPI] Missing MakerCategory for existing transfrom {categoryTransfrom.name} / {subTransform.name}");
             }
 
             var index = 0;
-            foreach (var tuple in transformsToSort.OrderBy(x => x.Item2))
-                tuple.Item1.SetSiblingIndex(index++);
+            foreach (var tuple in transformsToSort.OrderBy(x => x.Value))
+                tuple.Key.SetSiblingIndex(index++);
 
             KoikatuAPI.Instance.StartCoroutine(FixCategoryContentOffsets(mainCategory));
         }
@@ -616,6 +620,7 @@ namespace KKAPI.Maker
         {
             if (!InsideAndLoaded) return null;
 
+#if KK || EC
             var cfw = Object.FindObjectsOfType<CustomFileWindow>()
                 .FirstOrDefault(i => i.fwType == CustomFileWindow.FileWindowType.CharaLoad);
 
@@ -629,6 +634,10 @@ namespace KKAPI.Maker
                 Face = cfw.tglChaLoadFace.isOn,
                 Parameters = cfw.tglChaLoadParam.isOn
             };
+#elif AI
+            // todo
+            return null;
+#endif
         }
 
         internal static void Init(bool insideStudio)
@@ -655,12 +664,14 @@ namespace KKAPI.Maker
             if (Manager.Scene.Instance.IsNowLoadingFade)
                 return false;
 
+#if KK || EC
             // Check if UI is hidden (by pressing space)
-            if (!mbase.customCtrl.hideFrontUI)
+            if (mbase.customCtrl.hideFrontUI)
                 return false;
+#endif
 
             // Check if settings screen, game exit message box or similar are on top of the maker UI
-            // In class maker the AddSceneName is set to CustomScene, but in normal maker it's empty
+            // In KK class maker the AddSceneName is set to CustomScene, but in normal maker it's empty
             if (!string.IsNullOrEmpty(Manager.Scene.Instance.AddSceneName) && Manager.Scene.Instance.AddSceneName != "CustomScene")
                 return false;
 

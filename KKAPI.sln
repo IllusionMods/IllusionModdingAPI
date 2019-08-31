@@ -11,8 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECAPI", "ECAPI\ECAPI.csproj
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "API", "API\API.shproj", "{BD697C6C-A7D7-4307-A227-CCAFC95C8744}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIAPI", "AIAPI\AIAPI.csproj", "{601F5CCA-63FA-4E77-A7C5-16591977578F}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		API\API.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
 		API\API.projitems*{74c2db86-55bb-47b4-9805-51b5b992ef35}*SharedItemsImports = 4
 		API\API.projitems*{bd697c6c-a7d7-4307-a227-ccafc95c8744}*SharedItemsImports = 13
 		API\API.projitems*{f4928b3c-e2b0-4aec-9fbc-327bb2a0e6bb}*SharedItemsImports = 4
@@ -34,6 +37,10 @@ Global
 		{F4928B3C-E2B0-4AEC-9FBC-327BB2A0E6BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4928B3C-E2B0-4AEC-9FBC-327BB2A0E6BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4928B3C-E2B0-4AEC-9FBC-327BB2A0E6BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{601F5CCA-63FA-4E77-A7C5-16591977578F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{601F5CCA-63FA-4E77-A7C5-16591977578F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{601F5CCA-63FA-4E77-A7C5-16591977578F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{601F5CCA-63FA-4E77-A7C5-16591977578F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
