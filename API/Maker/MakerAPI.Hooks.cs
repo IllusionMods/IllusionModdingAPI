@@ -4,9 +4,8 @@ using System.IO;
 using ChaCustom;
 #elif AI
 using AIChara;
-
-#endif
 using CharaCustom;
+#endif
 using HarmonyLib;
 using KKAPI.Maker.UI;
 using UnityEngine;

@@ -9,15 +9,17 @@
         /// Anywhere else, including main menu
         /// </summary>
         Unknown,
+
         /// <summary>
         /// Inside character maker (can be started from main menu or from class roster)
         /// </summary>
         Maker,
-#if KK
+
         /// <summary>
         /// Anywhere inside CharaStudio.exe
         /// </summary>
         Studio,
+
         /// <summary>
         /// Anywhere inside the main game.
         /// Includes everything after starting a new game from title screen and after loading a saved game.
@@ -25,6 +27,5 @@
         /// This does not hoverwer include the character maker launched from within the class menu.
         /// </summary>
         MainGame
-#endif
     }
 }

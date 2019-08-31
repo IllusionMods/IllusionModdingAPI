@@ -19,9 +19,7 @@ namespace KKAPI.Maker.UI.Sidebar
         }
 
         /// <inheritdoc />
-        protected internal override void Initialize()
-        {
-        }
+        protected internal override void Initialize() { }
 
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)

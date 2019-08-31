@@ -1,4 +1,5 @@
 ﻿using System;
+
 #pragma warning disable 1591
 
 namespace KKAPI.Maker
@@ -26,6 +27,7 @@ namespace KKAPI.Maker
         public bool Parameter { get; }
         public bool Coordinate { get; }
         public ChaFileControl CharacterInstance { get; }
+
         /// <summary>
         /// Use this to get extended data on the character
         /// </summary>

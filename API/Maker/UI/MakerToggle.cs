@@ -19,9 +19,7 @@ namespace KKAPI.Maker.UI
         /// <param name="displayName">Text shown next to the checkbox</param>
         /// <param name="category">Category the control will be created under</param>
         /// <param name="owner">Plugin that owns the control</param>
-        public MakerToggle(MakerCategory category, string displayName, BaseUnityPlugin owner) : this(category, displayName, false, owner)
-        {
-        }
+        public MakerToggle(MakerCategory category, string displayName, BaseUnityPlugin owner) : this(category, displayName, false, owner) { }
 
         /// <summary>
         /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.

@@ -58,13 +58,10 @@ namespace KKAPI.Maker.UI
         public MakerImage(Texture texture, MakerCategory category, BaseUnityPlugin owner) : base(category, owner)
         {
             _texture = new BehaviorSubject<Texture>(texture);
-
         }
 
         /// <inheritdoc />
-        protected internal override void Initialize()
-        {
-        }
+        protected internal override void Initialize() { }
 
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
@@ -81,17 +78,18 @@ namespace KKAPI.Maker.UI
             var i = ig.AddComponent<RawImage>();
             var irt = ig.GetComponent<RectTransform>();
 
-            _texture.Subscribe(texture =>
-            {
-                i.texture = texture;
-                le.minHeight = Height + 30;
+            _texture.Subscribe(
+                texture =>
+                {
+                    i.texture = texture;
+                    le.minHeight = Height + 30;
 
-                irt.offsetMin = new Vector2(-1 * Width / 2f, -1 * Height / 2f);
-                irt.offsetMax = new Vector2(Width / 2f, Height / 2f);
+                    irt.offsetMin = new Vector2(-1 * Width / 2f, -1 * Height / 2f);
+                    irt.offsetMax = new Vector2(Width / 2f, Height / 2f);
 
-                le.enabled = false;
-                le.enabled = true;
-            });
+                    le.enabled = false;
+                    le.enabled = true;
+                });
 
             return go;
         }

@@ -26,11 +26,11 @@
                 return ((CategoryName != null ? CategoryName.GetHashCode() : 0) * 397) ^ (SubCategoryName != null ? SubCategoryName.GetHashCode() : 0);
             }
         }
-        
+
         /// <summary>
         /// Make a new custom subcategory. 
         /// </summary>
-        public MakerCategory(string categoryName, string subCategoryName, 
+        public MakerCategory(string categoryName, string subCategoryName,
             int position = int.MaxValue, string displayName = null)
         {
             CategoryName = categoryName;
@@ -44,16 +44,19 @@
         /// They contain multiple subcategories (tabs on the left edge of the screen).
         /// </summary>
         public string CategoryName { get; }
+
         /// <summary>
         /// Sub category gameObject name. Sub categories are the named tabs on the left edge of the screen.
         /// They contain the actual controls (inside the window on the right of the tabs).
         /// </summary>
         public string SubCategoryName { get; }
+
         /// <summary>
         /// Numeric position of the subcategory.
         /// When making new subcategories you can set this value to be in-between stock subcategories.
         /// </summary>
         public int Position { get; }
+
         /// <summary>
         /// The text displayed on the subcategory tab on the left edge of the screen.
         /// </summary>

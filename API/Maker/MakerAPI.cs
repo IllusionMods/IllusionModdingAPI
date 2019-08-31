@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using AIChara;
 using BepInEx;
 using KKAPI.Chara;
 using KKAPI.Maker.UI;
@@ -14,8 +13,10 @@ using Object = UnityEngine.Object;
 #if KK || EC
 using ChaCustom;
 using UniRx;
+
 #elif AI
 using CharaCustom;
+using AIChara;
 #endif
 
 namespace KKAPI.Maker
@@ -49,8 +50,9 @@ namespace KKAPI.Maker
                 foreach (var sidebarEntry in _sidebarEntries)
                     sidebarEntry.CreateControl(sidebarTop);
 
-                KoikatuAPI.Log(BepInEx.Logging.LogLevel.Debug, $"[MakerAPI] Added {_sidebarEntries.Count} custom controls " +
-                                           "to Control Panel sidebar");
+                KoikatuAPI.Logger.LogDebug(
+                    $"[MakerAPI] Added {_sidebarEntries.Count} custom controls " +
+                    "to Control Panel sidebar");
             }
 
             if (_accessoryWindowEntries.Any())
@@ -71,7 +73,8 @@ namespace KKAPI.Maker
                 }
                 else
                 {
-                    KoikatuAPI.Log(LogLevel.Error, $"[MakerAPI] Failed to add {subCategoryGroup.Count()} custom controls " +
+                    KoikatuAPI.Logger.LogError(
+                        $"[MakerAPI] Failed to add {subCategoryGroup.Count()} custom controls " +
                         $"to {categoryTransfrom.name}/{subCategoryGroup.Key} - The category was not registered with AddSubCategory.");
                 }
             }
@@ -94,8 +97,9 @@ namespace KKAPI.Maker
             }
 
             var category = entriesToAdd.First().Category;
-            KoikatuAPI.Log(LogLevel.Debug, $"[MakerAPI] Added {entriesToAdd.Count()} custom controls " +
-                                       $"to {category.CategoryName}/{category.SubCategoryName}");
+            KoikatuAPI.Logger.LogDebug(
+                $"[MakerAPI] Added {entriesToAdd.Count} custom controls " +
+                $"to {category.CategoryName}/{category.SubCategoryName}");
         }
 
         private static void CreateCustomAccessoryWindowControls()
@@ -174,7 +178,7 @@ namespace KKAPI.Maker
                 if (categoryTransfrom.name != category.CategoryName) continue;
 
                 var categorySubTransform = categoryTransfrom.Find(category.SubCategoryName)
-                    ?? SubCategoryCreator.AddNewSubCategory(mainCategory, category);
+                                           ?? SubCategoryCreator.AddNewSubCategory(mainCategory, category);
 
                 transformsToSort.Add(new KeyValuePair<Transform, int>(categorySubTransform, category.Position));
             }
@@ -189,7 +193,7 @@ namespace KKAPI.Maker
                 if (builtInCategory != null)
                     transformsToSort.Add(new KeyValuePair<Transform, int>(subTransform, builtInCategory.Position));
                 else
-                    KoikatuAPI.Log(LogLevel.Warning, $"[MakerAPI] Missing MakerCategory for existing transfrom {categoryTransfrom.name} / {subTransform.name}");
+                    KoikatuAPI.Logger.LogWarning($"[MakerAPI] Missing MakerCategory for existing transfrom {categoryTransfrom.name} / {subTransform.name}");
             }
 
             var index = 0;
@@ -240,7 +244,7 @@ namespace KKAPI.Maker
             if (!_categories.Contains(category))
                 _categories.Add(category);
             else
-                KoikatuAPI.Log(LogLevel.Info, $"[MakerAPI] Duplicate custom subcategory was added: {category} The duplicate will be ignored.");
+                KoikatuAPI.Logger.LogInfo($"[MakerAPI] Duplicate custom subcategory was added: {category} The duplicate will be ignored.");
         }
 
         /// <summary>
@@ -285,7 +289,7 @@ namespace KKAPI.Maker
         /// </summary>
         public static ChaControl GetCharacterControl() => InsideMaker ? GetMakerBase()?.chaCtrl : null;
 
-#if KK
+#if KK 
         /// <summary>
         /// Check if the maker was loaded from within classroom select screen in main game
         /// </summary>
@@ -349,7 +353,7 @@ namespace KKAPI.Maker
                     }
                     catch (Exception e)
                     {
-                        KoikatuAPI.Log(LogLevel.Error, e);
+                        KoikatuAPI.Logger.LogError(e);
                     }
                 }
             }
@@ -368,7 +372,7 @@ namespace KKAPI.Maker
                     }
                     catch (Exception e)
                     {
-                        KoikatuAPI.Log(LogLevel.Error, e);
+                        KoikatuAPI.Logger.LogError(e);
                     }
                 }
             }
@@ -386,7 +390,7 @@ namespace KKAPI.Maker
                     }
                     catch (Exception e)
                     {
-                        KoikatuAPI.Log(LogLevel.Error, e);
+                        KoikatuAPI.Logger.LogError(e);
                     }
                 }
             }
@@ -407,7 +411,7 @@ namespace KKAPI.Maker
                     }
                     catch (Exception e)
                     {
-                        KoikatuAPI.Log(LogLevel.Error, e);
+                        KoikatuAPI.Logger.LogError(e);
                     }
                 }
             }
@@ -424,7 +428,7 @@ namespace KKAPI.Maker
             MakerLoadToggle.CreateCustomToggles();
             MakerCoordinateLoadToggle.CreateCustomToggles();
 
-#if KK
+#if KK 
             // Fix some plugins failing to update interface and losing state
             if (IsInsideClassMaker())
             {
@@ -446,7 +450,7 @@ namespace KKAPI.Maker
                     }
                     catch (Exception e)
                     {
-                        KoikatuAPI.Log(LogLevel.Error, e);
+                        KoikatuAPI.Logger.LogError(e);
                     }
                 }
             }
@@ -464,41 +468,43 @@ namespace KKAPI.Maker
             AddControl(new MakerSeparator(cat, instance));
             AddControl(new MakerSeparator(cat, instance));
             AddControl(new MakerToggle(cat, "test toggle", instance))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(new MakerButton("test btn", cat, instance))
-                .OnClick.AddListener(() => KoikatuAPI.Log(LogLevel.Message, "Clicked"));
+                .OnClick.AddListener(() => KoikatuAPI.Logger.LogMessage("Clicked"));
             AddControl(new MakerColor("test color", true, cat, Color.magenta, instance))
-                .ValueChanged.Subscribe(color => KoikatuAPI.Log(LogLevel.Message, color));
+                .ValueChanged.Subscribe(color => KoikatuAPI.Logger.LogMessage(color));
             AddControl(new MakerDropdown("test toggle", new[] { "t0", "t1", "t2", "t3" }, cat, 1, instance))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(new MakerRadioButtons(cat, instance, "radio btns", "b1", "b2"))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(new MakerSlider(cat, "test slider", 0, 1, 1, instance))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
-            AddControl(new MakerText("test text test text test text test text test text test " +
-                                     "text test text test text test text test text", cat, instance));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            AddControl(
+                new MakerText(
+                    "test text test text test text test text test text test " +
+                    "text test text test text test text test text", cat, instance));
             AddControl(new MakerTextbox(cat, "test textbox", "String test", instance))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
 
             MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle"))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle 2"))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
 
             MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle"))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle 2"))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
 
             AddSidebarControl(new SidebarToggle("Test toggle", false, instance))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddSidebarControl(new SidebarToggle("Test toggle2", true, instance))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, b));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
 
             AddAccessoryWindowControl(new MakerToggle(cat, "test toggle", null))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, $"Toggled to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Toggled to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
             AddAccessoryWindowControl(new MakerColor("test accessory color", false, cat, Color.cyan, instance) { ColorBoxWidth = 230 })
-                .ValueChanged.Subscribe(b => KoikatuAPI.Log(LogLevel.Message, $"Color to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Color to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
         }
 
         /// <summary>
@@ -534,7 +540,7 @@ namespace KKAPI.Maker
                     }
                     catch (Exception e)
                     {
-                        KoikatuAPI.Log(LogLevel.Error, e);
+                        KoikatuAPI.Logger.LogError(e);
                     }
                 }
             }
@@ -559,7 +565,7 @@ namespace KKAPI.Maker
                     }
                     catch (Exception e)
                     {
-                        KoikatuAPI.Log(LogLevel.Error, e);
+                        KoikatuAPI.Logger.LogError(e);
                     }
                 }
             }
@@ -595,7 +601,7 @@ namespace KKAPI.Maker
                             }
                             catch (Exception e)
                             {
-                                KoikatuAPI.Log(LogLevel.Error, e);
+                                KoikatuAPI.Logger.LogError(e);
                             }
                         }
                     }
@@ -634,8 +640,8 @@ namespace KKAPI.Maker
                 Face = cfw.tglChaLoadFace.isOn,
                 Parameters = cfw.tglChaLoadParam.isOn
             };
-#elif AI
-            // todo
+#elif AI 
+			// todo
             return null;
 #endif
         }
@@ -644,7 +650,7 @@ namespace KKAPI.Maker
         {
             if (insideStudio) return;
 
-            HarmonyPatcher.PatchAll(typeof(Hooks));
+            BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
         }
 
         /// <summary>

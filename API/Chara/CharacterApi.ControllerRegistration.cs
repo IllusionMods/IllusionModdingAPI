@@ -55,7 +55,7 @@ namespace KKAPI.Chara
 
             internal void CreateInstance(ChaControl target)
             {
-                var newBehaviour = (CharaCustomFunctionController)target.gameObject.AddComponent(ControllerType);
+                var newBehaviour = (CharaCustomFunctionController) target.gameObject.AddComponent(ControllerType);
                 newBehaviour.ControllerRegistration = this;
 
                 _instances.Add(newBehaviour);

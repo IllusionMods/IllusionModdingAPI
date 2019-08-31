@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using BepInEx.Logging;
 using ChaCustom;
-using Harmony;
+using HarmonyLib;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -63,7 +63,7 @@ namespace KKAPI.Maker
         /// </summary>
         public static event EventHandler<AccessorySlotEventArgs> AccessoryKindChanged;
 
-#if KK
+#if KK 
         /// <summary>
         /// Fires after user copies accessories between coordinates by using the Copy window.
         /// </summary>
@@ -113,7 +113,6 @@ namespace KKAPI.Maker
             return _getSelectedAccessoryIndex.Invoke();
         }*/
 
-
         /// <summary>
         /// Get accessory PartsInfo entry in maker.
         /// Only works inside chara maker.
@@ -146,7 +145,7 @@ namespace KKAPI.Maker
         {
             DetectMoreAccessories();
 
-            HarmonyPatcher.PatchAll(typeof(Hooks));
+            BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
 
             MakerAPI.InsideMakerChanged += MakerAPI_InsideMakerChanged;
             MakerAPI.MakerFinishedLoading += (sender, args) => OnSelectedMakerSlotChanged(sender, 0);
@@ -158,9 +157,9 @@ namespace KKAPI.Maker
 
                 var getAccCmpIndexM = AccessTools.Method(_moreAccessoriesType, "GetChaAccessoryComponentIndex");
                 _getChaAccessoryCmpIndex = (control, component) => (int)getAccCmpIndexM.Invoke(_moreAccessoriesInstance, new object[] { control, component });
-                
+
                 var getPartsInfoM = AccessTools.Method(_moreAccessoriesType, "GetPart");
-                _getPartsInfo = i => (ChaFileAccessory.PartsInfo) getPartsInfoM.Invoke(_moreAccessoriesInstance, new object[]{i});
+                _getPartsInfo = i => (ChaFileAccessory.PartsInfo)getPartsInfoM.Invoke(_moreAccessoriesInstance, new object[] { i });
             }
             else
             {
@@ -171,13 +170,13 @@ namespace KKAPI.Maker
 
             if (KoikatuAPI.EnableDebugLogging)
             {
-                SelectedMakerAccSlotChanged += (sender, args) => KoikatuAPI.Log(LogLevel.Message,
+                SelectedMakerAccSlotChanged += (sender, args) => KoikatuAPI.Logger.LogMessage(
                     $"SelectedMakerAccSlotChanged - id: {args.SlotIndex}, cvs: {args.CvsAccessory.transform.name}, component: {args.AccessoryComponent?.name ?? "null"}");
 #if KK
-                AccessoriesCopied += (sender, args) => KoikatuAPI.Log(LogLevel.Message,
+                AccessoriesCopied += (sender, args) => KoikatuAPI.Logger.LogMessage(
                     $"AccessoriesCopied - ids: {string.Join(", ", args.CopiedSlotIndexes.Select(x => x.ToString()).ToArray())}, src:{args.CopySource}, dst:{args.CopyDestination}");
 #endif
-                AccessoryTransferred += (sender, args) => KoikatuAPI.Log(LogLevel.Message, 
+                AccessoryTransferred += (sender, args) => KoikatuAPI.Logger.LogMessage(
                     $"AccessoryTransferred - srcId:{args.SourceSlotIndex}, dstId:{args.DestinationSlotIndex}");
             }
         }
@@ -195,21 +194,22 @@ namespace KKAPI.Maker
                     var slotAddEvent = _moreAccessoriesType.GetEvent("onCharaMakerSlotAdded", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     if (slotAddEvent != null)
                     {
-                        slotAddEvent.AddEventHandler(_moreAccessoriesInstance,
+                        slotAddEvent.AddEventHandler(
+                            _moreAccessoriesInstance,
                             new Action<int, Transform>((i, transform) => OnMakerAccSlotAdded(_moreAccessoriesInstance, i, transform)));
                     }
                     else
                     {
                         _moreAccessoriesType = null;
-                        KoikatuAPI.Log(LogLevel.Message | LogLevel.Error, "[KKAPI] WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
+                        KoikatuAPI.Logger.Log(LogLevel.Message | LogLevel.Error, "[KKAPI] WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
                     }
                 }
             }
             catch (Exception e)
             {
                 _moreAccessoriesType = null;
-                KoikatuAPI.Log(LogLevel.Warning, "Failed to detect MoreAccessories!");
-                KoikatuAPI.Log(LogLevel.Debug, e);
+                KoikatuAPI.Logger.LogWarning("Failed to detect MoreAccessories!");
+                KoikatuAPI.Logger.LogDebug(e);
             }
         }
 
@@ -254,7 +254,7 @@ namespace KKAPI.Maker
             SelectedMakerAccSlot = newSlotIndex;
 
             if (KoikatuAPI.EnableDebugLogging)
-                KoikatuAPI.Log(LogLevel.Message, "SelectedMakerSlotChanged - slot:" + newSlotIndex);
+                KoikatuAPI.Logger.LogMessage("SelectedMakerSlotChanged - slot:" + newSlotIndex);
 
             if (SelectedMakerAccSlotChanged == null) return;
             try
@@ -263,14 +263,14 @@ namespace KKAPI.Maker
             }
             catch (Exception ex)
             {
-                KoikatuAPI.Log(LogLevel.Error, "Subscription to SelectedMakerSlot crashed: " + ex);
+                KoikatuAPI.Logger.LogError("Subscription to SelectedMakerSlot crashed: " + ex);
             }
         }
 
         private static void OnMakerAccSlotAdded(object source, int newSlotIndex, Transform newSlotTransform)
         {
             if (KoikatuAPI.EnableDebugLogging)
-                KoikatuAPI.Log(LogLevel.Message, "MakerAccSlotAdded - slot:" + newSlotIndex);
+                KoikatuAPI.Logger.LogMessage("MakerAccSlotAdded - slot:" + newSlotIndex);
 
             MakerAPI.OnMakerAccSlotAdded(newSlotTransform);
 
@@ -281,14 +281,14 @@ namespace KKAPI.Maker
             }
             catch (Exception ex)
             {
-                KoikatuAPI.Log(LogLevel.Error, "Subscription to SelectedMakerSlot crashed: " + ex);
+                KoikatuAPI.Logger.LogError("Subscription to SelectedMakerSlot crashed: " + ex);
             }
         }
 
         private static void OnAccessoryKindChanged(object source, int slotNo)
         {
             if (KoikatuAPI.EnableDebugLogging)
-                KoikatuAPI.Log(LogLevel.Message, "AccessoryKindChanged - slot:" + slotNo);
+                KoikatuAPI.Logger.LogMessage("AccessoryKindChanged - slot:" + slotNo);
 
             if (AccessoryKindChanged == null) return;
             try
@@ -297,7 +297,7 @@ namespace KKAPI.Maker
             }
             catch (Exception ex)
             {
-                KoikatuAPI.Log(LogLevel.Error, "Subscription to AccessoryKindChanged crashed: " + ex);
+                KoikatuAPI.Logger.LogError("Subscription to AccessoryKindChanged crashed: " + ex);
             }
         }
 
@@ -322,7 +322,7 @@ namespace KKAPI.Maker
             }
             catch (Exception ex)
             {
-                KoikatuAPI.Log(LogLevel.Error, "Crash in AccessoriesCopied event: " + ex);
+                KoikatuAPI.Logger.LogError("Crash in AccessoriesCopied event: " + ex);
             }
         }
 #endif
@@ -343,7 +343,7 @@ namespace KKAPI.Maker
             }
             catch (Exception ex)
             {
-                KoikatuAPI.Log(LogLevel.Error, "Crash in AccessoryTransferred event: " + ex);
+                KoikatuAPI.Logger.LogError("Crash in AccessoryTransferred event: " + ex);
             }
         }
     }

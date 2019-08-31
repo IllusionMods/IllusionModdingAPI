@@ -61,7 +61,7 @@ namespace KKAPI.Utilities
             ofn.maxFileTitle = ofn.fileTitle.Length;
             ofn.initialDir = initialDir;
             ofn.title = title;
-            ofn.flags = (int) flags;
+            ofn.flags = (int)flags;
 
             // Create buffer for file names
             var fileNames = new String(new char[MAX_FILE_LENGTH]);
@@ -143,11 +143,12 @@ namespace KKAPI.Utilities
         {
             if (onAccept == null) throw new ArgumentNullException(nameof(onAccept));
             var handle = NativeMethods.GetActiveWindow();
-            new Thread(() =>
-            {
-                var result = ShowDialog(title, initialDir, filter, defaultExt, flags, handle);
-                onAccept(result);
-            }).Start();
+            new Thread(
+                () =>
+                {
+                    var result = ShowDialog(title, initialDir, filter, defaultExt, flags, handle);
+                    onAccept(result);
+                }).Start();
         }
 
         private static class NativeMethods
@@ -181,15 +182,18 @@ namespace KKAPI.Utilities
             OFN_NOREADONLYRETURN = 0x8000,
             OFN_NOTESTFILECREATE = 0x10000,
             OFN_NONETWORKBUTTON = 0x20000,
+
             /// <summary>
             /// Force no long names for 4.x modules
             /// </summary>
             OFN_NOLONGNAMES = 0x40000,
+
             /// <summary>
             /// New look commdlg
             /// </summary>
             OFN_EXPLORER = 0x80000,
             OFN_NODEREFERENCELINKS = 0x100000,
+
             /// <summary>
             /// Force long names for 3.x modules
             /// </summary>

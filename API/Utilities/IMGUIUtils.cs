@@ -96,6 +96,7 @@ namespace KKAPI.Utilities
 
             style.normal.textColor = backupColor;
         }
+
         public static void DrawLayoutLabelWithShadow(GUIContent content, GUIStyle style, Color txtColor, Color shadowColor, Vector2 direction, params GUILayoutOption[] options)
         {
             DrawLabelWithShadow(GUILayoutUtility.GetRect(content, style, options), content, style, txtColor, shadowColor, direction);

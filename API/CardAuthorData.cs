@@ -1,16 +1,16 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
-using ExtensibleSaveFormat;
-using Harmony;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
-using KKAPI.Studio;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using BepInEx.Configuration;
+using ExtensibleSaveFormat;
+using HarmonyLib;
 using UniRx;
 
 namespace KKAPI
@@ -22,8 +22,8 @@ namespace KKAPI
         private const string DefaultNickname = "Anonymous";
         private const string GUID = "marco.authordata";
 
+        private static ManualLogSource _logger;
         private static ConfigWrapper<string> _nickname;
-
         private MakerText _authorText;
 
         private static string CurrentNickname
@@ -37,11 +37,13 @@ namespace KKAPI
 
         private void Start()
         {
-            if (StudioAPI.InsideStudio) return;
+            if (KoikatuAPI.GetCurrentGameMode() == GameMode.Studio) return;
+
+            _logger = Logger;
 
             Hooks.Init();
 
-            _nickname = new ConfigWrapper<string>("Nickname", this, DefaultNickname);
+            _nickname = Config.Wrap("", "Nickname", "Your nickname that will be saved to your cards and used in the card filenames.", DefaultNickname);
 
             CharacterApi.RegisterExtraBehaviour<CardAuthorDataController>(GUID);
             MakerAPI.RegisterCustomSubCategories += MakerAPI_RegisterCustomSubCategories;
@@ -90,7 +92,7 @@ namespace KKAPI
         {
             public static void Init()
             {
-                HarmonyPatcher.PatchAll(typeof(Hooks));
+                BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
             }
 
             /// <summary>
@@ -115,7 +117,9 @@ namespace KKAPI
 
                     var param = MakerAPI.GetCharacterControl().fileParam;
                     var name = param.fullname.Trim();
+#if KK
                     if (name.Length == 0) name = param.nickname.Trim();
+#endif
                     var addStr = $"_{name}";
 
                     if (CurrentNickname != DefaultNickname)
@@ -129,7 +133,7 @@ namespace KKAPI
                 catch (Exception ex)
                 {
                     // Don't crash the save
-                    KoikatuAPI.Log(LogLevel.Error, ex);
+                    _logger.LogError(ex);
                 }
             }
         }
@@ -152,7 +156,13 @@ namespace KKAPI
                 }
 
                 if (authorList.Any())
-                    SetExtendedData(new PluginData { version = 1, data = { { AuthorsKey, MessagePack.LZ4MessagePackSerializer.Serialize(authorList.ToArray()) } } });
+                {
+                    SetExtendedData(new PluginData
+                    {
+                        version = 1,
+                        data = { { AuthorsKey, MessagePack.LZ4MessagePackSerializer.Serialize(authorList.ToArray()) } }
+                    });
+                }
                 else
                     SetExtendedData(null);
             }
@@ -165,22 +175,22 @@ namespace KKAPI
                 {
                     // Flags is null when starting maker and loading chika, our otside maker. Do NOT add the unknown author tag in these cases or cards based on chika would have it too
                     _previousAuthors = flags == null ? null : new[] { "[Unknown]" };
+                }
 
-                    var data = GetExtendedData();
-                    if (data != null)
-                    {
-                        if (data.data.TryGetValue(AuthorsKey, out var arr) && arr is byte[] strArr)
-                            _previousAuthors = MessagePack.LZ4MessagePackSerializer.Deserialize<string[]>(strArr);
-                    }
+                var data = GetExtendedData();
+                if (data != null)
+                {
+                    if (data.data.TryGetValue(AuthorsKey, out var arr) && arr is byte[] strArr)
+                        _previousAuthors = MessagePack.LZ4MessagePackSerializer.Deserialize<string[]>(strArr);
                 }
             }
+        }
 
-            private static int ReplacedParts(CharacterLoadFlags flags)
-            {
-                if (flags == null) return 5;
-                var bools = new[] { flags.Body, flags.Clothes, flags.Face, flags.Hair, flags.Parameters };
-                return bools.Sum(b => b ? 1 : 0);
-            }
+        private static int ReplacedParts(CharacterLoadFlags flags)
+        {
+            if (flags == null) return 5;
+            var bools = new[] { flags.Body, flags.Clothes, flags.Face, flags.Hair, flags.Parameters };
+            return bools.Sum(b => b ? 1 : 0);
         }
     }
 }

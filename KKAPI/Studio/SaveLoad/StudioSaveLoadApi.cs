@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BepInEx.Logging;
 using KKAPI.Utilities;
 using Studio;
 using UnityEngine;
-using Logger = BepInEx.Logger;
 
 namespace KKAPI.Studio.SaveLoad
 {
@@ -62,7 +60,7 @@ namespace KKAPI.Studio.SaveLoad
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Error, e);
+                    KoikatuAPI.Logger.LogError(e);
                 }
             }
 
@@ -72,7 +70,7 @@ namespace KKAPI.Studio.SaveLoad
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
@@ -88,7 +86,7 @@ namespace KKAPI.Studio.SaveLoad
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Error, e);
+                    KoikatuAPI.Logger.LogError(e);
                 }
             }
 
@@ -98,13 +96,13 @@ namespace KKAPI.Studio.SaveLoad
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
         private static void OnObjectsBeingCopied()
         {
-            var readonlyDict = GetLoadedObjects( SceneOperationKind.Import).ToReadOnlyDictionary();
+            var readonlyDict = GetLoadedObjects(SceneOperationKind.Import).ToReadOnlyDictionary();
 
             foreach (var behaviour in _registeredHandlers)
             {
@@ -114,7 +112,7 @@ namespace KKAPI.Studio.SaveLoad
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Error, e);
+                    KoikatuAPI.Logger.LogError(e);
                 }
             }
 
@@ -124,7 +122,7 @@ namespace KKAPI.Studio.SaveLoad
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 

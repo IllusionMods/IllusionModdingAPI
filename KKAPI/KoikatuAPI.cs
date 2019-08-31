@@ -1,7 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using BepInEx;
-using BepInEx.Logging;
 using KKAPI.Chara;
 using KKAPI.MainGame;
 using KKAPI.Maker;
@@ -15,20 +13,8 @@ namespace KKAPI
     [BepInPlugin(GUID, "Modding API", VersionConst)]
     public partial class KoikatuAPI : BaseUnityPlugin
     {
-        [DisplayName("Show debug messages")]
-        [Description("Enables display of additional log messages when certain events are triggered within KKAPI. " +
-                     "Useful for plugin devs to understand when controller messages are fired.\n\n" +
-                     "Changes take effect after game restart.")]
-        private static ConfigWrapper<bool> EnableDebugLoggingSetting { get; set; }
-
-        internal static void Log(LogLevel level, object obj) => BepInEx.Logger.Log(level, obj);
-
         private void Awake()
         {
-            EnableDebugLoggingSetting = new ConfigWrapper<bool>("EnableDebugLogging", GUID, false);
-
-            if (!CheckIncompatibilities()) return;
-
             var insideStudio = Application.productName == "CharaStudio";
 
             MakerAPI.Init(insideStudio);

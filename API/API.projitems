@@ -9,6 +9,7 @@
     <Import_RootNamespace>API</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CardAuthorData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.ControllerRegistration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.Hooks.cs" />
@@ -18,7 +19,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Chara\Events\CoordinateEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\TestCharaCustomFunctionController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameMode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HarmonyPatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)KoikatuAPIBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.Hooks.cs" />
@@ -59,7 +59,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ResourceUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TextureUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TextUtils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ThreadingHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\OpenFileDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\RecycleBinUtil.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions.cs" />

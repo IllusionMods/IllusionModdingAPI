@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using BepInEx.Logging;
-using Harmony;
 using KKAPI.Chara;
 using KKAPI.Studio.UI;
 using Studio;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Logger = BepInEx.Logger;
 
 namespace KKAPI.Studio
 {
@@ -33,7 +30,7 @@ namespace KKAPI.Studio
 
             if (!InsideStudio)
             {
-                Logger.Log(LogLevel.Debug, "[StudioAPI] Tried to run CreateCurrentStateCategory outside of studio!");
+                KoikatuAPI.Logger.LogDebug("[StudioAPI] Tried to run CreateCurrentStateCategory outside of studio!");
                 return;
             }
 
@@ -52,7 +49,7 @@ namespace KKAPI.Studio
         {
             if (!InsideStudio)
             {
-                Logger.Log(LogLevel.Debug, "[StudioAPI] Tried to run CreateCurrentStateCategory outside of studio!");
+                KoikatuAPI.Logger.LogDebug("[StudioAPI] Tried to run CreateCurrentStateCategory outside of studio!");
                 return null;
             }
 
@@ -147,11 +144,11 @@ namespace KKAPI.Studio
                     {
                         try
                         {
-                            ((EventHandler)callback)(KoikatuAPI.Instance, EventArgs.Empty);
+                            ((EventHandler) callback)(KoikatuAPI.Instance, EventArgs.Empty);
                         }
                         catch (Exception e)
                         {
-                            Logger.Log(LogLevel.Error, e);
+                            KoikatuAPI.Logger.LogError(e);
                         }
                     }
                 }
@@ -165,14 +162,20 @@ namespace KKAPI.Studio
         private static void DebugControls()
         {
             var cat = GetOrCreateCurrentStateCategory("Control test category");
-            cat.AddControl(new CurrentStateCategoryToggle("Test 1", 2, c => { Logger.Log(LogLevel.Message, c?.charInfo?.name + " - updateValue"); return 1; }))
-                .Value.Subscribe(val => Logger.Log(LogLevel.Message, val));
-            cat.AddControl(new CurrentStateCategoryToggle("Test 2", 3, c => 2)).Value.Subscribe(val => Logger.Log(LogLevel.Message, val));
-            cat.AddControl(new CurrentStateCategoryToggle("Test 3", 4, c => 3)).Value.Subscribe(val => Logger.Log(LogLevel.Message, val));
+            cat.AddControl(
+                    new CurrentStateCategoryToggle(
+                        "Test 1", 2, c =>
+                        {
+                            KoikatuAPI.Logger.LogMessage(c?.charInfo?.name + " - updateValue");
+                            return 1;
+                        }))
+                .Value.Subscribe(val => KoikatuAPI.Logger.LogMessage(val));
+            cat.AddControl(new CurrentStateCategoryToggle("Test 2", 3, c => 2)).Value.Subscribe(val => KoikatuAPI.Logger.LogMessage(val));
+            cat.AddControl(new CurrentStateCategoryToggle("Test 3", 4, c => 3)).Value.Subscribe(val => KoikatuAPI.Logger.LogMessage(val));
 
             var cat2 = GetOrCreateCurrentStateCategory("Control test category");
-            cat2.AddControl(new CurrentStateCategorySwitch("Test add", c => true)).Value.Subscribe(val => Logger.Log(LogLevel.Message, val));
-            cat2.AddControl(new CurrentStateCategorySlider("Test slider", c => 0.75f)).Value.Subscribe(val => Logger.Log(LogLevel.Message, val));
+            cat2.AddControl(new CurrentStateCategorySwitch("Test add", c => true)).Value.Subscribe(val => KoikatuAPI.Logger.LogMessage(val));
+            cat2.AddControl(new CurrentStateCategorySlider("Test slider", c => 0.75f)).Value.Subscribe(val => KoikatuAPI.Logger.LogMessage(val));
         }
     }
 }

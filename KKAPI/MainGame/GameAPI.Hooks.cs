@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections;
 using ActionGame;
-using Harmony;
+using BepInEx.Harmony;
+using HarmonyLib;
 
 namespace KKAPI.MainGame
 {
@@ -11,7 +12,7 @@ namespace KKAPI.MainGame
         {
             public static void SetupHooks()
             {
-                HarmonyInstance.Create(typeof(Hooks).FullName).PatchAll(typeof(Hooks));
+                HarmonyWrapper.PatchAll(typeof(Hooks));
             }
 
             [HarmonyPostfix]
@@ -51,14 +52,14 @@ namespace KKAPI.MainGame
             }
 
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(Cycle), nameof(Cycle.Change), new Type[]{typeof(Cycle.Type)})]
+            [HarmonyPatch(typeof(Cycle), nameof(Cycle.Change), new Type[] { typeof(Cycle.Type) })]
             public static void CycleChangeTypeHook(Cycle.Type type)
             {
                 OnPeriodChange(type);
             }
 
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(Cycle), nameof(Cycle.Change), new Type[]{typeof(Cycle.Week) })]
+            [HarmonyPatch(typeof(Cycle), nameof(Cycle.Change), new Type[] { typeof(Cycle.Week) })]
             public static void CycleChangeWeekHook(Cycle.Week week)
             {
                 OnDayChange(week);

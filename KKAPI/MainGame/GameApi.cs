@@ -3,11 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using ActionGame;
 using BepInEx.Bootstrap;
-using BepInEx.Logging;
 using KKAPI.Studio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Logger = BepInEx.Logger;
 
 namespace KKAPI.MainGame
 {
@@ -50,7 +48,7 @@ namespace KKAPI.MainGame
         /// <param name="extendedDataId">Extended data ID used by this behaviour. Set to null if not used.</param>
         public static void RegisterExtraBehaviour<T>(string extendedDataId) where T : GameCustomFunctionController, new()
         {
-            if(StudioAPI.InsideStudio) return;
+            if (StudioAPI.InsideStudio) return;
 
             var newBehaviour = _functionControllerContainer.AddComponent<T>();
             newBehaviour.ExtendedDataId = extendedDataId;
@@ -84,7 +82,7 @@ namespace KKAPI.MainGame
                         }
                         catch (Exception e)
                         {
-                            Logger.Log(LogLevel.Error, e);
+                            KoikatuAPI.Logger.LogError(e);
                         }
                     }
                 }
@@ -105,7 +103,7 @@ namespace KKAPI.MainGame
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Error, e);
+                    KoikatuAPI.Logger.LogError(e);
                 }
             }
 
@@ -115,7 +113,7 @@ namespace KKAPI.MainGame
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
@@ -130,7 +128,7 @@ namespace KKAPI.MainGame
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Error, e);
+                    KoikatuAPI.Logger.LogError(e);
                 }
             }
 
@@ -140,7 +138,7 @@ namespace KKAPI.MainGame
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
@@ -154,7 +152,7 @@ namespace KKAPI.MainGame
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Error, e);
+                    KoikatuAPI.Logger.LogError(e);
                 }
             }
 
@@ -164,7 +162,7 @@ namespace KKAPI.MainGame
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
@@ -179,7 +177,7 @@ namespace KKAPI.MainGame
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Error, e);
+                    KoikatuAPI.Logger.LogError(e);
                 }
             }
 
@@ -189,7 +187,7 @@ namespace KKAPI.MainGame
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
@@ -203,7 +201,7 @@ namespace KKAPI.MainGame
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Error, e);
+                    KoikatuAPI.Logger.LogError(e);
                 }
             }
         }
@@ -218,7 +216,7 @@ namespace KKAPI.MainGame
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Error, e);
+                    KoikatuAPI.Logger.LogError(e);
                 }
             }
         }

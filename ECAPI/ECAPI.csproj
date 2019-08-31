@@ -43,64 +43,64 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\0Harmony.dll</HintPath>
+      <HintPath>..\lib\bepin5\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\lib\ec\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\lib\ec\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\BepInEx.dll</HintPath>
+      <HintPath>..\lib\bepin5\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.Harmony">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\BepInEx.Harmony.dll</HintPath>
+      <HintPath>..\lib\bepin5\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="EC.Core.ExtensibleSaveFormat">
-      <HintPath>..\..\..\EC\EC_CorePlugins\bin\BepInEx\plugins\EC_CorePlugins\EC.Core.ExtensibleSaveFormat.dll</HintPath>
+    <Reference Include="ExtensibleSaveFormat">
+      <HintPath>..\lib\ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IL">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\IL.dll</HintPath>
+      <HintPath>..\lib\ec\IL.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="TextMeshPro-1.0.55.56.0b12">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\TextMeshPro-1.0.55.56.0b12.dll</HintPath>
+      <HintPath>..\lib\ec\TextMeshPro-1.0.55.56.0b12.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UniRx">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\UniRx.dll</HintPath>
+      <HintPath>..\lib\ec\UniRx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\UnityEngine.dll</HintPath>
+      <HintPath>..\lib\ec\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\lib\ec\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>..\lib\ec\UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>..\lib\ec\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\lib\ec\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\..\..\EC\EC_CorePlugins\lib\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\lib\ec\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

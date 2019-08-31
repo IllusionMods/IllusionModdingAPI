@@ -112,39 +112,44 @@ namespace KKAPI.Maker.UI
             slider.maxValue = _maxValue;
             slider.onValueChanged.AddListener(SetValue);
 
-            slider.GetComponent<ObservableScrollTrigger>().OnScrollAsObservable().Subscribe(data =>
-            {
-                var scrollDelta = data.scrollDelta.y;
-                var valueChange = Mathf.Pow(10, Mathf.Round(Mathf.Log10(slider.maxValue / 100)));
+            slider.GetComponent<ObservableScrollTrigger>()
+                .OnScrollAsObservable()
+                .Subscribe(
+                    data =>
+                    {
+                        var scrollDelta = data.scrollDelta.y;
+                        var valueChange = Mathf.Pow(10, Mathf.Round(Mathf.Log10(slider.maxValue / 100)));
 
-                if (scrollDelta < 0f)
-                    slider.value += valueChange;
-                else if (scrollDelta > 0f)
-                    slider.value -= valueChange;
-            });
+                        if (scrollDelta < 0f)
+                            slider.value += valueChange;
+                        else if (scrollDelta > 0f)
+                            slider.value -= valueChange;
+                    });
 
             var inputField = tr.Find("InputField").GetComponent<TMP_InputField>();
             if (MakerAPI.InsideMaker) Singleton<ChaCustom.CustomBase>.Instance.lstTmpInputField.Add(inputField);
-            inputField.onEndEdit.AddListener(txt =>
-            {
-                try
+            inputField.onEndEdit.AddListener(
+                txt =>
                 {
-                    var result = StringToValue?.Invoke(txt) ?? float.Parse(txt) / 100f;
-                    slider.value = Mathf.Clamp(result, slider.minValue, slider.maxValue);
-                }
-                catch
-                {
-                    // Ignore parsing errors, lets user keep typing
-                }
-            });
+                    try
+                    {
+                        var result = StringToValue?.Invoke(txt) ?? float.Parse(txt) / 100f;
+                        slider.value = Mathf.Clamp(result, slider.minValue, slider.maxValue);
+                    }
+                    catch
+                    {
+                        // Ignore parsing errors, lets user keep typing
+                    }
+                });
 
-            slider.onValueChanged.AddListener(f =>
-            {
-                if (ValueToString != null)
-                    inputField.text = ValueToString(f);
-                else
-                    inputField.text = Mathf.RoundToInt(f * 100).ToString();
-            });
+            slider.onValueChanged.AddListener(
+                f =>
+                {
+                    if (ValueToString != null)
+                        inputField.text = ValueToString(f);
+                    else
+                        inputField.text = Mathf.RoundToInt(f * 100).ToString();
+                });
 
             var resetButton = tr.Find("Button").GetComponent<Button>();
             resetButton.onClick.AddListener(() => slider.value = _defaultValue);

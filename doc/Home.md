@@ -93,6 +93,5 @@
 - [`ResourceUtils`](KKAPI.Utilities.md#resourceutils)
 - [`TextureUtils`](KKAPI.Utilities.md#textureutils)
 - [`TextUtils`](KKAPI.Utilities.md#textutils)
-- [`ThreadingHelper`](KKAPI.Utilities.md#threadinghelper)
 - [`WindowsStringComparer`](KKAPI.Utilities.md#windowsstringcomparer)
 

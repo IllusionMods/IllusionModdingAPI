@@ -32,9 +32,7 @@ namespace KKAPI.Maker.UI
         /// <param name="category">Category the control will be created under</param>
         /// <param name="owner">Plugin that owns the control</param>
         /// <param name="buttons">Names of the radio buttons. Need at least 2 buttons.</param>
-        public MakerRadioButtons(MakerCategory category, BaseUnityPlugin owner, string settingName, params string[] buttons) : this(category, owner, settingName, 0, buttons)
-        {
-        }
+        public MakerRadioButtons(MakerCategory category, BaseUnityPlugin owner, string settingName, params string[] buttons) : this(category, owner, settingName, 0, buttons) { }
 
         /// <summary>
         /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
@@ -80,11 +78,13 @@ namespace KKAPI.Maker.UI
 
                         var newButton = Object.Instantiate(sourceToggle, tr, true);
                         newButton.name = "rb0" + i;
-                    
+
                         return newButton;
-                    }).Select(x => x.GetComponent<Toggle>())
-                .ToList().AsReadOnly();
-            
+                    })
+                .Select(x => x.GetComponent<Toggle>())
+                .ToList()
+                .AsReadOnly();
+
             var singleToggleWidth = 280 / Buttons.Count;
             for (var index = 0; index < Buttons.Count; index++)
             {
@@ -97,22 +97,24 @@ namespace KKAPI.Maker.UI
                 toggle.GetComponentInChildren<TextMeshProUGUI>().text = _buttons[index];
 
                 var indexCopy = index;
-                toggle.onValueChanged.AddListener(a =>
-                {
-                    if (a || indexCopy == Value)
-                        SetValue(indexCopy);
-                });
+                toggle.onValueChanged.AddListener(
+                    a =>
+                    {
+                        if (a || indexCopy == Value)
+                            SetValue(indexCopy);
+                    });
             }
-            
-            BufferedValueChanged.Subscribe(i =>
-            {
-                for (var index = 0; index < Buttons.Count; index++)
+
+            BufferedValueChanged.Subscribe(
+                i =>
                 {
-                    var tgl = Buttons[index];
-                    tgl.isOn = index == i;
-                }
-            });
-            
+                    for (var index = 0; index < Buttons.Count; index++)
+                    {
+                        var tgl = Buttons[index];
+                        tgl.isOn = index == i;
+                    }
+                });
+
             return tr.gameObject;
         }
 

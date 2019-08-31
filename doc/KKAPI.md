@@ -19,7 +19,7 @@ Enum
 
 ## `KoikatuAPI`
 
-Provides overall information about the game and the API itself, and gives some useful tools  like synchronization of threads or checking if required plugins are installed.  More information is available in project wiki at https://github.com/ManlyMarco/KKAPI/wiki
+Provides overall information about the game and the API itself, and provides some useful tools.  More information is available in project wiki at https://github.com/ManlyMarco/KKAPI/wiki
 ```csharp
 public class KKAPI.KoikatuAPI
     : BaseUnityPlugin
@@ -40,16 +40,14 @@ Static Properties
 | --- | --- | --- | 
 | `Boolean` | EnableDebugLogging | Enables display of additional log messages when certain events are triggered within KKAPI.  Useful for plugin devs to understand when controller messages are fired. | 
 | `KoikatuAPI` | Instance |  | 
+| `ManualLogSource` | Logger |  | 
 
 
 Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Boolean` | CheckIncompatiblePlugin(`BaseUnityPlugin` origin, `String` guid, `LogLevel` level = Warning) | Check if a plugin that is not compatible with your plugin is loaded.  If the plugin is loaded, user is shown a warning message on screen and true is returned.  Warning: Run only from Start, not from constructor or Awake because some plugins might not be loaded yet! | 
-| `Boolean` | CheckRequiredPlugin(`BaseUnityPlugin` origin, `String` guid, `Version` minimumVersion, `LogLevel` level = Error) | Check if a plugin is loaded and has at least the minimum version.  If the plugin is missing or older than minimumVersion, user is shown an error message on screen and false is returned.  Warning: Run only from Start, not from constructor or Awake because some plugins might not be loaded yet! | 
 | `GameMode` | GetCurrentGameMode() | Get current game mode. | 
 | `Version` | GetGameVersion() | Get current version of the game. | 
-| `void` | Log(`LogLevel` level, `Object` obj) |  | 
 
 

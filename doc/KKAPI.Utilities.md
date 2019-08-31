@@ -191,23 +191,6 @@ Static Methods
 | `String` | PascalCaseToSentenceCase(this `String` str) | Convert PascalCase to Sentence case. | 
 
 
-## `ThreadingHelper`
-
-Provides methods for running code on other threads and synchronizing with the main thread.
-```csharp
-public class KKAPI.Utilities.ThreadingHelper
-    : MonoBehaviour
-
-```
-
-Static Methods
-
-| Type | Name | Summary | 
-| --- | --- | --- | 
-| `void` | StartAsyncInvoke(`Func<Action>` action) | Queue the delegate to be invoked on a background thread. Use this to run slow tasks without affecting the game.  NOTE: Most of Unity API can not be accessed while running on another thread! | 
-| `void` | StartSyncInvoke(`Action` action) | Queue the delegate to be invoked on the main unity thread. Use to synchronize your threads. | 
-
-
 ## `WindowsStringComparer`
 
 String comparer that is equivalent to the one used by Windows Explorer to sort files (e.g. 2 will go before 10, unlike normal compare).

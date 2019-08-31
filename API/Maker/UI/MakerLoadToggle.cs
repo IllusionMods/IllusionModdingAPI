@@ -35,7 +35,7 @@ namespace KKAPI.Maker.UI
         {
             Text = text;
         }
-        
+
         /// <summary>
         /// Text displayed next to the toggle
         /// </summary>

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using KKAPI.Maker;
 using KKAPI.Utilities;
@@ -15,6 +16,7 @@ namespace KKAPI
     /// More information is available in project wiki at https://github.com/ManlyMarco/KKAPI/wiki
     /// </summary>
     [BepInDependency("com.joan6694.illusionplugins.moreaccessories", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInIncompatibility("com.bepis.makerapi")]
     public partial class KoikatuAPI
     {
         /// <summary>
@@ -39,20 +41,14 @@ namespace KKAPI
         [System.ComponentModel.Browsable(false)]
         public static bool EnableDebugLogging
         {
-            get
-            {
-#if DEBUG
-                return true;
-#endif
-                return EnableDebugLoggingSetting.Value;
-            }
-            set
-            {
-                EnableDebugLoggingSetting.Value = value;
-            }
+            get => EnableDebugLoggingSetting.Value;
+            set => EnableDebugLoggingSetting.Value = value;
         }
 
+        private static ConfigWrapper<bool> EnableDebugLoggingSetting { get; set; }
+
         internal static KoikatuAPI Instance { get; private set; }
+        internal static new ManualLogSource Logger { get; private set; }
 
         /// <summary>
         /// Don't use manually
@@ -60,8 +56,11 @@ namespace KKAPI
         public KoikatuAPI()
         {
             Instance = this;
+            Logger = base.Logger;
 
-            Log(LogLevel.Debug, $"Game version {GetGameVersion()} running under {System.Threading.Thread.CurrentThread.CurrentCulture.Name} culture");
+            EnableDebugLoggingSetting = Config.Wrap("Debug", "Show debug messages", "Enables display of additional log messages when certain events are triggered within KKAPI. Useful for plugin devs to understand when controller messages are fired. Changes take effect after game restart.", false);
+
+            Logger.LogDebug($"Game version {GetGameVersion()} running under {System.Threading.Thread.CurrentThread.CurrentCulture.Name} culture");
 
             var abdata = Path.Combine(Paths.GameRootPath, "abdata");
             if (Directory.Exists(abdata))
@@ -75,32 +74,21 @@ namespace KKAPI
                         .OrderBy(x => x, WindowsStringComparer.LogicalCompare)
                         .ToArray();
 
-                    Log(LogLevel.Debug, "Installed DLC: " + string.Join(" ", addFileNumbers));
+                    Logger.LogDebug("Installed DLC: " + string.Join(" ", addFileNumbers));
                 }
             }
 
-            Log(LogLevel.Debug, $"Processor: {SystemInfo.processorType} ({SystemInfo.processorCount} cores @ {SystemInfo.processorFrequency}MHz); RAM: {SystemInfo.systemMemorySize}MB; OS: {SystemInfo.operatingSystem}");
+            Logger.LogDebug($"Processor: {SystemInfo.processorType} ({SystemInfo.processorCount} cores @ {SystemInfo.processorFrequency}MHz); RAM: {SystemInfo.systemMemorySize}MB; OS: {SystemInfo.operatingSystem}");
 
-            SceneManager.sceneLoaded += (scene, mode) => Log(LogLevel.Debug, $"SceneManager.sceneLoaded - {scene.name} in {mode} mode");
-            SceneManager.sceneUnloaded += scene => Log(LogLevel.Debug, $"SceneManager.sceneUnloaded - {scene.name}");
-            SceneManager.activeSceneChanged += (prev, next) => Log(LogLevel.Debug, $"SceneManager.activeSceneChanged - from {prev.name} to {next.name}");
+            SceneManager.sceneLoaded += (scene, mode) => Logger.LogDebug($"SceneManager.sceneLoaded - {scene.name} in {mode} mode");
+            SceneManager.sceneUnloaded += scene => Logger.LogDebug($"SceneManager.sceneUnloaded - {scene.name}");
+            SceneManager.activeSceneChanged += (prev, next) => Logger.LogDebug($"SceneManager.activeSceneChanged - from {prev.name} to {next.name}");
         }
 
         private void Start()
         {
             // Needs to be called after moreaccessories has a chance to load
             AccessoriesApi.Init();
-        }
-
-        private bool CheckIncompatibilities()
-        {
-            if (CheckIncompatiblePlugin(this, "com.bepis.makerapi", LogLevel.Error))
-            {
-                Log(LogLevel.Error | LogLevel.Message, "MakerAPI is no longer supported and is preventing KKAPI from loading!");
-                Log(LogLevel.Error | LogLevel.Message, "Remove MakerAPI.dll and update all mods that used it to fix this.");
-                return false;
-            }
-            return true;
         }
 
         /// <summary>
@@ -113,6 +101,7 @@ namespace KKAPI
         /// <param name="minimumVersion">Minimum version of the required plugin</param>
         /// <param name="level">Level of the issue - <code>Error</code> if plugin can't work, <code>Warning</code> if there might be issues, or <code>None</code> to not show any message.</param>
         /// <returns>True if plugin exists and it's version equals or is newer than minimumVersion, otherwise false</returns>
+        [Obsolete("Use the new overload of BepInDependency attribute with version number")]
         public static bool CheckRequiredPlugin(BaseUnityPlugin origin, string guid, Version minimumVersion, LogLevel level = LogLevel.Error)
         {
             var target = BepInEx.Bootstrap.Chainloader.Plugins
@@ -122,7 +111,8 @@ namespace KKAPI
             {
                 if (level != LogLevel.None)
                 {
-                    KoikatuAPI.Log(LogLevel.Message | level,
+                    Logger.Log(
+                        LogLevel.Message | level,
                         $"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).GUID}\" was not found!");
                 }
 
@@ -132,7 +122,8 @@ namespace KKAPI
             {
                 if (level != LogLevel.None)
                 {
-                    KoikatuAPI.Log(LogLevel.Message | level,
+                    Logger.Log(
+                        LogLevel.Message | level,
                         $"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).GUID}\" is outdated! At least v{minimumVersion} is needed!");
                 }
 
@@ -150,6 +141,7 @@ namespace KKAPI
         /// <param name="guid">Guid of the plugin your plugin is incompatible with</param>
         /// <param name="level">Level of the issue - <code>Error</code> if plugin can't work, <code>Warning</code> if there might be issues, or <code>None</code> to not show any message.</param>
         /// <returns>True if plugin exists, otherwise false</returns>
+        [Obsolete("Use the new attribute BepInIncompatibility")]
         public static bool CheckIncompatiblePlugin(BaseUnityPlugin origin, string guid, LogLevel level = LogLevel.Warning)
         {
             var target = BepInEx.Bootstrap.Chainloader.Plugins
@@ -159,7 +151,8 @@ namespace KKAPI
             {
                 if (level != LogLevel.None)
                 {
-                    KoikatuAPI.Log(LogLevel.Message | level,
+                    Logger.Log(
+                        LogLevel.Message | level,
                         $"{level.ToString().ToUpper()}: Plugin \"{guid}\" is incompatible with \"{MetadataHelper.GetMetadata(origin).GUID}\"!");
                 }
 
@@ -171,10 +164,10 @@ namespace KKAPI
         /// <summary>
         /// Invoke the Action on the main unity thread. Use to synchronize your threads.
         /// </summary>
-        [Obsolete("Use KKAPI.Utilities.ThreadingHelper.StartSyncInvoke instead")]
+        [Obsolete("Use ThreadingHelper.Instance.StartSyncInvoke instead")]
         public static void SynchronizedInvoke(Action action)
         {
-            ThreadingHelper.StartSyncInvoke(action);
+            ThreadingHelper.Instance.StartSyncInvoke(action);
         }
     }
 }

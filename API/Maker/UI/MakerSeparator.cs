@@ -46,8 +46,6 @@ namespace KKAPI.Maker.UI
         /// </summary>
         /// <param name="category">Category the control will be created under</param>
         /// <param name="owner">Plugin that owns the control</param>
-        public MakerSeparator(MakerCategory category, BaseUnityPlugin owner) : base(category, owner)
-        {
-        }
+        public MakerSeparator(MakerCategory category, BaseUnityPlugin owner) : base(category, owner) { }
     }
 }

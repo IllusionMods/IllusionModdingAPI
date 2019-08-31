@@ -10,14 +10,10 @@ namespace KKAPI.Maker.UI.Sidebar
     public class SidebarSeparator : BaseGuiEntry, ISidebarControl
     {
         /// <inheritdoc />
-        public SidebarSeparator(BaseUnityPlugin owner) : base(null, owner)
-        {
-        }
+        public SidebarSeparator(BaseUnityPlugin owner) : base(null, owner) { }
 
         /// <inheritdoc />
-        protected internal override void Initialize()
-        {
-        }
+        protected internal override void Initialize() { }
 
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)

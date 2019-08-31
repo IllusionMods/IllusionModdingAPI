@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using Studio;
 
 namespace KKAPI.Studio
@@ -9,7 +9,7 @@ namespace KKAPI.Studio
         {
             public static void SetupHooks()
             {
-                HarmonyInstance.Create(typeof(Hooks).FullName).PatchAll(typeof(Hooks));
+                BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
             }
 
             [HarmonyPostfix]

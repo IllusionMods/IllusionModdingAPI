@@ -14,7 +14,7 @@ namespace KKAPI.Studio.UI
     public class CurrentStateCategoryToggle : BaseCurrentStateEditableGuiEntry<int>
     {
         private static GameObject _originalToggle;
-        
+
         /// <summary>
         /// Number of the radio buttons, can be 2, 3 or 4
         /// </summary>

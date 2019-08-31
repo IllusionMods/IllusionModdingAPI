@@ -1,9 +1,6 @@
 ﻿using System.Collections;
-using System.Diagnostics;
-using System.Reflection;
-using BepInEx.Logging;
 using ChaCustom;
-using Harmony;
+using HarmonyLib;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -78,7 +75,7 @@ namespace KKAPI.Maker.UI
 
         public static Transform AddNewSubCategory(UI_ToggleGroupCtrl mainCategory, MakerCategory subCategory)
         {
-            KoikatuAPI.Log(LogLevel.Debug, $"[MakerAPI] Adding custom subcategory {subCategory.SubCategoryName} to {mainCategory.transform.name}");
+            KoikatuAPI.Logger.LogDebug($"[MakerAPI] Adding custom subcategory {subCategory.SubCategoryName} to {mainCategory.transform.name}");
 
             var tr = Object.Instantiate(SubCategoryCopy.gameObject, mainCategory.transform, true).transform;
             tr.name = subCategory.SubCategoryName;
@@ -114,7 +111,7 @@ namespace KKAPI.Maker.UI
             scrl.Find("Viewport/Content").GetComponent<Image>().raycastTarget = true;
             scrl.Find("Scrollbar Vertical").GetComponent<Image>().raycastTarget = true;
             scrl.gameObject.SetActive(true);
-            
+
             // Wait until all custom controls were added to gather all created image controls
             yield return new WaitUntil(() => MakerAPI.InsideAndLoaded);
             trTop.GetComponentInChildren<UI_RaycastCtrl>(true)?.Reset();

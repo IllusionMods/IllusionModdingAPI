@@ -1,7 +1,6 @@
 ﻿using BepInEx.Logging;
 using KKAPI.Utilities;
 using Studio;
-using Logger = BepInEx.Logger;
 
 namespace KKAPI.Studio.SaveLoad
 {
@@ -9,17 +8,17 @@ namespace KKAPI.Studio.SaveLoad
     {
         protected internal override void OnSceneLoad(SceneOperationKind operation, ReadOnlyDictionary<int, ObjectCtrlInfo> loadedItems)
         {
-            Logger.Log(LogLevel.Warning | LogLevel.Message, $"OnSceneLoad {operation} - {loadedItems.Count}");
+            KoikatuAPI.Logger.Log(LogLevel.Warning | LogLevel.Message, $"OnSceneLoad {operation} - {loadedItems.Count}");
         }
 
         protected internal override void OnSceneSave()
         {
-            Logger.Log(LogLevel.Warning | LogLevel.Message, $"OnSceneSave");
+            KoikatuAPI.Logger.Log(LogLevel.Warning | LogLevel.Message, "OnSceneSave");
         }
 
         protected internal override void OnObjectsCopied(ReadOnlyDictionary<int, ObjectCtrlInfo> copiedItems)
         {
-            Logger.Log(LogLevel.Warning | LogLevel.Message, $"OnObjectsCopied");
+            KoikatuAPI.Logger.Log(LogLevel.Warning | LogLevel.Message, "OnObjectsCopied");
         }
     }
 }

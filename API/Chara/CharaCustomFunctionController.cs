@@ -1,14 +1,11 @@
 ﻿using KKAPI.Maker;
 using System;
 using System.Collections;
-using BepInEx.Logging;
 using UniRx;
-#if EC
-using EC.Core.ExtensibleSaveFormat;
-#else
+#if KK
 using KKAPI.MainGame;
-using ExtensibleSaveFormat;
 #endif
+using ExtensibleSaveFormat;
 using UnityEngine;
 
 #pragma warning disable 618
@@ -80,7 +77,7 @@ namespace KKAPI.Chara
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
             ExtendedSave.SetExtendedDataById(ChaFileControl, ExtendedDataId, data);
 
-#if KK
+#if KK 
             // Needed for propagating changes back to the original charFile since they don't get copied back.
             var heroine = ChaControl.GetHeroine();
             if (heroine != null)
@@ -97,7 +94,7 @@ namespace KKAPI.Chara
                 }
 
                 var npc = heroine.GetNPC();
-                if(npc != null && npc.chaCtrl != null && npc.chaCtrl != ChaControl)
+                if (npc != null && npc.chaCtrl != null && npc.chaCtrl != ChaControl)
                 {
                     ExtendedSave.SetExtendedDataById(npc.chaCtrl.chaFile, ExtendedDataId, data);
 
@@ -148,7 +145,7 @@ namespace KKAPI.Chara
             }
             catch (Exception e)
             {
-                KoikatuAPI.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
@@ -191,7 +188,7 @@ namespace KKAPI.Chara
             }
             catch (Exception e)
             {
-                KoikatuAPI.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
@@ -209,7 +206,7 @@ namespace KKAPI.Chara
             }
             catch (Exception e)
             {
-                KoikatuAPI.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
@@ -242,7 +239,7 @@ namespace KKAPI.Chara
             }
             catch (Exception e)
             {
-                KoikatuAPI.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
@@ -258,7 +255,7 @@ namespace KKAPI.Chara
         /// </summary>
         protected virtual void Update()
         {
-#if KK
+#if KK 
             // TODO change into a separate trigger component?
             var currentCoordinate = (ChaFileDefine.CoordinateType)ChaControl.fileStatus.coordinateType;
             if (currentCoordinate != CurrentCoordinate.Value)

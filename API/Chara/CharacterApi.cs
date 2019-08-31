@@ -1,15 +1,10 @@
-﻿using BepInEx.Logging;
-using KKAPI.Maker;
+﻿using KKAPI.Maker;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-#if EC
-using EC.Core.ExtensibleSaveFormat;
-#else
 using ExtensibleSaveFormat;
-#endif
 
 namespace KKAPI.Chara
 {
@@ -135,8 +130,8 @@ namespace KKAPI.Chara
                 var character = MakerAPI.GetCharacterControl();
                 if (character == null)
                 {
-                    KoikatuAPI.Log(LogLevel.Error, "[KKAPI] OnCoordinateBeingSaved fired outside chara maker for " + file.coordinateName);
-                    KoikatuAPI.Log(LogLevel.Info, new StackTrace());
+                    KoikatuAPI.Logger.LogError("[KKAPI] OnCoordinateBeingSaved fired outside chara maker for " + file.coordinateName);
+                    KoikatuAPI.Logger.LogInfo(new StackTrace());
                     return;
                 }
 
@@ -172,7 +167,7 @@ namespace KKAPI.Chara
                     }
                     catch (Exception e)
                     {
-                        KoikatuAPI.Log(LogLevel.Error, e);
+                        KoikatuAPI.Logger.LogError(e);
                     }
                 }
             }
@@ -180,7 +175,7 @@ namespace KKAPI.Chara
 
         private static void OnCardBeingSaved(ChaFile chaFile)
         {
-            KoikatuAPI.Log(LogLevel.Debug, "[KKAPI] Character save: " + chaFile.parameter.fullname);
+            KoikatuAPI.Logger.LogDebug("[KKAPI] Character save: " + chaFile.parameter.fullname);
 
             var gamemode = KoikatuAPI.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(MakerAPI.GetCharacterControl()))
@@ -199,7 +194,7 @@ namespace KKAPI.Chara
             else
                 _currentlyReloading.Add(chaControl);
 
-            KoikatuAPI.Log(LogLevel.Debug, "[KKAPI] Character load/reload: " + GetLogName(chaControl));
+            KoikatuAPI.Logger.LogDebug("[KKAPI] Character load/reload: " + GetLogName(chaControl));
 
             // Always send events to controllers before subscribers of CharacterReloaded
             var gamemode = KoikatuAPI.GetCurrentGameMode();
@@ -213,7 +208,7 @@ namespace KKAPI.Chara
             }
             catch (Exception e)
             {
-                KoikatuAPI.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
 
             if (MakerAPI.InsideAndLoaded)
@@ -241,10 +236,11 @@ namespace KKAPI.Chara
         private static void OnCoordinateBeingSaved(ChaControl character, ChaFileCoordinate coordinateFile)
         {
 #if EC
-            KoikatuAPI.Log(LogLevel.Debug, $"[KKAPI] Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"");
+            KoikatuAPI.Logger.LogDebug($"[KKAPI] Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"");
 #elif KK
-            KoikatuAPI.Log(LogLevel.Debug, $"[KKAPI] Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"" +
-                                       $" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+            KoikatuAPI.Logger.LogDebug(
+                $"[KKAPI] Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"" +
+                $" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
 #endif
             foreach (var controller in GetBehaviours(character))
                 controller.OnCoordinateBeingSavedInternal(coordinateFile);
@@ -255,17 +251,18 @@ namespace KKAPI.Chara
             }
             catch (Exception e)
             {
-                KoikatuAPI.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
         private static void OnCoordinateBeingLoaded(ChaControl character, ChaFileCoordinate coordinateFile)
         {
 #if EC
-            KoikatuAPI.Log(LogLevel.Debug, $"[KKAPI] Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"");
+            KoikatuAPI.Logger.LogDebug($"[KKAPI] Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"");
 #elif KK
-            KoikatuAPI.Log(LogLevel.Debug, $"[KKAPI] Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"" +
-                                       $" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+            KoikatuAPI.Logger.LogDebug(
+                $"[KKAPI] Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"" +
+                $" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
 #endif
 
             foreach (var controller in GetBehaviours(character))
@@ -278,7 +275,7 @@ namespace KKAPI.Chara
             }
             catch (Exception e)
             {
-                KoikatuAPI.Log(LogLevel.Error, e);
+                KoikatuAPI.Logger.LogError(e);
             }
 
             if (MakerAPI.InsideAndLoaded)

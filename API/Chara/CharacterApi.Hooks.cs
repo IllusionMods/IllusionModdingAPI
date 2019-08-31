@@ -1,6 +1,4 @@
-﻿using BepInEx.Logging;
-using ChaCustom;
-using Harmony;
+﻿using ChaCustom;
 using KKAPI.Maker;
 using System;
 using System.Collections;
@@ -9,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using ADV;
+using HarmonyLib;
 
 namespace KKAPI.Chara
 {
@@ -18,9 +17,8 @@ namespace KKAPI.Chara
         {
             public static void InitHooks()
             {
-                HarmonyPatcher.PatchAll(typeof(Hooks));
-
-                var i = HarmonyInstance.Create(typeof(Hooks).FullName);
+                BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
+                var i = new Harmony(typeof(Hooks).FullName);
 
                 // Fuzzy argument lengths are needed for darkness compatibility
                 var target = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.Initialize) && info.GetParameters().Length >= 5);
@@ -46,7 +44,7 @@ namespace KKAPI.Chara
 
             public static void ChaControl_InitializePostHook(ChaControl __instance)
             {
-                KoikatuAPI.Log(LogLevel.Debug, $"[KKAPI] Character card load: {GetLogName(__instance)} {(MakerAPI.CharaListIsLoading ? "inside CharaList" : string.Empty)}");
+                KoikatuAPI.Logger.LogDebug($"[KKAPI] Character card load: {GetLogName(__instance)} {(MakerAPI.CharaListIsLoading ? "inside CharaList" : string.Empty)}");
 
                 ChaControls.Add(__instance);
 
@@ -98,7 +96,7 @@ namespace KKAPI.Chara
                     }
                     catch (Exception e)
                     {
-                        KoikatuAPI.Log(LogLevel.Error, e);
+                        KoikatuAPI.Logger.LogError(e);
                     }
                 }
             }
@@ -139,7 +137,7 @@ namespace KKAPI.Chara
                         });
 
                     if (KoikatuAPI.EnableDebugLogging)
-                        KoikatuAPI.Log(LogLevel.Debug, "FixEventSceneLambdaTpl success on " + original.FullDescription());
+                        KoikatuAPI.Logger.LogDebug("FixEventSceneLambdaTpl success on " + original.FullDescription());
                 }
 
                 return il;

@@ -17,6 +17,7 @@ namespace KKAPI.Maker.UI
         /// Added to the end of most custom controls to mark them as being created by this API.
         /// </summary>
         public static readonly string GuiApiNameAppendix = "(MakerAPI)";
+
         private static Transform _guiCacheTransfrom;
         private readonly List<GameObject> _controlObjects = new List<GameObject>(1);
 
@@ -36,11 +37,12 @@ namespace KKAPI.Maker.UI
             Owner = owner;
 
             Visible = new BehaviorSubject<bool>(true);
-            Visible.Subscribe(b =>
-            {
-                foreach (var controlObject in ControlObjects)
-                    controlObject.SetActive(b);
-            });
+            Visible.Subscribe(
+                b =>
+                {
+                    foreach (var controlObject in ControlObjects)
+                        controlObject.SetActive(b);
+                });
         }
 
         /// <summary>

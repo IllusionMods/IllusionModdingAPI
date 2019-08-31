@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using ExtensibleSaveFormat;
-using Harmony;
+using HarmonyLib;
 using Studio;
 
 namespace KKAPI.Studio.SaveLoad
@@ -24,7 +24,7 @@ namespace KKAPI.Studio.SaveLoad
 
             public static void SetupHooks()
             {
-                HarmonyInstance.Create(typeof(Hooks).FullName).PatchAll(typeof(Hooks));
+                BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
                 ExtendedSave.SceneBeingImported += path => _loadOrImportSuccess = true;
                 ExtendedSave.SceneBeingLoaded += path => _loadOrImportSuccess = true;
             }
