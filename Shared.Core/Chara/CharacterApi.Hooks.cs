@@ -22,8 +22,7 @@ namespace KKAPI.Chara
         {
             public static void InitHooks()
             {
-                BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
-                var i = new Harmony(typeof(Hooks).FullName);
+                var i = BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
 
                 // Fuzzy argument lengths are needed for darkness compatibility
                 var target = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.Initialize) && info.GetParameters().Length >= 5);
@@ -31,6 +30,9 @@ namespace KKAPI.Chara
 
                 var target2 = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.ReloadAsync) && info.GetParameters().Length >= 5);
                 i.Patch(target2, null, new HarmonyMethod(typeof(Hooks), nameof(ReloadAsyncPostHook)));
+
+                var target3 = typeof(ChaFile).GetMethods().Single(info => info.Name == nameof(ChaFile.CopyAll));
+                i.Patch(target3, null, new HarmonyMethod(typeof(Hooks), nameof(ChaFile_CopyChaFileHook)));
 
 #if KK
                 // Find the ADV character Start lambda to hook for extended data copying. The inner type names change between versions so try them all.
@@ -81,8 +83,6 @@ namespace KKAPI.Chara
             /// Copy extended data when moving between class roster and main game data, and in free h
             /// (the character data gets transferred to predefined slots instead of creating new characters)
             /// </summary>
-            [HarmonyPrefix]
-            [HarmonyPatch(typeof(ChaFile), nameof(ChaFile.CopyAll), new[] { typeof(ChaFile) })]
             public static void ChaFile_CopyChaFileHook(ChaFile __instance, ChaFile _chafile)
             {
                 OnCopyChaFile(__instance, _chafile);
@@ -120,7 +120,7 @@ namespace KKAPI.Chara
                  64	00C4	stfld	uint8[] ChaFile::pngData
                  */
 
-                var il = instructions.ToList();
+				var il = instructions.ToList();
 
                 var target = AccessTools.Field(typeof(ChaFile), nameof(ChaFile.pngData));
                 if (target == null) throw new ArgumentNullException(nameof(target));
@@ -200,6 +200,7 @@ namespace KKAPI.Chara
             /// </summary>
             public static bool ClothesFileControlLoading;
 
+#if !AI
             [HarmonyPrefix]
             [HarmonyPatch(typeof(clothesFileControl), "Initialize")]
             public static void clothesFileControl_InitializePreHook()
@@ -213,6 +214,7 @@ namespace KKAPI.Chara
             {
                 ClothesFileControlLoading = false;
             }
+#endif
         }
-    }
+	}
 }

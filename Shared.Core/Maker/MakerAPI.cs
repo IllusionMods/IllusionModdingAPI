@@ -41,6 +41,8 @@ namespace KKAPI.Maker
             // Create sidebar controls
             if (_sidebarEntries.Any())
             {
+#if !AI
+
                 var sidebarTop = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CvsDraw/Top").transform;
 
                 var sep = new SidebarSeparator(KoikatuAPI.Instance);
@@ -52,6 +54,7 @@ namespace KKAPI.Maker
                 KoikatuAPI.Logger.LogDebug(
                     $"[MakerAPI] Added {_sidebarEntries.Count} custom controls " +
                     "to Control Panel sidebar");
+#endif
             }
 
             if (_accessoryWindowEntries.Any())
@@ -81,6 +84,7 @@ namespace KKAPI.Maker
 
         private static void CreateCustomControlsInSubCategory(Transform subCategoryTransform, ICollection<BaseGuiEntry> entriesToAdd)
         {
+#if !AI
             if (entriesToAdd.Count == 0) return;
 
             var contentParent = FindSubcategoryContentParent(subCategoryTransform);
@@ -99,6 +103,7 @@ namespace KKAPI.Maker
             KoikatuAPI.Logger.LogDebug(
                 $"[MakerAPI] Added {entriesToAdd.Count} custom controls " +
                 $"to {category.CategoryName}/{category.SubCategoryName}");
+#endif
         }
 
         private static void CreateCustomAccessoryWindowControls()
@@ -148,8 +153,10 @@ namespace KKAPI.Maker
             _sidebarEntries.Clear();
             _accessoryWindowEntries.Clear();
 
+#if !AI //todo
             MakerLoadToggle.Reset();
             MakerCoordinateLoadToggle.Reset();
+#endif
         }
 
         internal static Transform FindSubcategoryContentParent(Transform categorySubTransform)
@@ -163,6 +170,7 @@ namespace KKAPI.Maker
         /// </summary>
         private static void AddMissingSubCategories(UI_ToggleGroupCtrl mainCategory)
         {
+#if !AI
             var categoryTransfrom = mainCategory.transform;
 
             // Can break stuff, 06_SystemTop might be fine but needs testing
@@ -200,6 +208,7 @@ namespace KKAPI.Maker
                 tuple.Key.SetSiblingIndex(index++);
 
             KoikatuAPI.Instance.StartCoroutine(FixCategoryContentOffsets(mainCategory));
+#endif
         }
 
         private static IEnumerator FixCategoryContentOffsets(UI_ToggleGroupCtrl mainCategory)
@@ -227,8 +236,10 @@ namespace KKAPI.Maker
         {
             if (control == null) throw new ArgumentNullException(nameof(control));
             if (control.IsDisposed) throw new ObjectDisposedException(nameof(control), "A new control has to be created every time maker is started");
+#if !AI //todo
             if (control is MakerLoadToggle || control is MakerCoordinateLoadToggle || control is ISidebarControl)
                 throw new ArgumentException("Can't add " + control.GetType().FullName + " as a normal control", nameof(control));
+#endif
 
             _guiEntries.Add(control);
             return control;
@@ -338,10 +349,13 @@ namespace KKAPI.Maker
 
         private static void OnRegisterCustomSubCategories()
         {
+			//TODO
+#if !AI
             MakerLoadToggle.Setup();
             MakerCoordinateLoadToggle.Setup();
+#endif
 
-            if (RegisterCustomSubCategories != null)
+			if (RegisterCustomSubCategories != null)
             {
                 var args = new RegisterSubCategoriesEvent();
                 foreach (var handler in RegisterCustomSubCategories.GetInvocationList())
@@ -424,10 +438,13 @@ namespace KKAPI.Maker
         private static void OnCreateCustomControls()
         {
             CreateCustomControls();
+
+#if !AI //todo
             MakerLoadToggle.CreateCustomToggles();
             MakerCoordinateLoadToggle.CreateCustomToggles();
+#endif
 
-#if KK 
+#if KK
             // Fix some plugins failing to update interface and losing state
             if (IsInsideClassMaker())
             {
@@ -460,6 +477,7 @@ namespace KKAPI.Maker
         [Conditional("DEBUG")]
         private static void DebugControls()
         {
+#if !AI
             var instance = KoikatuAPI.Instance;
             var cat = MakerConstants.Face.All;
 
@@ -504,13 +522,14 @@ namespace KKAPI.Maker
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Toggled to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
             AddAccessoryWindowControl(new MakerColor("test accessory color", false, cat, Color.cyan, instance) { ColorBoxWidth = 230 })
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Color to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
-        }
+#endif
+		}
 
-        /// <summary>
-        /// Use to avoid unnecessary processing cards when they are loaded to the character list.
-        /// For example, don't load extended data for these characters since it's never used.
-        /// </summary>
-        public static bool CharaListIsLoading { get; private set; }
+		/// <summary>
+		/// Use to avoid unnecessary processing cards when they are loaded to the character list.
+		/// For example, don't load extended data for these characters since it's never used.
+		/// </summary>
+		public static bool CharaListIsLoading { get; private set; }
 
         /// <summary>
         /// ChaFile of the character currently opened in maker. Do not use to save extended data, or it will be lost when saving the card.

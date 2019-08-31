@@ -9,12 +9,14 @@
     <Import_RootNamespace>Shared.KKalike</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CardAuthorData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoryControlWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessorySlotChangeEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryTransferEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryWindowControlValueChangedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\RegisterCustomControlsEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerColor.cs" />

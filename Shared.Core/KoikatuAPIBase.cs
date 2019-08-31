@@ -71,7 +71,7 @@ namespace KKAPI
                     var addFileNumbers = addFiles.Select(Path.GetFileName)
                         .Where(x => x?.Length > 3)
                         .Select(x => x.Substring(3))
-                        .OrderBy(x => x, WindowsStringComparer.LogicalCompare)
+                        .OrderBy(x => x, new WindowsStringComparer())
                         .ToArray();
 
                     Logger.LogDebug("Installed DLC: " + string.Join(" ", addFileNumbers));
@@ -85,12 +85,6 @@ namespace KKAPI
             SceneManager.activeSceneChanged += (prev, next) => Logger.LogDebug($"SceneManager.activeSceneChanged - from {prev.name} to {next.name}");
         }
 
-        private void Start()
-        {
-            // Needs to be called after moreaccessories has a chance to load
-            AccessoriesApi.Init();
-        }
-
         /// <summary>
         /// Check if a plugin is loaded and has at least the minimum version. 
         /// If the plugin is missing or older than minimumVersion, user is shown an error message on screen and false is returned.
@@ -102,29 +96,25 @@ namespace KKAPI
         /// <param name="level">Level of the issue - <code>Error</code> if plugin can't work, <code>Warning</code> if there might be issues, or <code>None</code> to not show any message.</param>
         /// <returns>True if plugin exists and it's version equals or is newer than minimumVersion, otherwise false</returns>
         [Obsolete("Use the new overload of BepInDependency attribute with version number")]
-        public static bool CheckRequiredPlugin(BaseUnityPlugin origin, string guid, Version minimumVersion, LogLevel level = LogLevel.Error)
+        public static bool CheckRequiredPlugin(BaseUnityPlugin origin, string guid, Version minimumVersion, BepInEx.Logging.LogLevel level = BepInEx.Logging.LogLevel.Error)
         {
             var target = BepInEx.Bootstrap.Chainloader.Plugins
                 .Select(MetadataHelper.GetMetadata)
                 .FirstOrDefault(x => x.GUID == guid);
             if (target == null)
             {
-                if (level != LogLevel.None)
+                if (level != BepInEx.Logging.LogLevel.None)
                 {
-                    Logger.Log(
-                        LogLevel.Message | level,
-                        $"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).GUID}\" was not found!");
+                    Logger.LogMessage($"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).GUID}\" was not found!");
                 }
 
                 return false;
             }
             if (minimumVersion > target.Version)
             {
-                if (level != LogLevel.None)
+                if (level != BepInEx.Logging.LogLevel.None)
                 {
-                    Logger.Log(
-                        LogLevel.Message | level,
-                        $"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).GUID}\" is outdated! At least v{minimumVersion} is needed!");
+                    Logger.LogMessage($"{level.ToString().ToUpper()}: Plugin \"{guid}\" required by \"{MetadataHelper.GetMetadata(origin).GUID}\" is outdated! At least v{minimumVersion} is needed!");
                 }
 
                 return false;
@@ -142,18 +132,16 @@ namespace KKAPI
         /// <param name="level">Level of the issue - <code>Error</code> if plugin can't work, <code>Warning</code> if there might be issues, or <code>None</code> to not show any message.</param>
         /// <returns>True if plugin exists, otherwise false</returns>
         [Obsolete("Use the new attribute BepInIncompatibility")]
-        public static bool CheckIncompatiblePlugin(BaseUnityPlugin origin, string guid, LogLevel level = LogLevel.Warning)
+        public static bool CheckIncompatiblePlugin(BaseUnityPlugin origin, string guid, BepInEx.Logging.LogLevel level = BepInEx.Logging.LogLevel.Warning)
         {
             var target = BepInEx.Bootstrap.Chainloader.Plugins
                 .Select(MetadataHelper.GetMetadata)
                 .FirstOrDefault(x => x.GUID == guid);
             if (target != null)
             {
-                if (level != LogLevel.None)
+                if (level != BepInEx.Logging.LogLevel.None)
                 {
-                    Logger.Log(
-                        LogLevel.Message | level,
-                        $"{level.ToString().ToUpper()}: Plugin \"{guid}\" is incompatible with \"{MetadataHelper.GetMetadata(origin).GUID}\"!");
+                    Logger.LogMessage($"{level.ToString().ToUpper()}: Plugin \"{guid}\" is incompatible with \"{MetadataHelper.GetMetadata(origin).GUID}\"!");
                 }
 
                 return true;

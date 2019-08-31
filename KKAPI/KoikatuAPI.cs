@@ -24,6 +24,12 @@ namespace KKAPI
             GameAPI.Init(insideStudio);
         }
 
+        private void Start()
+        {
+            // Needs to be called after moreaccessories has a chance to load
+            AccessoriesApi.Init();
+        }
+
         /// <summary>
         /// Get current game mode. 
         /// </summary>

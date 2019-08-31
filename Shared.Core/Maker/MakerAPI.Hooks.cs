@@ -84,6 +84,7 @@ namespace KKAPI.Maker
                 InternalLastLoadedChaFile = null;
             }
 
+#if !AI
             [HarmonyPrefix, HarmonyPatch(typeof(CustomCharaFile), "Initialize")]
             public static void CustomScenePrefix()
             {
@@ -95,6 +96,7 @@ namespace KKAPI.Maker
             {
                 CharaListIsLoading = false;
             }
+#endif
 
             public static void ChaFileLoadFilePreHook(ChaFile __instance)
             {
@@ -124,6 +126,7 @@ namespace KKAPI.Maker
                     OnChaFileLoaded(new ChaFileLoadedEventArgs(filename, sex, face, body, hair, parameter, coordinate, __instance, InternalLastLoadedChaFile));
             }
 
+#if !AI
             /// <summary>
             /// Keep Load button in maker character load list enabled if any of the extra toggles are enabled, but none of the stock ones are. 
             /// </summary>
@@ -139,6 +142,7 @@ namespace KKAPI.Maker
                         value = MakerCoordinateLoadToggle.AnyEnabled;
                 }
             }
+#endif
 
             public static void Init()
             {
