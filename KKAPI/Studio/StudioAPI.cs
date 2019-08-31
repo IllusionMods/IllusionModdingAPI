@@ -30,7 +30,7 @@ namespace KKAPI.Studio
 
             if (!InsideStudio)
             {
-                KoikatuAPI.Logger.LogDebug("[StudioAPI] Tried to run CreateCurrentStateCategory outside of studio!");
+                KoikatuAPI.Logger.LogDebug("Tried to run StudioAPI.CreateCurrentStateCategory outside of studio!");
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace KKAPI.Studio
         {
             if (!InsideStudio)
             {
-                KoikatuAPI.Logger.LogDebug("[StudioAPI] Tried to run CreateCurrentStateCategory outside of studio!");
+                KoikatuAPI.Logger.LogDebug("Tried to run StudioAPI.CreateCurrentStateCategory outside of studio!");
                 return null;
             }
 

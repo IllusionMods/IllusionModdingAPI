@@ -52,7 +52,7 @@ namespace KKAPI.Maker
                     sidebarEntry.CreateControl(sidebarTop);
 
                 KoikatuAPI.Logger.LogDebug(
-                    $"[MakerAPI] Added {_sidebarEntries.Count} custom controls " +
+                    $"Added {_sidebarEntries.Count} custom controls " +
                     "to Control Panel sidebar");
 #endif
             }
@@ -76,7 +76,7 @@ namespace KKAPI.Maker
                 else
                 {
                     KoikatuAPI.Logger.LogError(
-                        $"[MakerAPI] Failed to add {subCategoryGroup.Count()} custom controls " +
+                        $"Failed to add {subCategoryGroup.Count()} custom controls " +
                         $"to {categoryTransfrom.name}/{subCategoryGroup.Key} - The category was not registered with AddSubCategory.");
                 }
             }
@@ -101,7 +101,7 @@ namespace KKAPI.Maker
 
             var category = entriesToAdd.First().Category;
             KoikatuAPI.Logger.LogDebug(
-                $"[MakerAPI] Added {entriesToAdd.Count} custom controls " +
+                $"Added {entriesToAdd.Count} custom controls " +
                 $"to {category.CategoryName}/{category.SubCategoryName}");
 #endif
         }
@@ -200,7 +200,7 @@ namespace KKAPI.Maker
                 if (builtInCategory != null)
                     transformsToSort.Add(new KeyValuePair<Transform, int>(subTransform, builtInCategory.Position));
                 else
-                    KoikatuAPI.Logger.LogWarning($"[MakerAPI] Missing MakerCategory for existing transfrom {categoryTransfrom.name} / {subTransform.name}");
+                    KoikatuAPI.Logger.LogWarning($"Missing MakerCategory for existing transfrom {categoryTransfrom.name} / {subTransform.name}");
             }
 
             var index = 0;
@@ -254,7 +254,7 @@ namespace KKAPI.Maker
             if (!_categories.Contains(category))
                 _categories.Add(category);
             else
-                KoikatuAPI.Logger.LogInfo($"[MakerAPI] Duplicate custom subcategory was added: {category} The duplicate will be ignored.");
+                KoikatuAPI.Logger.LogInfo($"Duplicate custom subcategory was added: {category} The duplicate will be ignored.");
         }
 
         /// <summary>

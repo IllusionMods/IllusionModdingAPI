@@ -200,7 +200,7 @@ namespace KKAPI.Maker
                     else
                     {
                         _moreAccessoriesType = null;
-                        KoikatuAPI.Logger.LogWarning("[KKAPI] WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
+                        KoikatuAPI.Logger.LogWarning("WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
                     }
                 }
             }

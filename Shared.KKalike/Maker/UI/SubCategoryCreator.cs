@@ -75,7 +75,7 @@ namespace KKAPI.Maker.UI
 
         public static Transform AddNewSubCategory(UI_ToggleGroupCtrl mainCategory, MakerCategory subCategory)
         {
-            KoikatuAPI.Logger.LogDebug($"[MakerAPI] Adding custom subcategory {subCategory.SubCategoryName} to {mainCategory.transform.name}");
+            KoikatuAPI.Logger.LogDebug($"Adding custom subcategory {subCategory.SubCategoryName} to {mainCategory.transform.name}");
 
             var tr = Object.Instantiate(SubCategoryCopy.gameObject, mainCategory.transform, true).transform;
             tr.name = subCategory.SubCategoryName;

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
-using HarmonyLib;
-using UnityEngine;
 using Object = UnityEngine.Object;
-using AIChara;
 using ChaAccessoryComponent = AIChara.CmpAccessory;
 using CvsAccessory = CharaCustom.CustomAcsCorrectSet;
 
@@ -146,7 +142,7 @@ namespace KKAPI.Maker
 #if AI
             return cc.cmpAccessory;
 #else
-			return cc.cusAcsCmp;
+            return cc.cusAcsCmp;
 #endif
         }
 
@@ -210,7 +206,7 @@ namespace KKAPI.Maker
                     else
                     {
                         _moreAccessoriesType = null;
-                        KoikatuAPI.Logger.LogWarning("[KKAPI] WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
+                        KoikatuAPI.Logger.LogWarning("WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
                     }
                 }
             }
@@ -231,14 +227,14 @@ namespace KKAPI.Maker
 				//todo
                 var cvsAccessories = new CvsAccessory[0];
 #else
-				var cvsAccessoryField = AccessTools.Field(typeof(CustomAcsParentWindow), "cvsAccessory");
-				var cvsAccessories = (CvsAccessory[])cvsAccessoryField.GetValue(Object.FindObjectOfType<CustomAcsParentWindow>());
+                var cvsAccessoryField = AccessTools.Field(typeof(CustomAcsParentWindow), "cvsAccessory");
+                var cvsAccessories = (CvsAccessory[])cvsAccessoryField.GetValue(Object.FindObjectOfType<CustomAcsParentWindow>());
 
                 var changeSlot = Object.FindObjectOfType<CustomAcsChangeSlot>();
                 _accessorySlotCanvasGroup = changeSlot.GetComponent<CanvasGroup>();
 #endif
 
-				if (MoreAccessoriesInstalled)
+                if (MoreAccessoriesInstalled)
                 {
                     var getCvsM = AccessTools.Method(_moreAccessoriesType, "GetCvsAccessory");
                     _getCvsAccessory = i => (CvsAccessory)getCvsM.Invoke(_moreAccessoriesInstance, new object[] { i });
