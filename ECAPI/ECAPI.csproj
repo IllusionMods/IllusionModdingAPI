@@ -62,8 +62,8 @@
       <HintPath>..\lib\bepin5\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ExtensibleSaveFormat">
-      <HintPath>..\lib\ExtensibleSaveFormat.dll</HintPath>
+    <Reference Include="EC_ExtensibleSaveFormat">
+      <HintPath>..\lib\ec\EC_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IL">
@@ -104,7 +104,8 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <Import Project="..\API\API.projitems" Label="Shared" />
+  <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
+  <Import Project="..\Shared.KKalike\Shared.KKalike.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

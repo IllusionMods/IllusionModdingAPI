@@ -1,4 +1,7 @@
-﻿using BepInEx;
+﻿#if !EC
+using System;
+#endif
+using BepInEx;
 using UniRx;
 using UnityEngine;
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using ChaCustom;
-using HarmonyLib;
 using TMPro;
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,7 +33,7 @@ namespace KKAPI.Maker.UI
 
                     var copyTop = _subCategoryCopy.Find("EarTop");
                     copyTop.name = "CustomSubcategoryTop";
-
+                    
                     Object.DestroyImmediate(copyTop.GetComponent<CvsEar>());
                     Object.DestroyImmediate(copyTop.GetComponent<Image>());
                     Object.DestroyImmediate(copyTop.GetComponent<ContentSizeFitter>());

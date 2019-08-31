@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.IO;
+using System.Linq;
 #if KK || EC
 using ChaCustom;
 #elif AI
@@ -10,6 +11,9 @@ using HarmonyLib;
 using KKAPI.Maker.UI;
 using UnityEngine;
 using UnityEngine.UI;
+#if AI
+using CustomScene = CharaCustom.CharaCustom;
+#endif
 
 namespace KKAPI.Maker
 {
@@ -92,15 +96,7 @@ namespace KKAPI.Maker
                 CharaListIsLoading = false;
             }
 
-            //todo find dynamically
-            [HarmonyPrefix]
-#if KK
-            [HarmonyPatch(typeof(ChaFile), "LoadFile", new[] { typeof(BinaryReader), typeof(bool), typeof(bool) })]
-            public static void ChaFileLoadFilePreHook(ChaFile __instance, BinaryReader br, bool noLoadPNG, bool noLoadStatus)
-#elif EC
-            [HarmonyPatch(typeof(ChaFile), "LoadFile", new[] { typeof(BinaryReader), typeof(int), typeof(bool), typeof(bool) })]
-            public static void ChaFileLoadFilePreHook(ChaFile __instance, BinaryReader br, int lang, bool noLoadPNG, bool noLoadStatus)
-#endif
+            public static void ChaFileLoadFilePreHook(ChaFile __instance)
             {
                 if (!CharaListIsLoading && InsideMaker)
                     InternalLastLoadedChaFile = __instance;
@@ -142,6 +138,21 @@ namespace KKAPI.Maker
                     else if (ReferenceEquals(__instance, MakerCoordinateLoadToggle.LoadButton))
                         value = MakerCoordinateLoadToggle.AnyEnabled;
                 }
+            }
+
+            public static void Init()
+            {
+                var hi = BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
+
+                // KK LoadFile(BinaryReader br, bool noLoadPNG, bool noLoadStatus)
+                // EC LoadFile(BinaryReader br, int lang, bool noLoadPNG, bool noLoadStatus)
+                // AI LoadFile(BinaryReader br, int lang, bool noLoadPNG = false, bool noLoadStatus = true)
+                var target = AccessTools.GetDeclaredMethods(typeof(ChaFile))
+                    .Where(x => x.Name == "LoadFile" && x.GetParameters().Any(p => p.ParameterType == typeof(BinaryReader)))
+                    .OrderByDescending(x => x.GetParameters().Length)
+                    .First();
+                KoikatuAPI.Logger.LogDebug("Hooking " + target.FullDescription());
+                hi.Patch(target, new HarmonyMethod(typeof(Hooks), nameof(ChaFileLoadFilePreHook)));
             }
         }
     }

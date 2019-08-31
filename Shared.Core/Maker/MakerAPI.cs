@@ -13,7 +13,6 @@ using Object = UnityEngine.Object;
 #if KK || EC
 using ChaCustom;
 using UniRx;
-
 #elif AI
 using CharaCustom;
 using AIChara;
@@ -650,7 +649,7 @@ namespace KKAPI.Maker
         {
             if (insideStudio) return;
 
-            BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
+            Hooks.Init();
         }
 
         /// <summary>

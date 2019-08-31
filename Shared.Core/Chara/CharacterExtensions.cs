@@ -1,4 +1,9 @@
 ﻿using System.Linq;
+#if KK || EC
+using UniRx;
+#elif AI
+using AIChara;
+#endif
 
 namespace KKAPI.Chara
 {

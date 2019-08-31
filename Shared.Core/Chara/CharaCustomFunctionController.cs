@@ -1,9 +1,11 @@
 ﻿using KKAPI.Maker;
 using System;
 using System.Collections;
-using UniRx;
 #if KK
 using KKAPI.MainGame;
+using UniRx;
+#elif AI
+using AIChara;
 #endif
 using ExtensibleSaveFormat;
 using UnityEngine;

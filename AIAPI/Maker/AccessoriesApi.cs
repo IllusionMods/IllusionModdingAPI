@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using BepInEx.Logging;
-using ChaCustom;
 using HarmonyLib;
-using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using AIChara;
+using ChaAccessoryComponent = AIChara.CmpAccessory;
+using CvsAccessory = CharaCustom.CustomAcsCorrectSet;
 
 namespace KKAPI.Maker
 {
@@ -141,6 +141,15 @@ namespace KKAPI.Maker
             return accessoryComponent.GetComponentInParent<ChaControl>();
         }
 
+        private static ChaAccessoryComponent[] GetAccessories(ChaControl cc)
+        {
+#if AI
+            return cc.cmpAccessory;
+#else
+			return cc.cusAcsCmp;
+#endif
+        }
+
         internal static void Init()
         {
             DetectMoreAccessories();
@@ -163,8 +172,8 @@ namespace KKAPI.Maker
             }
             else
             {
-                _getChaAccessoryCmp = (control, i) => control.cusAcsCmp[i];
-                _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cusAcsCmp, component);
+                _getChaAccessoryCmp = (control, i) => GetAccessories(control)[i];
+                _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(GetAccessories(control), component);
                 _getPartsInfo = i => MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[i];
             }
 
@@ -201,7 +210,7 @@ namespace KKAPI.Maker
                     else
                     {
                         _moreAccessoriesType = null;
-                        KoikatuAPI.Logger.Log(LogLevel.Message | LogLevel.Error, "[KKAPI] WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
+                        KoikatuAPI.Logger.LogWarning("[KKAPI] WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
                     }
                 }
             }
@@ -217,13 +226,19 @@ namespace KKAPI.Maker
         {
             if (MakerAPI.InsideMaker)
             {
-                var cvsAccessoryField = AccessTools.Field(typeof(CustomAcsParentWindow), "cvsAccessory");
-                var cvsAccessories = (CvsAccessory[])cvsAccessoryField.GetValue(Object.FindObjectOfType<CustomAcsParentWindow>());
+#if AI
+                _accessorySlotCanvasGroup = GameObject.Find("SubMenuAccessory").GetComponent<CanvasGroup>();
+				//todo
+                var cvsAccessories = new CvsAccessory[0];
+#else
+				var cvsAccessoryField = AccessTools.Field(typeof(CustomAcsParentWindow), "cvsAccessory");
+				var cvsAccessories = (CvsAccessory[])cvsAccessoryField.GetValue(Object.FindObjectOfType<CustomAcsParentWindow>());
 
                 var changeSlot = Object.FindObjectOfType<CustomAcsChangeSlot>();
                 _accessorySlotCanvasGroup = changeSlot.GetComponent<CanvasGroup>();
+#endif
 
-                if (MoreAccessoriesInstalled)
+				if (MoreAccessoriesInstalled)
                 {
                     var getCvsM = AccessTools.Method(_moreAccessoriesType, "GetCvsAccessory");
                     _getCvsAccessory = i => (CvsAccessory)getCvsM.Invoke(_moreAccessoriesInstance, new object[] { i });
@@ -327,6 +342,7 @@ namespace KKAPI.Maker
         }
 #endif
 
+#if !AI
         private static void OnChangeAcs(CvsAccessoryChange instance)
         {
             if (AccessoryTransferred == null) return;
@@ -346,5 +362,6 @@ namespace KKAPI.Maker
                 KoikatuAPI.Logger.LogError("Crash in AccessoryTransferred event: " + ex);
             }
         }
+#endif
     }
 }

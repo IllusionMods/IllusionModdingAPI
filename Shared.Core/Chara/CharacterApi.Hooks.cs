@@ -1,4 +1,9 @@
-﻿using ChaCustom;
+﻿#if KK || EC
+using ChaCustom;
+#elif AI
+using AIChara;
+using CharaCustom;
+#endif 
 using KKAPI.Maker;
 using System;
 using System.Collections;

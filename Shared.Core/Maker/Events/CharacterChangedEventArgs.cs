@@ -1,4 +1,7 @@
 ﻿using System;
+#if AI
+using AIChara;
+#endif
 
 #pragma warning disable 1591
 

@@ -56,7 +56,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="ExtensibleSaveFormat">
-      <HintPath>..\lib\ExtensibleSaveFormat.dll</HintPath>
+      <HintPath>..\lib\kk\ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -102,7 +102,8 @@
     <Compile Include="Studio\UI\CustomStateCategorySwitch.cs" />
   </ItemGroup>
   <ItemGroup />
-  <Import Project="..\API\API.projitems" Label="Shared" />
+  <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
+  <Import Project="..\Shared.KKalike\Shared.KKalike.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST D:\SVN\MarkdownGenerator\bin\Debug\MarkdownGenerator.exe (
