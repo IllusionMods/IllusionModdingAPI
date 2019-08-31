@@ -105,7 +105,9 @@
   <Import Project="..\API\API.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y $(OutDir)KKAPI.* $(SolutionDir)lib
-"D:\SVN\MarkdownGenerator\bin\Debug\MarkdownGenerator.exe" " $(SolutionDir)lib\KKAPI.dll" "$(SolutionDir)doc"</PostBuildEvent>
+    <PostBuildEvent>IF EXIST D:\SVN\MarkdownGenerator\bin\Debug\MarkdownGenerator.exe (
+COPY /Y $(OutDir)KKAPI.* $(SolutionDir)lib
+"D:\SVN\MarkdownGenerator\bin\Debug\MarkdownGenerator.exe" " $(SolutionDir)lib\KKAPI.dll" "$(SolutionDir)doc"
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>
