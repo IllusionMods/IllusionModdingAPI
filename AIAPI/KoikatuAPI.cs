@@ -4,6 +4,7 @@ using KKAPI.Chara;
 using KKAPI.Maker;
 using Manager;
 using UnityEngine;
+
 namespace KKAPI
 {
     [BepInPlugin(GUID, "Modding API", VersionConst)]

@@ -56,6 +56,7 @@ namespace KKAPI.Maker
 
         public static void AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
         {
+            control.Category = new MakerCategory("Accessory", "");
             _accessoryWindowEntries.Add(control);
         }
 
@@ -277,7 +278,7 @@ namespace KKAPI.Maker
 
             var newContents = FindSubcategoryContentParent(newSetting.transform);
             foreach (var child in newContents.Children())
-                Object.Destroy(child.gameObject);
+                Object.DestroyImmediate(child.gameObject);
 
             LayoutRebuilder.MarkLayoutForRebuild(select.GetComponent<RectTransform>());
 
@@ -322,10 +323,8 @@ namespace KKAPI.Maker
 
                         modsCategoryTop = copy.Find("CategoryTop");
 
-                        foreach (var gameObject in modsCategoryTop.Cast<Transform>().Select(x => x.gameObject))
-                        {
-                            Object.Destroy(gameObject);
-                        }
+                        foreach (var tr in modsCategoryTop.Children())
+                            Object.DestroyImmediate(tr.gameObject);
                     }
 
                     KoikatuAPI.Logger.LogDebug($"Adding custom subcategory {category.SubCategoryName} to {categoryName}");
