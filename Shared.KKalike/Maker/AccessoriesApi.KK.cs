@@ -271,7 +271,7 @@ namespace KKAPI.Maker
             if (KoikatuAPI.EnableDebugLogging)
                 KoikatuAPI.Logger.LogMessage("MakerAccSlotAdded - slot:" + newSlotIndex);
 
-            MakerAPI.OnMakerAccSlotAdded(newSlotTransform);
+            MakerInterfaceCreator.OnMakerAccSlotAdded(newSlotTransform);
 
             if (MakerAccSlotAdded == null) return;
             try

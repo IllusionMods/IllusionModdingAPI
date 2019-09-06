@@ -219,11 +219,11 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `T` | AddAccessoryWindowControl(`T` control) | Add a control to the accessory selection and settings window. | 
+| `T` | AddAccessoryWindowControl(`T` control) | Add a control to the accessory selection and settings window.  For editable controls that depend on the selected accessory use `KKAPI.Maker.MakerAPI.AddEditableAccessoryWindowControl``2(``0)`. | 
 | `T` | AddControl(`T` control) | Add custom controls. If you want to use custom sub categories, register them by calling AddSubCategory. | 
+| `AccessoryControlWrapper<T, TVal>` | AddEditableAccessoryWindowControl(`T` control) | Add a control to the accessory selection and settings window. The control is wrapped to properly respond to changes in selected accessory slot (has unique values for each slot). | 
 | `T` | AddSidebarControl(`T` control) | Add a control to the right sidebar in chara maker (the "Control Panel" where you set eye blinking, mouth expressions etc.) | 
 | `void` | AddSubCategory(`MakerCategory` category) | Add custom sub categories. They need to be added before maker starts loading,  or in the `KKAPI.Maker.MakerAPI.RegisterCustomSubCategories` event. | 
-| `Transform` | FindSubcategoryContentParent(`Transform` categorySubTransform) |  | 
 | `ChaControl` | GetCharacterControl() | Get the ChaControl of the character serving as a preview in character maker.  Outside of character maker and early on in maker load process this returns null. | 
 | `CharacterLoadFlags` | GetCharacterLoadFlags() | Get values of the default partial load checkboxes present at the bottom of the  character load window (load face, body, hair, parameters, clothes).  Returns null if the values could not be collected (safe to assume it's the same as being enabled). | 
 | `CoordinateType` | GetCurrentCoordinateType() | Currently selected maker coordinate | 
@@ -232,7 +232,6 @@ Static Methods
 | `void` | Init(`Boolean` insideStudio) |  | 
 | `Boolean` | IsInsideClassMaker() | Check if the maker was loaded from within classroom select screen in main game | 
 | `Boolean` | IsInterfaceVisible() | Check if maker interface is currently visible and not obscured by settings screen or other things.  Useful for knowing when to display OnGui mod windows in maker. | 
-| `void` | OnMakerAccSlotAdded(`Transform` newSlotTransform) |  | 
 | `void` | OnReloadInterface(`EventArgs` args) |  | 
 
 

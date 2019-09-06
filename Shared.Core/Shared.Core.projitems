@@ -11,7 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.ControllerRegistration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharaCustomFunctionController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\Events\CharaReloadEventArgs.cs" />
@@ -24,7 +23,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\RegisterCustomControlsEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\RegisterSubCategoriesEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerAPI.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerAPI.Hooks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerCategory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\BaseEditableGuiEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\BaseGuiEntry.cs" />

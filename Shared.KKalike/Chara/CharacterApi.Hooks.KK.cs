@@ -1,9 +1,4 @@
-﻿#if KK || EC
-using ChaCustom;
-#elif AI
-using AIChara;
-using CharaCustom;
-#endif 
+﻿using ChaCustom;
 using KKAPI.Maker;
 using System;
 using System.Collections;
@@ -200,7 +195,6 @@ namespace KKAPI.Chara
             /// </summary>
             public static bool ClothesFileControlLoading;
 
-#if !AI
             [HarmonyPrefix]
             [HarmonyPatch(typeof(clothesFileControl), "Initialize")]
             public static void clothesFileControl_InitializePreHook()
@@ -214,7 +208,6 @@ namespace KKAPI.Chara
             {
                 ClothesFileControlLoading = false;
             }
-#endif
         }
 	}
 }

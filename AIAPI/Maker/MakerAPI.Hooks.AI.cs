@@ -1,19 +1,10 @@
 ﻿using System.Collections;
 using System.IO;
 using System.Linq;
-#if KK || EC
-using ChaCustom;
-#elif AI
 using AIChara;
 using CharaCustom;
-#endif
 using HarmonyLib;
-using KKAPI.Maker.UI;
 using UnityEngine;
-using UnityEngine.UI;
-#if AI
-using CustomScene = CharaCustom.CharaCustom;
-#endif
 
 namespace KKAPI.Maker
 {
@@ -21,27 +12,22 @@ namespace KKAPI.Maker
     {
         private static class Hooks
         {
-            private static bool _studioStarting;
+            private static bool _makerStarting;
 
             [HarmonyPrefix]
-            [HarmonyPatch(typeof(UI_ToggleGroupCtrl), "Start")]
-            public static void HBeforeToggleGroupStart(UI_ToggleGroupCtrl __instance)
+            [HarmonyPatch(typeof(CvsSelectWindow), "Start")]
+            public static void CvsSelectWindowStart(CvsSelectWindow __instance)
             {
-                var categoryTransfrom = __instance.transform;
-
-                if (categoryTransfrom?.parent != null && categoryTransfrom.parent.name == "CvsMenuTree")
+                if (!_makerStarting)
                 {
-                    if (!_studioStarting)
-                    {
-                        InsideMaker = true;
-                        _studioStarting = true;
-                        OnRegisterCustomSubCategories();
-                        KoikatuAPI.Instance.StartCoroutine(OnMakerLoadingCo());
-                    }
-
-                    // Have to add missing subcategories now, before UI_ToggleGroupCtrl.Start runs
-                    AddMissingSubCategories(__instance);
+                    InsideMaker = true;
+                    _makerStarting = true;
+                    OnRegisterCustomSubCategories();
+                    KoikatuAPI.Instance.StartCoroutine(OnMakerLoadingCo());
                 }
+
+                // Have to add missing subcategories now, before UI_ToggleGroupCtrl.Start runs
+                MakerInterfaceCreator.AddMissingSubCategories(__instance);
             }
 
             private static IEnumerator OnMakerLoadingCo()
@@ -64,39 +50,25 @@ namespace KKAPI.Maker
                 for (var i = 0; i < 2; i++)
                     yield return null;
 
-                _studioStarting = false;
+                _makerStarting = false;
                 OnMakerFinishedLoading();
             }
 
             [HarmonyPrefix]
-            [HarmonyPatch(typeof(CustomScene), "Start")]
+            [HarmonyPatch(typeof(CharaCustom.CharaCustom), "Start")]
             public static void CustomScene_Start()
             {
                 InsideMaker = Singleton<CustomBase>.Instance != null;
             }
 
             [HarmonyPrefix]
-            [HarmonyPatch(typeof(CustomScene), "OnDestroy")]
+            [HarmonyPatch(typeof(CharaCustom.CharaCustom), "OnDestroy")]
             public static void CustomScene_Destroy()
             {
                 OnMakerExiting();
                 InsideMaker = false;
                 InternalLastLoadedChaFile = null;
             }
-
-#if !AI
-            [HarmonyPrefix, HarmonyPatch(typeof(CustomCharaFile), "Initialize")]
-            public static void CustomScenePrefix()
-            {
-                CharaListIsLoading = true;
-            }
-
-            [HarmonyPostfix, HarmonyPatch(typeof(CustomCharaFile), "Initialize")]
-            public static void CustomScenePostfix()
-            {
-                CharaListIsLoading = false;
-            }
-#endif
 
             public static void ChaFileLoadFilePreHook(ChaFile __instance)
             {
@@ -126,8 +98,8 @@ namespace KKAPI.Maker
                     OnChaFileLoaded(new ChaFileLoadedEventArgs(filename, sex, face, body, hair, parameter, coordinate, __instance, InternalLastLoadedChaFile));
             }
 
-#if !AI
-            /// <summary>
+            /* todo useful?
+             * /// <summary>
             /// Keep Load button in maker character load list enabled if any of the extra toggles are enabled, but none of the stock ones are. 
             /// </summary>
             [HarmonyPrefix]
@@ -141,15 +113,12 @@ namespace KKAPI.Maker
                     else if (ReferenceEquals(__instance, MakerCoordinateLoadToggle.LoadButton))
                         value = MakerCoordinateLoadToggle.AnyEnabled;
                 }
-            }
-#endif
+            }*/
 
             public static void Init()
             {
                 var hi = BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
 
-                // KK LoadFile(BinaryReader br, bool noLoadPNG, bool noLoadStatus)
-                // EC LoadFile(BinaryReader br, int lang, bool noLoadPNG, bool noLoadStatus)
                 // AI LoadFile(BinaryReader br, int lang, bool noLoadPNG = false, bool noLoadStatus = true)
                 var target = AccessTools.GetDeclaredMethods(typeof(ChaFile))
                     .Where(x => x.Name == "LoadFile" && x.GetParameters().Any(p => p.ParameterType == typeof(BinaryReader)))

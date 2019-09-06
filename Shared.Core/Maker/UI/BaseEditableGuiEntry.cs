@@ -1,4 +1,4 @@
-﻿#if !EC
+﻿#if AI
 using System;
 #endif
 using BepInEx;

@@ -10,14 +10,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CardAuthorData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.Hooks.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoryControlWrapper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessorySlotChangeEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.Hooks.KK.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.KK.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.Hooks.KK.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoryControlWrapper.KK.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessorySlotEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryTransferEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryWindowControlValueChangedEventArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\RegisterCustomControlsEvent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerAPI.Hooks.KK.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerConstants.KK.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerInterfaceCreator.KK.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerCoordinateLoadToggle.cs" />

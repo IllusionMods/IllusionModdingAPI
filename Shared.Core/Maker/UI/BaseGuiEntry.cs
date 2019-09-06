@@ -82,7 +82,7 @@ namespace KKAPI.Maker.UI
         protected static Transform GetExistingControl(string categoryPath, string controlName)
         {
             var cat = GameObject.Find(categoryPath);
-            var catTop = MakerAPI.FindSubcategoryContentParent(cat.transform);
+            var catTop = MakerInterfaceCreator.FindSubcategoryContentParent(cat.transform);
             return catTop.Find(controlName);
         }
 
