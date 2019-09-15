@@ -111,6 +111,7 @@
     <Compile Include="Maker\UI\MakerButton.cs" />
     <Compile Include="Maker\UI\MakerCoordinateLoadToggle.cs" />
     <Compile Include="Maker\UI\MakerLoadToggle.cs" />
+    <Compile Include="Maker\UI\MakerRadioButtons.cs" />
     <Compile Include="Maker\UI\MakerSeparator.cs" />
     <Compile Include="Maker\UI\MakerSlider.cs" />
     <Compile Include="Maker\UI\SubCategoryCreator.cs" />

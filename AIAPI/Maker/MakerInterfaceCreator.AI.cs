@@ -84,8 +84,8 @@ namespace KKAPI.Maker
             //    .ValueChanged.Subscribe(color => KoikatuAPI.Logger.LogMessage(color));
             //AddControl(new MakerDropdown("test toggle", new[] { "t0", "t1", "t2", "t3" }, cat, 1, instance))
             //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            //AddControl(new MakerRadioButtons(cat, instance, "radio btns", "b1", "b2"))
-            //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            AddControl(new MakerRadioButtons(cat, instance, "radio btns", "b1", "b2", "b3"))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(new MakerSlider(cat, "test slider", 0, 1, 1, instance))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             //AddControl(

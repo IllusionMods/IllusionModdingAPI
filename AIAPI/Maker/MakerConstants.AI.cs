@@ -1,10 +1,14 @@
-﻿namespace KKAPI.Maker
+﻿using UnityEngine;
+
+namespace KKAPI.Maker
 {
     /// <summary>
     /// Useful values from the character maker. Mostly built-in categories for use with registering custom controls.
     /// </summary>
     public static class MakerConstants
     {
+        public static readonly Color DefaultControlTextColor = new Color(0.922f, 0.886f, 0.843f);
+
 #pragma warning disable 1591
         public static class Face
         {

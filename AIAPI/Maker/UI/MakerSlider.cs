@@ -40,7 +40,7 @@ namespace KKAPI.Maker.UI
             _maxValue = maxValue;
             _defaultValue = defaultValue;
 
-            TextColor = new Color(0.922f, 0.886f, 0.843f);
+            TextColor = MakerConstants.DefaultControlTextColor;
         }
 
         /// <summary>
