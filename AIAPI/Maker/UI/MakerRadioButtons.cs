@@ -81,11 +81,12 @@ namespace KKAPI.Maker.UI
 
             var txtGo = Object.Instantiate(GameObject.Find("CharaCustom/CustomControl/CanvasMain/SettingWindow/WinBody/B_Nip/Setting/Setting02/Scroll View/Viewport/Content/ColorSet/Text"), selGo.transform);
             txtGo.transform.SetAsFirstSibling();
-            const int textWidth = 100;
+            const int textWidth = 110;
             txtGo.AddComponent<LayoutElement>().minWidth = textWidth;
             var txtCmp = txtGo.GetComponent<Text>();
             txtCmp.text = _settingName;
             txtCmp.color = TextColor;
+            SetTextAutosize(txtCmp);
 
             RemoveLocalisation(selGo);
 
@@ -108,6 +109,7 @@ namespace KKAPI.Maker.UI
 
                 var newTglText = newBtn.GetComponentInChildren<Text>();
                 newTglText.text = _buttons[i];
+                SetTextAutosize(newTglText);
 
                 var newTgl = newBtn.GetComponent<UI_ToggleEx>();
                 newTgl.group = toggleGroup;
@@ -125,7 +127,7 @@ namespace KKAPI.Maker.UI
             Buttons = newButtons.AsReadOnly();
 
 
-            var singleToggleWidth = (selGo.GetComponent<RectTransform>().sizeDelta.x - textWidth) / Buttons.Count;
+            var singleToggleWidth = (selGo.GetComponent<RectTransform>().sizeDelta.x - textWidth - 10) / Buttons.Count;
             foreach (var button in Buttons)
                 button.GetComponent<LayoutElement>().minWidth = singleToggleWidth;
 

@@ -108,6 +108,7 @@ namespace KKAPI.Maker.UI
 
             sliderSet.title.text = _settingName;
             sliderSet.title.color = TextColor;
+            SetTextAutosize(sliderSet.title);
 
             var slider = sliderSet.slider;
             slider.minValue = _minValue;

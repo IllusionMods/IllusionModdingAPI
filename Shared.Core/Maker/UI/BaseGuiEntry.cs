@@ -76,6 +76,12 @@ namespace KKAPI.Maker.UI
             }
         }
 
+        internal static void SetTextAutosize(Text txtCmp)
+        {
+            txtCmp.resizeTextMaxSize = txtCmp.fontSize;
+            txtCmp.resizeTextForBestFit = true;
+        }
+
         /// <summary>
         /// Find first control of this name under the specified category transform
         /// </summary>
