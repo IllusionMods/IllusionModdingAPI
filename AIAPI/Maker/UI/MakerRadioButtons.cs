@@ -47,8 +47,6 @@ namespace KKAPI.Maker.UI
 
             _settingName = settingName;
             _buttons = buttons;
-
-            TextColor = MakerConstants.DefaultControlTextColor;
         }
 
         /// <inheritdoc />

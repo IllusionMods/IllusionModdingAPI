@@ -7,6 +7,9 @@ namespace KKAPI.Maker
     /// </summary>
     public static class MakerConstants
     {
+        /// <summary>
+        /// Default text color for maker controls.
+        /// </summary>
         public static readonly Color DefaultControlTextColor = new Color(0.922f, 0.886f, 0.843f);
 
 #pragma warning disable 1591

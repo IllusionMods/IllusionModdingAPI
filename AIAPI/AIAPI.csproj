@@ -57,10 +57,6 @@
       <HintPath>..\lib\bepin5\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="MessagePack">
-      <HintPath>..\lib\ai\MessagePack.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="UniRx">
@@ -83,16 +79,16 @@
       <HintPath>..\lib\ai\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\KKABMX\lib\ai\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\lib\ai\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
       <HintPath>..\lib\ai\UnityEngine.UIModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityExtensions">
-      <HintPath>..\lib\ai\UnityExtensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -110,6 +106,7 @@
     <Compile Include="Maker\MakerInterfaceCreator.AI.cs" />
     <Compile Include="Maker\UI\MakerButton.cs" />
     <Compile Include="Maker\UI\MakerCoordinateLoadToggle.cs" />
+    <Compile Include="Maker\UI\MakerDropdown.cs" />
     <Compile Include="Maker\UI\MakerLoadToggle.cs" />
     <Compile Include="Maker\UI\MakerRadioButtons.cs" />
     <Compile Include="Maker\UI\MakerSeparator.cs" />

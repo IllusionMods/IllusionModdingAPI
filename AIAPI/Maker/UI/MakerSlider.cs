@@ -39,8 +39,6 @@ namespace KKAPI.Maker.UI
             _minValue = minValue;
             _maxValue = maxValue;
             _defaultValue = defaultValue;
-
-            TextColor = MakerConstants.DefaultControlTextColor;
         }
 
         /// <summary>

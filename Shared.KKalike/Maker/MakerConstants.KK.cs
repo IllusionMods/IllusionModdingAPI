@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace KKAPI.Maker
 {
@@ -8,6 +9,11 @@ namespace KKAPI.Maker
     /// </summary>
     public static class MakerConstants
     {
+        /// <summary>
+        /// Default text color for maker controls.
+        /// </summary>
+        public static readonly Color DefaultControlTextColor = Color.white;
+
         private static readonly List<MakerCategory> _builtInCategories = new List<MakerCategory>
         {
             new MakerCategory("00_FaceTop", "tglAll", 10),

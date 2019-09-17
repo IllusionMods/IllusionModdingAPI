@@ -136,7 +136,7 @@ namespace KKAPI.Maker.UI
         /// Text color of the control's description text (usually on the left).
         /// Can only set this before the control is created.
         /// </summary>
-        public Color TextColor { get; set; } = Color.white;
+        public Color TextColor { get; set; } = MakerConstants.DefaultControlTextColor;
 
         /// <summary>
         /// The plugin that owns this custom control.
