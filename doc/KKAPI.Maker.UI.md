@@ -79,6 +79,7 @@ Static Methods
 | --- | --- | --- | 
 | `Transform` | GetExistingControl(`String` categoryPath, `String` controlName) | Find first control of this name under the specified category transform | 
 | `void` | RemoveLocalisation(`GameObject` control) |  | 
+| `void` | SetTextAutosize(`Text` txtCmp) |  | 
 
 
 ## `MakerButton`

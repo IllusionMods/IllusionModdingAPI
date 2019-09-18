@@ -283,6 +283,13 @@ public static class KKAPI.Maker.MakerConstants
 
 ```
 
+Static Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Color` | DefaultControlTextColor | Default text color for maker controls. | 
+
+
 Static Properties
 
 | Type | Name | Summary | 
@@ -294,7 +301,7 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `String` | <GetBuiltInCategory>g__MakeKey|4_0(`String` catName, `String` subCatName) |  | 
+| `String` | <GetBuiltInCategory>g__MakeKey|5_0(`String` catName, `String` subCatName) |  | 
 | `MakerCategory` | GetBuiltInCategory(`String` category, `String` subCategory) | Quick search for a built-in category. If you know what category you want to use at  compile time you can use the shortcuts instead, e.g. `KKAPI.Maker.MakerConstants.Face.Ear` | 
 
 
