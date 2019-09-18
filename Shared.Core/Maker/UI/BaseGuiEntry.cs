@@ -80,6 +80,8 @@ namespace KKAPI.Maker.UI
         {
             txtCmp.resizeTextMaxSize = txtCmp.fontSize;
             txtCmp.resizeTextForBestFit = true;
+            txtCmp.verticalOverflow = VerticalWrapMode.Truncate;
+            txtCmp.horizontalOverflow = HorizontalWrapMode.Wrap;
         }
 
         /// <summary>

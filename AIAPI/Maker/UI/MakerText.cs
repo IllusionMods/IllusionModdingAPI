@@ -61,6 +61,13 @@ namespace KKAPI.Maker.UI
             _textCopy.gameObject.SetActive(false);
             _textCopy.name = "txtCustom";
 
+            _textCopy.gameObject.AddComponent<LayoutElement>().minHeight = 40;
+
+            var textCmp = _textCopy.GetComponentInChildren<Text>();
+            textCmp.lineSpacing = 0.75f;
+            textCmp.fontSize = 24;
+            SetTextAutosize(textCmp);
+
             RemoveLocalisation(_textCopy.gameObject);
         }
 
@@ -74,17 +81,11 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var tr = Object.Instantiate(TextCopy, subCategoryList, true);
-
-            tr.gameObject.AddComponent<LayoutElement>().minHeight = 40;
+            var tr = Object.Instantiate(TextCopy, subCategoryList, false);
 
             _instance = tr.GetComponentInChildren<Text>();
             _instance.text = Text;
             _instance.color = TextColor;
-            _instance.fontSize = 17;
-            _instance.lineSpacing = 0.7f;
-            _instance.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0.5f);
-            SetTextAutosize(_instance);
 
             return tr.gameObject;
         }
