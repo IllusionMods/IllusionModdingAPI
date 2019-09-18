@@ -105,12 +105,15 @@
     <Compile Include="Maker\MakerConstants.AI.cs" />
     <Compile Include="Maker\MakerInterfaceCreator.AI.cs" />
     <Compile Include="Maker\UI\MakerButton.cs" />
+    <Compile Include="Maker\UI\MakerColor.cs" />
     <Compile Include="Maker\UI\MakerCoordinateLoadToggle.cs" />
     <Compile Include="Maker\UI\MakerDropdown.cs" />
     <Compile Include="Maker\UI\MakerLoadToggle.cs" />
     <Compile Include="Maker\UI\MakerRadioButtons.cs" />
     <Compile Include="Maker\UI\MakerSeparator.cs" />
     <Compile Include="Maker\UI\MakerSlider.cs" />
+    <Compile Include="Maker\UI\MakerText.cs" />
+    <Compile Include="Maker\UI\MakerToggle.cs" />
     <Compile Include="Maker\UI\SubCategoryCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
