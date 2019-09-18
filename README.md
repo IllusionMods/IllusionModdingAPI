@@ -3,8 +3,11 @@
 [![Downloads](https://img.shields.io/github/downloads/ManlyMarco/KKAPI/total.svg?style=flat)](https://github.com/ManlyMarco/KKAPI/releases)
 [![Issues](https://img.shields.io/github/issues/ManlyMarco/KKAPI.svg?style=flat)](https://github.com/ManlyMarco/KKAPI/issues)
 [![License](https://img.shields.io/github/license/ManlyMarco/KKAPI.svg?style=flat)](https://github.com/ManlyMarco/KKAPI/blob/master/LICENSE)
-## Modding API for Koikatu/Koikatsu Party (KKAPI), Emotion Creators (ECAPI) and AI-Shoujo/AI-Syoujyo (AIAPI)
-This project aims to make creating mods for recent UnityEngine games made by the company Illusion easier and less bug-prone. It abstracts away a lot of the complexity of hooking the game save/load logic, creating interface elements at runtime, and many other tasks. All this while supplying many useful methods and tools.
+## Modding API for Illusion games
+This project aims to make creating mods for recent UnityEngine games made by the company Illusion easier and less bug-prone. It abstracts away a lot of the complexity of hooking the game save/load logic, creating interface elements at runtime, and many other tasks. All this while supplying many useful methods and tools. Supported games:
+- Koikatu/Koikatsu Party (KKAPI)
+- Emotion Creators (ECAPI)
+- AI-Shoujo/AI-Syoujyo (AIAPI)
 
 ## Some mods that use the modding API
 * [Koikatu Overlay Mods](https://github.com/ManlyMarco/Koikatu-Overlay-Mods) - Uses many different features like saving to coordinates, partial load toggles, advances maker interface elements, using Windows Open File dialogs, etc.
