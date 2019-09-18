@@ -5,9 +5,7 @@ using KKAPI.Maker.UI;
 using KKAPI.Maker.UI.Sidebar;
 using UnityEngine;
 #if KK || EC
-using System.Linq;
 using ChaCustom;
-using Object = UnityEngine.Object;
 #elif AI
 using CharaCustom;
 using AIChara;
@@ -373,25 +371,7 @@ namespace KKAPI.Maker
         public static CharacterLoadFlags GetCharacterLoadFlags()
         {
             if (!InsideAndLoaded) return null;
-#if KK || EC
-            var cfw = Object.FindObjectsOfType<CustomFileWindow>()
-                .FirstOrDefault(i => i.fwType == CustomFileWindow.FileWindowType.CharaLoad);
-
-            if (cfw == null) return null;
-
-            return new CharacterLoadFlags
-            {
-                Body = cfw.tglChaLoadBody.isOn,
-                Clothes = cfw.tglChaLoadCoorde.isOn,
-                Hair = cfw.tglChaLoadHair.isOn,
-                Face = cfw.tglChaLoadFace.isOn,
-                Parameters = cfw.tglChaLoadParam.isOn
-            };
-#elif AI 
-			// todo
-            KoikatuAPI.Logger.LogWarning("GetCharacterLoadFlags is not implemented yet");
-            return null;
-#endif
+            return MakerInterfaceCreator.GetCharacterLoadFlags();
         }
 
         internal static void Init(bool insideStudio)

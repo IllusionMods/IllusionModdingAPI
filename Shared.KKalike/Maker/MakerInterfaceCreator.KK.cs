@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using BepInEx;
+using ChaCustom;
 using KKAPI.Maker.UI;
 using KKAPI.Maker.UI.Sidebar;
 using UniRx;
@@ -304,6 +305,23 @@ namespace KKAPI.Maker
         {
             _sidebarEntries.Add(control);
             return control;
+        }
+
+        public static CharacterLoadFlags GetCharacterLoadFlags()
+        {
+            var cfw = Object.FindObjectsOfType<CustomFileWindow>()
+                .FirstOrDefault(i => i.fwType == CustomFileWindow.FileWindowType.CharaLoad);
+
+            if (cfw == null) return null;
+
+            return new CharacterLoadFlags
+            {
+                Body = cfw.tglChaLoadBody.isOn,
+                Clothes = cfw.tglChaLoadCoorde.isOn,
+                Hair = cfw.tglChaLoadHair.isOn,
+                Face = cfw.tglChaLoadFace.isOn,
+                Parameters = cfw.tglChaLoadParam.isOn
+            };
         }
     }
 }

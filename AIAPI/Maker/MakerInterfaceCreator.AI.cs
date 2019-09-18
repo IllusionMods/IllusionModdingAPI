@@ -76,22 +76,19 @@ namespace KKAPI.Maker
             AddControl(new MakerSeparator(cat, instance));
             AddControl(new MakerSeparator(cat, instance));
             AddControl(new MakerSeparator(cat, instance));
-            //AddControl(new MakerToggle(cat, "test toggle", instance))
-            //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            AddControl(new MakerToggle(cat, "test toggle", instance))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(new MakerButton("test btn", cat, instance))
                 .OnClick.AddListener(() => KoikatuAPI.Logger.LogMessage("Clicked"));
-            //AddControl(new MakerColor("test color", true, cat, Color.magenta, instance))
-            //    .ValueChanged.Subscribe(color => KoikatuAPI.Logger.LogMessage(color));
+            AddControl(new MakerColor("test color", true, cat, Color.magenta, instance))
+                .ValueChanged.Subscribe(color => KoikatuAPI.Logger.LogMessage(color));
             AddControl(new MakerDropdown("test toggle", new[] { "t0", "t1", "t2", "t3" }, cat, 1, instance))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(new MakerRadioButtons(cat, instance, "radio btns", "b1", "b2", "b3"))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(new MakerSlider(cat, "test slider", 0, 1, 1, instance))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            //AddControl(
-            //    new MakerText(
-            //        "test text test text test text test text test text test " +
-            //        "text test text test text test text test text", cat, instance));
+            AddControl(new MakerText("test text test text test text test text test text test text test text test text test text test text", cat, instance));
             //AddControl(new MakerTextbox(cat, "test textbox", "String test", instance))
             //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             //
@@ -350,6 +347,22 @@ namespace KKAPI.Maker
         public static void InitializeMaker()
         {
             DebugControls();
+        }
+
+        public static CharacterLoadFlags GetCharacterLoadFlags()
+        {
+            var toggles = Traverse.Create(Object.FindObjectOfType<CvsO_CharaLoad>()).Field("charaLoadWin").Field<Toggle[]>("tglLoadOption").Value;
+
+            if (toggles == null) return null;
+
+            return new CharacterLoadFlags
+            {
+                Face =            toggles[0].isOn,
+                Body =            toggles[1].isOn,
+                Hair =            toggles[2].isOn,
+                Clothes =         toggles[3].isOn,
+                Parameters =      toggles[4].isOn
+            };
         }
     }
 }
