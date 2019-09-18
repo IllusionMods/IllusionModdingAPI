@@ -47,7 +47,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var tr = Object.Instantiate(GameObject.Find("CharaCustom/CustomControl/CanvasMain/SettingWindow/WinFace/F_Mole/Setting/Setting02/Scroll View/Viewport/Content/ColorSet"), subCategoryList, true);
+            var tr = Object.Instantiate(GameObject.Find("CharaCustom/CustomControl/CanvasMain/SettingWindow/WinFace/F_Mole/Setting/Setting02/Scroll View/Viewport/Content/ColorSet"), subCategoryList, false);
             tr.name = "ColorSet";
 
             var ccs = tr.GetComponent<CustomColorSet>();

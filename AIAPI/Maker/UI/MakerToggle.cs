@@ -46,7 +46,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var tr = Object.Instantiate(GameObject.Find("CharaCustom/CustomControl/CanvasMain/SubMenu/SubMenuFace/Scroll View/Viewport/Content/Category/CategoryTop/SameSettingEyes"), subCategoryList, true);
+            var tr = Object.Instantiate(GameObject.Find("CharaCustom/CustomControl/CanvasMain/SubMenu/SubMenuFace/Scroll View/Viewport/Content/Category/CategoryTop/SameSettingEyes"), subCategoryList, false);
 
             var tgl = tr.GetComponentInChildren<Toggle>();
             tgl.onValueChanged.ActuallyRemoveAllListeners();

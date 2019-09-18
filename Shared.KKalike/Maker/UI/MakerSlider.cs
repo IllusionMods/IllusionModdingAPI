@@ -68,7 +68,7 @@ namespace KKAPI.Maker.UI
             // Exists in male and female maker
             var originalSlider = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglAll", "sldTemp");
 
-            _sliderCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
+            _sliderCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, false);
             _sliderCopy.gameObject.SetActive(false);
             _sliderCopy.name = "sldTemp";
 
@@ -99,7 +99,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var tr = Object.Instantiate(SliderCopy, subCategoryList, true);
+            var tr = Object.Instantiate(SliderCopy, subCategoryList, false);
 
             tr.name = "sldTemp";
 

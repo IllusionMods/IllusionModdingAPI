@@ -59,7 +59,7 @@ namespace KKAPI.Maker.UI
         {
             var original = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/tglConfig", "txtExplanation");
 
-            _textCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
+            _textCopy = Object.Instantiate(original, GuiCacheTransfrom, false);
             _textCopy.gameObject.SetActive(false);
             _textCopy.name = "txtCustom";
 
@@ -76,7 +76,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var tr = Object.Instantiate(TextCopy, subCategoryList, true);
+            var tr = Object.Instantiate(TextCopy, subCategoryList, false);
 
             _instance = tr.GetComponentInChildren<TextMeshProUGUI>();
             _instance.text = Text;

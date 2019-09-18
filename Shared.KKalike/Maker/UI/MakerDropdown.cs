@@ -53,7 +53,7 @@ namespace KKAPI.Maker.UI
         {
             var originalSlider = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/tglConfig", "ddRamp");
 
-            _dropdownCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
+            _dropdownCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, false);
             _dropdownCopy.gameObject.SetActive(false);
             _dropdownCopy.name = "ddList";
 
@@ -76,7 +76,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var tr = Object.Instantiate(DropdownCopy, subCategoryList, true);
+            var tr = Object.Instantiate(DropdownCopy, subCategoryList, false);
 
             var settingName = tr.Find("textKindTitle").GetComponent<TextMeshProUGUI>();
             settingName.text = SettingName;

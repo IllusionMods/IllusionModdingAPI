@@ -44,7 +44,7 @@ namespace KKAPI.Maker.UI
         
         private void MakeCopy()
         {
-            _dropdownCopy = Object.Instantiate(GameObject.Find("ddBirthday"), GuiCacheTransfrom, true).transform;
+            _dropdownCopy = Object.Instantiate(GameObject.Find("ddBirthday"), GuiCacheTransfrom, false).transform;
             _dropdownCopy.gameObject.SetActive(false);
             _dropdownCopy.name = "ddList";
 
@@ -104,7 +104,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var tr = Object.Instantiate(_dropdownCopy, subCategoryList, true);
+            var tr = Object.Instantiate(_dropdownCopy, subCategoryList, false);
 
             var settingName = tr.Find("textKindTitle").GetComponent<Text>();
             settingName.text = SettingName;

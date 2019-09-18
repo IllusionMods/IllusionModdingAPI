@@ -68,7 +68,7 @@ namespace KKAPI.Maker.UI
         {
             var originalSlider = GameObject.FindObjectOfType<CustomSliderSet>().transform;
 
-            _sliderCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
+            _sliderCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, false);
             _sliderCopy.gameObject.SetActive(false);
             _sliderCopy.name = "sldTemp";
 
@@ -93,7 +93,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var tr = Object.Instantiate(SliderCopy, subCategoryList, true);
+            var tr = Object.Instantiate(SliderCopy, subCategoryList, false);
 
             tr.name = "SliderSet";
 

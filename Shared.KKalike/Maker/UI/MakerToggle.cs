@@ -53,7 +53,7 @@ namespace KKAPI.Maker.UI
             // Exists in male and female maker
             var original = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglMouth", "tglCanine");
 
-            var copy = Object.Instantiate(original, GuiCacheTransfrom, true);
+            var copy = Object.Instantiate(original, GuiCacheTransfrom, false);
             copy.gameObject.SetActive(false);
             copy.name = "tglSingle";
 
@@ -79,7 +79,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var tr = Object.Instantiate(ToggleCopy, subCategoryList, true);
+            var tr = Object.Instantiate(ToggleCopy, subCategoryList, false);
 
             var tgl = tr.GetComponentInChildren<Toggle>();
             tgl.onValueChanged.AddListener(SetValue);

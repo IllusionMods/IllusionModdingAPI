@@ -72,7 +72,7 @@ namespace KKAPI.Maker.UI
         {
             var original = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglMole", "btnMoleColor");
 
-            _colorCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
+            _colorCopy = Object.Instantiate(original, GuiCacheTransfrom, false);
             _colorCopy.gameObject.SetActive(false);
             _colorCopy.name = "btnColor";
 
@@ -93,7 +93,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var tr = Object.Instantiate(ColorCopy, subCategoryList, true);
+            var tr = Object.Instantiate(ColorCopy, subCategoryList, false);
 
             var settingName = tr.GetComponentInChildren<TextMeshProUGUI>();
             settingName.text = SettingName;

@@ -60,7 +60,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var tr = Object.Instantiate(RadioCopy, subCategoryList, true);
+            var tr = Object.Instantiate(RadioCopy, subCategoryList, false);
 
             tr.name = "rb";
 
@@ -76,7 +76,7 @@ namespace KKAPI.Maker.UI
                         if (i == 0)
                             return sourceToggle;
 
-                        var newButton = Object.Instantiate(sourceToggle, tr, true);
+                        var newButton = Object.Instantiate(sourceToggle, tr, false);
                         newButton.name = "rb0" + i;
 
                         return newButton;
@@ -133,7 +133,7 @@ namespace KKAPI.Maker.UI
         {
             // Exists in male and female maker
             var originalSlider = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglEye02", "rbEyeSettingType");
-            _radioCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, true);
+            _radioCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, false);
             _radioCopy.gameObject.SetActive(false);
             _radioCopy.name = "rbSide";
 

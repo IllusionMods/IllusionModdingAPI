@@ -48,7 +48,7 @@ namespace KKAPI.Maker.UI
         {
             var original = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/02_HairTop/tglBack", "grpBtn");
 
-            _buttonCopy = Object.Instantiate(original, GuiCacheTransfrom, true);
+            _buttonCopy = Object.Instantiate(original, GuiCacheTransfrom, false);
             _buttonCopy.gameObject.SetActive(false);
             _buttonCopy.name = "btnCustom";
 
@@ -76,7 +76,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var tr = Object.Instantiate(ButtonCopy, subCategoryList, true);
+            var tr = Object.Instantiate(ButtonCopy, subCategoryList, false);
 
             var button = tr.GetComponentInChildren<Button>();
             button.onClick.AddListener(OnClick.Invoke);
