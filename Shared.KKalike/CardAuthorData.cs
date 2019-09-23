@@ -176,23 +176,31 @@ namespace KKAPI
 
             private static string EditString(string input)
             {
-                var dot = input.Length - Path.GetExtension(input).Length;
-                if(dot < 0) dot = input.Length;
+                try
+                {
+                    var dot = input.Length - Path.GetExtension(input).Length;
+                    if(dot < 0) dot = input.Length;
 
-                var param = MakerAPI.GetCharacterControl().fileParam;
-                var name = param.fullname.Trim();
+                    var param = MakerAPI.GetCharacterControl().fileParam;
+                    var name = param.fullname.Trim();
 #if KK
-                if(name.Length == 0) name = param.nickname.Trim();
+                    if(name.Length == 0) name = param.nickname.Trim();
 #endif
-                var addStr = $"_{name}";
+                    var addStr = $"_{name}";
 
-                if(CurrentNickname != DefaultNickname)
-                    addStr = $"{addStr}_{CurrentNickname}";
+                    if(CurrentNickname != DefaultNickname)
+                        addStr = $"{addStr}_{CurrentNickname}";
 
-                var invalid = Path.GetInvalidFileNameChars();
-                addStr = new string(addStr.Select(c => invalid.Contains(c) ? '?' : c).ToArray());
+                    var invalid = Path.GetInvalidFileNameChars();
+                    addStr = new string(addStr.Select(c => invalid.Contains(c) ? '?' : c).ToArray());
 
-                return input.Insert(dot, addStr);
+                    return input.Insert(dot, addStr);
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex);
+                    return input;
+                }
             }
         }
 
