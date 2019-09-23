@@ -12,6 +12,10 @@ using BepInEx.Configuration;
 using ExtensibleSaveFormat;
 using HarmonyLib;
 using UniRx;
+using ChaCustom;
+using System.Reflection.Emit;
+using System.Reflection;
+using BepInEx.Harmony;
 #if KK || EC
 using UniRx;
 #elif AI
@@ -95,51 +99,100 @@ namespace KKAPI
 
         private static class Hooks
         {
+            private static Harmony harmony;
+
             public static void Init()
             {
-                BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
+                harmony = new Harmony("cardauthordata.harmony");
+                HarmonyWrapper.PatchAll(typeof(Hooks), harmony);
             }
 
-            /// <summary>
-            /// <see cref="ChaFileControl.ConvertCharaFilePath(string,byte,bool)"/>
-            /// </summary>
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(ChaFileControl), nameof(ChaFileControl.ConvertCharaFilePath), new[] { typeof(string), typeof(byte), typeof(bool) })]
-            public static void SaveCharaFilePrefix(ChaFileControl __instance, ref string __result)
+            [HarmonyTranspiler, HarmonyPatch(typeof(CustomControl), "Start")]
+            internal static IEnumerable<CodeInstruction> FindSaveMethod(IEnumerable<CodeInstruction> instructions)
             {
-                if (!MakerAPI.InsideMaker) return;
+                var codes = instructions.ToList();
+                bool buttonFound = false;
 
-                try
+                for(int i = 0; i < codes.Count; i++)
                 {
-                    // This chafile is only used when saving
-                    if (__instance != MakerAPI.GetCharacterControl().chaFile) return;
+                    var code = codes[i];
 
-                    // Do not change filenames when replacing current files. Also makes sure we don't trigger on loading.
-                    if (File.Exists(__result)) return;
+                    if(!buttonFound && code.opcode == OpCodes.Ldfld && code.operand == AccessTools.Field(typeof(CustomControl), "btnSave"))
+                        buttonFound = true;
 
-                    var dot = __result.Length - Path.GetExtension(__result).Length;
-                    if (dot < 0) dot = __result.Length;
+                    if(buttonFound)
+                    {
+                        if(code.opcode == OpCodes.Ldftn)
+                        {
+                            if(code.operand is MethodInfo methodInfo)
+                            {
+                                var patchMethod = AccessTools.Method(typeof(Hooks), nameof(NamePatch));
+                                harmony.Patch(methodInfo, null, null, new HarmonyMethod(patchMethod));
+                                _logger.LogDebug("Save method found for patching");
+                            }
 
-                    var param = MakerAPI.GetCharacterControl().fileParam;
-                    var name = param.fullname.Trim();
+                            break;
+                        }
+                    }
+                }
+
+                return codes;
+            }
+
+            private static IEnumerable<CodeInstruction> NamePatch(IEnumerable<CodeInstruction> instructions)
+            {
+                var codes = instructions.ToList();
+                bool stringFound = false;
+
+                for(int i = 0; i < codes.Count; i++)
+                {
+                    var code = codes[i];
+
+                    if(!stringFound && code.opcode == OpCodes.Ldstr && code.operand != null && (string)code.operand == "Koikatu_F_")
+                        stringFound = true;
+
+                    if(stringFound)
+                    {
+                        if(code.opcode == OpCodes.Stloc_0)
+                        {
+                            var labels = codes[i + 1].labels.ToList();
+                            codes[i + 1].labels.Clear();
+
+                            codes.InsertRange(i + 1, new List<CodeInstruction>
+                            {
+                                new CodeInstruction(OpCodes.Ldloc_0){ labels = labels },
+                                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Hooks), nameof(EditString))),
+                                new CodeInstruction(OpCodes.Stloc_0),
+                            });
+
+                            _logger.LogDebug("Save method patched");
+                            break;
+                        }
+                    }
+                }
+
+                return codes;
+            }
+
+            private static string EditString(string input)
+            {
+                var dot = input.Length - Path.GetExtension(input).Length;
+                if(dot < 0) dot = input.Length;
+
+                var param = MakerAPI.GetCharacterControl().fileParam;
+                var name = param.fullname.Trim();
 #if KK
-                    if (name.Length == 0) name = param.nickname.Trim();
+                if(name.Length == 0) name = param.nickname.Trim();
 #endif
-                    var addStr = $"_{name}";
+                var addStr = $"_{name}";
 
-                    if (CurrentNickname != DefaultNickname)
-                        addStr = $"{addStr}_{CurrentNickname}";
+                if(CurrentNickname != DefaultNickname)
+                    addStr = $"{addStr}_{CurrentNickname}";
 
-                    var invalid = Path.GetInvalidFileNameChars();
-                    addStr = new string(addStr.Select(c => invalid.Contains(c) ? '?' : c).ToArray());
+                var invalid = Path.GetInvalidFileNameChars();
+                addStr = new string(addStr.Select(c => invalid.Contains(c) ? '?' : c).ToArray());
 
-                    __result = __result.Insert(dot, addStr);
-                }
-                catch (Exception ex)
-                {
-                    // Don't crash the save
-                    _logger.LogError(ex);
-                }
+                return input.Insert(dot, addStr);
             }
         }
 
