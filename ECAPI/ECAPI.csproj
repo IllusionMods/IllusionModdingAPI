@@ -95,6 +95,10 @@
       <HintPath>..\lib\ec\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\lib\ec\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\lib\ec\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
