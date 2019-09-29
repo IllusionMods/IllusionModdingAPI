@@ -25,7 +25,7 @@ namespace KKAPI.Maker
             [HarmonyPatch(typeof(CvsA_Slot), nameof(CvsA_Slot.ChangeAcsType), typeof(int))]
             public static void ChangeAcsTypePostfix(CvsA_Slot __instance)
             {
-                OnAccessoryKindChanged(__instance, Singleton<CustomBase>.Instance.chaCtrl.nowCoordinate.accessory.parts[__instance.SNo].id);
+                OnAccessoryKindChanged(__instance, __instance.SNo);
             }
         }
     }
