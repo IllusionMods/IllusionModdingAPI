@@ -4,7 +4,6 @@ using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using KKAPI.Maker;
 using KKAPI.Utilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,7 +26,7 @@ namespace KKAPI
         /// THIS VALUE WILL NOT BE READ FROM THE INSTALLED VERSION, YOU WILL READ THE VALUE FROM THIS VERSION THAT YOU COMPILE YOUR PLUGIN AGAINST!
         /// More info: https://stackoverflow.com/questions/55984/what-is-the-difference-between-const-and-readonly
         /// </summary>
-        public const string VersionConst = "1.6.1";
+        public const string VersionConst = "1.6.2";
 
         /// <summary>
         /// GUID of this plugin, use for checking dependancies with <see cref="BepInDependency"/> and <see cref="CheckRequiredPlugin"/>
