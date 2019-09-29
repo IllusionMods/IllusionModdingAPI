@@ -1,6 +1,7 @@
 ﻿using System;
 using AIChara;
 using CharaCustom;
+using HarmonyLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -13,6 +14,8 @@ namespace KKAPI.Maker
     /// </summary>
     public static partial class AccessoriesApi
     {
+        private static Type _moreAccessoriesType;
+
         private static CanvasGroup _accessorySlotCanvasGroup;
 
         private static Func<int, ChaFileAccessory.PartsInfo> _getPartsInfo;
@@ -30,7 +33,7 @@ namespace KKAPI.Maker
         /// True if the MoreAccessories mod is installed.
         /// Avoid relying on this and instead use other methods in this class since they will handle this for you.
         /// </summary>
-        public static bool MoreAccessoriesInstalled => false;
+        public static bool MoreAccessoriesInstalled => _moreAccessoriesType != null;
 
         /// <summary>
         /// Get the index of the currently selected accessory slot under Accessories group in Chara Maker.
@@ -124,14 +127,66 @@ namespace KKAPI.Maker
 
         internal static void Init()
         {
+            DetectMoreAccessories();
+
             BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
 
             MakerAPI.InsideMakerChanged += MakerAPI_InsideMakerChanged;
             MakerAPI.MakerFinishedLoading += (sender, args) => OnSelectedMakerSlotChanged(sender, 0);
 
-            _getChaAccessoryCmp = (control, i) => control.cmpAccessory[i];
-            _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cmpAccessory, component);
-            _getPartsInfo = i => MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[i];
+            NoMoreaccsFallback:
+            if (MoreAccessoriesInstalled)
+            {
+                try
+                {
+                    var patchesTraverse = Traverse.CreateWithType("MoreAccessoriesAI.Patches.ChaControl_Patches, MoreAccessories");
+
+                    //GetCmpAccessory(ChaControl self, int slotNo)
+                    var mGca = patchesTraverse.Method("GetCmpAccessory", new Type[] { typeof(ChaControl), typeof(int) });
+                    if (!mGca.MethodExists()) throw new InvalidOperationException("Failed to find MoreAccessoriesAI.Patches.ChaControl_Patches.GetCmpAccessory");
+                    _getChaAccessoryCmp = (control, componentIndex) => mGca.GetValue<CmpAccessory>(control, componentIndex);
+
+                    _getChaAccessoryCmpIndex = (control, component) =>
+                    {
+                        var idx = Array.IndexOf(control.cmpAccessory, component);
+                        if (idx >= 0) return idx;
+
+                        // No better way than to iterate the entries until we get an out of range exception
+                        idx = 20;
+                        try
+                        {
+                            while (true)
+                            {
+                                if (_getChaAccessoryCmp(control, idx) == component)
+                                    return idx;
+                                idx++;
+                            }
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            return -1;
+                        }
+                    };
+
+                    //ChaFileAccessory.PartsInfo GetPartsInfo(ChaControl self, int slotNo)
+                    var mGpi = patchesTraverse.Method("GetPartsInfo", new Type[] { typeof(ChaControl), typeof(int) });
+                    if (!mGpi.MethodExists()) throw new InvalidOperationException("Failed to find MoreAccessoriesAI.Patches.ChaControl_Patches.GetPartsInfo");
+                    _getPartsInfo = i => mGpi.GetValue<ChaFileAccessory.PartsInfo>(MakerAPI.GetCharacterControl(), i);
+                }
+                catch (Exception e)
+                {
+                    _moreAccessoriesType = null;
+                    KoikatuAPI.Logger.LogWarning("Failed to set up MoreAccessories integration!");
+                    KoikatuAPI.Logger.LogDebug(e);
+                    goto NoMoreaccsFallback;
+                }
+            }
+            else
+            {
+                _getChaAccessoryCmp = (control, i) => control.cmpAccessory[i];
+                _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cmpAccessory, component);
+                _getPartsInfo = i => MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[i];
+            }
 
             if (KoikatuAPI.EnableDebugLogging)
             {
@@ -141,6 +196,20 @@ namespace KKAPI.Maker
                     $"AccessoriesCopied - ids: {string.Join(", ", args.CopiedSlotIndexes.Select(x => x.ToString()).ToArray())}, src:{args.CopySource}, dst:{args.CopyDestination}"); #endif*/
                 AccessoryTransferred += (sender, args) => KoikatuAPI.Logger.LogMessage(
                     $"AccessoryTransferred - srcId:{args.SourceSlotIndex}, dstId:{args.DestinationSlotIndex}");
+            }
+        }
+
+        private static void DetectMoreAccessories()
+        {
+            try
+            {
+                _moreAccessoriesType = Type.GetType("MoreAccessoriesAI.MoreAccessories, MoreAccessories", false);
+            }
+            catch (Exception e)
+            {
+                _moreAccessoriesType = null;
+                KoikatuAPI.Logger.LogWarning("Failed to detect MoreAccessories!");
+                KoikatuAPI.Logger.LogDebug(e);
             }
         }
 
