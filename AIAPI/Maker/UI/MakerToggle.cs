@@ -57,6 +57,7 @@ namespace KKAPI.Maker.UI
             var text = tr.GetComponentInChildren<Text>();
             text.text = DisplayName;
             text.color = TextColor;
+            SetTextAutosize(text);
 
             return tr.gameObject;
         }

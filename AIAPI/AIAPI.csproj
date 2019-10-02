@@ -108,6 +108,7 @@
     <Compile Include="Maker\UI\MakerColor.cs" />
     <Compile Include="Maker\UI\MakerCoordinateLoadToggle.cs" />
     <Compile Include="Maker\UI\MakerDropdown.cs" />
+    <Compile Include="Maker\UI\MakerImage.cs" />
     <Compile Include="Maker\UI\MakerLoadToggle.cs" />
     <Compile Include="Maker\UI\MakerRadioButtons.cs" />
     <Compile Include="Maker\UI\MakerSeparator.cs" />
