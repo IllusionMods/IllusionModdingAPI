@@ -31,6 +31,7 @@
 - [`ChaFileLoadedEventArgs`](KKAPI.Maker.md#chafileloadedeventargs)
 - [`CharacterLoadFlags`](KKAPI.Maker.md#characterloadflags)
 - [`MakerAPI`](KKAPI.Maker.md#makerapi)
+- [`MakerCardSave`](KKAPI.Maker.md#makercardsave)
 - [`MakerCategory`](KKAPI.Maker.md#makercategory)
 - [`MakerConstants`](KKAPI.Maker.md#makerconstants)
 - [`RegisterCustomControlsEvent`](KKAPI.Maker.md#registercustomcontrolsevent)

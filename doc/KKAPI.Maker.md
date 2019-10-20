@@ -248,6 +248,21 @@ Static Events
 | `EventHandler` | ReloadCustomInterface | Fired after character or coordinate is loaded in maker, after all controllers had their events fired.  This event is only fired when inside the character maker. Use this to update values of custom controls.  EventArgs can be either `KKAPI.Chara.CharaReloadEventArgs` or `KKAPI.Chara.CoordinateEventArgs` depending on why the reload happened. | 
 
 
+## `MakerCardSave`
+
+```csharp
+public static class KKAPI.Maker.MakerCardSave
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `IEnumerable<CodeInstruction>` | FindSaveMethod(`IEnumerable<CodeInstruction>` instructions) |  | 
+| `void` | RegisterNewCardSavePathModifier(`DirectoryPathModifier` directoryPathModifier, `CardNameModifier` filenameModifier) |  | 
+
+
 ## `MakerCategory`
 
 Specifies a category inside character maker.

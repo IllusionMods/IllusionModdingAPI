@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryTransferEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryWindowControlValueChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerAPI.Hooks.KK.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerCardSave.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerConstants.KK.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerInterfaceCreator.KK.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerButton.cs" />
