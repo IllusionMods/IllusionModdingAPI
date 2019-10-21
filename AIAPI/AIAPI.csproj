@@ -37,16 +37,12 @@
       <HintPath>..\lib\bepin5\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="AI_ExtensibleSaveFormat">
-      <HintPath>..\lib\ai\AI_ExtensibleSaveFormat.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\lib\ai\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\AISyoujyo\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\lib\ai\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\AISyoujyo\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
@@ -60,35 +56,35 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="UniRx">
-      <HintPath>..\lib\ai\UniRx.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\AISyoujyo\UniRx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\lib\ai\UnityEngine.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\AISyoujyo\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\lib\ai\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\AISyoujyo\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>..\lib\ai\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\AISyoujyo\UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\lib\ai\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\AISyoujyo\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\..\KKABMX\lib\ai\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\AISyoujyo\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\lib\ai\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\AISyoujyo\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\lib\ai\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\AISyoujyo\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -118,7 +114,13 @@
     <Compile Include="Maker\UI\SubCategoryCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\paket-files\github.com\IllusionMods\BepisPlugins\src\AI_ExtensibleSaveFormat\AI_ExtensibleSaveFormat.csproj">
+      <Project>{303c404b-9d91-4622-9b8b-8415e0de6a8f}</Project>
+      <Name>AI_ExtensibleSaveFormat</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

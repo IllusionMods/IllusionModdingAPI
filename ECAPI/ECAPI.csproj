@@ -47,11 +47,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\lib\ec\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\EmotionCreators\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\lib\ec\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\EmotionCreators\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
@@ -62,51 +62,54 @@
       <HintPath>..\lib\bepin5\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="EC_ExtensibleSaveFormat">
-      <HintPath>..\lib\ec\EC_ExtensibleSaveFormat.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="IL">
-      <HintPath>..\lib\ec\IL.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\EmotionCreators\IL.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="TextMeshPro-1.0.55.56.0b12">
-      <HintPath>..\lib\ec\TextMeshPro-1.0.55.56.0b12.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\EmotionCreators\TextMeshPro-1.0.55.56.0b12.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UniRx">
-      <HintPath>..\lib\ec\UniRx.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\EmotionCreators\UniRx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\lib\ec\UnityEngine.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\EmotionCreators\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\lib\ec\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\EmotionCreators\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>..\lib\ec\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\EmotionCreators\UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\lib\ec\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\EmotionCreators\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\lib\ec\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\EmotionCreators\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\lib\ec\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\EmotionCreators\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\lib\ec\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\paket-files\github.com\IllusionMods\IllusionLibs\lib\EmotionCreators\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\paket-files\github.com\IllusionMods\BepisPlugins\src\EC_ExtensibleSaveFormat\EC_ExtensibleSaveFormat.csproj">
+      <Project>{747a4e61-34f4-4790-a418-bb2cb03450e3}</Project>
+      <Name>EC_ExtensibleSaveFormat</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
   <Import Project="..\Shared.KKalike\Shared.KKalike.projitems" Label="Shared" />
