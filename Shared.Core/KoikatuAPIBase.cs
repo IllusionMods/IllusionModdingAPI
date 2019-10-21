@@ -98,6 +98,7 @@ namespace KKAPI
         public static bool CheckRequiredPlugin(BaseUnityPlugin origin, string guid, Version minimumVersion, BepInEx.Logging.LogLevel level = BepInEx.Logging.LogLevel.Error)
         {
             var target = BepInEx.Bootstrap.Chainloader.Plugins
+                .Where(x => x != null)
                 .Select(MetadataHelper.GetMetadata)
                 .FirstOrDefault(x => x.GUID == guid);
             if (target == null)
@@ -134,6 +135,7 @@ namespace KKAPI
         public static bool CheckIncompatiblePlugin(BaseUnityPlugin origin, string guid, BepInEx.Logging.LogLevel level = BepInEx.Logging.LogLevel.Warning)
         {
             var target = BepInEx.Bootstrap.Chainloader.Plugins
+                .Where(x => x != null)
                 .Select(MetadataHelper.GetMetadata)
                 .FirstOrDefault(x => x.GUID == guid);
             if (target != null)
