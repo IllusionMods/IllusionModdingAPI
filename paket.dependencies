@@ -1,4 +1,4 @@
 source https://www.nuget.org/api/v2
 
-git https://github.com/IllusionMods/IllusionLibs.git
-git https://github.com/IllusionMods/BepisPlugins.git
+github IllusionMods/IllusionLibs
+github IllusionMods/BepisPlugins

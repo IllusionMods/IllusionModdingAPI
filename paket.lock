@@ -1,6 +1,6 @@
 
-GIT
-  remote: https://github.com/IllusionMods/IllusionLibs.git
-     (fb083f3e215a1ad33f62a3c61ba2bf6fcf1016e1)
-  remote: https://github.com/IllusionMods/BepisPlugins.git
-     (43fa60777c2e29270bbdc0b713fe61af31d57cdc)
+GITHUB
+  remote: IllusionMods/IllusionLibs
+    FULLPROJECT (fb083f3e215a1ad33f62a3c61ba2bf6fcf1016e1)
+  remote: IllusionMods/BepisPlugins
+    FULLPROJECT (ae90fe2e187f24431dc189d618c88d89f73624a5)
