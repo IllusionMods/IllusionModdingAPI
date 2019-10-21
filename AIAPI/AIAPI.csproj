@@ -123,7 +123,4 @@
   </ItemGroup>
   <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>..\.paket\paket restore</PreBuildEvent>
-  </PropertyGroup>
 </Project>

@@ -118,7 +118,4 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>..\.paket\paket restore</PreBuildEvent>
-  </PropertyGroup>
 </Project>

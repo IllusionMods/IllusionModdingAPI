@@ -113,7 +113,4 @@ COPY /Y $(OutDir)KKAPI.* $(SolutionDir)lib
 "D:\SVN\MarkdownGenerator\bin\Debug\MarkdownGenerator.exe" " $(SolutionDir)lib\KKAPI.dll" "$(SolutionDir)doc"
 )</PostBuildEvent>
   </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>..\.paket\paket restore</PreBuildEvent>
-  </PropertyGroup>
 </Project>
