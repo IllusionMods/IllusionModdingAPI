@@ -11,7 +11,7 @@ namespace KKAPI.Maker
             [HarmonyPatch(typeof(CvsA_Slot), nameof(CvsA_Slot.ChangeMenuFunc))]
             public static void ChangeMenuFuncPostfix(CvsA_Slot __instance)
             {
-                OnSelectedMakerSlotChanged(__instance, __instance.SNo);
+                OnSelectedMakerSlotChanged(__instance, GetSlotIndex(__instance));
             }
 
             [HarmonyPostfix]
@@ -25,7 +25,18 @@ namespace KKAPI.Maker
             [HarmonyPatch(typeof(CvsA_Slot), nameof(CvsA_Slot.ChangeAcsType), typeof(int))]
             public static void ChangeAcsTypePostfix(CvsA_Slot __instance)
             {
-                OnAccessoryKindChanged(__instance, __instance.SNo);
+                OnAccessoryKindChanged(__instance, GetSlotIndex(__instance));
+            }
+
+            private static int GetSlotIndex(CvsA_Slot __instance)
+            {
+                var tr = Traverse.Create(__instance);
+                // Compatibility with trial, in main game it changed to a property
+                var prop = tr.Field("SNo");
+                if (!prop.FieldExists())
+                    prop = tr.Property("SNo");
+
+                return prop.GetValue<int>();
             }
         }
     }

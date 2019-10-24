@@ -29,6 +29,7 @@ namespace KKAPI
         public static GameMode GetCurrentGameMode()
         {
             if (MakerAPI.InsideMaker) return GameMode.Maker;
+            if (Game.Instance.WorldData != null) return GameMode.MainGame;
             return GameMode.Unknown;
         }
 
@@ -37,7 +38,7 @@ namespace KKAPI
         /// </summary>
         public static Version GetGameVersion()
         {
-            return new Version(Game.Version.ToString());
+            return Game.Version;
         }
     }
 }

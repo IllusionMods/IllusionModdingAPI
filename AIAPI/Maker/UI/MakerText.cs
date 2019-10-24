@@ -57,7 +57,7 @@ namespace KKAPI.Maker.UI
 
         private static void MakeCopy()
         {
-            _textCopy = Object.Instantiate(GameObject.Find("CharaCustom/CustomControl/CanvasMain/SettingWindow/WinFace/F_FaceType/Setting/Setting01/title"), GuiCacheTransfrom).transform;
+            _textCopy = Object.Instantiate(GameObject.Find("SettingWindow/WinFace/F_FaceType/Setting/Setting01/title"), GuiCacheTransfrom).transform;
             _textCopy.gameObject.SetActive(false);
             _textCopy.name = "txtCustom";
 

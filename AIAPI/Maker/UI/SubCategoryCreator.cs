@@ -57,7 +57,7 @@ namespace KKAPI.Maker.UI
                     childTransform.SetParent(subContainer.transform, true);
 
                 // Clothes category has each content group with its own back image for some reason
-                var instance = GameObject.Instantiate(GameObject.Find("CharaCustom/CustomControl/CanvasMain/SettingWindow/WinFace/imgWinBack"), winContents.transform);
+                var instance = GameObject.Instantiate(GameObject.Find("SettingWindow/WinFace/imgWinBack"), winContents.transform);
                 instance.transform.SetAsFirstSibling();
             }
 
