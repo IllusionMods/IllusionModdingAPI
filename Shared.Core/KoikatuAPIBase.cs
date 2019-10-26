@@ -15,6 +15,7 @@ namespace KKAPI
     /// More information is available in project wiki at https://github.com/ManlyMarco/KKAPI/wiki
     /// </summary>
     [BepInDependency("com.joan6694.illusionplugins.moreaccessories", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency(ExtensibleSaveFormat.ExtendedSave.GUID)]
     [BepInIncompatibility("com.bepis.makerapi")]
     public partial class KoikatuAPI
     {

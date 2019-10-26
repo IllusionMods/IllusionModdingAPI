@@ -8,6 +8,7 @@ using UnityEngine;
 namespace KKAPI
 {
     [BepInPlugin(GUID, "Modding API", VersionConst)]
+    [BepInDependency(ExtensibleSaveFormat.ExtendedSave.GUID, "12.2")]
     public partial class KoikatuAPI : BaseUnityPlugin
     {
         private void Awake()

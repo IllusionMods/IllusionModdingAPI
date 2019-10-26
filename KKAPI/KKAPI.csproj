@@ -83,27 +83,12 @@
     <Compile Include="MainGame\GameExtensions.cs" />
     <Compile Include="MainGame\TestGameFunctionController.cs" />
     <Compile Include="KoikatuAPI.cs" />
-    <Compile Include="Studio\SaveLoad\ObjectsCopiedEventArgs.cs" />
-    <Compile Include="Studio\SaveLoad\SceneCustomFunctionController.cs" />
-    <Compile Include="Studio\SaveLoad\SceneLoadEventArgs.cs" />
-    <Compile Include="Studio\SaveLoad\SceneOperationKind.cs" />
-    <Compile Include="Studio\StudioObjectExtensions.cs" />
-    <Compile Include="Studio\StudioAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Studio\StudioAPI.Hooks.cs" />
-    <Compile Include="Studio\SaveLoad\StudioSaveLoadApi.cs" />
-    <Compile Include="Studio\SaveLoad\StudioSaveLoadApi.Hooks.cs" />
-    <Compile Include="Studio\SaveLoad\TestSceneFunctionController.cs" />
-    <Compile Include="Studio\UI\BaseCurrentStateEditableGuiEntry.cs" />
-    <Compile Include="Studio\UI\CurrentStateCategory.cs" />
-    <Compile Include="Studio\UI\CurrentStateCategorySlider.cs" />
-    <Compile Include="Studio\UI\CurrentStateCategorySubItemBase.cs" />
-    <Compile Include="Studio\UI\CurrentStateCategoryToggle.cs" />
-    <Compile Include="Studio\UI\CustomStateCategorySwitch.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
   <Import Project="..\Shared.KKalike\Shared.KKalike.projitems" Label="Shared" />
+  <Import Project="..\Shared.CharaStudio\Shared.CharaStudio.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST D:\SVN\MarkdownGenerator\bin\Debug\MarkdownGenerator.exe (

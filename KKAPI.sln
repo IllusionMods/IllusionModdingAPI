@@ -15,12 +15,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIAPI", "AIAPI\AIAPI.csproj
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.KKalike", "Shared.KKalike\Shared.KKalike.shproj", "{16441A78-1945-4D7C-B3F4-333BAB848211}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.CharaStudio", "Shared.CharaStudio\Shared.CharaStudio.shproj", "{A4B901DF-F460-4510-8E04-8B3666990222}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Shared.KKalike\Shared.KKalike.projitems*{16441a78-1945-4d7c-b3f4-333bab848211}*SharedItemsImports = 13
+		Shared.CharaStudio\Shared.CharaStudio.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
 		Shared.Core\Shared.Core.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
+		Shared.CharaStudio\Shared.CharaStudio.projitems*{74c2db86-55bb-47b4-9805-51b5b992ef35}*SharedItemsImports = 4
 		Shared.Core\Shared.Core.projitems*{74c2db86-55bb-47b4-9805-51b5b992ef35}*SharedItemsImports = 4
 		Shared.KKalike\Shared.KKalike.projitems*{74c2db86-55bb-47b4-9805-51b5b992ef35}*SharedItemsImports = 4
+		Shared.CharaStudio\Shared.CharaStudio.projitems*{a4b901df-f460-4510-8e04-8b3666990222}*SharedItemsImports = 13
 		Shared.Core\Shared.Core.projitems*{bd697c6c-a7d7-4307-a227-ccafc95c8744}*SharedItemsImports = 13
 		Shared.Core\Shared.Core.projitems*{f4928b3c-e2b0-4aec-9fbc-327bb2a0e6bb}*SharedItemsImports = 4
 		Shared.KKalike\Shared.KKalike.projitems*{f4928b3c-e2b0-4aec-9fbc-327bb2a0e6bb}*SharedItemsImports = 4
