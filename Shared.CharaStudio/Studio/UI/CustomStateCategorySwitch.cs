@@ -1,5 +1,6 @@
 ﻿using System;
 using Studio;
+using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,7 +34,11 @@ namespace KKAPI.Studio.UI
             copy.transform.localScale = Vector3.one;
             copy.name = "CustomSwitch " + Name;
 
+#if AI
+            var text = copy.GetComponentInChildren<TextMeshProUGUI>(true);
+#else
             var text = copy.GetComponentInChildren<Text>(true);
+#endif
             text.gameObject.SetActive(true);
             text.gameObject.name = "Text " + Name;
             text.text = Name;

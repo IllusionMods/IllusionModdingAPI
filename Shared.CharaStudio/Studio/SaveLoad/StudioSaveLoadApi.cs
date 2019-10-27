@@ -12,10 +12,8 @@ namespace KKAPI.Studio.SaveLoad
     /// </summary>
     public static partial class StudioSaveLoadApi
     {
-        internal static void Init(bool insideStudio)
+        internal static void Init()
         {
-            if (!insideStudio) return;
-
             Hooks.SetupHooks();
             ExtensibleSaveFormat.ExtendedSave.SceneBeingSaved += path => OnSceneBeingSaved();
 

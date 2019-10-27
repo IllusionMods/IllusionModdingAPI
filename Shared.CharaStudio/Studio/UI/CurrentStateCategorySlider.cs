@@ -1,5 +1,6 @@
 ﻿using System;
 using Studio;
+using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,7 +51,11 @@ namespace KKAPI.Studio.UI
             copy.name = "CustomSlider " + Name;
             copy.transform.localScale = Vector3.one;
 
+#if AI
+            var text = copy.GetComponentInChildren<TextMeshProUGUI>(true);
+#else
             var text = copy.GetComponentInChildren<Text>(true);
+#endif
             text.gameObject.SetActive(true);
             text.gameObject.name = "Text " + Name;
             text.text = Name;

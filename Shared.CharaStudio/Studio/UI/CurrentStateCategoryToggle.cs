@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Illusion.Extensions;
+using KKAPI.Utilities;
 using Studio;
+using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -49,34 +53,61 @@ namespace KKAPI.Studio.UI
             copy.name = "CustomToggle-" + Name;
             copy.transform.localScale = Vector3.one;
 
-            var text = copy.transform.Find("Text Tears");
-            text.name = "Text " + Name;
-            var text1 = text.GetComponent<Text>();
-            text1.text = Name;
+            var children = copy.transform.Children();
+            foreach (var transform in children.Skip(1))
+                Object.Destroy(transform.gameObject);
 
-            var subItems = copy.transform.Cast<Transform>();
-            var buttons = subItems.Skip(1).Select(x => x.GetComponent<Button>()).ToList();
-            for (var i = 0; i < 4; i++)
+            var textTr = children[0];
+#if AI
+            var text = textTr.GetComponent<TextMeshProUGUI>();
+#else
+            var text = textTr.GetComponent<Text>();
+#endif
+            textTr.name = "Text " + Name;
+            text.text = Name;
+
+            var copiedToggles = new List<Button>(ToggleCount);
+            var liquidToggles = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Liquid");
+            // Skip the first text and take the 3 toggle buttons
+            foreach (var origToggle in liquidToggles.transform.Children().Skip(1).Take(3))
             {
-                var btn = buttons[i];
-                btn.transform.name = $"Button {Name} {i}";
-                btn.onClick.RemoveAllListeners();
+                if (ToggleCount <= copiedToggles.Count) break;
 
-                if (ToggleCount > i)
+                var toggleCopy = Object.Instantiate(origToggle, copy.transform, true);
+                var btn = toggleCopy.GetComponent<Button>();
+                btn.onClick.ActuallyRemoveAllListeners();
+                copiedToggles.Add(btn);
+
+                if (copiedToggles.Count == 3 && ToggleCount == 4)
                 {
-                    btn.gameObject.SetActive(true);
-                    btn.onClick.AddListener(() => Value.OnNext(buttons.IndexOf(btn)));
+                    toggleCopy = Object.Instantiate(origToggle, copy.transform, true);
+                    btn = toggleCopy.GetComponent<Button>();
+                    btn.onClick.ActuallyRemoveAllListeners();
+                    copiedToggles.Add(btn);
+
+                    toggleCopy.localPosition += copiedToggles[1].transform.localPosition - copiedToggles[0].transform.localPosition;
                 }
-                else
-                    Object.Destroy(btn.gameObject);
+            }
+
+            for (var i = 0; i < copiedToggles.Count; i++)
+            {
+                var copiedToggle = copiedToggles[i];
+
+                var buttonIndex = i;
+                copiedToggle.transform.name = $"Button {Name} {buttonIndex}";
+                copiedToggle.onClick.AddListener(() => Value.OnNext(buttonIndex));
+
+                copiedToggle.transform.localPosition = new Vector3(copiedToggle.transform.localPosition.x, 0, 0);
+                copiedToggle.transform.localScale = Vector3.one;
+                copiedToggle.gameObject.SetActive(true);
             }
 
             Value.Subscribe(
                 newval =>
                 {
-                    for (var i = 0; i < buttons.Count; i++)
+                    for (var i = 0; i < copiedToggles.Count; i++)
                     {
-                        var b = buttons[i];
+                        var b = copiedToggles[i];
                         if (b == null) continue;
                         b.image.color = !b.interactable || i != newval ? Color.white : Color.green;
                     }

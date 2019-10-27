@@ -2,6 +2,7 @@
 using BepInEx;
 using KKAPI.Chara;
 using KKAPI.Maker;
+using KKAPI.Studio;
 using Manager;
 using UnityEngine;
 
@@ -13,8 +14,9 @@ namespace KKAPI
     {
         private void Awake()
         {
-            var insideStudio = Application.productName == "CharaStudio";
+            var insideStudio = Application.productName == "StudioNEOV2";
             MakerAPI.Init(insideStudio);
+            StudioAPI.Init(insideStudio);
             CharacterApi.Init();
         }
 

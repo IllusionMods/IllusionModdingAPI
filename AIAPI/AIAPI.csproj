@@ -63,6 +63,10 @@
       <HintPath>..\lib\ai\UniRx.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>..\lib\ai\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\lib\ai\UnityEngine.dll</HintPath>
       <Private>False</Private>

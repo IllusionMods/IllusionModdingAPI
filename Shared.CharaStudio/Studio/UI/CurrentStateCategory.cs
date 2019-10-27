@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Studio;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -60,15 +61,27 @@ namespace KKAPI.Studio.UI
             if (Created) return;
 
             if (_originalText == null)
+            {
+#if AI
+                _originalText = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Cos/TextMeshPro Title");
+#else
                 _originalText = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Cos/Text");
+#endif
+            }
 
             var cat = Object.Instantiate(_originalText, containerObject.transform, true);
             cat.AddComponent<LayoutElement>();
             cat.name = CategoryName + "_Header_SAPI";
 
-            var t = cat.GetComponent<Text>();
+#if AI
+            var t = cat.GetComponent<TextMeshProUGUI>();
             t.fontSize = 15;
+            t.fontSizeMax = 15;
+#else
+            var t = cat.GetComponent<Text>();
             t.resizeTextMaxSize = 15;
+            t.fontSize = 15;
+#endif
             t.text = CategoryName;
 
             _categoryContentsObject = new GameObject(CategoryName + "_Items_SAPI");
