@@ -357,11 +357,20 @@ namespace KKAPI.Maker
 
             return new CharacterLoadFlags
             {
-                Face =            toggles[0].isOn,
-                Body =            toggles[1].isOn,
-                Hair =            toggles[2].isOn,
-                Clothes =         toggles[3].isOn,
-                Parameters =      toggles[4].isOn
+                Face = toggles[0].isOn,
+                Body = toggles[1].isOn,
+                Hair = toggles[2].isOn,
+                Clothes = toggles[3].isOn,
+                Parameters = toggles[4].isOn
+            };
+        }
+
+        public static CoordinateLoadFlags GetCoordinateLoadFlags()
+        {
+            return new CoordinateLoadFlags
+            {
+                Clothes = MakerAPI.Hooks.CoordinateButtonClicked == 1 || MakerAPI.Hooks.CoordinateButtonClicked == 3,
+                Accessories = MakerAPI.Hooks.CoordinateButtonClicked == 2 || MakerAPI.Hooks.CoordinateButtonClicked == 3
             };
         }
     }

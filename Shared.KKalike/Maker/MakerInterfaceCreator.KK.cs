@@ -323,5 +323,16 @@ namespace KKAPI.Maker
                 Parameters = cfw.tglChaLoadParam.isOn
             };
         }
+
+        public static CoordinateLoadFlags GetCoordinateLoadFlags()
+        {
+            var clothes = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/cosFileControl/charaFileWindow/WinRect/CoordinateLoad/Select/tglItem01")?.GetComponentInChildren<Toggle>(true);
+            if (clothes == null) return null;
+
+            var accs = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/cosFileControl/charaFileWindow/WinRect/CoordinateLoad/Select/tglItem02")?.GetComponentInChildren<Toggle>(true);
+            if (accs == null) return null;
+
+            return new CoordinateLoadFlags { Clothes = clothes.isOn, Accessories = accs.isOn };
+        }
     }
 }
