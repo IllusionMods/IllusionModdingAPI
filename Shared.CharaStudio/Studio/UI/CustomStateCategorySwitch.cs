@@ -1,6 +1,5 @@
 ﻿using System;
 using Studio;
-using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,7 +34,7 @@ namespace KKAPI.Studio.UI
             copy.name = "CustomSwitch " + Name;
 
 #if AI
-            var text = copy.GetComponentInChildren<TextMeshProUGUI>(true);
+            var text = copy.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
 #else
             var text = copy.GetComponentInChildren<Text>(true);
 #endif
