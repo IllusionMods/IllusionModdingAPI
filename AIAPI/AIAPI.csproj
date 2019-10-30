@@ -60,7 +60,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>..\lib\ai\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>$(SolutionDir)paket-files\IllusionMods\IllusionLibs\lib\AISyoujyo\Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
@@ -129,6 +129,6 @@
   <Import Project="..\Shared.CharaStudio\Shared.CharaStudio.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(OutDir)AIAPI.dll D:\Games\AI-Syoujyo\Bepinex\plugins</PostBuildEvent>
+    <PostBuildEvent>REM copy $(OutDir)AIAPI.dll D:\Games\AI-Syoujyo\Bepinex\plugins</PostBuildEvent>
   </PropertyGroup>
 </Project>

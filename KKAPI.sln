@@ -29,6 +29,8 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Shared.KKalike\Shared.KKalike.projitems*{16441a78-1945-4d7c-b3f4-333bab848211}*SharedItemsImports = 13
 		paket-files\IllusionMods\BepisPlugins\src\Core_ExtensibleSaveFormat\Core_ExtensibleSaveFormat.projitems*{303c404b-9d91-4622-9b8b-8415e0de6a8f}*SharedItemsImports = 4
+		paket-files\IllusionMods\BepisPlugins\src\Core_ExtensibleSaveFormat_CharaStudio\Core_ExtensibleSaveFormat_CharaStudio.projitems*{303c404b-9d91-4622-9b8b-8415e0de6a8f}*SharedItemsImports = 4
+		paket-files\IllusionMods\BepisPlugins\src\Shared\Shared.projitems*{303c404b-9d91-4622-9b8b-8415e0de6a8f}*SharedItemsImports = 4
 		Shared.CharaStudio\Shared.CharaStudio.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
 		Shared.Core\Shared.Core.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
 		paket-files\IllusionMods\BepisPlugins\src\Core_ExtensibleSaveFormat\Core_ExtensibleSaveFormat.projitems*{747a4e61-34f4-4790-a418-bb2cb03450e3}*SharedItemsImports = 4
