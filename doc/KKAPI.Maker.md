@@ -197,6 +197,22 @@ Fields
 | `Boolean` | Parameters |  | 
 
 
+## `CoordinateLoadFlags`
+
+Specifies which parts of the coordinate will be loaded when loading a clothing card in character maker.
+```csharp
+public class KKAPI.Maker.CoordinateLoadFlags
+
+```
+
+Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | Accessories |  | 
+| `Boolean` | Clothes |  | 
+
+
 ## `MakerAPI`
 
 Provides a way to add custom items to the in-game Character Maker, and gives useful methods for interfacing with the maker.
@@ -226,6 +242,7 @@ Static Methods
 | `void` | AddSubCategory(`MakerCategory` category) | Add custom sub categories. They need to be added before maker starts loading,  or in the `KKAPI.Maker.MakerAPI.RegisterCustomSubCategories` event. | 
 | `ChaControl` | GetCharacterControl() | Get the ChaControl of the character serving as a preview in character maker.  Outside of character maker and early on in maker load process this returns null. | 
 | `CharacterLoadFlags` | GetCharacterLoadFlags() | Get values of the default partial load checkboxes present at the bottom of the  character load window (load face, body, hair, parameters, clothes).  Returns null if the values could not be collected (safe to assume it's the same as being enabled). | 
+| `CoordinateLoadFlags` | GetCoordinateLoadFlags() | Get which parts of the coordinate will be loaded when loading a clothing card in character maker.  Returns null if the values could not be collected (safe to assume it's the same as being enabled). | 
 | `CoordinateType` | GetCurrentCoordinateType() | Currently selected maker coordinate | 
 | `CustomBase` | GetMakerBase() | Returns current maker logic instance.  Same as `Singleton`1.Instance` | 
 | `Int32` | GetMakerSex() | 0 is male, 1 is female | 

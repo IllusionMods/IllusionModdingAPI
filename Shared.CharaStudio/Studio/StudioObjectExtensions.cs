@@ -1,6 +1,9 @@
 using System;
 using System.Linq;
 using Studio;
+#if AI
+using AIChara;
+#endif
 
 namespace KKAPI.Studio
 {

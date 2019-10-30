@@ -38,7 +38,7 @@ namespace KKAPI.Maker.UI
 
         private static void MakeCopy()
         {
-            _sourceSeparator = GameObject.Find("CharaCustom/CustomControl/CanvasMain/SettingWindow/WinFace/F_ShapeEar/separate").transform;
+            _sourceSeparator = GameObject.Find("SettingWindow/WinFace/F_ShapeEar/separate").transform;
         }
 
         /// <summary>

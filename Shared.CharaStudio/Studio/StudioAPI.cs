@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using KKAPI.Chara;
+using KKAPI.Studio.SaveLoad;
 using KKAPI.Studio.UI;
 using Studio;
 using UniRx;
@@ -110,6 +111,7 @@ namespace KKAPI.Studio
             if (!insideStudio) return;
 
             Hooks.SetupHooks();
+            StudioSaveLoadApi.Init();
 
             SceneManager.sceneLoaded += SceneLoaded;
 

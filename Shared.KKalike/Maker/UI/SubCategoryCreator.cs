@@ -103,7 +103,7 @@ namespace KKAPI.Maker.UI
         private static IEnumerator FinishInit(Transform trTop)
         {
             yield return null;
-            var scrl = Object.Instantiate(_scrollbarCopy, trTop, false);
+            var scrl = Object.Instantiate(_scrollbarCopy, trTop, true);
             scrl.name = "Scroll View";
             var rt = scrl.GetComponent<RectTransform>();
             rt.offsetMax = new Vector2(472, 0);

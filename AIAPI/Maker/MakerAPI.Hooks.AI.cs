@@ -10,7 +10,7 @@ namespace KKAPI.Maker
 {
     public partial class MakerAPI
     {
-        private static class Hooks
+        internal static class Hooks
         {
             private static bool _makerStarting;
 
@@ -20,6 +20,7 @@ namespace KKAPI.Maker
             {
                 if (!_makerStarting)
                 {
+                    CoordinateButtonClicked = 3;
                     InsideMaker = true;
                     _makerStarting = true;
                     OnRegisterCustomSubCategories();
@@ -127,6 +128,19 @@ namespace KKAPI.Maker
                 KoikatuAPI.Logger.LogDebug("Hooking " + target.FullDescription());
                 hi.Patch(target, new HarmonyMethod(typeof(Hooks), nameof(ChaFileLoadFilePreHook)));
             }
+
+            /// <summary>
+            /// Store which coord load button was pressed before running the stock game code
+            /// </summary>
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(CustomClothesWindow), "Start")]
+            public static void CustomClothesWindow_ButtonClickedHook(CustomClothesWindow __instance)
+            {
+                __instance.onClick01 = (info => CoordinateButtonClicked = 1) + __instance.onClick01;
+                __instance.onClick02 = (info => CoordinateButtonClicked = 2) + __instance.onClick02;
+                __instance.onClick03 = (info => CoordinateButtonClicked = 3) + __instance.onClick03;
+            }
+            internal static int CoordinateButtonClicked;
         }
     }
 }

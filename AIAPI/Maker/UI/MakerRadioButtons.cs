@@ -57,7 +57,7 @@ namespace KKAPI.Maker.UI
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var selGo = Object.Instantiate(GameObject.Find("CharaCustom/CustomControl/CanvasMain/SettingWindow/WinBody/B_Nip/SelectMenu"), subCategoryList);
+            var selGo = Object.Instantiate(GameObject.Find("SettingWindow/WinBody/B_Nip/SelectMenu"), subCategoryList);
             selGo.name = "rb";
 
             var toggleGroup = selGo.GetComponent<ToggleGroup>();
@@ -77,7 +77,7 @@ namespace KKAPI.Maker.UI
                 }
             }
 
-            var txtGo = Object.Instantiate(GameObject.Find("CharaCustom/CustomControl/CanvasMain/SettingWindow/WinBody/B_Nip/Setting/Setting02/Scroll View/Viewport/Content/ColorSet/Text"), selGo.transform);
+            var txtGo = Object.Instantiate(GameObject.Find("SettingWindow/WinBody/B_Nip/Setting/Setting02/Scroll View/Viewport/Content/ColorSet/Text"), selGo.transform);
             txtGo.transform.SetAsFirstSibling();
             const int textWidth = 110;
             txtGo.AddComponent<LayoutElement>().minWidth = textWidth;

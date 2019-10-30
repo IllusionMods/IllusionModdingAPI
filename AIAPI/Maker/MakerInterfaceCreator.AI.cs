@@ -160,7 +160,7 @@ namespace KKAPI.Maker
 
         private static void CreateCustomAccessoryWindowControls()
         {
-            var top = GameObject.Find("CharaCustom/CustomControl/CanvasMain/SettingWindow/WinAccessory/A_Slot");
+            var top = GameObject.Find("SettingWindow/WinAccessory/A_Slot");
             var content = CreateModsCvsWindowCategory(top.GetComponent<CvsBase>());
             CreateCustomControlsInSubCategory(content, _accessoryWindowEntries);
         }
@@ -237,7 +237,7 @@ namespace KKAPI.Maker
             // If there is space for a new toggle, make a mods toggle
             var newIndex = cvsBase.items.Length;
 
-            var newTgl = Object.Instantiate(GameObject.Find("CharaCustom/CustomControl/CanvasMain/SettingWindow/WinBody/B_Nip/SelectMenu/tgl02"), select);
+            var newTgl = Object.Instantiate(GameObject.Find("SettingWindow/WinBody/B_Nip/SelectMenu/tgl02"), select);
             // Name format is important
             newTgl.name = "tgl0" + (newIndex + 1);
             newTgl.GetComponentInChildren<Text>().text = "Mods";
@@ -264,7 +264,7 @@ namespace KKAPI.Maker
             toggleEx.group = select.GetComponent<ToggleGroup>();
 
             var settingParent = baseTransform.Find("Setting");
-            var newSetting = Object.Instantiate(GameObject.Find("CharaCustom/CustomControl/CanvasMain/SettingWindow/WinBody/B_Nip/Setting/Setting02"), settingParent);
+            var newSetting = Object.Instantiate(GameObject.Find("SettingWindow/WinBody/B_Nip/Setting/Setting02"), settingParent);
             newSetting.name = "Setting0" + (newIndex + 1);
 
             cvsBase.ReacquireTab();
@@ -357,11 +357,20 @@ namespace KKAPI.Maker
 
             return new CharacterLoadFlags
             {
-                Face =            toggles[0].isOn,
-                Body =            toggles[1].isOn,
-                Hair =            toggles[2].isOn,
-                Clothes =         toggles[3].isOn,
-                Parameters =      toggles[4].isOn
+                Face = toggles[0].isOn,
+                Body = toggles[1].isOn,
+                Hair = toggles[2].isOn,
+                Clothes = toggles[3].isOn,
+                Parameters = toggles[4].isOn
+            };
+        }
+
+        public static CoordinateLoadFlags GetCoordinateLoadFlags()
+        {
+            return new CoordinateLoadFlags
+            {
+                Clothes = MakerAPI.Hooks.CoordinateButtonClicked == 1 || MakerAPI.Hooks.CoordinateButtonClicked == 3,
+                Accessories = MakerAPI.Hooks.CoordinateButtonClicked == 2 || MakerAPI.Hooks.CoordinateButtonClicked == 3
             };
         }
     }

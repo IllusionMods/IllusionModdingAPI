@@ -15,6 +15,7 @@ namespace KKAPI
     /// More information is available in project wiki at https://github.com/ManlyMarco/KKAPI/wiki
     /// </summary>
     [BepInDependency("com.joan6694.illusionplugins.moreaccessories", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency(ExtensibleSaveFormat.ExtendedSave.GUID)]
     [BepInIncompatibility("com.bepis.makerapi")]
     public partial class KoikatuAPI
     {
@@ -26,7 +27,7 @@ namespace KKAPI
         /// THIS VALUE WILL NOT BE READ FROM THE INSTALLED VERSION, YOU WILL READ THE VALUE FROM THIS VERSION THAT YOU COMPILE YOUR PLUGIN AGAINST!
         /// More info: https://stackoverflow.com/questions/55984/what-is-the-difference-between-const-and-readonly
         /// </summary>
-        public const string VersionConst = "1.7";
+        public const string VersionConst = "1.8";
 
         /// <summary>
         /// GUID of this plugin, use for checking dependancies with <see cref="BepInDependency"/> and <see cref="CheckRequiredPlugin"/>
@@ -98,6 +99,7 @@ namespace KKAPI
         public static bool CheckRequiredPlugin(BaseUnityPlugin origin, string guid, Version minimumVersion, BepInEx.Logging.LogLevel level = BepInEx.Logging.LogLevel.Error)
         {
             var target = BepInEx.Bootstrap.Chainloader.Plugins
+                .Where(x => x != null)
                 .Select(MetadataHelper.GetMetadata)
                 .FirstOrDefault(x => x.GUID == guid);
             if (target == null)
@@ -134,6 +136,7 @@ namespace KKAPI
         public static bool CheckIncompatiblePlugin(BaseUnityPlugin origin, string guid, BepInEx.Logging.LogLevel level = BepInEx.Logging.LogLevel.Warning)
         {
             var target = BepInEx.Bootstrap.Chainloader.Plugins
+                .Where(x => x != null)
                 .Select(MetadataHelper.GetMetadata)
                 .FirstOrDefault(x => x.GUID == guid);
             if (target != null)

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>a4b901df-f460-4510-8e04-8b3666990222</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Shared.CharaStudio</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\ObjectsCopiedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\SceneCustomFunctionController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\SceneLoadEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\SceneOperationKind.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\StudioSaveLoadApi.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\StudioSaveLoadApi.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\TestSceneFunctionController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\StudioAPI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\StudioAPI.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\StudioObjectExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\BaseCurrentStateEditableGuiEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategorySlider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategorySubItemBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategoryToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CustomStateCategorySwitch.cs" />
+  </ItemGroup>
+</Project>

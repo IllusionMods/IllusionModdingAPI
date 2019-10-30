@@ -13,4 +13,13 @@ namespace KKAPI.Maker
         public bool Body;
         public bool Parameters;
     }
+
+    /// <summary>
+    /// Specifies which parts of the coordinate will be loaded when loading a clothing card in character maker.
+    /// </summary>
+    public sealed class CoordinateLoadFlags
+    {
+        public bool Clothes;
+        public bool Accessories;
+    }
 }

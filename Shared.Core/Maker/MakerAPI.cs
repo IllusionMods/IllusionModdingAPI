@@ -374,6 +374,16 @@ namespace KKAPI.Maker
             return MakerInterfaceCreator.GetCharacterLoadFlags();
         }
 
+        /// <summary>
+        /// Get which parts of the coordinate will be loaded when loading a clothing card in character maker.
+        /// Returns null if the values could not be collected (safe to assume it's the same as being enabled).
+        /// </summary>
+        public static CoordinateLoadFlags GetCoordinateLoadFlags()
+        {
+            if (!InsideAndLoaded) return null;
+            return MakerInterfaceCreator.GetCoordinateLoadFlags();
+        }
+
         internal static void Init(bool insideStudio)
         {
             if (insideStudio) return;

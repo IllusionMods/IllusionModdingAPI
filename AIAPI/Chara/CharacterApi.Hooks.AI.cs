@@ -3,6 +3,7 @@ using KKAPI.Maker;
 using System;
 using System.Collections;
 using System.Linq;
+using ADV;
 using HarmonyLib;
 
 namespace KKAPI.Chara
@@ -17,7 +18,10 @@ namespace KKAPI.Chara
 
                 var target = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.Initialize) && info.GetParameters().Length >= 5);
                 i.Patch(target, null, new HarmonyMethod(typeof(Hooks), nameof(ChaControl_InitializePostHook)));
-                
+
+                var target2 = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.ReloadAsync) && info.GetParameters().Length >= 5);
+                i.Patch(target2, null, new HarmonyMethod(typeof(Hooks), nameof(ReloadAsyncPostHook)));
+
                 var target3 = typeof(ChaFile).GetMethods().Single(info => info.Name == nameof(ChaFile.CopyAll));
                 i.Patch(target3, null, new HarmonyMethod(typeof(Hooks), nameof(ChaFile_CopyChaFileHook)));
             }
@@ -67,6 +71,30 @@ namespace KKAPI.Chara
             }
 
             public static bool ClothesFileControlLoading => false;
+
+            /// <summary>
+            /// Needed for some edge cases, replacing characters in scene maker in EC
+            /// </summary>//
+            public static void ReloadAsyncPostHook(bool noChangeClothes, bool noChangeHead, bool noChangeHair, bool noChangeBody, ChaControl __instance, ref IEnumerator __result)
+            {
+                if (noChangeClothes || noChangeHead || noChangeHair || noChangeBody) return;
+                if (IsCurrentlyReloading(__instance)) return;
+
+                var original = __result;
+                __result = new[] { original, DelayedReloadChara(__instance) }.GetEnumerator();
+            }
+
+            /// <summary>
+            /// Needed to update controllers after ADV scene finishes loading since characters get loaded async so other events fire too early
+            /// </summary>
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(CharaData), nameof(CharaData.Initialize))]
+            public static void CharaData_InitializePost(CharaData __instance)
+            {
+                // Only run reload if the character was newly created
+                if (Traverse.Create(__instance).Property("isADVCreateChara").GetValue<bool>())
+                    ReloadChara(__instance.chaCtrl);
+            }
         }
     }
 }

@@ -30,6 +30,7 @@
 - [`AccessoryWindowControlValueChangedEventArgs<TVal>`](KKAPI.Maker.md#accessorywindowcontrolvaluechangedeventargstval)
 - [`ChaFileLoadedEventArgs`](KKAPI.Maker.md#chafileloadedeventargs)
 - [`CharacterLoadFlags`](KKAPI.Maker.md#characterloadflags)
+- [`CoordinateLoadFlags`](KKAPI.Maker.md#coordinateloadflags)
 - [`MakerAPI`](KKAPI.Maker.md#makerapi)
 - [`MakerCardSave`](KKAPI.Maker.md#makercardsave)
 - [`MakerCategory`](KKAPI.Maker.md#makercategory)

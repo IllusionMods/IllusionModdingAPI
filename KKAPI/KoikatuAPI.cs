@@ -4,7 +4,6 @@ using KKAPI.Chara;
 using KKAPI.MainGame;
 using KKAPI.Maker;
 using KKAPI.Studio;
-using KKAPI.Studio.SaveLoad;
 using Manager;
 using UnityEngine;
 
@@ -19,7 +18,6 @@ namespace KKAPI
 
             MakerAPI.Init(insideStudio);
             StudioAPI.Init(insideStudio);
-            StudioSaveLoadApi.Init(insideStudio);
             CharacterApi.Init();
             GameAPI.Init(insideStudio);
         }
