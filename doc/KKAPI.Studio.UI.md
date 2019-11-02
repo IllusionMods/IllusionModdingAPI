@@ -48,6 +48,22 @@ Methods
 | `void` | UpdateInfo(`OCIChar` ociChar) | Fired when currently selected character changes and the controls need to be updated | 
 
 
+## `CurrentStateCategoryDropdown`
+
+Custom control that draws a dropdown menu in the Chara &gt; CurrentState studio menu.
+```csharp
+public class KKAPI.Studio.UI.CurrentStateCategoryDropdown
+    : BaseCurrentStateEditableGuiEntry<Int32>
+
+```
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `GameObject` | CreateItem(`GameObject` categoryObject) |  | 
+
+
 ## `CurrentStateCategorySlider`
 
 Custom control that draws a slider in the Chara &gt; CurrentState studio menu.
