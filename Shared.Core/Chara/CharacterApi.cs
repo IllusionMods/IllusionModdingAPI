@@ -232,7 +232,7 @@ namespace KKAPI.Chara
 
         private static IEnumerator DelayedReloadChara(ChaControl chaControl)
         {
-            if (IsCurrentlyReloading(chaControl)) yield break;
+            if (MakerAPI.InsideMaker || IsCurrentlyReloading(chaControl)) yield break;
 
             yield return null;
             ReloadChara(chaControl);
