@@ -161,7 +161,7 @@ namespace KKAPI.Maker
         private static void CreateCustomAccessoryWindowControls()
         {
             var top = GameObject.Find("SettingWindow/WinAccessory/A_Slot");
-            var content = CreateModsCvsWindowCategory(top.GetComponent<CvsBase>());
+            var content = CreateModsCvsWindowCategory(top.GetComponent<CvsBase>(), true);
             CreateCustomControlsInSubCategory(content, _accessoryWindowEntries);
         }
 
@@ -201,7 +201,7 @@ namespace KKAPI.Maker
                     var cvsBase = subCategoryTransform.GetComponent<CvsBase>();
 
                     if (cvsBase != null)
-                        contentParent = CreateModsCvsWindowCategory(cvsBase);
+                        contentParent = CreateModsCvsWindowCategory(cvsBase, false);
                 }
             }
             if (contentParent == null)
@@ -223,11 +223,11 @@ namespace KKAPI.Maker
                 $"to {category.CategoryName}/{category.SubCategoryName}");
         }
 
-        private static Transform CreateModsCvsWindowCategory(CvsBase cvsBase)
+        private static Transform CreateModsCvsWindowCategory(CvsBase cvsBase, bool forceNew)
         {
             var baseTransform = cvsBase.transform.Find("contents") ?? cvsBase.transform;
             var select = baseTransform.Find("SelectMenu");
-            if (select.Find("tgl05") != null)
+            if (!forceNew && select.Find("tgl05") != null)
             {
                 // If no more can be added (max 5), use the last existing one and pray
                 var existingSetting = baseTransform.Find("Setting/Setting05") ?? throw new ArgumentException("asd");
