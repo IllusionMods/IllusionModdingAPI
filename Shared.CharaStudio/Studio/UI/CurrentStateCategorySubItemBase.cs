@@ -1,5 +1,6 @@
 ﻿using System;
 using Studio;
+using UniRx;
 using UnityEngine;
 
 namespace KKAPI.Studio.UI
@@ -16,6 +17,14 @@ namespace KKAPI.Studio.UI
         protected CurrentStateCategorySubItemBase(string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
+
+            Visible = new BehaviorSubject<bool>(true);
+            Visible.Subscribe(
+                b =>
+                {
+                    if (RootGameObject != null)
+                        RootGameObject.SetActive(b);
+                });
         }
 
         /// <summary>
@@ -39,6 +48,8 @@ namespace KKAPI.Studio.UI
             var rootGameObject = CreateItem(categoryObject);
             if (rootGameObject == null) throw new ArgumentException("CreateItem has to return a GameObject, check its overload in " + GetType().FullName);
             RootGameObject = rootGameObject;
+
+            rootGameObject.SetActive(Visible.Value);
         }
 
         /// <summary>
@@ -56,5 +67,10 @@ namespace KKAPI.Studio.UI
         /// The control was created and still exists.
         /// </summary>
         public bool Created => RootGameObject != null;
+
+        /// <summary>
+        /// The control is visible to the user (usually the same as it's GameObject being active).
+        /// </summary>
+        public BehaviorSubject<bool> Visible { get; }
     }
 }

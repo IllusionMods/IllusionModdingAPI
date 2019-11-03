@@ -103,6 +103,7 @@ Properties
 | `Boolean` | Created | The control was created and still exists. | 
 | `String` | Name | Name of the setting, displayed to the left | 
 | `GameObject` | RootGameObject | The control's root gameobject. null if the control was not created yet. | 
+| `BehaviorSubject<Boolean>` | Visible | The control is visible to the user (usually the same as it's GameObject being active). | 
 
 
 Methods
