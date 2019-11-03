@@ -1,7 +1,6 @@
 
 GITHUB
   remote: IllusionMods/IllusionLibs
-    FULLPROJECT (41b44f832f3fa71f4d1b92d56040d6c67940ec91)
-    FULLPROJECT (41b44f832f3fa71f4d1b92d56040d6c67940ec91)
-  remote: IllusionMods/ExtensibleSaveFormat
-    FULLPROJECT (2fb6489efd496563ab3d398cb53950439075d533)
+    FULLPROJECT (4075690bacb1c8ad542e2cb98b13868617d989f9)
+  remote: IllusionMods/BepisPlugins
+    FULLPROJECT (68824389ab3ce3627479e6cbf316ffc80f3d4a73)
