@@ -119,7 +119,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)paket-files\IllusionMods\BepisPlugins\src\AI_ExtensibleSaveFormat\AI_ExtensibleSaveFormat.csproj">
+    <ProjectReference Include="$(SolutionDir)paket-files\IllusionMods\ExtensibleSaveFormat\src\AI_ExtensibleSaveFormat\AI_ExtensibleSaveFormat.csproj">
       <Project>{303c404b-9d91-4622-9b8b-8415e0de6a8f}</Project>
       <Name>AI_ExtensibleSaveFormat</Name>
       <Private>False</Private>

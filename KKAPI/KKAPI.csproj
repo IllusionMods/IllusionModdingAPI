@@ -82,7 +82,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)paket-files\IllusionMods\BepisPlugins\src\KK_ExtensibleSaveFormat\KK_ExtensibleSaveFormat.csproj">
+    <ProjectReference Include="$(SolutionDir)paket-files\IllusionMods\ExtensibleSaveFormat\src\KK_ExtensibleSaveFormat\KK_ExtensibleSaveFormat.csproj">
       <Project>{8ebe81b9-9ed9-466d-864a-4c644bfd8827}</Project>
       <Name>KK_ExtensibleSaveFormat</Name>
       <Private>False</Private>
