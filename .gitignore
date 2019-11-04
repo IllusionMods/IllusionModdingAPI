@@ -331,3 +331,4 @@ ASALocalRun/
 .mfractor/
 /test
 /KKAPI/KKAPI.csproj.DotSettings
+/lib
