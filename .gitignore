@@ -281,7 +281,8 @@ node_modules/
 _Pvt_Extensions
 
 # Paket dependency manager
-.paket/paket.exe
+#.paket/paket.exe
+.paket/Paket.Restore.targets
 paket-files/
 
 # FAKE - F# Make
@@ -328,6 +329,5 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
-/lib
 /test
 /KKAPI/KKAPI.csproj.DotSettings
