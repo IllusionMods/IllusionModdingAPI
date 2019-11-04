@@ -29,3 +29,9 @@ To get a good preview you can download one of the mods listed above, for example
 
 ![kkapi preview 1](https://user-images.githubusercontent.com/39247311/52817863-74461d80-30a5-11e9-81fd-d68a530d066a.png)
 ![kkapi preview 2](https://user-images.githubusercontent.com/39247311/52817865-74461d80-30a5-11e9-9b4f-e42ef0dcc7ea.png)
+
+## How to compile
+1. Clone/download the repo.
+2. Run `Paket-Restore.bat` to restore dependencies.
+   * On linux you need to [add paket to bash](https://fsprojects.github.io/Paket/installation.html#Installation-on-Linux) and use the [restore command](https://fsprojects.github.io/Paket/paket-restore.html).
+3. Compile using your preferred IDE. Visual Studio 2017 or newer is recommended.
