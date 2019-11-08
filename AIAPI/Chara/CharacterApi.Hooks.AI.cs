@@ -2,6 +2,7 @@
 using KKAPI.Maker;
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using ADV;
 using HarmonyLib;
@@ -94,6 +95,21 @@ namespace KKAPI.Chara
                 // Only run reload if the character was newly created
                 if (Traverse.Create(__instance).Property("isADVCreateChara").GetValue<bool>())
                     ReloadChara(__instance.chaCtrl);
+            }
+
+            /// <summary>
+            /// Needed to catch coordinate updates in studio and other places
+            /// </summary>
+            [HarmonyPostfix]
+            // public bool ChangeNowCoordinate(ChaFileCoordinate srcCoorde, bool reload = false, bool forceChange = true)
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeNowCoordinate), typeof(ChaFileCoordinate), typeof(bool), typeof(bool))]
+            public static void CharaData_InitializePost(ChaControl __instance, ChaFileCoordinate srcCoorde)
+            {
+                // Make sure we were called by this particular method, the bool,bool overload is triggered when creating the character which we don't want
+		        // public bool ChangeNowCoordinate(string path, bool reload = false, bool forceChange = true)
+                var caller = new StackFrame(2);
+                if (caller.GetMethod().GetParameters().First()?.ParameterType == typeof(string))
+                    OnCoordinateBeingLoaded(__instance, srcCoorde);
             }
         }
     }
