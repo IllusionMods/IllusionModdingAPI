@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using ExtensibleSaveFormat;
-#if KK || EC
-using UniRx;
-#elif AI
+#if AI
 using AIChara;
 #endif
 
@@ -240,13 +238,12 @@ namespace KKAPI.Chara
 
         private static void OnCoordinateBeingSaved(ChaControl character, ChaFileCoordinate coordinateFile)
         {
-#if EC
+#if EC || AI
             KoikatuAPI.Logger.LogDebug($"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"");
 #elif KK
-            KoikatuAPI.Logger.LogDebug(
-                $"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"" +
-                $" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+            KoikatuAPI.Logger.LogDebug($"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
 #endif
+
             foreach (var controller in GetBehaviours(character))
                 controller.OnCoordinateBeingSavedInternal(coordinateFile);
 
@@ -262,12 +259,10 @@ namespace KKAPI.Chara
 
         private static void OnCoordinateBeingLoaded(ChaControl character, ChaFileCoordinate coordinateFile)
         {
-#if EC
+#if EC || AI
             KoikatuAPI.Logger.LogDebug($"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"");
 #elif KK
-            KoikatuAPI.Logger.LogDebug(
-                $"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"" +
-                $" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+            KoikatuAPI.Logger.LogDebug($"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
 #endif
 
             foreach (var controller in GetBehaviours(character))
