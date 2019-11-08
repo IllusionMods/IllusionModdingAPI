@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using ExtensibleSaveFormat;
+using KKAPI.Utilities;
+using UnityEngine;
+
 #if AI
 using AIChara;
 #endif
@@ -147,7 +150,13 @@ namespace KKAPI.Chara
                 // Coord cards are loaded by loading into the character's nowCoordinate
                 var cf = ChaControls.FirstOrDefault(x => x.nowCoordinate == file);
                 if (cf != null)
+                {
+#if AI
+                    KoikatuAPI.Instance.StartCoroutine(new object[] { new WaitForEndOfFrame(), CoroutineUtils.CreateCoroutine(() => OnCoordinateBeingLoaded(cf, file)) }.GetEnumerator());
+#else
                     OnCoordinateBeingLoaded(cf, file);
+#endif
+                }
             };
 
             if (KoikatuAPI.EnableDebugLogging)
