@@ -41,6 +41,8 @@ namespace KKAPI.Utilities
         /// </summary>
         public static IEnumerator CreateCoroutine(params Action[] actions)
         {
+            if (actions == null) throw new ArgumentNullException(nameof(actions));
+
             var first = true;
             foreach (var action in actions)
             {
@@ -51,6 +53,19 @@ namespace KKAPI.Utilities
 
                 action();
             }
+        }
+
+        /// <summary>
+        /// Create a coroutine that calls each of the action delegates on consecutive frames.
+        /// One action is called per frame. First action is called right after the yieldInstruction. There is no frame skip after the last action.
+        /// </summary>
+        public static IEnumerator CreateCoroutine(YieldInstruction yieldInstruction, params Action[] actions)
+        {
+            if (yieldInstruction == null) throw new ArgumentNullException(nameof(yieldInstruction));
+            if (actions == null) throw new ArgumentNullException(nameof(actions));
+
+            yield return yieldInstruction;
+            yield return CreateCoroutine(actions);
         }
 
         /// <summary>

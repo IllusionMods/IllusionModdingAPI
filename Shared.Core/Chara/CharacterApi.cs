@@ -152,7 +152,7 @@ namespace KKAPI.Chara
                 if (cf != null)
                 {
 #if AI
-                    KoikatuAPI.Instance.StartCoroutine(new object[] { new WaitForEndOfFrame(), CoroutineUtils.CreateCoroutine(() => OnCoordinateBeingLoaded(cf, file)) }.GetEnumerator());
+                    KoikatuAPI.Instance.StartCoroutine(CoroutineUtils.CreateCoroutine(new WaitForEndOfFrame(), () => OnCoordinateBeingLoaded(cf, file)));
 #else
                     OnCoordinateBeingLoaded(cf, file);
 #endif
