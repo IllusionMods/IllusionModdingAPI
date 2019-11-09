@@ -98,17 +98,24 @@ namespace KKAPI.Chara
             }
 
             /// <summary>
-            /// Needed to catch coordinate updates in studio and other places
+            /// Needed to catch coordinate updates in studio, h scene and other places
             /// </summary>
             [HarmonyPostfix]
             // public bool ChangeNowCoordinate(ChaFileCoordinate srcCoorde, bool reload = false, bool forceChange = true)
             [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeNowCoordinate), typeof(ChaFileCoordinate), typeof(bool), typeof(bool))]
             public static void CharaData_InitializePost(ChaControl __instance, ChaFileCoordinate srcCoorde)
             {
-                // Make sure we were called by this particular method, the bool,bool overload is triggered when creating the character which we don't want
-		        // public bool ChangeNowCoordinate(string path, bool reload = false, bool forceChange = true)
-                var caller = new StackFrame(2);
-                if (caller.GetMethod().GetParameters().First()?.ParameterType == typeof(string))
+                // Make sure we were called by the correct methods to avoid triggering this when a character is being fully reloaded
+                // Need to inspect whole stack trace and grab the earliest methods in the stack to avoid MoreAccessories hooks
+                var isCoordinateLoad = new StackTrace().GetFrames()?.Any(f =>
+                {
+                    var method = f.GetMethod();
+                    return method.Name == "UpdateClothEvent"
+                           || method.Name == "LoadClothesFile"
+                           || method.DeclaringType?.Name == "HSceneSpriteCoordinatesCard";
+                });
+
+                if (isCoordinateLoad != false)
                     OnCoordinateBeingLoaded(__instance, srcCoorde);
             }
         }
