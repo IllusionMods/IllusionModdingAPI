@@ -15,6 +15,7 @@ Static Methods
 | `IEnumerator` | AppendCo(this `IEnumerator` baseCoroutine, `Action[]` actions) | Create a coroutine that calls the appendCoroutine after baseCoroutine finishes | 
 | `IEnumerator` | ComposeCoroutine(`IEnumerator[]` coroutine) | Create a coroutine that calls each of the supplied coroutines in order. | 
 | `IEnumerator` | CreateCoroutine(`Action[]` actions) | Create a coroutine that calls each of the action delegates on consecutive frames.  One action is called per frame. First action is called right away. There is no frame skip after the last action. | 
+| `IEnumerator` | CreateCoroutine(`YieldInstruction` yieldInstruction, `Action[]` actions) | Create a coroutine that calls each of the action delegates on consecutive frames.  One action is called per frame. First action is called right away. There is no frame skip after the last action. | 
 
 
 ## `Extensions`
