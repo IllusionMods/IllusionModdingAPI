@@ -24,6 +24,8 @@ namespace KKAPI.Chara
     /// </summary>
     public abstract class CharaCustomFunctionController : MonoBehaviour
     {
+        private bool _wasLoaded;
+
         /// <summary>
         /// ChaControl of the character this controller is attached to. It's on the same gameObject as this controller.
         /// </summary>
@@ -141,6 +143,12 @@ namespace KKAPI.Chara
 
         internal void OnCardBeingSavedInternal(GameMode gamemode)
         {
+            if(!_wasLoaded)
+            {
+                KoikatuAPI.Logger.LogWarning("Tried to save card before it was loaded - " + ChaFileControl.charaFileName);
+                return;
+            }
+
             try
             {
                 OnCardBeingSaved(gamemode);
@@ -187,6 +195,8 @@ namespace KKAPI.Chara
                     OnReload(currentGameMode);
 
                 OnReload(currentGameMode, ControllerRegistration.MaintainState);
+
+                _wasLoaded = true;
             }
             catch (Exception e)
             {
