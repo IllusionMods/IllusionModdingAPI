@@ -190,7 +190,12 @@ namespace KKAPI.Chara
             KoikatuAPI.Logger.LogDebug("Character save: " + chaFile.parameter.fullname);
 
             var gamemode = KoikatuAPI.GetCurrentGameMode();
-            foreach (var behaviour in GetBehaviours(MakerAPI.GetCharacterControl()))
+
+            var chaControl = gamemode == GameMode.Maker ?
+                MakerAPI.GetCharacterControl() :
+                ChaControls.FirstOrDefault(control => control.chaFile == chaFile);
+
+            foreach (var behaviour in GetBehaviours(chaControl))
                 behaviour.OnCardBeingSavedInternal(gamemode);
         }
 
