@@ -32,7 +32,8 @@ namespace KKAPI
         public static GameMode GetCurrentGameMode()
         {
             if (MakerAPI.InsideMaker) return GameMode.Maker;
-            if (Game.Instance.WorldData != null) return GameMode.MainGame;
+            if (StudioAPI.InsideStudio) return GameMode.Studio;
+            if (Map.IsInstance() && Map.Instance.MapRoot != null) return GameMode.MainGame;
             return GameMode.Unknown;
         }
 
