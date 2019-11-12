@@ -156,6 +156,34 @@ namespace KKAPI.Maker
 
             MakerLoadToggle.CreateCustomToggles();
             MakerCoordinateLoadToggle.CreateCustomToggles();
+
+            FixAccessoryTextScaling();
+        }
+
+        // Fix accessory text wrapping instead of scaling
+        private static void FixAccessoryTextScaling()
+        {
+            var accessorySelectTop = GameObject.Find(@"CharaCustom/CustomControl/CanvasMain/SubMenu/SubMenuAccessory/Scroll View/Viewport/Content/Category/CategoryTop");
+            if (accessorySelectTop != null)
+            {
+                foreach (var txtCmp in accessorySelectTop.transform.GetComponentsInChildren<Text>(true))
+                    BaseGuiEntry.SetTextAutosize(txtCmp);
+            }
+            else
+            {
+                KoikatuAPI.Logger.LogWarning("Failed to find " + @"CharaCustom/CustomControl/CanvasMain/SubMenu/SubMenuAccessory/Scroll View/Viewport/Content/Category/CategoryTop");
+            }
+
+            var windowTitleTop = GameObject.Find(@"CharaCustom/CustomControl/CanvasSub/SettingWindow/WinAccessory/A_Slot/title/textWinTitle");
+            if (windowTitleTop != null)
+            {
+                var titleTxt = windowTitleTop.transform.GetComponent<Text>();
+                BaseGuiEntry.SetTextAutosize(titleTxt);
+            }
+            else
+            {
+                KoikatuAPI.Logger.LogWarning("Failed to find " + @"CharaCustom/CustomControl/CanvasSub/SettingWindow/WinAccessory/A_Slot/title/textWinTitle");
+            }
         }
 
         private static void CreateCustomAccessoryWindowControls()
