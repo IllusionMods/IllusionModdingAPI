@@ -1,5 +1,7 @@
-﻿using HarmonyLib;
+﻿using System.Collections;
+using HarmonyLib;
 using Studio;
+using UnityEngine;
 
 namespace KKAPI.Studio
 {
@@ -13,14 +15,22 @@ namespace KKAPI.Studio
             }
 
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(MPCharCtrl), nameof(MPCharCtrl.OnClickRoot), new[] { typeof(int) })]
+            [HarmonyPatch(typeof(MPCharCtrl), nameof(MPCharCtrl.OnClickRoot), typeof(int))]
             public static void OnClickRoot(MPCharCtrl __instance, int _idx)
             {
-                if (_idx == 0)
+                IEnumerator DelayedUpdateTrigger()
                 {
-                    foreach (var stateCategory in _customCurrentStateCategories)
-                        stateCategory.UpdateInfo(__instance.ociChar);
+                    // Need to wait for the selected character to change or we risk overwriting current character with new character's data
+                    yield return new WaitForEndOfFrame();
+
+                    if (_idx == 0)
+                    {
+                        foreach (var stateCategory in _customCurrentStateCategories)
+                            stateCategory.UpdateInfo(__instance.ociChar);
+                    }
                 }
+
+                KoikatuAPI.Instance.StartCoroutine(DelayedUpdateTrigger());
             }
         }
     }
