@@ -24,7 +24,7 @@ namespace KKAPI.Maker
         public static T AddControl<T>(T control) where T : BaseGuiEntry
         {
             if (control == null) throw new ArgumentNullException(nameof(control));
-            if (control.IsDisposed) throw new ObjectDisposedException(nameof(control), "A new control has to be created every time maker is started");
+            control.ThrowIfDisposed(nameof(control));
             MakerInterfaceCreator.AddControl(control);
             return control;
         }
@@ -45,7 +45,7 @@ namespace KKAPI.Maker
         public static T AddSidebarControl<T>(T control) where T : BaseGuiEntry, ISidebarControl
         {
             if (control == null) throw new ArgumentNullException(nameof(control));
-            if (control.IsDisposed) throw new ObjectDisposedException(nameof(control), "A new control has to be created every time maker is started");
+            control.ThrowIfDisposed(nameof(control));
             MakerInterfaceCreator.AddSidebarControl(control);
             return control;
         }
@@ -57,7 +57,7 @@ namespace KKAPI.Maker
         public static T AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
         {
             if (control == null) throw new ArgumentNullException(nameof(control));
-            if (control.IsDisposed) throw new ObjectDisposedException(nameof(control), "A new control has to be created every time maker is started");
+            control.ThrowIfDisposed(nameof(control));
             MakerInterfaceCreator.AddAccessoryWindowControl(control);
             return control;
         }
@@ -68,7 +68,7 @@ namespace KKAPI.Maker
         public static AccessoryControlWrapper<T, TVal> AddEditableAccessoryWindowControl<T, TVal>(T control) where T : BaseEditableGuiEntry<TVal>
         {
             if (control == null) throw new ArgumentNullException(nameof(control));
-            if (control.IsDisposed) throw new ObjectDisposedException(nameof(control), "A new control has to be created every time maker is started");
+            control.ThrowIfDisposed(nameof(control));
             MakerInterfaceCreator.AddAccessoryWindowControl(control);
             return new AccessoryControlWrapper<T, TVal>(control);
         }

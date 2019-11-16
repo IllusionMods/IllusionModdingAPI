@@ -57,6 +57,7 @@ Methods
 | `void` | Dispose() | Remove the control. Called when maker is quitting. | 
 | `void` | Initialize() | Called before OnCreateControl to setup the object before instantiating the control. | 
 | `GameObject` | OnCreateControl(`Transform` subCategoryList) | Used by the API to actually create the custom control.  Should return main GameObject of the control | 
+| `void` | ThrowIfDisposed(`String` paramName) |  | 
 
 
 Static Fields

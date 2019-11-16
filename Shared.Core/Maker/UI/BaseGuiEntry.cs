@@ -114,6 +114,12 @@ namespace KKAPI.Maker.UI
         /// </summary>
         public bool IsDisposed { get; private set; }
 
+        internal void ThrowIfDisposed(string paramName)
+        {
+            if (IsDisposed)
+                throw new ObjectDisposedException(paramName, "A new control has to be created every time maker is started");
+        }
+
         internal virtual void CreateControl(Transform subCategoryList)
         {
             var control = OnCreateControl(subCategoryList);

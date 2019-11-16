@@ -116,7 +116,7 @@ namespace KKAPI.Maker.UI
         internal static MakerCoordinateLoadToggle AddLoadToggle(MakerCoordinateLoadToggle toggle)
         {
             if (toggle == null) throw new ArgumentNullException(nameof(toggle));
-            if (toggle.IsDisposed) throw new ObjectDisposedException(nameof(toggle), "A new control has to be created every time maker is started");
+            toggle.ThrowIfDisposed(nameof(toggle));
 
             Toggles.Add(toggle);
             return toggle;
