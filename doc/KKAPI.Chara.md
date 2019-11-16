@@ -55,6 +55,7 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `void` | BindToFunctionController(this `BaseEditableGuiEntry<TValue>` guiEntry, `GetValueForInterface<TController, TValue>` getValue, `SetValueToController<TController, TValue>` setValue) | Synchronize this maker control to the state of your custom `KKAPI.Chara.CharaCustomFunctionController`.  When the control's value changes the change is sent to the controller, and when the character is reloaded  the change is automatically pulled from the controller into the control. | 
 | `ChaControl` | GetChaControl(this `ChaFile` chaFile) | Get ChaControl that is using this ChaFile if any exist. | 
 
 
