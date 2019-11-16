@@ -83,7 +83,7 @@ namespace KKAPI.Maker
             public static ChaFile InternalLastLoadedChaFile
             {
                 get => !InsideAndLoaded && !CharaCustom.CharaCustom.modeNew ? Singleton<CustomBase>.Instance.defChaCtrl : _internalLastLoadedChaFile;
-                private set => _internalLastLoadedChaFile = value;
+                internal set => _internalLastLoadedChaFile = value;
             }
 
             [HarmonyPostfix]

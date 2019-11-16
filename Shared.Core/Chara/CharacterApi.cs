@@ -124,7 +124,24 @@ namespace KKAPI.Chara
             MakerAPI.ChaFileLoaded += (sender, args) =>
             {
                 var chaControl = MakerAPI.GetCharacterControl();
-                if (chaControl != null) ReloadChara(chaControl);
+                if (chaControl != null)
+                {
+#if AI
+                    var chaFile = MakerAPI.Hooks.InternalLastLoadedChaFile;
+                    KoikatuAPI.Instance.StartCoroutine(new object[] {
+                        // Need to wait until clothes and accs are fully loaded
+                        null, new WaitForEndOfFrame(),
+                        CoroutineUtils.CreateCoroutine(() =>
+                        {
+                            // Needed to fix losing ext data because the chafile gets replaced by chafiles from the list being reloaded
+                            MakerAPI.Hooks.InternalLastLoadedChaFile = chaFile;
+                            ReloadChara(chaControl);
+                        })
+                    }.GetEnumerator());
+#else
+                    ReloadChara(chaControl);
+#endif
+                }
             };
 
             // Coordinates -------------------
