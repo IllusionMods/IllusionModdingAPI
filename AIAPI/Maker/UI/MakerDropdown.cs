@@ -90,6 +90,7 @@ namespace KKAPI.Maker.UI
             dropdown.ClearOptions();
             dropdown.GetComponent<Image>().raycastTarget = true;
             dropdown.template.GetComponentInChildren<UI_ToggleEx>().image.raycastTarget = true;
+            SetTextAutosize(dropdown.template.GetComponentInChildren<Text>(true));
 
             RemoveLocalisation(_dropdownCopy.gameObject);
         }
