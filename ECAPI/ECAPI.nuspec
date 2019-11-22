@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>IllusionModdingAPI.ECAPI</id>
     <version>$version$</version>
     <authors>ManlyMarco</authors>
     <projectUrl>https://github.com/IllusionMods/IllusionModdingAPI</projectUrl>
