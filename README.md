@@ -27,12 +27,6 @@ This project aims to make creating mods for recent UnityEngine games made by the
 - [Code reference can be found here.](https://github.com/ManlyMarco/KKAPI/blob/master/doc/Home.md)
 - You can get help with using this API on the [Koikatsu! discord server](https://discord.gg/urDt8CK).
 
-### How to compile
-1. Clone/download the repo.
-2. Run `Paket-Restore.bat` to restore dependencies.
-   * On linux you need to [add paket to bash](https://fsprojects.github.io/Paket/installation.html#Installation-on-Linux) and use the [restore command](https://fsprojects.github.io/Paket/paket-restore.html).
-3. Compile using your preferred IDE. Visual Studio 2017 or newer is recommended.
-
 ## Previews
 To get a good preview you can download one of the mods listed above, for example [Koikatu Overlay Mods](https://github.com/ManlyMarco/Koikatu-Overlay-Mods).
 
