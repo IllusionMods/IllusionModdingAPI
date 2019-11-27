@@ -267,12 +267,7 @@ namespace KKAPI.Chara
         /// </summary>
         protected virtual void Update()
         {
-#if KK 
-            // TODO change into a separate trigger component?
-            var currentCoordinate = (ChaFileDefine.CoordinateType)ChaControl.fileStatus.coordinateType;
-            if (currentCoordinate != CurrentCoordinate.Value)
-                CurrentCoordinate.OnNext(currentCoordinate);
-#endif
+            // Can't remove for bacwards compatibility
         }
 
         /// <summary>

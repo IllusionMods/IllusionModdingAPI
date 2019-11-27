@@ -6,6 +6,8 @@ using System.Diagnostics;
 using System.Linq;
 using ExtensibleSaveFormat;
 using KKAPI.Utilities;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 #if AI
@@ -200,6 +202,29 @@ namespace KKAPI.Chara
                     }
                 }
             }
+
+#if KK
+            var controllers = target.GetComponents<CharaCustomFunctionController>();
+            target.UpdateAsObservable().Subscribe(
+                _ =>
+                {
+                    var changed = false;
+                    var currentCoordinate = (ChaFileDefine.CoordinateType)target.fileStatus.coordinateType;
+                    for (var i = 0; i < controllers.Length; i++)
+                    {
+                        var controllerSubject = controllers[i].CurrentCoordinate;
+
+                        if (i == 0)
+                        {
+                            changed = currentCoordinate != controllerSubject.Value;
+                            if(changed && KoikatuAPI.EnableDebugLogging)
+                                KoikatuAPI.Logger.LogMessage($"Changed coord of character {target.fileParam.fullname} to {currentCoordinate}");
+                        }
+
+                        if (changed) controllerSubject.OnNext(currentCoordinate);
+                    }
+                });
+#endif
         }
 
         private static void OnCardBeingSaved(ChaFile chaFile)
