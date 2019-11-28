@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -32,15 +33,24 @@ namespace KKAPI.Utilities
         /// For example if you have a file "ProjectRoot\Resources\icon.png" set as "Embedded Resource", you can use this to load it by
         /// doing <code>GetEmbeddedResource("icon.png"), assuming that no other embedded files have the same name.</code>
         /// </summary>
+        /// <exception cref="IOException">Thrown if none or more than one resources were found matching the given resourceFileName</exception>
         public static byte[] GetEmbeddedResource(string resourceFileName, Assembly containingAssembly = null)
         {
             if (containingAssembly == null)
-                containingAssembly = Assembly.GetCallingAssembly();
+            {
+                // Need to use StackFrame because Assembly.GetCallingAssembly returns wrong assembly if the calling method was Harmony patched
+                containingAssembly = new StackFrame(1).GetMethod().DeclaringType.Assembly;
+            }
 
-            var resourceName = containingAssembly.GetManifestResourceNames().Single(str => str.EndsWith(resourceFileName));
+            var resourceName = containingAssembly.GetManifestResourceNames().Where(str => str.EndsWith(resourceFileName)).Take(2).ToList();
 
-            using (var stream = containingAssembly.GetManifestResourceStream(resourceName))
-                return ReadAllBytes(stream ?? throw new InvalidOperationException($"The resource {resourceFileName} was not found"));
+            if (resourceName.Count == 0)
+                throw new IOException($"Could not find resource with name {resourceName} inside assembly {containingAssembly} - make sure the name and assembly are correct");
+            if (resourceName.Count == 2)
+                throw new IOException($"Found more than one resource with name {resourceName} inside assembly {containingAssembly} - include more of the path in the name to make it not ambiguous");
+
+            using (var stream = containingAssembly.GetManifestResourceStream(resourceName[0]))
+                return ReadAllBytes(stream ?? throw new InvalidOperationException($"The resource {resourceFileName} was not found or it failed to load"));
         }
     }
 }
