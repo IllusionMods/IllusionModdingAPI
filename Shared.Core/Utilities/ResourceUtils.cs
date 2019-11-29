@@ -36,21 +36,37 @@ namespace KKAPI.Utilities
         /// <exception cref="IOException">Thrown if none or more than one resources were found matching the given resourceFileName</exception>
         public static byte[] GetEmbeddedResource(string resourceFileName, Assembly containingAssembly = null)
         {
+            var autodetectedAssembly = false;
             if (containingAssembly == null)
             {
-                // Need to use StackFrame because Assembly.GetCallingAssembly returns wrong assembly if the calling method was Harmony patched
-                containingAssembly = new StackFrame(1).GetMethod().DeclaringType.Assembly;
+                containingAssembly = Assembly.GetCallingAssembly();
+                autodetectedAssembly = true;
             }
 
-            var resourceName = containingAssembly.GetManifestResourceNames().Where(str => str.EndsWith(resourceFileName)).Take(2).ToList();
+            var resourceNames = containingAssembly.GetManifestResourceNames().Where(str => str.EndsWith(resourceFileName)).Take(2).ToList();
 
-            if (resourceName.Count == 0)
-                throw new IOException($"Could not find resource with name {resourceName} inside assembly {containingAssembly} - make sure the name and assembly are correct");
-            if (resourceName.Count == 2)
-                throw new IOException($"Found more than one resource with name {resourceName} inside assembly {containingAssembly} - include more of the path in the name to make it not ambiguous");
+            if (resourceNames.Count == 0 && autodetectedAssembly)
+            {
+                var origAssembly = containingAssembly;
 
-            using (var stream = containingAssembly.GetManifestResourceStream(resourceName[0]))
-                return ReadAllBytes(stream ?? throw new InvalidOperationException($"The resource {resourceFileName} was not found or it failed to load"));
+                // Try to use StackFrame in case calling method was Harmony patched because then Assembly.GetCallingAssembly can return wrong assembly
+                containingAssembly = new StackFrame(1).GetMethod().DeclaringType.Assembly;
+
+                if (origAssembly != containingAssembly)
+                {
+                    resourceNames = containingAssembly.GetManifestResourceNames().Where(str => str.EndsWith(resourceFileName)).Take(2).ToList();
+                    if (resourceNames.Count == 0) throw new IOException($"Could not find resource with name {resourceNames} inside assembly {containingAssembly} or {origAssembly} - make sure the name and assembly are correct. Two assemblies were checked likely because your method has been harmony patched");
+                }
+            }
+
+            if (resourceNames.Count == 0)
+                throw new IOException($"Could not find resource with name {resourceNames} inside assembly {containingAssembly} - make sure the name and assembly are correct");
+
+            if (resourceNames.Count == 2)
+                throw new IOException($"Found more than one resource with name {resourceNames} inside assembly {containingAssembly} - include more of the path in the name to make it not ambiguous");
+
+            using (var stream = containingAssembly.GetManifestResourceStream(resourceNames[0]))
+                return ReadAllBytes(stream ?? throw new InvalidOperationException($"The resource {resourceFileName} was not found inside assembly {containingAssembly} or it failed to load"));
         }
     }
 }
