@@ -332,3 +332,4 @@ ASALocalRun/
 /test
 /KKAPI/KKAPI.csproj.DotSettings
 /lib
+PostBuild.bat
