@@ -10,6 +10,7 @@ This is an API designed to make writing plugins for recent UnityEngine games mad
 - AI-Shoujo/AI-Syoujyo (AIAPI)
 
 ## Some mods that use the Modding API
+The API is required by many plugins made for Koikatsu, Emotion Creators and AI-Girl/AI-Shoujo. Here are some of them:
 * [Illusion Overlay Mods](https://github.com/ManlyMarco/Illusion-Overlay-Mods) - Uses many different features like saving to coordinates, partial load toggles, advances maker interface elements, using Windows Open File dialogs, etc.
 * [KK_BecomeTrap](https://github.com/ManlyMarco/KK_BecomeTrap) - Simple mod that give a good example of how clean and easy KKAPI makes things.
 * [KK_SkinEffects](https://github.com/ManlyMarco/KK_SkinEffects) - Uses StudioAPI to create custom controls in the studio interface.
