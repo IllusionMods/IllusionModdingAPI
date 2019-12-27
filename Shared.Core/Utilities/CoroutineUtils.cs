@@ -75,5 +75,84 @@ namespace KKAPI.Utilities
         {
             return coroutine.GetEnumerator();
         }
+
+        /// <summary>
+        /// Create a coroutine that is the same as the supplied coroutine, except every time it yields the onYieldAction is invoked.
+        /// (i.e. onYieldAction is invoked after every yield return in the original coroutine)
+        /// If the coroutine returns another coroutine, the action is not called for yields performed by the returned coroutine, only the topmost one. Use FlattenCo if that's an issue.
+        /// </summary>
+        public static IEnumerator AttachToYield(this IEnumerator coroutine, Action onYieldAction)
+        {
+            if (coroutine == null) throw new ArgumentNullException(nameof(coroutine));
+            if (onYieldAction == null) throw new ArgumentNullException(nameof(onYieldAction));
+
+            while (coroutine.MoveNext())
+            {
+                onYieldAction();
+                yield return coroutine.Current;
+            }
+        }
+
+        /// <summary>
+        /// Flatten the coroutine to yield all values directly. Any coroutines yield returned by this coroutine will have their values directly returned by this new coroutine (this is recursive).
+        /// For example if another coroutine is yielded by this coroutine, the yielded coroutine will not be returned and instead the values that it yields will be returned.
+        /// If a yielded coroutine yields yet another coroutine, that second coroutine's values will be returned directly from the flattened coroutine.
+        /// </summary>
+        public static IEnumerator FlattenCo(this IEnumerator coroutine)
+        {
+            if (coroutine == null) throw new ArgumentNullException(nameof(coroutine));
+
+            while (coroutine.MoveNext())
+            {
+                var current = coroutine.Current;
+
+                if (current is IEnumerator subCo)
+                {
+                    var flattenedSubCo = FlattenCo(subCo);
+                    while (flattenedSubCo.MoveNext())
+                        yield return flattenedSubCo.Current;
+
+                    continue;
+                }
+
+                yield return current;
+            }
+        }
+
+        /// <summary>
+        /// Remove yields from the coroutine, making its code run immediately.
+        /// </summary>
+        /// <param name="coroutine">Coroutine to strip</param>
+        /// <param name="onlyStripNulls">Should only yield return null be stripped? If false, all yields are stripped</param>
+        /// <param name="flatten">
+        /// Should the coroutine be flattened before stripping it? 
+        /// If this is false then yields from coroutines returned by this coroutine will not be stripped. 
+        /// If this and onlyStripNulls are both false, coroutines returned by this coroutine will not be executed.
+        /// </param>
+        public static IEnumerator StripYields(this IEnumerator coroutine, bool onlyStripNulls = true, bool flatten = true)
+        {
+            if (coroutine == null) throw new ArgumentNullException(nameof(coroutine));
+
+            if (flatten)
+                coroutine = FlattenCo(coroutine);
+
+            while (coroutine.MoveNext())
+            {
+                if (onlyStripNulls)
+                {
+                    var current = coroutine.Current;
+                    if (current != null) yield return current;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fully executes the coroutine synchronously (immediately run all of its code till completion).
+        /// </summary>
+        public static void RunImmediately(this IEnumerator coroutine)
+        {
+            coroutine = FlattenCo(coroutine);
+            while (coroutine.MoveNext()) ;
+        }
     }
 }
