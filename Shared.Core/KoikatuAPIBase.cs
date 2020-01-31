@@ -30,7 +30,7 @@ namespace KKAPI
         public const string VersionConst = "1.9.6";
 
         /// <summary>
-        /// GUID of this plugin, use for checking dependancies with <see cref="BepInDependency"/> and <see cref="CheckRequiredPlugin"/>
+        /// GUID of this plugin, use for checking dependancies with <see cref="BepInDependency"/>."/>
         /// </summary>
         public const string GUID = "marco.kkapi";
 
@@ -45,7 +45,7 @@ namespace KKAPI
             set => EnableDebugLoggingSetting.Value = value;
         }
 
-        private static ConfigWrapper<bool> EnableDebugLoggingSetting { get; set; }
+        private static ConfigEntry<bool> EnableDebugLoggingSetting { get; set; }
 
         internal static KoikatuAPI Instance { get; private set; }
         internal static new ManualLogSource Logger { get; private set; }
@@ -58,7 +58,7 @@ namespace KKAPI
             Instance = this;
             Logger = base.Logger;
 
-            EnableDebugLoggingSetting = Config.Wrap("Debug", "Show debug messages", "Enables display of additional log messages when certain events are triggered within KKAPI. Useful for plugin devs to understand when controller messages are fired. Changes take effect after game restart.", false);
+            EnableDebugLoggingSetting = Config.Bind("Debug", "Show debug messages", false, "Enables display of additional log messages when certain events are triggered within KKAPI. Useful for plugin devs to understand when controller messages are fired. Changes take effect after game restart.");
 
             Logger.LogDebug($"Game version {GetGameVersion()} running under {System.Threading.Thread.CurrentThread.CurrentCulture.Name} culture");
 
