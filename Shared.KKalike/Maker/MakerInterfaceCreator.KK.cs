@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using BepInEx;
 using ChaCustom;
+using IllusionUtility.GetUtility;
 using KKAPI.Maker.UI;
 using KKAPI.Maker.UI.Sidebar;
 using UniRx;
@@ -198,12 +199,16 @@ namespace KKAPI.Maker
 
         private static void CreateCustomAccessoryWindowControls()
         {
-            var container = GameObject.Find("tglSlot01").transform.parent;
+            var customAcsChangeSlot = Object.FindObjectOfType<CustomAcsChangeSlot>();
+            if (customAcsChangeSlot == null) throw new ArgumentNullException(nameof(customAcsChangeSlot));
+            var tglSlot01GameObject = customAcsChangeSlot.transform.FindLoop("tglSlot01");
+            if (tglSlot01GameObject == null) throw new ArgumentNullException(nameof(tglSlot01GameObject));
+            var container = tglSlot01GameObject.transform.parent;
             foreach (var slotTransform in container.Cast<Transform>().Where(x => x.name.StartsWith("tglSlot")).OrderBy(x => x.name))
             {
                 // Remove the red info text at the bottom to free up some space
                 var contentParent = FindSubcategoryContentParent(slotTransform);
-                foreach (var txtName in new[] { "txtExplanation", "txtAcsExplanation" })
+                foreach (var txtName in new[] { "txtExplanation", "txtAcsExplanation" }) // Named differently in KK and EC
                 {
                     var text = contentParent.Find(txtName);
                     if (text != null)
