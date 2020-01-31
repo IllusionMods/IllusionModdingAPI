@@ -13,9 +13,13 @@ Static Methods
 | `IEnumerator` | AppendCo(this `IEnumerator` baseCoroutine, `IEnumerator` appendCoroutine) | Create a coroutine that calls the appendCoroutine after baseCoroutine finishes | 
 | `IEnumerator` | AppendCo(this `IEnumerator` baseCoroutine, `YieldInstruction` yieldInstruction) | Create a coroutine that calls the appendCoroutine after baseCoroutine finishes | 
 | `IEnumerator` | AppendCo(this `IEnumerator` baseCoroutine, `Action[]` actions) | Create a coroutine that calls the appendCoroutine after baseCoroutine finishes | 
+| `IEnumerator` | AttachToYield(this `IEnumerator` coroutine, `Action` onYieldAction) | Create a coroutine that is the same as the supplied coroutine, except every time it yields the onYieldAction is invoked.  (i.e. onYieldAction is invoked after every yield return in the original coroutine)  If the coroutine returns another coroutine, the action is not called for yields performed by the returned coroutine, only the topmost one. Use FlattenCo if that's an issue. | 
 | `IEnumerator` | ComposeCoroutine(`IEnumerator[]` coroutine) | Create a coroutine that calls each of the supplied coroutines in order. | 
 | `IEnumerator` | CreateCoroutine(`Action[]` actions) | Create a coroutine that calls each of the action delegates on consecutive frames.  One action is called per frame. First action is called right away. There is no frame skip after the last action. | 
 | `IEnumerator` | CreateCoroutine(`YieldInstruction` yieldInstruction, `Action[]` actions) | Create a coroutine that calls each of the action delegates on consecutive frames.  One action is called per frame. First action is called right away. There is no frame skip after the last action. | 
+| `IEnumerator` | FlattenCo(this `IEnumerator` coroutine) | Flatten the coroutine to yield all values directly. Any coroutines yield returned by this coroutine will have their values directly returned by this new coroutine (this is recursive).  For example if another coroutine is yielded by this coroutine, the yielded coroutine will not be returned and instead the values that it yields will be returned.  If a yielded coroutine yields yet another coroutine, that second coroutine's values will be returned directly from the flattened coroutine. | 
+| `void` | RunImmediately(this `IEnumerator` coroutine) | Fully executes the coroutine synchronously (immediately run all of its code till completion). | 
+| `IEnumerator` | StripYields(this `IEnumerator` coroutine, `Boolean` onlyStripNulls = True, `Boolean` flatten = True) | Remove yields from the coroutine, making its code run immediately. | 
 
 
 ## `Extensions`
