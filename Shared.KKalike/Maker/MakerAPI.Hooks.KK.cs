@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using ChaCustom;
@@ -38,26 +39,35 @@ namespace KKAPI.Maker
 
             private static IEnumerator OnMakerLoadingCo()
             {
+                var sw = Stopwatch.StartNew();
+
                 // Let maker objects run their Start methods
                 yield return new WaitForEndOfFrame();
+                var sw1 = sw.ElapsedMilliseconds;
 
                 OnMakerStartedLoading();
 
                 // Wait a few frames to give everything chance to properly initialize
                 for (var i = 0; i < 3; i++)
                     yield return null;
+                var sw2 = sw.ElapsedMilliseconds - sw1;
 
                 OnMakerBaseLoaded();
 
                 yield return null;
 
+                var sw3 = sw.ElapsedMilliseconds - sw1 - sw2;
                 OnCreateCustomControls();
+                var sw4 = sw.ElapsedMilliseconds - sw1 - sw2 - sw3;
 
                 for (var i = 0; i < 2; i++)
                     yield return null;
 
                 _studioStarting = false;
                 OnMakerFinishedLoading();
+
+                KoikatuAPI.Logger.LogDebug($"1st frame:{sw1}ms; Maker base:{sw2}ms; Custom controls:{sw4}ms");
+                KoikatuAPI.Logger.LogDebug($"Maker loaded in {sw.ElapsedMilliseconds}ms");
             }
 
             [HarmonyPrefix]
