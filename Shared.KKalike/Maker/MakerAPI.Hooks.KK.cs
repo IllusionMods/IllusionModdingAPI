@@ -14,7 +14,7 @@ namespace KKAPI.Maker
     {
         private static class Hooks
         {
-            private static bool _studioStarting;
+            private static bool _makerStarting;
 
             [HarmonyPrefix]
             [HarmonyPatch(typeof(UI_ToggleGroupCtrl), "Start")]
@@ -24,10 +24,10 @@ namespace KKAPI.Maker
 
                 if (categoryTransfrom?.parent != null && categoryTransfrom.parent.name == "CvsMenuTree")
                 {
-                    if (!_studioStarting)
+                    if (!_makerStarting)
                     {
                         InsideMaker = true;
-                        _studioStarting = true;
+                        _makerStarting = true;
                         OnRegisterCustomSubCategories();
                         KoikatuAPI.Instance.StartCoroutine(OnMakerLoadingCo());
                     }
@@ -63,7 +63,7 @@ namespace KKAPI.Maker
                 for (var i = 0; i < 2; i++)
                     yield return null;
 
-                _studioStarting = false;
+                _makerStarting = false;
                 OnMakerFinishedLoading();
 
                 KoikatuAPI.Logger.LogDebug($"1st frame:{sw1}ms; Maker base:{sw2}ms; Custom controls:{sw4}ms");
