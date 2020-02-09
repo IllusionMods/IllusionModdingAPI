@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using ADV;
 using HarmonyLib;
+using ExtensibleSaveFormat;
 
 namespace KKAPI.Chara
 {
@@ -71,11 +72,39 @@ namespace KKAPI.Chara
                 }
             }
 
+            /// <summary>
+            /// Copy extended data when current coordinate is about to be swapped. Should be a prefix to make sure it completes before any events are fired.
+            /// Fixes losing ext data when character takes a bath, possibly in more instances.
+            /// </summary>
+            [HarmonyPrefix]
+            // ChangeNowCoordinate(ChaFileCoordinate srcCoorde, bool reload = false, bool forceChange = true)
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeNowCoordinate), typeof(ChaFileCoordinate), typeof(bool), typeof(bool))]
+            public static void ChaControl_ChangeNowCoordinateHook(ChaControl __instance, ChaFileCoordinate srcCoorde)
+            {
+                var nowCoordinate = __instance.nowCoordinate;
+
+                // Clear old data
+                var oldData = ExtendedSave.GetAllExtendedData(nowCoordinate);
+                if (oldData != null)
+                {
+                    foreach (var data in oldData.ToList())
+                        ExtendedSave.SetExtendedDataById(nowCoordinate, data.Key, null);
+                }
+
+                // Copy new data from the coordinate that is about to be swapped in
+                var newData = ExtendedSave.GetAllExtendedData(srcCoorde);
+                if (newData != null)
+                {
+                    foreach (var data in newData.ToList())
+                        ExtendedSave.SetExtendedDataById(nowCoordinate, data.Key, data.Value);
+                }
+            }
+
             public static bool ClothesFileControlLoading => false;
 
             /// <summary>
             /// Needed for some edge cases, replacing characters in scene maker in EC
-            /// </summary>//
+            /// </summary>
             public static void ReloadAsyncPostHook(bool noChangeClothes, bool noChangeHead, bool noChangeHair, bool noChangeBody, ChaControl __instance, ref IEnumerator __result)
             {
                 if (noChangeClothes || noChangeHead || noChangeHair || noChangeBody) return;
