@@ -79,24 +79,43 @@ namespace KKAPI.Chara
             [HarmonyPrefix]
             // ChangeNowCoordinate(ChaFileCoordinate srcCoorde, bool reload = false, bool forceChange = true)
             [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeNowCoordinate), typeof(ChaFileCoordinate), typeof(bool), typeof(bool))]
-            public static void ChaControl_ChangeNowCoordinateHook(ChaControl __instance, ChaFileCoordinate srcCoorde)
+            public static void ChaControl_ChangeNowCoordinatePreHook(ChaControl __instance, ChaFileCoordinate srcCoorde)
             {
-                var nowCoordinate = __instance.nowCoordinate;
+                CopyCoordExtData(srcCoorde, __instance.nowCoordinate);
+            }
 
+            [HarmonyPrefix]
+            //public bool AssignCoordinate(ChaFileCoordinate srcCoorde)
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.AssignCoordinate), typeof(ChaFileCoordinate))]
+            public static void ChaControl_AssignCoordinateHook(ChaControl __instance, ChaFileCoordinate srcCoorde)
+            {
+                CopyCoordExtData(srcCoorde, __instance.chaFile.coordinate);//todo still issue with the reload button
+            }
+
+            [HarmonyPrefix]
+            //public bool AssignCoordinate()
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.AssignCoordinate), new Type[0], new ArgumentType[0])]
+            public static void ChaControl_AssignCoordinateHook2(ChaControl __instance)
+            {
+                CopyCoordExtData(__instance.nowCoordinate, __instance.chaFile.coordinate);
+            }
+
+            private static void CopyCoordExtData(ChaFileCoordinate fromCoord, ChaFileCoordinate toCoord)
+            {
                 // Clear old data
-                var oldData = ExtendedSave.GetAllExtendedData(nowCoordinate);
+                var oldData = ExtendedSave.GetAllExtendedData(toCoord);
                 if (oldData != null)
                 {
                     foreach (var data in oldData.ToList())
-                        ExtendedSave.SetExtendedDataById(nowCoordinate, data.Key, null);
+                        ExtendedSave.SetExtendedDataById(toCoord, data.Key, null);
                 }
 
                 // Copy new data from the coordinate that is about to be swapped in
-                var newData = ExtendedSave.GetAllExtendedData(srcCoorde);
+                var newData = ExtendedSave.GetAllExtendedData(fromCoord);
                 if (newData != null)
                 {
                     foreach (var data in newData.ToList())
-                        ExtendedSave.SetExtendedDataById(nowCoordinate, data.Key, data.Value);
+                        ExtendedSave.SetExtendedDataById(toCoord, data.Key, data.Value);
                 }
             }
 
@@ -132,7 +151,7 @@ namespace KKAPI.Chara
             [HarmonyPostfix]
             // public bool ChangeNowCoordinate(ChaFileCoordinate srcCoorde, bool reload = false, bool forceChange = true)
             [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeNowCoordinate), typeof(ChaFileCoordinate), typeof(bool), typeof(bool))]
-            public static void CharaData_InitializePost(ChaControl __instance, ChaFileCoordinate srcCoorde)
+            public static void CharaData_InitializePost(ChaControl __instance)
             {
                 // Make sure we were called by the correct methods to avoid triggering this when a character is being fully reloaded
                 // Need to inspect whole stack trace and grab the earliest methods in the stack to avoid MoreAccessories hooks
@@ -145,7 +164,7 @@ namespace KKAPI.Chara
                 });
 
                 if (isCoordinateLoad != false)
-                    OnCoordinateBeingLoaded(__instance, srcCoorde);
+                    OnCoordinateBeingLoaded(__instance, __instance.nowCoordinate);
             }
         }
     }
