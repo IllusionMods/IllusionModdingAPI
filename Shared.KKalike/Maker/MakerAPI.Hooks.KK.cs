@@ -66,8 +66,8 @@ namespace KKAPI.Maker
                 _makerStarting = false;
                 OnMakerFinishedLoading();
 
-                KoikatuAPI.Logger.LogDebug($"1st frame:{sw1}ms; Maker base:{sw2}ms; Custom controls:{sw4}ms");
                 KoikatuAPI.Logger.LogDebug($"Maker loaded in {sw.ElapsedMilliseconds}ms");
+                KoikatuAPI.Logger.LogDebug($"1st frame:{sw1}ms; Maker base:{sw2}ms; Custom controls:{sw4}ms");
             }
 
             [HarmonyPrefix]
