@@ -100,7 +100,8 @@ namespace KKAPI.Maker
 
             public static void ChaFileLoadFilePreHook(ChaFile __instance)
             {
-                if (!CharaListIsLoading && InsideMaker)
+                // Make sure this is an actually useful chafile, not e.g. the default character used to grab defaults from (defChaInfo)
+                if (!CharaListIsLoading && InsideMaker && CustomBase.Instance.defChaInfo != __instance)
                     InternalLastLoadedChaFile = __instance;
                 else
                     InternalLastLoadedChaFile = null;
