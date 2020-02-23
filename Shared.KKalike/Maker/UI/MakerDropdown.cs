@@ -60,8 +60,11 @@ namespace KKAPI.Maker.UI
             var dd = _dropdownCopy.GetComponentInChildren<TMP_Dropdown>();
             dd.onValueChanged.RemoveAllListeners();
             dd.ClearOptions();
-            dd.GetComponent<Image>().raycastTarget = true;
             dd.template.GetComponentInChildren<Toggle>().image.raycastTarget = true;
+            dd.template.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 540);
+
+            foreach (var img in dd.template.GetComponentsInChildren<Image>(true))
+                img.raycastTarget = true;
 
             RemoveLocalisation(_dropdownCopy.gameObject);
         }
