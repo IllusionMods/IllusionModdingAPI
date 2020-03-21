@@ -78,7 +78,7 @@ namespace KKAPI
                 }
             }
 
-            Logger.LogDebug($"Processor: {SystemInfo.processorType} ({SystemInfo.processorCount} cores @ {SystemInfo.processorFrequency}MHz); RAM: {SystemInfo.systemMemorySize}MB; OS: {SystemInfo.operatingSystem}");
+            Logger.LogDebug($"Processor: {SystemInfo.processorType} ({SystemInfo.processorCount} threads @ {SystemInfo.processorFrequency}MHz); RAM: {SystemInfo.systemMemorySize}MB ({MemoryInfo.GetCurrentStatus()?.dwMemoryLoad.ToString() ?? "--"}% used); OS: {SystemInfo.operatingSystem}");
 
             SceneManager.sceneLoaded += (scene, mode) => Logger.LogDebug($"SceneManager.sceneLoaded - {scene.name} in {mode} mode");
             SceneManager.sceneUnloaded += scene => Logger.LogDebug($"SceneManager.sceneUnloaded - {scene.name}");

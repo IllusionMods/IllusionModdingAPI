@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CoroutineUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\HSceneUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\IMGUIUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\MemoryInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ResourceUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TextureUtils.cs" />
