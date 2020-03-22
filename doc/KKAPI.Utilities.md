@@ -77,6 +77,21 @@ Static Methods
 | `void` | DrawSolidBox(`Rect` boxRect) | Draw a gray non-transparent GUI.Box at the specified rect. Use before a window or other controls to get rid of  the default transparency and make the GUI easier to read. | 
 
 
+## `MemoryInfo`
+
+Provides information about system memory status
+```csharp
+public static class KKAPI.Utilities.MemoryInfo
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `MEMORYSTATUSEX` | GetCurrentStatus() | Can return null if the call fails for whatever reason | 
+
+
 ## `OpenFileDialog`
 
 Gives access to the Windows open file dialog.  http://www.pinvoke.net/default.aspx/comdlg32/GetOpenFileName.html  http://www.pinvoke.net/default.aspx/Structures/OpenFileName.html  http://www.pinvoke.net/default.aspx/Enums/OpenSaveFileDialgueFlags.html  https://social.msdn.microsoft.com/Forums/en-US/2f4dd95e-5c7b-4f48-adfc-44956b350f38/getopenfilename-for-multiple-files?forum=csharpgeneral

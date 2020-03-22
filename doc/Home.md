@@ -90,6 +90,7 @@
 - [`Extensions`](KKAPI.Utilities.md#extensions)
 - [`HSceneUtils`](KKAPI.Utilities.md#hsceneutils)
 - [`IMGUIUtils`](KKAPI.Utilities.md#imguiutils)
+- [`MemoryInfo`](KKAPI.Utilities.md#memoryinfo)
 - [`OpenFileDialog`](KKAPI.Utilities.md#openfiledialog)
 - [`ReadOnlyDictionary<TKey, TValue>`](KKAPI.Utilities.md#readonlydictionarytkey-tvalue)
 - [`RecycleBinUtil`](KKAPI.Utilities.md#recyclebinutil)
