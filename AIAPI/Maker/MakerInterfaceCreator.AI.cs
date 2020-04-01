@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -20,17 +21,17 @@ namespace KKAPI.Maker
     {
         private static readonly List<MakerCategory> _categories = new List<MakerCategory>();
         private static readonly List<BaseGuiEntry> _guiEntries = new List<BaseGuiEntry>();
-        //private static readonly List<BaseGuiEntry> _sidebarEntries = new List<BaseGuiEntry>();
+        private static readonly List<BaseGuiEntry> _sidebarEntries = new List<BaseGuiEntry>();
         private static readonly List<BaseGuiEntry> _accessoryWindowEntries = new List<BaseGuiEntry>();
 
         public static void RemoveCustomControls()
         {
-            foreach (var guiEntry in _guiEntries)//.Concat(_sidebarEntries).Concat(_accessoryWindowEntries))
+            foreach (var guiEntry in _guiEntries.Concat(_sidebarEntries).Concat(_accessoryWindowEntries))
                 guiEntry.Dispose();
 
             _guiEntries.Clear();
             _categories.Clear();
-            //_sidebarEntries.Clear();
+            _sidebarEntries.Clear();
             _accessoryWindowEntries.Clear();
 
             MakerLoadToggle.Reset();
@@ -54,15 +55,16 @@ namespace KKAPI.Maker
                 KoikatuAPI.Logger.LogInfo($"Duplicate custom subcategory was added: {category} The duplicate will be ignored.");
         }
 
-        public static void AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
+        public static T AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
         {
             control.Category = new MakerCategory("Accessory", "");
             _accessoryWindowEntries.Add(control);
+            return control;
         }
 
         public static void InitializeGuiEntries()
         {
-            foreach (var baseGuiEntry in _guiEntries)
+            foreach (var baseGuiEntry in _guiEntries.Concat(_sidebarEntries).Concat(_accessoryWindowEntries))
                 baseGuiEntry.Initialize();
         }
 
@@ -91,26 +93,26 @@ namespace KKAPI.Maker
             AddControl(new MakerText("test text test text test text test text test text test text test text test text test text test text", cat, instance));
             //AddControl(new MakerTextbox(cat, "test textbox", "String test", instance))
             //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            //
-            //MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle"))
-            //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            //MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle 2"))
-            //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            //
-            //MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle"))
-            //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            //MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle 2"))
-            //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            //
-            //AddSidebarControl(new SidebarToggle("Test toggle", false, instance))
-            //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            //AddSidebarControl(new SidebarToggle("Test toggle2", true, instance))
-            //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            //
-            //AddAccessoryWindowControl(new MakerToggle(cat, "test toggle", null))
-            //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Toggled to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
-            //AddAccessoryWindowControl(new MakerColor("test accessory color", false, cat, Color.cyan, instance) { ColorBoxWidth = 230 })
-            //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Color to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
+            
+            MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle"))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle 2"))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            
+            MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle"))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle 2"))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            
+            AddSidebarControl(new SidebarToggle("Test toggle", false, instance))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            AddSidebarControl(new SidebarToggle("Test toggle2", true, instance))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            
+            AddAccessoryWindowControl(new MakerToggle(cat, "test toggle", null))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Toggled to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
+            AddAccessoryWindowControl(new MakerColor("test accessory color", false, cat, Color.cyan, instance))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Color to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
 
             var copyCat = new MakerCategory(cat.CategoryName, "Test", 0, "Test subcategory");
             _categories.Add(copyCat);
@@ -138,26 +140,126 @@ namespace KKAPI.Maker
             if (_accessoryWindowEntries.Any())
                 CreateCustomAccessoryWindowControls();
 
-            /*// Create sidebar controls
             if (_sidebarEntries.Any())
-            {
-                var sidebarTop = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CvsDraw/Top").transform;
-
-                var sep = new SidebarSeparator(KoikatuAPI.Instance);
-                sep.CreateControl(sidebarTop);
-
-                foreach (var sidebarEntry in _sidebarEntries)
-                    sidebarEntry.CreateControl(sidebarTop);
-
-                KoikatuAPI.Logger.LogDebug(
-                    $"Added {_sidebarEntries.Count} custom controls " +
-                    "to Control Panel sidebar");
-            }*/
+                CreateSidebarWindow();
 
             MakerLoadToggle.CreateCustomToggles();
             MakerCoordinateLoadToggle.CreateCustomToggles();
 
             FixAccessoryTextScaling();
+        }
+
+        private static void CreateSidebarWindow()
+        {
+            var origWindow = GameObject.Find("CharaCustom/CustomControl/CanvasDraw");
+
+            var copyWindow = Object.Instantiate(origWindow, origWindow.transform.parent, false);
+            copyWindow.name = "Canvas_AIAPI_Sidebar";
+
+            var copyWindowContents = copyWindow.transform.Find("DrawWindow");
+            Object.Destroy(copyWindowContents.GetComponent<CustomDrawMenu>());
+
+            var windowCgroup = copyWindowContents.GetComponent<CanvasGroup>();
+            windowCgroup.Enable(true);
+
+            IEnumerator UpdateWindowLater(Transform moveTarget, CanvasGroup hideGroup)
+            {
+                yield return null;
+                yield return null;
+                // move down below the stock settings window, needs to be done after waiting at least for next frame to make it work
+                // Steam release has a bit different sizes
+                if (KoikatuAPI.IsSteamRelease())
+                    moveTarget.Translate(0, -120, 0, Space.Self);
+                else
+                    moveTarget.Translate(0, -165, 0, Space.Self);
+
+                var control = CustomBase.Instance.customCtrl;
+                while (true)
+                {
+                    yield return null;
+                    yield return null;
+
+                    if (hideGroup == null || control == null) yield break;
+                    hideGroup.Enable(!control.showFusionCvs && !control.showFileList);
+                }
+            }
+            KoikatuAPI.Instance.StartCoroutine(UpdateWindowLater(copyWindowContents, windowCgroup));
+
+            copyWindowContents.Find("textTitle").GetComponent<Text>().text = "Plugin settings";
+
+            var closeBtn = copyWindowContents.Find("imgBack/btnClose").GetComponent<UI_ButtonEx>();
+            closeBtn.onClick.ActuallyRemoveAllListeners();
+            var tryCount = 0;
+            closeBtn.onClick.AddListener(() =>
+            {
+                if (tryCount == 0)
+                    KoikatuAPI.Logger.LogMessage("Don't do this, you don't want to");
+                else if (tryCount == 1)
+                    KoikatuAPI.Logger.LogMessage("This is a bad idea and you know it");
+                else if (tryCount == 2)
+                {
+                    KoikatuAPI.Logger.LogMessage("Uh-oh, what now?");
+                    copyWindow.SetActive(false);
+                }
+
+                tryCount++;
+            });
+
+            foreach (Transform windowContent in copyWindowContents)
+            {
+                switch (windowContent.name)
+                {
+                    case "drawMenu":
+                    case "dwChara":
+                    case "dwLight":
+                    case "dwBG":
+                        Object.Destroy(windowContent.gameObject);
+                        break;
+
+                    case "dwCoorde":
+                        windowContent.name = "dwMain_AIAPI";
+
+                        Object.Destroy(windowContent.Find("accessory").gameObject);
+
+                        windowContent.GetComponent<CanvasGroup>().Enable(true);
+
+                        var clothTransform = windowContent.Find("clothes");
+                        clothTransform.name = "dwInner_AIAPI";
+                        Object.Destroy(clothTransform.Find("textTitle").gameObject);
+
+                        var clothesRect = clothTransform.GetComponent<RectTransform>();
+                        clothesRect.offsetMin = new Vector2(0, 0);
+                        clothesRect.offsetMax = new Vector2(374, 0);
+
+                        var itemsTransform = clothTransform.Find("items");
+                        Object.Destroy(itemsTransform.GetComponent<ToggleGroup>());
+
+                        var gridLayout = itemsTransform.GetComponent<GridLayoutGroup>();
+                        gridLayout.cellSize = new Vector2(170, 28);
+                        // These make layout go down first instead of right first
+                        gridLayout.constraint = GridLayoutGroup.Constraint.FixedRowCount;
+                        gridLayout.constraintCount = 4;
+                        gridLayout.startAxis = GridLayoutGroup.Axis.Vertical;
+                        // Use 1 full column if there are not enough items for 2 columns, else use 2 half width columns
+                        // Steam release messes with sizes a bit
+                        var singleCellSize = KoikatuAPI.IsSteamRelease() ? 240 : 170;
+                        gridLayout.cellSize = _sidebarEntries.Count > 4 ? new Vector2(singleCellSize, 28) : new Vector2(singleCellSize * 2, 28);
+
+                        var itemsRect = itemsTransform.GetComponent<RectTransform>();
+                        itemsRect.offsetMin = new Vector2(17, 0);
+                        itemsRect.offsetMax = new Vector2(374, 0);
+
+                        foreach (Transform item in itemsTransform) Object.Destroy(item.gameObject);
+
+                        foreach (var sidebarEntry in _sidebarEntries) sidebarEntry.CreateControl(itemsTransform);
+
+                        KoikatuAPI.Logger.LogDebug(
+                            $"Added {_sidebarEntries.Count} custom controls " +
+                            "to Control Panel sidebar");
+
+                        break;
+                }
+            }
         }
 
         // Fix accessory text wrapping instead of scaling
@@ -366,10 +468,11 @@ namespace KKAPI.Maker
             return mainCategory.transform.name.Substring("SubMenu".Length);
         }
 
-        public static void AddSidebarControl(BaseGuiEntry control)
+        public static T AddSidebarControl<T>(T control) where T : BaseGuiEntry
         {
-            KoikatuAPI.Logger.LogWarning("AddSidebarControl is not supported\n" + new StackTrace());
-            //_sidebarEntries.Add(control);
+            //KoikatuAPI.Logger.LogWarning("AddSidebarControl is not supported\n" + new StackTrace());
+            _sidebarEntries.Add(control);
+            return control;
         }
 
         public static void InitializeMaker()
