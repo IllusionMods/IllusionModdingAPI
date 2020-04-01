@@ -44,5 +44,14 @@ namespace KKAPI
         {
             return Game.Version;
         }
+
+        /// <summary>
+        /// Check if the game is the Steam release instead of the original Japanese release.
+        /// <remarks>It's best to not rely on this and instead make the same code work in both versions (if possible).</remarks>
+        /// </summary>
+        public static bool IsSteamRelease()
+        {
+            return GameSystem.Instance.cultureNames.Length > 1;
+        }
     }
 }
