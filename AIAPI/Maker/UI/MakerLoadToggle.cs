@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using KKAPI.Utilities;
+using UniRx;
 using UnityEngine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace KKAPI.Maker.UI
 {
@@ -10,7 +14,6 @@ namespace KKAPI.Maker.UI
     /// Use to allow user to not load data related to your mod.
     /// Use with <see cref="AddLoadToggle"/>
     /// </summary>
-    [Obsolete("Not implemented")]
     public class MakerLoadToggle : BaseEditableGuiEntry<bool>
     {
         private static readonly List<MakerLoadToggle> Toggles = new List<MakerLoadToggle>();
@@ -38,6 +41,30 @@ namespace KKAPI.Maker.UI
 
         internal static void CreateCustomToggles()
         {
+            if (!Toggles.Any()) return;
+
+            //CharaCustom/CustomControl/CanvasSub/SettingWindow/WinOption/SystemWin/O_Load/LoadSetting/TglLoadType05
+            var loadTop = GameObject.Find("CharaCustom/CustomControl/CanvasSub/SettingWindow/WinOption/SystemWin/O_Load/LoadSetting");
+            // Present but disabled by default
+            loadTop.GetComponent<GridLayoutGroup>().enabled = true;
+
+            var orig = loadTop.transform.Find("TglLoadType01");
+            foreach (var toggle in Toggles)
+            {
+                var copy = Object.Instantiate(orig, loadTop.transform, false);
+                copy.name = "TglLoadType_AIAPI_" + toggle.Text;
+
+                var t = copy.GetComponent<Toggle>();
+                t.onValueChanged.ActuallyRemoveAllListeners();
+                toggle.BufferedValueChanged.Subscribe(b => t.isOn = b);
+                t.onValueChanged.AddListener(b => toggle.Value = b);
+
+                var txt = copy.GetComponentInChildren<Text>();
+                RemoveLocalisation(txt.gameObject);
+                SetTextAutosize(txt);
+                txt.lineSpacing = 0.7f;
+                txt.text = toggle.Text;
+            }
         }
 
         /// <inheritdoc />

@@ -93,22 +93,22 @@ namespace KKAPI.Maker
             AddControl(new MakerText("test text test text test text test text test text test text test text test text test text test text", cat, instance));
             //AddControl(new MakerTextbox(cat, "test textbox", "String test", instance))
             //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            
+
             MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle"))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             MakerLoadToggle.AddLoadToggle(new MakerLoadToggle("Test toggle 2"))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            
+
             MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle"))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle 2"))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            
+
             AddSidebarControl(new SidebarToggle("Test toggle", false, instance))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddSidebarControl(new SidebarToggle("Test toggle2", true, instance))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
-            
+
             AddAccessoryWindowControl(new MakerToggle(cat, "test toggle", null))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Toggled to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
             AddAccessoryWindowControl(new MakerColor("test accessory color", false, cat, Color.cyan, instance))
@@ -141,7 +141,7 @@ namespace KKAPI.Maker
                 CreateCustomAccessoryWindowControls();
 
             if (_sidebarEntries.Any())
-                CreateSidebarWindow();
+                KoikatuAPI.Instance.StartCoroutine(CreateSidebarWindow());
 
             MakerLoadToggle.CreateCustomToggles();
             MakerCoordinateLoadToggle.CreateCustomToggles();
@@ -149,12 +149,16 @@ namespace KKAPI.Maker
             FixAccessoryTextScaling();
         }
 
-        private static void CreateSidebarWindow()
+        private static IEnumerator CreateSidebarWindow()
         {
             var origWindow = GameObject.Find("CharaCustom/CustomControl/CanvasDraw");
 
             var copyWindow = Object.Instantiate(origWindow, origWindow.transform.parent, false);
             copyWindow.name = "Canvas_AIAPI_Sidebar";
+
+            yield return null;
+            yield return null;
+            yield return new WaitForEndOfFrame();
 
             var copyWindowContents = copyWindow.transform.Find("DrawWindow");
             Object.Destroy(copyWindowContents.GetComponent<CustomDrawMenu>());
@@ -162,28 +166,12 @@ namespace KKAPI.Maker
             var windowCgroup = copyWindowContents.GetComponent<CanvasGroup>();
             windowCgroup.Enable(true);
 
-            IEnumerator UpdateWindowLater(Transform moveTarget, CanvasGroup hideGroup)
-            {
-                yield return null;
-                yield return null;
-                // move down below the stock settings window, needs to be done after waiting at least for next frame to make it work
-                // Steam release has a bit different sizes
-                if (KoikatuAPI.IsSteamRelease())
-                    moveTarget.Translate(0, -120, 0, Space.Self);
-                else
-                    moveTarget.Translate(0, -165, 0, Space.Self);
-
-                var control = CustomBase.Instance.customCtrl;
-                while (true)
-                {
-                    yield return null;
-                    yield return null;
-
-                    if (hideGroup == null || control == null) yield break;
-                    hideGroup.Enable(!control.showFusionCvs && !control.showFileList);
-                }
-            }
-            KoikatuAPI.Instance.StartCoroutine(UpdateWindowLater(copyWindowContents, windowCgroup));
+            // move down below the stock settings window, needs to be done after waiting at least for next frame to make it work
+            // Steam release has a bit different sizes
+            if (KoikatuAPI.IsSteamRelease())
+                copyWindowContents.Translate(0, -140, 0, Space.Self);
+            else
+                copyWindowContents.Translate(0, -165, 0, Space.Self);
 
             copyWindowContents.Find("textTitle").GetComponent<Text>().text = "Plugin settings";
 
@@ -259,6 +247,16 @@ namespace KKAPI.Maker
 
                         break;
                 }
+            }
+
+            var control = CustomBase.Instance.customCtrl;
+            while (true)
+            {
+                yield return null;
+                yield return null;
+
+                if (windowCgroup == null || control == null) yield break;
+                windowCgroup.Enable(!control.showFusionCvs && !control.showFileList);
             }
         }
 
@@ -478,6 +476,8 @@ namespace KKAPI.Maker
         public static void InitializeMaker()
         {
             DebugControls();
+            MakerLoadToggle.Setup();
+            MakerCoordinateLoadToggle.Setup();
         }
 
         public static CharacterLoadFlags GetCharacterLoadFlags()
