@@ -166,12 +166,9 @@ namespace KKAPI.Maker
             var windowCgroup = copyWindowContents.GetComponent<CanvasGroup>();
             windowCgroup.Enable(true);
 
-            // move down below the stock settings window, needs to be done after waiting at least for next frame to make it work
-            // Steam release has a bit different sizes
-            if (KoikatuAPI.IsSteamRelease())
-                copyWindowContents.Translate(0, -140, 0, Space.Self);
-            else
-                copyWindowContents.Translate(0, -165, 0, Space.Self);
+            var rt = copyWindowContents.GetComponent<RectTransform>();
+            // Needed to account for different resolutions
+            rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y - rt.sizeDelta.y);
 
             copyWindowContents.Find("textTitle").GetComponent<Text>().text = "Plugin settings";
 
