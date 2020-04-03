@@ -119,7 +119,6 @@
     <Compile Include="Maker\UI\MakerSlider.cs" />
     <Compile Include="Maker\UI\MakerText.cs" />
     <Compile Include="Maker\UI\MakerToggle.cs" />
-    <Compile Include="Maker\UI\Sidebar\SidebarSeparator.cs" />
     <Compile Include="Maker\UI\Sidebar\SidebarToggle.cs" />
     <Compile Include="Maker\UI\SubCategoryCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
