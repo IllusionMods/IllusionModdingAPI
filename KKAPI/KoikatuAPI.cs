@@ -1,5 +1,6 @@
 ﻿using System;
 using BepInEx;
+using HarmonyLib;
 using KKAPI.Chara;
 using KKAPI.MainGame;
 using KKAPI.Maker;
@@ -45,6 +46,15 @@ namespace KKAPI
         public static Version GetGameVersion()
         {
             return Game.Version;
+        }
+
+        /// <summary>
+        /// Check if the game is the Steam release instead of the original Japanese release.
+        /// <remarks>It's best to not rely on this and instead make the same code work in both versions (if possible).</remarks>
+        /// </summary>
+        public static bool IsSteamRelease()
+        {
+            return typeof(DownloadScene).GetProperty("isSteam", AccessTools.all) != null;
         }
     }
 }

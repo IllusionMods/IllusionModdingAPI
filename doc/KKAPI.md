@@ -47,5 +47,6 @@ Static Methods
 | --- | --- | --- | 
 | `GameMode` | GetCurrentGameMode() | Get current game mode. | 
 | `Version` | GetGameVersion() | Get current version of the game. | 
+| `Boolean` | IsSteamRelease() | Check if the game is the Steam release instead of the original Japanese release.  <remarks>It's best to not rely on this and instead make the same code work in both versions (if possible).</remarks> | 
 
 
