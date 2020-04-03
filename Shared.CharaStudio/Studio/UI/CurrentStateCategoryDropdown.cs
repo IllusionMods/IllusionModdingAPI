@@ -55,11 +55,9 @@ namespace KKAPI.Studio.UI
             le.preferredHeight = 20;
             le.preferredWidth = 210;
 
-#if AI
             var text = copy.transform.Find("TextMeshPro").GetComponentInChildren<TextMeshProUGUI>(true);
-#else
-            var text = copy.transform.Find("TextMeshPro").GetComponentInChildren<TextMeshProUGUI>(true);
-#endif
+            text.lineSpacing = -20;
+
             text.gameObject.SetActive(true);
             text.text = Name;
 

@@ -35,12 +35,18 @@ namespace KKAPI.Studio.UI
 
 #if AI
             var text = copy.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
+            text.lineSpacing = -20;
 #else
             var text = copy.GetComponentInChildren<Text>(true);
+            text.lineSpacing = 0.5f;
 #endif
             text.gameObject.SetActive(true);
             text.gameObject.name = "Text " + Name;
             text.text = Name;
+
+            var trt = text.rectTransform;
+            trt.offsetMin = new Vector2(0, -20);
+            trt.offsetMax = new Vector2(100, 0);
 
             var toggle = copy.GetComponentInChildren<Toggle>(true);
             toggle.gameObject.SetActive(true);

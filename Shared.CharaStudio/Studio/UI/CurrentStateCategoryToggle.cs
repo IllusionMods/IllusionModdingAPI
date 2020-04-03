@@ -60,11 +60,17 @@ namespace KKAPI.Studio.UI
             var textTr = children[0];
 #if AI
             var text = textTr.GetComponent<TextMeshProUGUI>();
+            text.lineSpacing = -20;
 #else
             var text = textTr.GetComponent<Text>();
+            text.lineSpacing = 0.5f;
 #endif
             textTr.name = "Text " + Name;
             text.text = Name;
+
+            var trt = text.rectTransform;
+            trt.offsetMin = new Vector2(0, -20);
+            trt.offsetMax = new Vector2(100, 0);
 
             var copiedToggles = new List<Button>(ToggleCount);
             var liquidToggles = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Liquid");
