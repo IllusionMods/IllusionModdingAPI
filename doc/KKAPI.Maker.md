@@ -25,7 +25,6 @@ Static Methods
 | `Int32` | GetCvsAccessoryCount() | Get count of the UI entries for accessories (accessory slots).  Returns 0 outside of chara maker. | 
 | `ChaControl` | GetOwningChaControl(this `ChaAccessoryComponent` accessoryComponent) | Get the ChaControl that owns this accessory | 
 | `PartsInfo` | GetPartsInfo(`Int32` index) | Get accessory PartsInfo entry in maker.  Only works inside chara maker. | 
-| `void` | Init() |  | 
 
 
 Static Events
@@ -239,17 +238,14 @@ Static Methods
 | `T` | AddControl(`T` control) | Add custom controls. If you want to use custom sub categories, register them by calling AddSubCategory. | 
 | `AccessoryControlWrapper<T, TVal>` | AddEditableAccessoryWindowControl(`T` control) | Add a control to the accessory selection and settings window. The control is wrapped to properly respond to changes in selected accessory slot (has unique values for each slot). | 
 | `T` | AddSidebarControl(`T` control) | Add a control to the right sidebar in chara maker (the "Control Panel" where you set eye blinking, mouth expressions etc.) | 
-| `void` | AddSubCategory(`MakerCategory` category) | Add custom sub categories. They need to be added before maker starts loading,  or in the `KKAPI.Maker.MakerAPI.RegisterCustomSubCategories` event. | 
 | `ChaControl` | GetCharacterControl() | Get the ChaControl of the character serving as a preview in character maker.  Outside of character maker and early on in maker load process this returns null. | 
 | `CharacterLoadFlags` | GetCharacterLoadFlags() | Get values of the default partial load checkboxes present at the bottom of the  character load window (load face, body, hair, parameters, clothes).  Returns null if the values could not be collected (safe to assume it's the same as being enabled). | 
 | `CoordinateLoadFlags` | GetCoordinateLoadFlags() | Get which parts of the coordinate will be loaded when loading a clothing card in character maker.  Returns null if the values could not be collected (safe to assume it's the same as being enabled). | 
 | `CoordinateType` | GetCurrentCoordinateType() | Currently selected maker coordinate | 
 | `CustomBase` | GetMakerBase() | Returns current maker logic instance.  Same as `Singleton`1.Instance` | 
 | `Int32` | GetMakerSex() | 0 is male, 1 is female | 
-| `void` | Init(`Boolean` insideStudio) |  | 
 | `Boolean` | IsInsideClassMaker() | Check if the maker was loaded from within classroom select screen in main game | 
 | `Boolean` | IsInterfaceVisible() | Check if maker interface is currently visible and not obscured by settings screen or other things.  Useful for knowing when to display OnGui mod windows in maker. | 
-| `void` | OnReloadInterface(`EventArgs` args) |  | 
 
 
 Static Events
@@ -267,6 +263,7 @@ Static Events
 
 ## `MakerCardSave`
 
+API for modifying the process of saving cards in maker.
 ```csharp
 public static class KKAPI.Maker.MakerCardSave
 
@@ -276,8 +273,7 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `IEnumerable<CodeInstruction>` | FindSaveMethod(`IEnumerable<CodeInstruction>` instructions) |  | 
-| `void` | RegisterNewCardSavePathModifier(`DirectoryPathModifier` directoryPathModifier, `CardNameModifier` filenameModifier) |  | 
+| `void` | RegisterNewCardSavePathModifier(`DirectoryPathModifier` directoryPathModifier, `CardNameModifier` filenameModifier) | Add a function that can modify the path of the saved cards.  Use sparingly and insert/replace parts of the path instead of overwriting the whole path to keep compatibility with other plugins. | 
 
 
 ## `MakerCategory`
@@ -333,7 +329,6 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `String` | <GetBuiltInCategory>g__MakeKey|5_0(`String` catName, `String` subCatName) |  | 
 | `MakerCategory` | GetBuiltInCategory(`String` category, `String` subCategory) | Quick search for a built-in category. If you know what category you want to use at  compile time you can use the shortcuts instead, e.g. `KKAPI.Maker.MakerConstants.Face.Ear` | 
 
 

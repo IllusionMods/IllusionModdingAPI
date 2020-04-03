@@ -12,9 +12,12 @@ using Object = UnityEngine.Object;
 
 namespace KKAPI.Maker
 {
+    /// <summary>
+    /// API for modifying the process of saving cards in maker.
+    /// </summary>
     public static class MakerCardSave
     {
-        private static Harmony _harmony;
+        private static readonly Harmony _harmony;
 
         static MakerCardSave()
         {
@@ -22,11 +25,23 @@ namespace KKAPI.Maker
             HarmonyWrapper.PatchAll(typeof(MakerCardSave), _harmony);
         }
 
+        /// <summary>
+        /// Used for modifying card save paths. Parameter is the original path, return the changed path.
+        /// </summary>
         public delegate string DirectoryPathModifier(string currentDirectoryPath);
+        /// <summary>
+        /// Used for modifying card file names. Parameter is the original name, return the changed name.
+        /// </summary>
         public delegate string CardNameModifier(string currentCardName);
 
         private static readonly List<KeyValuePair<DirectoryPathModifier, CardNameModifier>> _modifiers = new List<KeyValuePair<DirectoryPathModifier, CardNameModifier>>();
 
+        /// <summary>
+        /// Add a function that can modify the path of the saved cards.
+        /// Use sparingly and insert/replace parts of the path instead of overwriting the whole path to keep compatibility with other plugins.
+        /// </summary>
+        /// <param name="directoryPathModifier">Modifier for the directory the card is saved to. Set to null if no change is required.</param>
+        /// <param name="filenameModifier">Modifier for the name the card file itself. Set to null if no change is required.</param>
         public static void RegisterNewCardSavePathModifier(DirectoryPathModifier directoryPathModifier, CardNameModifier filenameModifier)
         {
             _modifiers.Add(new KeyValuePair<DirectoryPathModifier, CardNameModifier>(directoryPathModifier, filenameModifier));

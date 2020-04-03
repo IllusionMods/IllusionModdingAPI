@@ -144,6 +144,12 @@ Methods
 | `Boolean` | ContainsKey(`TKey` key) |  | 
 | `void` | CopyTo(`KeyValuePair`2[]` array, `Int32` arrayIndex) |  | 
 | `IEnumerator<KeyValuePair<TKey, TValue>>` | GetEnumerator() |  | 
+| `void` | System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add(`KeyValuePair<TKey, TValue>` item) |  | 
+| `void` | System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Clear() |  | 
+| `Boolean` | System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove(`KeyValuePair<TKey, TValue>` item) |  | 
+| `void` | System.Collections.Generic.IDictionary<TKey,TValue>.Add(`TKey` key, `TValue` value) |  | 
+| `Boolean` | System.Collections.Generic.IDictionary<TKey,TValue>.Remove(`TKey` key) |  | 
+| `IEnumerator` | System.Collections.IEnumerable.GetEnumerator() |  | 
 | `Boolean` | TryGetValue(`TKey` key, `TValue&` value) |  | 
 
 

@@ -22,7 +22,6 @@ Static Methods
 | `IEnumerable<OCIChar>` | GetSelectedCharacters() | Get all character objects currently selected in Studio's Workspace. | 
 | `IEnumerable<T>` | GetSelectedControllers() | Get all instances of this controller that belong to characters that are selected in Studio's Workspace. | 
 | `IEnumerable<ObjectCtrlInfo>` | GetSelectedObjects() | Get all objects (all types) currently selected in Studio's Workspace. | 
-| `void` | Init(`Boolean` insideStudio) |  | 
 
 
 Static Events

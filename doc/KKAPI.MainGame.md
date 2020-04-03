@@ -10,7 +10,6 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `void` | Init(`Boolean` insideStudio) |  | 
 | `void` | RegisterExtraBehaviour(`String` extendedDataId) | Register new functionality that will be added to main game. Offers easy API for custom main game logic.  All you have to do is create a type that inherits from `KKAPI.MainGame.GameCustomFunctionController`&gt;  (don't make instances, the API will make them for you). Warning: The custom controller is immediately  created when it's registered, but its OnGameLoad method is not called until a game actually loads.  This might mean that if the registration happens too late you will potentially miss some load events. | 
 
 

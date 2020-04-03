@@ -6,13 +6,6 @@ public static class KKAPI.Chara.CharacterApi
 
 ```
 
-Static Fields
-
-| Type | Name | Summary | 
-| --- | --- | --- | 
-| `HashSet<ChaControl>` | ChaControls |  | 
-
-
 Static Properties
 
 | Type | Name | Summary | 
@@ -29,7 +22,6 @@ Static Methods
 | `ControllerRegistration` | GetRegisteredBehaviour(`String` extendedDataId) | Get the first controller that was registered with the specified extendedDataId. | 
 | `ControllerRegistration` | GetRegisteredBehaviour(`Type` controllerType) | Get the first controller that was registered with the specified extendedDataId. | 
 | `ControllerRegistration` | GetRegisteredBehaviour(`Type` controllerType, `String` extendedDataId) | Get the first controller that was registered with the specified extendedDataId. | 
-| `void` | Init() |  | 
 | `void` | RegisterExtraBehaviour(`String` extendedDataId) | Register new functionality that will be automatically added to all characters (where applicable).  Offers easy API for saving and loading extended data, and for running logic to apply it to the characters.  All necessary hooking and event subscribing is done for you. All you have to do is create a type  that inherits from <code>CharaExtraBehaviour</code> (don't make instances, the API will make them for you). | 
 | `void` | RegisterExtraBehaviour(`String` extendedDataId, `CopyExtendedDataFunc` customDataCopier) | Register new functionality that will be automatically added to all characters (where applicable).  Offers easy API for saving and loading extended data, and for running logic to apply it to the characters.  All necessary hooking and event subscribing is done for you. All you have to do is create a type  that inherits from <code>CharaExtraBehaviour</code> (don't make instances, the API will make them for you). | 
 
@@ -89,17 +81,13 @@ Methods
 | `PluginData` | GetExtendedData() | Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. | 
 | `PluginData` | GetExtendedData(`Boolean` getFromLoadedChara) | Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. | 
 | `void` | OnCardBeingSaved(`GameMode` currentGameMode) | Fired when the character information is being saved.  It handles all types of saving (to character card, to a scene etc.)  Write any of your extended data in this method by using `KKAPI.Chara.CharaCustomFunctionController.SetExtendedData(ExtensibleSaveFormat.PluginData)`.  Avoid reusing old PluginData since we might no longer be pointed to the same character. | 
-| `void` | OnCardBeingSavedInternal(`GameMode` gamemode) |  | 
 | `void` | OnCoordinateBeingLoaded(`ChaFileCoordinate` coordinate, `Boolean` maintainState) | Fired just after loading a coordinate card into the current coordinate slot.  Use `KKAPI.Chara.CharaCustomFunctionController.GetCoordinateExtendedData(ChaFileCoordinate)` to get save data of the loaded coordinate. | 
 | `void` | OnCoordinateBeingLoaded(`ChaFileCoordinate` coordinate) | Fired just after loading a coordinate card into the current coordinate slot.  Use `KKAPI.Chara.CharaCustomFunctionController.GetCoordinateExtendedData(ChaFileCoordinate)` to get save data of the loaded coordinate. | 
-| `void` | OnCoordinateBeingLoadedInternal(`ChaFileCoordinate` coordinate) |  | 
 | `void` | OnCoordinateBeingSaved(`ChaFileCoordinate` coordinate) | Fired just before current coordinate is saved to a coordinate card. Use `KKAPI.Chara.CharaCustomFunctionController.SetCoordinateExtendedData(ChaFileCoordinate,ExtensibleSaveFormat.PluginData)` to save data to it.  You might need to wait for the next frame with `UnityEngine.MonoBehaviour.StartCoroutine(System.Collections.IEnumerator)` before handling this. | 
-| `void` | OnCoordinateBeingSavedInternal(`ChaFileCoordinate` coordinate) |  | 
 | `void` | OnDestroy() | Warning: When overriding make sure to call the base method at the end of your logic! | 
 | `void` | OnEnable() | Warning: When overriding make sure to call the base method at the end of your logic! | 
 | `void` | OnReload(`GameMode` currentGameMode, `Boolean` maintainState) | OnReload is fired whenever the character's state needs to be updated.  This might be beacuse the character was just loaded into the game,  was replaced with a different character, etc.  Use this method instead of Awake and Start. It will always get called  before other methods, but after the character is in a usable state.  WARNING: Make sure to completely reset your state in this method!  Assume that all of your variables are no longer valid! | 
 | `void` | OnReload(`GameMode` currentGameMode) | OnReload is fired whenever the character's state needs to be updated.  This might be beacuse the character was just loaded into the game,  was replaced with a different character, etc.  Use this method instead of Awake and Start. It will always get called  before other methods, but after the character is in a usable state.  WARNING: Make sure to completely reset your state in this method!  Assume that all of your variables are no longer valid! | 
-| `void` | OnReloadInternal(`GameMode` currentGameMode) |  | 
 | `void` | SetCoordinateExtendedData(`ChaFileCoordinate` coordinate, `PluginData` data) | Set extended data to the specified coordinate by using the ID you specified when registering this controller. | 
 | `void` | SetExtendedData(`PluginData` data) | Save your custom data to the character card under the ID you specified when registering this controller. | 
 | `void` | Start() | Warning: When overriding make sure to call the base method at the end of your logic! | 

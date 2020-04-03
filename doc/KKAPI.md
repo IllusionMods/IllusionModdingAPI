@@ -39,8 +39,6 @@ Static Properties
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `Boolean` | EnableDebugLogging | Enables display of additional log messages when certain events are triggered within KKAPI.  Useful for plugin devs to understand when controller messages are fired. | 
-| `KoikatuAPI` | Instance |  | 
-| `ManualLogSource` | Logger |  | 
 
 
 Static Methods

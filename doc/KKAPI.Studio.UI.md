@@ -111,7 +111,6 @@ Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `GameObject` | CreateItem(`GameObject` categoryObject) | Fired when API wants to create the control. Should return the control's root GameObject | 
-| `void` | CreateItemInt(`GameObject` categoryObject) |  | 
 | `void` | OnUpdateInfo(`OCIChar` ociChar) | Fired when currently selected character changes and the control need to be updated | 
 
 

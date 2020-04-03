@@ -57,7 +57,6 @@ Methods
 | `void` | Dispose() | Remove the control. Called when maker is quitting. | 
 | `void` | Initialize() | Called before OnCreateControl to setup the object before instantiating the control. | 
 | `GameObject` | OnCreateControl(`Transform` subCategoryList) | Used by the API to actually create the custom control.  Should return main GameObject of the control | 
-| `void` | ThrowIfDisposed(`String` paramName) |  | 
 
 
 Static Fields
@@ -67,20 +66,11 @@ Static Fields
 | `String` | GuiApiNameAppendix | Added to the end of most custom controls to mark them as being created by this API. | 
 
 
-Static Properties
-
-| Type | Name | Summary | 
-| --- | --- | --- | 
-| `Transform` | GuiCacheTransfrom | Parent transform that holds temporary gui entries used to instantiate custom controls. | 
-
-
 Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `Transform` | GetExistingControl(`String` categoryPath, `String` controlName) | Find first control of this name under the specified category transform | 
-| `void` | RemoveLocalisation(`GameObject` control) |  | 
-| `void` | SetTextAutosize(`Text` txtCmp) |  | 
 
 
 ## `MakerButton`
@@ -164,17 +154,6 @@ Static Properties
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `Boolean` | AnyEnabled | Check if any of the custom toggles are checked | 
-| `Button` | LoadButton |  | 
-
-
-Static Methods
-
-| Type | Name | Summary | 
-| --- | --- | --- | 
-| `MakerCoordinateLoadToggle` | AddLoadToggle(`MakerCoordinateLoadToggle` toggle) |  | 
-| `void` | CreateCustomToggles() |  | 
-| `void` | Reset() |  | 
-| `void` | Setup() |  | 
 
 
 ## `MakerDropdown`
@@ -257,18 +236,6 @@ Static Properties
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `Boolean` | AnyEnabled | Check if any of the custom toggles are checked | 
-| `Button` | LoadButton |  | 
-
-
-Static Methods
-
-| Type | Name | Summary | 
-| --- | --- | --- | 
-| `MakerLoadToggle` | AddLoadToggle(`MakerLoadToggle` toggle) |  | 
-| `void` | CreateCustomToggles() |  | 
-| `List<RectTransform>` | GetBaseToggles(`Transform` root) |  | 
-| `void` | Reset() |  | 
-| `void` | Setup() |  | 
 
 
 ## `MakerRadioButtons`

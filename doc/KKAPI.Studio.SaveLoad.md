@@ -97,7 +97,6 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `void` | Init() |  | 
 | `void` | RegisterExtraBehaviour(`String` extendedDataId) | Register new functionality that will be added to studio. Offers easy API for saving and loading extended data.  All necessary hooking and event subscribing is done for you. Importing scenes is also handled for you.  All you have to do is create a type that inherits from `KKAPI.Studio.SaveLoad.SceneCustomFunctionController`&gt;  (don't make instances, the API will make them for you). Warning: The custom controller is immediately  created when it's registered, but its OnSceneLoad method is not called until a scene actually loads.  This might mean that if the registration happens too late you will potentially miss some load events. | 
 
 
