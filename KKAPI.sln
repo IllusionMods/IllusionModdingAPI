@@ -15,6 +15,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.KKalike", "Shared.KK
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.CharaStudio", "Shared.CharaStudio\Shared.CharaStudio.shproj", "{A4B901DF-F460-4510-8E04-8B3666990222}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PHAPI", "PHAPI\PHAPI.csproj", "{B0AA6926-D9A2-40B8-8100-CCEB9A17FF10}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Shared.KKalike\Shared.KKalike.projitems*{16441a78-1945-4d7c-b3f4-333bab848211}*SharedItemsImports = 13
@@ -45,6 +47,10 @@ Global
 		{601F5CCA-63FA-4E77-A7C5-16591977578F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{601F5CCA-63FA-4E77-A7C5-16591977578F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{601F5CCA-63FA-4E77-A7C5-16591977578F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0AA6926-D9A2-40B8-8100-CCEB9A17FF10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0AA6926-D9A2-40B8-8100-CCEB9A17FF10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0AA6926-D9A2-40B8-8100-CCEB9A17FF10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0AA6926-D9A2-40B8-8100-CCEB9A17FF10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
