@@ -124,48 +124,58 @@ namespace KKAPI.Maker
         public static void CreateCustomControls()
         {
             // Create controls in tabs
-            foreach (Transform categoryTransfrom in GameObject.Find("EditMode/Canvas").transform)
+            var editMode = Object.FindObjectOfType<EditMode>();
+            foreach (Transform categoryTransfrom in editMode.transform.Find("Canvas").transform)
                 CreateCustomControlsInCategory(categoryTransfrom);
 
-            // Create sidebar controls
             var sidebarToggles = _sidebarEntries.OfType<SidebarToggle>().ToList();
             if (sidebarToggles.Any())
-            {
-                var sidebarTop = GameObject.Find("EditScene/Canvas/Show").transform;
-
-                var copy = Object.Instantiate(sidebarTop, sidebarTop.parent, false);
-                copy.name = "PHAPI sidebar";
-                copy.localPosition = new Vector3(copy.localPosition.x, copy.localPosition.y + 215);
-
-                var glg = copy.GetComponentInChildren<GridLayoutGroup>();
-                glg.childAlignment = TextAnchor.LowerLeft;
-
-                var i = 0;
-                foreach (Transform child in glg.transform)
-                {
-                    if (_sidebarEntries.Count > i)
-                    {
-                        var toggle = sidebarToggles[i];
-                        toggle.CreateControl(child);
-                    }
-                    else
-                    {
-                        Object.Destroy(child.gameObject);
-                    }
-
-                    i++;
-                }
-
-                KoikatuAPI.Logger.LogDebug(
-                    $"Added {sidebarToggles.Count} custom controls " +
-                    "to Control Panel sidebar");
-            }
+                CreateSidebarToggles(sidebarToggles);
 
             if (_accessoryWindowEntries.Any())
                 CreateCustomAccessoryWindowControls();
 
             MakerLoadToggle.CreateCustomToggles();
             MakerCoordinateLoadToggle.CreateCustomToggles();
+        }
+
+        private static void CreateSidebarToggles(List<SidebarToggle> sidebarToggles)
+        {
+            var editScene = Object.FindObjectOfType<EditScene>();
+            if (editScene == null)
+            {
+                KoikatuAPI.Logger.LogWarning("Not in an EditScene, can't spawn sidebar toggles");
+                return;
+            }
+
+            var sidebarTop = editScene.transform.Find("Canvas/Show").transform;
+
+            var copy = Object.Instantiate(sidebarTop, sidebarTop.parent, false);
+            copy.name = "PHAPI sidebar";
+            copy.localPosition = new Vector3(copy.localPosition.x, copy.localPosition.y + 215);
+
+            var glg = copy.GetComponentInChildren<GridLayoutGroup>();
+            glg.childAlignment = TextAnchor.LowerLeft;
+
+            var i = 0;
+            foreach (Transform child in glg.transform)
+            {
+                if (_sidebarEntries.Count > i)
+                {
+                    var toggle = sidebarToggles[i];
+                    toggle.CreateControl(child);
+                }
+                else
+                {
+                    Object.Destroy(child.gameObject);
+                }
+
+                i++;
+            }
+
+            KoikatuAPI.Logger.LogDebug(
+                $"Added {sidebarToggles.Count} custom controls " +
+                "to Control Panel sidebar");
         }
 
         private static void CreateCustomControlsInCategory(Transform categoryTransfrom)

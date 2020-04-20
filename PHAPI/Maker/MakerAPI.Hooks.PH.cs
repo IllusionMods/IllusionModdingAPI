@@ -21,7 +21,6 @@ namespace KKAPI.Maker
 
             internal static EditMode currenEditMode;
 
-            //	public void Setup(Human human, EditScene editScene)
             [HarmonyPrefix]
             [HarmonyPatch(typeof(EditMode), nameof(EditMode.Setup))]
             public static void EditModeSetup(EditMode __instance)

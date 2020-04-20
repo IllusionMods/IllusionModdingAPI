@@ -65,6 +65,20 @@ namespace KKAPI.Chara
             {
                 OnCoordinateBeingLoaded(__instance, __instance.customParam);
             }
+
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(EditScene), "RecordCustomData")]
+            public static void RecordCustomDataHook(Human ___human)
+            {
+                OnCardBeingSaved(___human.customParam);
+            }
+
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(EditMode), "RecordCustomData")]
+            public static void RecordCustomDataHook2(Human ___human)
+            {
+                OnCardBeingSaved(___human.customParam);
+            }
         }
     }
 }
