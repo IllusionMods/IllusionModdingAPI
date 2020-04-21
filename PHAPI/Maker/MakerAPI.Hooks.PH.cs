@@ -21,6 +21,14 @@ namespace KKAPI.Maker
 
             internal static EditMode currenEditMode;
 
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(CharaLoadUI), "Update")]
+            public static void EditModeSetup(Button ___buttonLoad)
+            {
+                if (MakerLoadToggle.AnyEnabled)
+                    ___buttonLoad.interactable = true;
+            }
+
             [HarmonyPrefix]
             [HarmonyPatch(typeof(EditMode), nameof(EditMode.Setup))]
             public static void EditModeSetup(EditMode __instance)
