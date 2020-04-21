@@ -48,7 +48,8 @@ namespace KKAPI.Maker.UI
             BufferedValueChanged.Subscribe(sw.SetValue);
             var text = Traverse.Create(sw).Field<Text>("title").Value;
             text.color = TextColor;
-            SetTextAutosize(text);
+            foreach (var txt in sw.GetComponentsInChildren<Text>(true))
+                SetTextAutosize(txt);
             return sw.gameObject;
         }
     }

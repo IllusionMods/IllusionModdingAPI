@@ -49,7 +49,8 @@ namespace KKAPI.Maker.UI
             BufferedValueChanged.Subscribe(dd.SetValue);
             var text = Traverse.Create(dd).Field<Text>("title").Value;
             text.color = TextColor;
-            SetTextAutosize(text);
+            foreach (var txt in dd.GetComponentsInChildren<Text>(true))
+                SetTextAutosize(txt);
             return dd.gameObject;
         }
     }
