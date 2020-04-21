@@ -47,7 +47,9 @@ namespace KKAPI.Maker.UI
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var button = MakerAPI.GetMakerBase().CreateButton(subCategoryList.gameObject, Text, OnClick.Invoke);
-            SetTextAutosize(button.GetComponentInChildren<Text>());
+            var text = button.GetComponentInChildren<Text>();
+            text.color = TextColor;
+            SetTextAutosize(text);
             return button.gameObject;
         }
     }

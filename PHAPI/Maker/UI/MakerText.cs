@@ -53,7 +53,9 @@ namespace KKAPI.Maker.UI
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             _instance = MakerAPI.GetMakerBase().CreateLabel(subCategoryList.gameObject, Text);
-            SetTextAutosize(_instance.GetComponentInChildren<Text>());
+            var text = _instance.GetComponentInChildren<Text>();
+            text.color = TextColor;
+            SetTextAutosize(text);
             return _instance.gameObject;
         }
     }

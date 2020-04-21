@@ -57,7 +57,9 @@ namespace KKAPI.Maker.UI
         {
             var dd = MakerAPI.GetMakerBase().CreateColorChangeButton(subCategoryList.gameObject, SettingName, Value, UseAlpha, SetValue);
             BufferedValueChanged.Subscribe(dd.SetColor);
-            SetTextAutosize(dd.GetComponentInChildren<Text>());
+            var text = dd.GetComponentInChildren<Text>();
+            text.color = TextColor;
+            SetTextAutosize(text);
             return dd.gameObject;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using BepInEx;
+using HarmonyLib;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,7 +47,9 @@ namespace KKAPI.Maker.UI
         {
             var dd = MakerAPI.GetMakerBase().CreateDropDownUI(subCategoryList.gameObject, SettingName, Options.Select(x => new Dropdown.OptionData(x)).ToList(), SetValue);
             BufferedValueChanged.Subscribe(dd.SetValue);
-            SetTextAutosize(dd.GetComponentInChildren<Text>());
+            var text = Traverse.Create(dd).Field<Text>("title").Value;
+            text.color = TextColor;
+            SetTextAutosize(text);
             return dd.gameObject;
         }
     }

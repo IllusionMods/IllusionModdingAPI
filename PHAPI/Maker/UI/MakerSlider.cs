@@ -65,8 +65,10 @@ namespace KKAPI.Maker.UI
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
             var sliderUi = MakerAPI.GetMakerBase().CreateInputSliderUI(subCategoryList.gameObject, _settingName, _minValue, _maxValue, true, _defaultValue, SetValue);
-            BufferedValueChanged.Subscribe(sliderUi.SetValue);
-            SetTextAutosize(sliderUi.GetComponentInChildren<Text>());
+            BufferedValueChanged.Subscribe(sliderUi.SetValue); 
+            var text = Traverse.Create(sliderUi).Field<Text>("title").Value;
+            text.color = TextColor;
+            SetTextAutosize(text);
             Traverse.Create(sliderUi).Field("textFormat").SetValue(TextFormat);
             return sliderUi.gameObject;
         }
