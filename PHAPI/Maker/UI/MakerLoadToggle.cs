@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
@@ -14,16 +13,9 @@ namespace KKAPI.Maker.UI
     /// Use to allow user to not load data related to your mod.
     /// Use with <see cref="AddLoadToggle"/>
     /// </summary>
-    [Obsolete("Not implemented")]
     public class MakerLoadToggle : BaseEditableGuiEntry<bool>
     {
-        private const int TotalWidth = 380 + 292 - 5; // -5 for KKP
-
         private static readonly List<MakerLoadToggle> Toggles = new List<MakerLoadToggle>();
-        private static Transform _baseToggle;
-        private static GameObject _root;
-
-        private static int _createdCount;
 
         /// <summary>
         /// Create a new load toggle. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/> 
@@ -46,52 +38,50 @@ namespace KKAPI.Maker.UI
         /// </summary>
         public static bool AnyEnabled => Toggles.Any(x => x.Value);
 
-        internal static Button LoadButton { get; private set; }
-
         internal static void CreateCustomToggles()
         {
-            //foreach (var toggle in Toggles)
-            //    toggle.CreateControl(_root.transform);
+            var loadUi = MakerAPI.GetMakerBase().GetComponentInChildren<CharaLoadUI>(true);
+
+            // Make space for new toggles
+            var tfrt = loadUi.transform.Find("UI/TextFrame").GetComponent<RectTransform>();
+            tfrt.offsetMin = new Vector2(135, -60);
+
+            var chrt = loadUi.transform.Find("UI/Checks").GetComponent<RectTransform>();
+            chrt.offsetMax = new Vector2(130, 225);
+
+            var allBtn = loadUi.transform.Find("UI/ShortCutButtons/All/Button").GetComponent<Button>();
+            allBtn.onClick.AddListener(OnAllOn);
+
+            var noneBtn = loadUi.transform.Find("UI/ShortCutButtons/None/Button").GetComponent<Button>();
+            noneBtn.onClick.AddListener(OnAllOff);
+
+            foreach (var toggle in Toggles)
+                toggle.CreateControl(chrt);
+
+            foreach (var text in tfrt.parent.GetComponentsInChildren<Text>(true))
+                SetTextAutosize(text);
         }
 
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform loadBoxTransform)
         {
-            //var copy = Object.Instantiate(_baseToggle, _root.transform);
-            //copy.name = "tglItem";
-            //
-            //RemoveLocalisation(copy.gameObject);
-            //
-            //var tgl = copy.GetComponentInChildren<Toggle>();
-            //tgl.onValueChanged.AddListener(SetValue);
-            //BufferedValueChanged.Subscribe(b => tgl.isOn = b);
-            //tgl.image.raycastTarget = true;
-            //tgl.graphic.raycastTarget = true;
-            //
-            //var txt = copy.GetComponentInChildren<TextMeshProUGUI>();
-            //txt.text = Text;
-            //
-            //var singleItemWidth = TotalWidth / Toggles.Count;
-            //
-            //var rt = copy.GetComponent<RectTransform>();
-            //rt.localPosition = new Vector3(_baseToggle.localPosition.x + singleItemWidth * _createdCount, 26);
-            //rt.offsetMax = new Vector2(rt.offsetMin.x + singleItemWidth, rt.offsetMin.y + 26);
-            //
-            //copy.gameObject.SetActive(true);
-            //_createdCount++;
-            //
-            //KoikatuAPI.Instance.StartCoroutine(FixLayout(rt));
-            //
-            //return copy.gameObject;
-            throw new NotImplementedException();
-        }
+            var copy = Object.Instantiate(loadBoxTransform.Find("Toggle Acce").gameObject, loadBoxTransform);
+            copy.name = "Toggle " + Text + GuiApiNameAppendix;
 
-        private static IEnumerator FixLayout(RectTransform rt)
-        {
-            yield return new WaitUntil(() => rt.gameObject.activeInHierarchy);
-            yield return null;
+            RemoveLocalisation(copy.gameObject);
 
-            LayoutRebuilder.MarkLayoutForRebuild(rt);
+            var tgl = copy.GetComponent<Toggle>();
+            tgl.onValueChanged.AddListener(SetValue);
+            BufferedValueChanged.Subscribe(b => tgl.isOn = b);
+            tgl.image.raycastTarget = true;
+            tgl.graphic.raycastTarget = true;
+
+            var txt = copy.GetComponentInChildren<Text>();
+            txt.text = Text;
+
+            copy.gameObject.SetActive(true);
+
+            return copy.gameObject;
         }
 
         /// <inheritdoc />
@@ -108,63 +98,14 @@ namespace KKAPI.Maker.UI
 
         internal static void Reset()
         {
-            //foreach (var toggle in Toggles)
-            //    toggle.Dispose();
-            //Toggles.Clear();
-            //_createdCount = 0;
-            //LoadButton = null;
+            foreach (var toggle in Toggles)
+                toggle.Dispose();
+            Toggles.Clear();
         }
 
         internal static void Setup()
         {
-            //Reset();
-            //
-            //_root = GetRootObject();
-            //var baseToggles = GetBaseToggles(_root.transform);
-            //_baseToggle = baseToggles[0]; //.Single(x=>x.name == "tglItem01");
-            //
-            //var singleWidth = TotalWidth / baseToggles.Count;
-            //for (var index = 0; index < baseToggles.Count; index++)
-            //{
-            //    var baseToggle = baseToggles[index];
-            //    baseToggle.localPosition = new Vector3(_baseToggle.localPosition.x + singleWidth * index, 52, 0);
-            //    baseToggle.offsetMax = new Vector2(baseToggle.offsetMin.x + singleWidth, baseToggle.offsetMin.y + 26);
-            //}
-            //
-            //var allon = _root.transform.Find("btnAllOn");
-            //allon.GetComponentInChildren<Button>().onClick.AddListener(OnAllOn);
-            //var alloff = _root.transform.Find("btnAllOff");
-            //alloff.GetComponentInChildren<Button>().onClick.AddListener(OnAllOff);
-            //
-            //LoadButton = _root.transform.parent.Find("btnLoad").GetComponent<Button>();
-        }
-
-        internal static List<RectTransform> GetBaseToggles(Transform root)
-        {
-            var baseToggles = new List<RectTransform>();
-            foreach (var child in root.transform.Cast<Transform>().ToList())
-            {
-                if (child.name.StartsWith("tglHeader"))
-                {
-                    // Fix for Koikatsu Party, the toggles are now grouped
-                    foreach (Transform tglItem in child.Cast<Transform>().ToList())
-                    {
-                        tglItem.SetParent(root.transform, false);
-                        baseToggles.Add(tglItem.GetComponent<RectTransform>());
-                    }
-                }
-                else if (child.name.StartsWith("tglItem"))
-                {
-                    baseToggles.Add(child.GetComponent<RectTransform>());
-                }
-            }
-
-            return baseToggles;
-        }
-
-        private static GameObject GetRootObject()
-        {
-            return GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/charaFileControl/charaFileWindow/WinRect/CharaLoad/Select");
+            Reset();
         }
 
         private static void OnAllOff()
