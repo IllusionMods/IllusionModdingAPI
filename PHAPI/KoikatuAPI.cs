@@ -3,6 +3,7 @@ using BepInEx;
 using HarmonyLib;
 using KKAPI.Chara;
 using KKAPI.Maker;
+using KKAPI.Studio;
 using Manager;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace KKAPI
 
             //todo implement
             MakerAPI.Init(insideStudio);
-            //StudioAPI.Init(insideStudio);
+            StudioAPI.Init(insideStudio);
             CharacterApi.Init();
         }
 
@@ -33,9 +34,9 @@ namespace KKAPI
         /// </summary>
         public static GameMode GetCurrentGameMode()
         {
-            //todo implement
-            //if (StudioAPI.InsideStudio) return GameMode.Studio;
+            if (StudioAPI.InsideStudio) return GameMode.Studio;
             if (MakerAPI.InsideMaker) return GameMode.Maker;
+            //todo implement
             //if (Game.IsInstance()) return GameMode.MainGame;
             return GameMode.Unknown;
         }
