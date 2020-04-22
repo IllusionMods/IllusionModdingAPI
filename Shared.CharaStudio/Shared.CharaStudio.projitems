@@ -26,5 +26,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategorySubItemBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategoryToggle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CustomStateCategorySwitch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategorySlider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryToggle.cs" />
   </ItemGroup>
 </Project>
