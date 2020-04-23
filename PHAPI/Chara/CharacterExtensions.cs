@@ -3,6 +3,7 @@ using System.Linq;
 using Character;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
+using KKAPI.Studio;
 using UniRx;
 using UnityEngine;
 
@@ -58,12 +59,12 @@ namespace KKAPI.Chara
             if (getValue == null) throw new ArgumentNullException(nameof(getValue));
             if (setValue == null) throw new ArgumentNullException(nameof(setValue));
             guiEntry.ThrowIfDisposed(nameof(guiEntry));
-        
+
             var controllerType = typeof(TController);
-        
+
             if (!CharacterApi.RegisteredHandlers.Select(x => x.ControllerType).Contains(controllerType))
                 throw new InvalidOperationException($"The controller {controllerType.FullName} has not been registered in CharacterApi");
-        
+
             void OnValueChanged(TValue newVal)
             {
                 try
@@ -76,9 +77,9 @@ namespace KKAPI.Chara
                     Debug.LogError($"Crash in {nameof(getValue)} function of binding for {guiEntry.GetType().FullName} - {ex}");
                 }
             }
-        
+
             guiEntry.ValueChanged.Subscribe(OnValueChanged);
-        
+
             void OnReloadInterface(object sender, EventArgs args)
             {
                 try
@@ -91,18 +92,31 @@ namespace KKAPI.Chara
                     Debug.LogError($"Crash in {nameof(setValue)} function of binding for {guiEntry.GetType().FullName} - {ex}");
                 }
             }
-        
+
             MakerAPI.ReloadCustomInterface += OnReloadInterface;
-        
+
             void OnCleanup(object sender, EventArgs args)
             {
                 MakerAPI.ReloadCustomInterface -= OnReloadInterface;
                 MakerAPI.MakerExiting -= OnCleanup;
             }
-        
+
             MakerAPI.MakerExiting += OnCleanup;
         }
 
         #endregion
+
+        public static string GetCharacterName(this Human h)
+        {
+            if (StudioAPI.InsideStudio)
+            {
+                var charaName = StudioAPI.GetSelectedCharacters().FirstOrDefault(x => x.charInfo.human == h)?.charStatus.name;
+                if (!string.IsNullOrEmpty(charaName)) return charaName;
+            }
+            //return h is Female f ? f.HeroineID.ToString() : ((Male) h).MaleID.ToString();
+            return h is Female f
+                ? Female.HeroineName(f.HeroineID)
+                : Male.MaleName(((Male)h).MaleID);
+        }
     }
 }

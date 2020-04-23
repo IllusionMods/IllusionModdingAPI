@@ -110,7 +110,7 @@ namespace KKAPI.Chara
 
         internal void OnCardBeingSavedInternal(GameMode gamemode)
         {
-            if(!_wasLoaded)
+            if (!_wasLoaded)
             {
                 KoikatuAPI.Logger.LogWarning("Tried to save card before it was loaded - " + ChaControl.name);
                 return;

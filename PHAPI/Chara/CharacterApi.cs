@@ -199,6 +199,16 @@ namespace KKAPI.Chara
 
         private static readonly HashSet<Human> _currentlyReloading = new HashSet<Human>();
 
+        /// <summary>
+        /// Get the last card file that was loaded for a given human.
+        /// Only valid when called from OnReload of that character's function controller, or from the CharacterReloaded event.
+        /// </summary>
+        public static string GetLastLoadedCardPath(Human human)
+        {
+            Hooks.LastLoadedCardPaths.TryGetValue(human, out var result);
+            return result;
+        }
+
         private static void ReloadChara(Human chaControl = null)
         {
             if (IsCurrentlyReloading(chaControl))
@@ -230,9 +240,15 @@ namespace KKAPI.Chara
                 MakerAPI.OnReloadInterface(args);
 
             if (chaControl == null)
+            {
                 _currentlyReloading.Clear();
+                Hooks.LastLoadedCardPaths.Clear();
+            }
             else
+            {
                 _currentlyReloading.Remove(chaControl);
+                Hooks.LastLoadedCardPaths[chaControl] = null;
+            }
         }
 
         private static bool IsCurrentlyReloading(Human chaControl)
