@@ -1,4 +1,4 @@
-$array = @("KKAPI", "ECAPI", "AIAPI")
+$array = @("KKAPI", "ECAPI", "AIAPI", "PHAPI")
 
 if ($PSScriptRoot -match '.+?\\bin\\?') {
     $dir = $PSScriptRoot + "\"
@@ -8,8 +8,6 @@ else {
 }
 
 $out = $dir + "BepInEx\plugins\" 
-
-$ver = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($dir + $array[0] + ".dll").FileVersion.ToString()
 
 
 New-Item -ItemType Directory -Force -Path ($dir + "out\")
@@ -21,6 +19,8 @@ New-Item -ItemType Directory -Force -Path $out
 
 Copy-Item -Path ($dir + $element + ".dll") -Destination $out
 Copy-Item -Path ($dir + $element + ".xml") -Destination $out -ErrorAction SilentlyContinue
+
+$ver = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($dir + $element + ".dll").FileVersion.ToString()
 
 Compress-Archive -Path ($dir + "BepInEx") -Force -CompressionLevel "Optimal" -DestinationPath ($dir + "out\" + $element + "_" + $ver + ".zip")
 
