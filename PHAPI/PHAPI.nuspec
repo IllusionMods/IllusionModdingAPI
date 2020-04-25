@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>IllusionModdingAPI.PHAPI</id>
+    <version>$version$</version>
+    <authors>ManlyMarco</authors>
+    <projectUrl>https://github.com/IllusionMods/IllusionModdingAPI</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Modding API for PlayHome</description>
+    <developmentDependency>true</developmentDependency>
+  </metadata>
+  <files>
+    <file src="..\install.ps1" target="tools"/>
+  </files>
+</package>
