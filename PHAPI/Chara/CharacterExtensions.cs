@@ -4,6 +4,7 @@ using Character;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using KKAPI.Studio;
+using Studio;
 using UniRx;
 using UnityEngine;
 
@@ -110,7 +111,7 @@ namespace KKAPI.Chara
         {
             if (StudioAPI.InsideStudio)
             {
-                var charaName = StudioAPI.GetSelectedCharacters().FirstOrDefault(x => x.charInfo.human == h)?.charStatus.name;
+                var charaName = global::Studio.Studio.Instance.dicObjectCtrl.Values.OfType<OCIChar>().FirstOrDefault(x => x.charInfo.human == h)?.charStatus.name;
                 if (!string.IsNullOrEmpty(charaName)) return charaName;
             }
             //return h is Female f ? f.HeroineID.ToString() : ((Male) h).MaleID.ToString();
