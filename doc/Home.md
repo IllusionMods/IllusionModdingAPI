@@ -83,6 +83,9 @@
 - [`CurrentStateCategorySubItemBase`](KKAPI.Studio.UI.md#currentstatecategorysubitembase)
 - [`CurrentStateCategorySwitch`](KKAPI.Studio.UI.md#currentstatecategoryswitch)
 - [`CurrentStateCategoryToggle`](KKAPI.Studio.UI.md#currentstatecategorytoggle)
+- [`SceneEffectsCategory`](KKAPI.Studio.UI.md#sceneeffectscategory)
+- [`SceneEffectsSliderSet`](KKAPI.Studio.UI.md#sceneeffectssliderset)
+- [`SceneEffectsToggleSet`](KKAPI.Studio.UI.md#sceneeffectstoggleset)
 
 ## [KKAPI.Utilities](KKAPI.Utilities.md)
 

@@ -153,3 +153,105 @@ Methods
 | `GameObject` | CreateItem(`GameObject` categoryObject) |  | 
 
 
+## `SceneEffectsCategory`
+
+Class that adds a new subcategory to the Scene Effects menu. Create a new instance and then add SliderSets and ToggleSets.
+```csharp
+public class KKAPI.Studio.UI.SceneEffectsCategory
+
+```
+
+Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `List<SceneEffectsSliderSet>` | Sliders | Sliders that have been added. | 
+| `List<SceneEffectsToggleSet>` | Toggles | Toggles that have been added. | 
+
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `GameObject` | Content | Element that contains the content of the category. | 
+| `GameObject` | Header | Element that contains the header of the category. | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `SceneEffectsSliderSet` | AddSliderSet(`String` text, `Action<Single>` setter, `Single` initialValue, `Single` sliderMinimum, `Single` sliderMaximum) | Add a slider with text box to this Screen Effects subcategory. | 
+| `SceneEffectsToggleSet` | AddToggleSet(`String` text, `Action<Boolean>` setter, `Boolean` initialValue) | Add a toggle to this Screen Effects subcategory. | 
+
+
+## `SceneEffectsSliderSet`
+
+A container for the value of a slider, associated label, slider, textbox, and reset button UI elements, and the setter method that triggers on value change.
+```csharp
+public class KKAPI.Studio.UI.SceneEffectsSliderSet
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Button` | Button | Reset button UI element. | 
+| `Boolean` | EnforceSliderMaximum | Whether to enforce the SliderMaximum value. If false, users can type values in to the textbox that exceed the maximum value. | 
+| `Boolean` | EnforceSliderMinimum | Whether to enforce the SliderMinimum value. If false, users can type values in to the textbox that exceed the minimum value. | 
+| `Single` | InitialValue | Initial state of the toggle. | 
+| `InputField` | Input | Input field UI element. | 
+| `TextMeshProUGUI` | Label | Label UI element. | 
+| `Action<Single>` | Setter | Method called when the value of the toggle is changed. | 
+| `Slider` | Slider | Slider UI element. | 
+| `Single` | SliderMaximum | Maximum value the slider can slide. Can be overriden by the user typing in the textbox if EnforceSliderMaximum is set to false. | 
+| `Single` | SliderMinimum | Minimum value the slider can slide. Can be overriden by the user typing in the textbox if EnforceSliderMinimum is set to false. | 
+| `String` | Text | Get or set the text of the label. | 
+| `Single` | Value | Get or set the value of the toggle. | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Single` | GetValue() | Get the value of the slider set. | 
+| `void` | Reset() | Reset the slider set to the initial value, update UI elements, and trigger the Setter method. | 
+| `void` | Reset(`Boolean` triggerEvents) | Reset the slider set to the initial value, update UI elements, and trigger the Setter method. | 
+| `void` | SetValue(`String` value) | Set the value of the slider set, update the UI elements, and trigger the Setter method. | 
+| `void` | SetValue(`String` value, `Boolean` triggerEvents) | Set the value of the slider set, update the UI elements, and trigger the Setter method. | 
+| `void` | SetValue(`Single` value) | Set the value of the slider set, update the UI elements, and trigger the Setter method. | 
+| `void` | SetValue(`Single` value, `Boolean` triggerEvents) | Set the value of the slider set, update the UI elements, and trigger the Setter method. | 
+
+
+## `SceneEffectsToggleSet`
+
+A container for the value of a toggle, associated label and toggle UI elements, and the setter method that triggers on value change.
+```csharp
+public class KKAPI.Studio.UI.SceneEffectsToggleSet
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | InitialValue | Initial state of the toggle. | 
+| `TextMeshProUGUI` | Label | Label UI element. | 
+| `Action<Boolean>` | Setter | Method called when the value of the toggle is changed. | 
+| `String` | Text | Get or set the text of the label. | 
+| `Toggle` | Toggle | Toggle UI element. | 
+| `Boolean` | Value | Get or set the value of the toggle. | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | GetValue() | Get the value of the toggle. | 
+| `void` | Reset() | Reset the toggle to the initial value and trigger the Setter method. | 
+| `void` | Reset(`Boolean` triggerEvents) | Reset the toggle to the initial value and trigger the Setter method. | 
+| `void` | SetValue(`Boolean` value) | Set the value of the toggle and trigger the Setter method. | 
+| `void` | SetValue(`Boolean` value, `Boolean` triggerEvents) | Set the value of the toggle and trigger the Setter method. | 
+
+
