@@ -128,7 +128,7 @@ namespace KKAPI.Maker
 
         /// <summary>
         /// Maker is fully loaded and the user has control.
-        /// Warning: Avoid loading mods or doing anything heavy in this event, use EarlyMakerFinishedLoading instead.
+        /// Warning: Avoid loading mods or doing anything heavy in this event.
         /// </summary>
         public static event EventHandler MakerFinishedLoading;
 
