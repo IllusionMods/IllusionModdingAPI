@@ -217,14 +217,18 @@ namespace KKAPI.Chara
                         if (i == 0)
                         {
                             changed = currentCoordinate != controllerSubject.Value;
-                            if(changed && KoikatuAPI.EnableDebugLogging)
-                                KoikatuAPI.Logger.LogMessage($"Changed coord of character {target.fileParam.fullname} to {currentCoordinate}");
+                            if (changed && KoikatuAPI.EnableDebugLogging)
+                                KoikatuAPI.Logger.LogMessage(
+                                    $"Changed coord of character {target.fileParam.fullname} to {currentCoordinate}");
                         }
 
                         if (changed) controllerSubject.OnNext(currentCoordinate);
                     }
                 });
 #endif
+
+            // Trigger the equivalent of "Start" reload from controllers
+            target.StartCoroutine(CoroutineUtils.CreateCoroutine(new WaitForEndOfFrame(), () => { }, () => OnCharacterReloaded(target)));
         }
 
         private static void OnCardBeingSaved(ChaFile chaFile)
@@ -260,6 +264,19 @@ namespace KKAPI.Chara
             foreach (var behaviour in GetBehaviours(chaControl))
                 behaviour.OnReloadInternal(gamemode);
 
+            OnCharacterReloaded(chaControl);
+
+            if (MakerAPI.InsideAndLoaded)
+                MakerAPI.OnReloadInterface(new CharaReloadEventArgs(chaControl));
+
+            if (chaControl == null)
+                _currentlyReloading.Clear();
+            else
+                _currentlyReloading.Remove(chaControl);
+        }
+
+        private static void OnCharacterReloaded(ChaControl chaControl)
+        {
             var args = new CharaReloadEventArgs(chaControl);
             try
             {
@@ -269,14 +286,6 @@ namespace KKAPI.Chara
             {
                 KoikatuAPI.Logger.LogError(e);
             }
-
-            if (MakerAPI.InsideAndLoaded)
-                MakerAPI.OnReloadInterface(args);
-
-            if (chaControl == null)
-                _currentlyReloading.Clear();
-            else
-                _currentlyReloading.Remove(chaControl);
         }
 
         private static bool IsCurrentlyReloading(ChaControl chaControl)

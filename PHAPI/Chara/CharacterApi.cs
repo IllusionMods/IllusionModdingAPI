@@ -226,18 +226,10 @@ namespace KKAPI.Chara
             foreach (var behaviour in GetBehaviours(chaControl))
                 behaviour.OnReloadInternal(gamemode);
 
-            var args = new CharaReloadEventArgs(chaControl);
-            try
-            {
-                CharacterReloaded?.Invoke(null, args);
-            }
-            catch (Exception e)
-            {
-                KoikatuAPI.Logger.LogError(e);
-            }
+            OnCharacterReload(chaControl);
 
             if (MakerAPI.InsideAndLoaded)
-                MakerAPI.OnReloadInterface(args);
+                MakerAPI.OnReloadInterface(new CharaReloadEventArgs(chaControl));
 
             if (chaControl == null)
             {
@@ -248,6 +240,19 @@ namespace KKAPI.Chara
             {
                 _currentlyReloading.Remove(chaControl);
                 Hooks.LastLoadedCardPaths[chaControl] = null;
+            }
+        }
+
+        private static void OnCharacterReload(Human chaControl)
+        {
+            var args = new CharaReloadEventArgs(chaControl);
+            try
+            {
+                CharacterReloaded?.Invoke(null, args);
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
