@@ -5,6 +5,7 @@
 [![License](https://img.shields.io/github/license/ManlyMarco/KKAPI.svg?style=flat)](https://github.com/ManlyMarco/KKAPI/blob/master/LICENSE)
 ## Modding API for Illusion games
 This is an API designed to make writing plugins for recent UnityEngine games made by the company Illusion easier and less bug-prone. It abstracts away a lot of the complexity of hooking the game save/load logic, creating interface elements at runtime, and many other tasks. All this while supplying many useful methods and tools. Supported games:
+- PlayHome (PHAPI)
 - Koikatu/Koikatsu Party (KKAPI)
 - Emotion Creators (ECAPI)
 - AI-Shoujo/AI-Syoujyo (AIAPI)
