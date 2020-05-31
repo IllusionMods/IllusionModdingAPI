@@ -17,9 +17,13 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.CharaStudio", "Share
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PHAPI", "PHAPI\PHAPI.csproj", "{B0AA6926-D9A2-40B8-8100-CCEB9A17FF10}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2API", "HS2API\HS2API.csproj", "{32333D00-1E55-4714-AD80-291B514A4F6E}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Shared.KKalike\Shared.KKalike.projitems*{16441a78-1945-4d7c-b3f4-333bab848211}*SharedItemsImports = 13
+		Shared.CharaStudio\Shared.CharaStudio.projitems*{32333d00-1e55-4714-ad80-291b514a4f6e}*SharedItemsImports = 4
+		Shared.Core\Shared.Core.projitems*{32333d00-1e55-4714-ad80-291b514a4f6e}*SharedItemsImports = 4
 		Shared.CharaStudio\Shared.CharaStudio.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
 		Shared.Core\Shared.Core.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
 		Shared.CharaStudio\Shared.CharaStudio.projitems*{74c2db86-55bb-47b4-9805-51b5b992ef35}*SharedItemsImports = 4
@@ -51,6 +55,10 @@ Global
 		{B0AA6926-D9A2-40B8-8100-CCEB9A17FF10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0AA6926-D9A2-40B8-8100-CCEB9A17FF10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0AA6926-D9A2-40B8-8100-CCEB9A17FF10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32333D00-1E55-4714-AD80-291B514A4F6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32333D00-1E55-4714-AD80-291B514A4F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32333D00-1E55-4714-AD80-291B514A4F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32333D00-1E55-4714-AD80-291B514A4F6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
