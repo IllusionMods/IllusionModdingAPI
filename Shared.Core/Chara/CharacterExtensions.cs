@@ -6,7 +6,7 @@ using UniRx;
 using UnityEngine;
 #if KK || EC
 using UniRx;
-#elif AI
+#elif AI || HS2
 using AIChara;
 #endif
 

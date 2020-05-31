@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>bed55866-7531-4cc4-ba58-f406d901d3e8</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Shared.AIalike</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.Hooks.AI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.AI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.Hooks.AI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoryControlWrapper.AI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessorySlotEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryTransferEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryWindowControlValueChangedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerAPI.Hooks.AI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerConstants.AI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerInterfaceCreator.AI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerColor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerCoordinateLoadToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerDropdown.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerImage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerLoadToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerRadioButtons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerSeparator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerSlider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerText.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\SidebarToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\SubCategoryCreator.cs" />
+  </ItemGroup>
+</Project>

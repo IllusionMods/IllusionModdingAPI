@@ -97,30 +97,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Chara\CharacterApi.Hooks.AI.cs" />
-    <Compile Include="Maker\AccessoriesApi.AI.cs" />
-    <Compile Include="Maker\AccessoriesApi.Hooks.AI.cs" />
     <Compile Include="KoikatuAPI.cs" />
-    <Compile Include="Maker\AccessoryControlWrapper.AI.cs" />
-    <Compile Include="Maker\Events\AccessorySlotEventArgs.cs" />
-    <Compile Include="Maker\Events\AccessoryTransferEventArgs.cs" />
-    <Compile Include="Maker\Events\AccessoryWindowControlValueChangedEventArgs.cs" />
-    <Compile Include="Maker\MakerAPI.Hooks.AI.cs" />
-    <Compile Include="Maker\MakerConstants.AI.cs" />
-    <Compile Include="Maker\MakerInterfaceCreator.AI.cs" />
-    <Compile Include="Maker\UI\MakerButton.cs" />
-    <Compile Include="Maker\UI\MakerColor.cs" />
-    <Compile Include="Maker\UI\MakerCoordinateLoadToggle.cs" />
-    <Compile Include="Maker\UI\MakerDropdown.cs" />
-    <Compile Include="Maker\UI\MakerImage.cs" />
-    <Compile Include="Maker\UI\MakerLoadToggle.cs" />
-    <Compile Include="Maker\UI\MakerRadioButtons.cs" />
-    <Compile Include="Maker\UI\MakerSeparator.cs" />
-    <Compile Include="Maker\UI\MakerSlider.cs" />
-    <Compile Include="Maker\UI\MakerText.cs" />
-    <Compile Include="Maker\UI\MakerToggle.cs" />
-    <Compile Include="Maker\UI\Sidebar\SidebarToggle.cs" />
-    <Compile Include="Maker\UI\SubCategoryCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +105,7 @@
   </ItemGroup>
   <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
   <Import Project="..\Shared.CharaStudio\Shared.CharaStudio.projitems" Label="Shared" />
+  <Import Project="..\Shared.AIalike\Shared.AIalike.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) AI</PostBuildEvent>

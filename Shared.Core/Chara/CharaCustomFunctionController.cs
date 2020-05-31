@@ -4,7 +4,7 @@ using System.Collections;
 #if KK
 using KKAPI.MainGame;
 using UniRx;
-#elif AI
+#elif AI || HS2
 using AIChara;
 #endif
 using ExtensibleSaveFormat;

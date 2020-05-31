@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using BepInEx;
 using KKAPI.Chara;
 using KKAPI.Maker;
@@ -33,25 +34,37 @@ namespace KKAPI
         {
             if (MakerAPI.InsideMaker) return GameMode.Maker;
             if (StudioAPI.InsideStudio) return GameMode.Studio;
-            if (Map.IsInstance() && Map.Instance.MapRoot != null) return GameMode.MainGame;
+            // todo return GameMode.MainGame;
             return GameMode.Unknown;
         }
 
+        private static Version _gameVersion;
         /// <summary>
         /// Get current version of the game.
         /// </summary>
         public static Version GetGameVersion()
         {
-            return Game.Version;
+            if(_gameVersion == null)
+            {
+                _gameVersion = new Version();
+                var versionFile = Path.Combine(DefaultData.Path, "system\\version.dat");
+                if (File.Exists(versionFile))
+                {
+                    var version = File.ReadAllText(versionFile);
+                    if (!string.IsNullOrWhiteSpace(version))
+                        _gameVersion = new Version(version);
+                }
+            }
+            return _gameVersion;
         }
 
-        /// <summary>
-        /// Check if the game is the Steam release instead of the original Japanese release.
-        /// <remarks>It's best to not rely on this and instead make the same code work in both versions (if possible).</remarks>
-        /// </summary>
-        public static bool IsSteamRelease()
-        {
-            return GameSystem.Instance.cultureNames.Length > 1;
-        }
+        ///// <summary>
+        ///// Check if the game is the Steam release instead of the original Japanese release.
+        ///// <remarks>It's best to not rely on this and instead make the same code work in both versions (if possible).</remarks>
+        ///// </summary>
+        //public static bool IsSteamRelease()
+        //{
+        //    return GameSystem.Instance.cultureNames.Length > 1;
+        //}
     }
 }
