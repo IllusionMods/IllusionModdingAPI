@@ -62,7 +62,7 @@ namespace KKAPI.Studio.UI
 
             if (_originalText == null)
             {
-#if AI
+#if AI || HS2
                 _originalText = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Cos/TextMeshPro Title");
 #else
                 _originalText = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Cos/Text");
@@ -73,7 +73,7 @@ namespace KKAPI.Studio.UI
             cat.AddComponent<LayoutElement>();
             cat.name = CategoryName + "_Header_SAPI";
 
-#if AI
+#if AI || HS2
             var t = cat.GetComponent<TextMeshProUGUI>();
             t.fontSize = 15;
             t.fontSizeMax = 15;

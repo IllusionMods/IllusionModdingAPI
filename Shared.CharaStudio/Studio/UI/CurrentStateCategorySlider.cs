@@ -51,7 +51,7 @@ namespace KKAPI.Studio.UI
             copy.name = "CustomSlider " + Name;
             copy.transform.localScale = Vector3.one;
 
-#if AI
+#if AI || HS2
             var text = copy.GetComponentInChildren<TextMeshProUGUI>(true);
             text.lineSpacing = -20;
 #else

@@ -58,7 +58,7 @@ namespace KKAPI.Studio.UI
                 Object.Destroy(transform.gameObject);
 
             var textTr = children[0];
-#if AI
+#if AI || HS2
             var text = textTr.GetComponent<TextMeshProUGUI>();
             text.lineSpacing = -20;
 #else

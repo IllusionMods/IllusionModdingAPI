@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using Studio;
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 
