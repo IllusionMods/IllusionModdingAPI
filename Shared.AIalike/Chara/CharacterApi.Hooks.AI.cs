@@ -133,6 +133,7 @@ namespace KKAPI.Chara
                 __result = new[] { original, DelayedReloadChara(__instance) }.GetEnumerator();
             }
 
+#if AI // todo not necessary for AI? needed for HS2?
             /// <summary>
             /// Needed to update controllers after ADV scene finishes loading since characters get loaded async so other events fire too early
             /// </summary>
@@ -144,6 +145,7 @@ namespace KKAPI.Chara
                 if (Traverse.Create(__instance).Property("isADVCreateChara").GetValue<bool>())
                     ReloadChara(__instance.chaCtrl);
             }
+#endif
 
             /// <summary>
             /// Needed to catch coordinate updates in studio, h scene and other places

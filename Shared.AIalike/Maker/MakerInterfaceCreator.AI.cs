@@ -225,9 +225,14 @@ namespace KKAPI.Maker
                         gridLayout.constraint = GridLayoutGroup.Constraint.FixedRowCount;
                         gridLayout.constraintCount = 4;
                         gridLayout.startAxis = GridLayoutGroup.Axis.Vertical;
+
                         // Use 1 full column if there are not enough items for 2 columns, else use 2 half width columns
+#if AI
                         // Steam release messes with sizes a bit
                         var singleCellSize = KoikatuAPI.IsSteamRelease() ? 240 : 170;
+#else
+                        var singleCellSize = 240;
+#endif
                         gridLayout.cellSize = _sidebarEntries.Count > 4 ? new Vector2(singleCellSize, 28) : new Vector2(singleCellSize * 2, 28);
 
                         var itemsRect = itemsTransform.GetComponent<RectTransform>();

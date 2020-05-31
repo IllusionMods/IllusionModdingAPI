@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 #if KK || EC
 using UniRx;
-#elif AI
+#elif AI || HS2
 using AIChara;
 #endif
 

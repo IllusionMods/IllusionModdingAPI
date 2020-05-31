@@ -10,7 +10,7 @@ using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 
-#if AI
+#if AI || HS2
 using AIChara;
 #endif
 

@@ -6,7 +6,7 @@ using KKAPI.Maker.UI.Sidebar;
 using UnityEngine;
 #if KK || EC
 using ChaCustom;
-#elif AI
+#elif AI || HS2
 using CharaCustom;
 using AIChara;
 #endif
@@ -405,7 +405,7 @@ namespace KKAPI.Maker
                 return false;
 
             // Check if the loading screen is currently visible
-            if (Manager.Scene.Instance.IsNowLoadingFade)
+            if (GetIsNowLoadingFade())
                 return false;
 
 #if KK || EC
@@ -416,10 +416,29 @@ namespace KKAPI.Maker
 
             // Check if settings screen, game exit message box or similar are on top of the maker UI
             // In KK class maker the AddSceneName is set to CustomScene, but in normal maker it's empty
-            if (!string.IsNullOrEmpty(Manager.Scene.Instance.AddSceneName) && Manager.Scene.Instance.AddSceneName != "CustomScene")
+            var addScene = GetAddSceneName();
+            if (!string.IsNullOrEmpty(addScene) && addScene != "CustomScene")
                 return false;
 
             return true;
+        }
+
+        private static string GetAddSceneName()
+        {
+#if HS2
+            return Manager.Scene.AddSceneName;
+#else
+            return Manager.Scene.Instance.AddSceneName;
+#endif
+        }
+
+        private static bool GetIsNowLoadingFade()
+        {
+#if HS2
+            return Manager.Scene.IsNowLoadingFade;
+#else
+            return Manager.Scene.Instance.IsNowLoadingFade;
+#endif
         }
     }
 }
