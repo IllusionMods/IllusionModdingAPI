@@ -128,7 +128,7 @@ namespace KKAPI.Chara
                 var chaControl = MakerAPI.GetCharacterControl();
                 if (chaControl != null)
                 {
-#if AI
+#if AI || HS2
                     var chaFile = MakerAPI.Hooks.InternalLastLoadedChaFile;
                     KoikatuAPI.Instance.StartCoroutine(new object[] {
                         // Need to wait until clothes and accs are fully loaded
@@ -170,7 +170,7 @@ namespace KKAPI.Chara
                 var cf = ChaControls.FirstOrDefault(x => x.nowCoordinate == file);
                 if (cf != null)
                 {
-#if AI
+#if AI || HS2
                     KoikatuAPI.Instance.StartCoroutine(CoroutineUtils.CreateCoroutine(new WaitForEndOfFrame(), () => OnCoordinateBeingLoaded(cf, file)));
 #else
                     OnCoordinateBeingLoaded(cf, file);

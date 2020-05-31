@@ -33,7 +33,7 @@ namespace KKAPI.Studio.UI
             copy.transform.localScale = Vector3.one;
             copy.name = "CustomSwitch " + Name;
 
-#if AI
+#if AI || HS2
             var text = copy.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
             text.lineSpacing = -20;
 #else

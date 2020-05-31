@@ -36,7 +36,7 @@ namespace KKAPI.Studio.UI
         {
             if (_originalObject == null)
             {
-#if AI
+#if AI || HS2
                 _originalObject = GameObject.Find("StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Color Grading/Lookup Texture");
 #else
                 _originalObject = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/02_Kinematic/05_Etc/Eyes Draw");
