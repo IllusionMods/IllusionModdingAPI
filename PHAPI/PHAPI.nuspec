@@ -8,6 +8,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Modding API for PlayHome</description>
     <developmentDependency>true</developmentDependency>
+    <tags>PlayHome</tags>
   </metadata>
   <files>
     <file src="..\install.ps1" target="tools"/>

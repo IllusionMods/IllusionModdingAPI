@@ -8,6 +8,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Modding API for AI Girl</description>
     <developmentDependency>true</developmentDependency>
+    <tags>AIGirl AIShoujo AISyoujyo</tags>
   </metadata>
   <files>
     <file src="..\install.ps1" target="tools"/>
