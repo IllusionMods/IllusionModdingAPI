@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>IllusionModdingAPI.HS2API</id>
+    <version>$version$</version>
+    <authors>ManlyMarco</authors>
+    <projectUrl>https://github.com/IllusionMods/IllusionModdingAPI</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Modding API for HoneySelect2</description>
+    <developmentDependency>true</developmentDependency>
+    <tags>HoneySelect2</tags>
+  </metadata>
+  <files>
+    <file src="..\install.ps1" target="tools"/>
+  </files>
+</package>
