@@ -8,6 +8,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Modding API for Emotion Creators</description>
     <developmentDependency>true</developmentDependency>
+    <tags>EmotionCreators</tags>
   </metadata>
   <files>
     <file src="..\install.ps1" target="tools"/>

@@ -8,6 +8,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Modding API for Koikatu</description>
     <developmentDependency>true</developmentDependency>
+    <tags>Koikatu KoikatsuParty</tags>
   </metadata>
   <files>
     <file src="..\install.ps1" target="tools"/>
