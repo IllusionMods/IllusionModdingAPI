@@ -9,6 +9,7 @@ This is an API designed to make writing plugins for recent UnityEngine games mad
 - Koikatu/Koikatsu Party (KKAPI)
 - Emotion Creators (ECAPI)
 - AI-Shoujo/AI-Syoujyo (AIAPI)
+- HoneySelect2 (HS2API)
 
 ## Some mods that use the Modding API
 The API is required by many plugins made for Koikatsu, Emotion Creators and AI-Girl/AI-Shoujo. Here are some of them:
