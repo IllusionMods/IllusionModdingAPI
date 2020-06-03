@@ -81,12 +81,31 @@ namespace KKAPI.Maker
                 InternalLastLoadedChaFile = null;
             }
 
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(CustomCharaFileInfoAssist), nameof(CustomCharaFileInfoAssist.CreateCharaFileInfoList))]
+            public static void CreateCharaFileInfoList_Start()
+            {
+                CharaListIsLoading = true;
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(CustomCharaFileInfoAssist), nameof(CustomCharaFileInfoAssist.CreateCharaFileInfoList))]
+            public static void CreateCharaFileInfoList_End()
+            {
+                CharaListIsLoading = false;
+            }
+
             public static void ChaFileLoadFilePreHook(ChaFile __instance)
             {
-                if (!CharaListIsLoading && InsideMaker)
-                    InternalLastLoadedChaFile = __instance;
+                if (InsideMaker)
+                {
+                    if (!CharaListIsLoading)
+                        InternalLastLoadedChaFile = __instance;
+                }
                 else
+                {
                     InternalLastLoadedChaFile = null;
+                }
             }
 
             private static ChaFile _internalLastLoadedChaFile;
@@ -113,23 +132,6 @@ namespace KKAPI.Maker
                 if (!CharaListIsLoading && InsideMaker)
                     OnChaFileLoaded(new ChaFileLoadedEventArgs(filename, sex, face, body, hair, parameter, coordinate, __instance, InternalLastLoadedChaFile));
             }
-
-            /* todo useful?
-             * /// <summary>
-            /// Keep Load button in maker character load list enabled if any of the extra toggles are enabled, but none of the stock ones are. 
-            /// </summary>
-            [HarmonyPrefix]
-            [HarmonyPatch(typeof(Selectable), "set_interactable")]
-            public static void LoadButtonOverride(Selectable __instance, ref bool value)
-            {
-                if (!value)
-                {
-                    if (ReferenceEquals(__instance, MakerLoadToggle.LoadButton))
-                        value = MakerLoadToggle.AnyEnabled;
-                    else if (ReferenceEquals(__instance, MakerCoordinateLoadToggle.LoadButton))
-                        value = MakerCoordinateLoadToggle.AnyEnabled;
-                }
-            }*/
 
             public static void Init()
             {
