@@ -76,7 +76,12 @@ namespace KKAPI.Maker
         /// <summary>
         /// 0 is male, 1 is female
         /// </summary>
-        public static int GetMakerSex() => GetMakerBase().modeSex;
+        public static int GetMakerSex()
+#if KK || EC
+            => GetMakerBase().modeSex;
+#elif AI || HS2
+            => CharaCustom.CharaCustom.modeSex;
+#endif
 
         /// <summary>
         /// Returns current maker logic instance.
