@@ -237,6 +237,15 @@ namespace KKAPI.Chara
 
             var gamemode = KoikatuAPI.GetCurrentGameMode();
 
+#if HS2
+            // Prevent overwriting character coordinates with whatever is loaded at the time of saving
+            if (gamemode == GameMode.MainGame) //todo use for ai as well?
+            {
+                KoikatuAPI.Logger.LogDebug("Skipping sending the save event");
+                return;
+            }
+#endif
+
             var chaControl = gamemode == GameMode.Maker ?
                 MakerAPI.GetCharacterControl() :
                 ChaControls.FirstOrDefault(control => control.chaFile == chaFile);
