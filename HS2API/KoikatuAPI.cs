@@ -34,7 +34,8 @@ namespace KKAPI
         {
             if (MakerAPI.InsideMaker) return GameMode.Maker;
             if (StudioAPI.InsideStudio) return GameMode.Studio;
-            // todo return GameMode.MainGame;
+            if (Scene.IsFind("Home")) return GameMode.MainGame;
+            //if(HSceneFlagCtrl.IsInstance()) return 
             return GameMode.Unknown;
         }
 
