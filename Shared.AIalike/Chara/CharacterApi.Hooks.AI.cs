@@ -100,9 +100,17 @@ namespace KKAPI.Chara
                 CopyCoordExtData(__instance.nowCoordinate, __instance.chaFile.coordinate);
             }
 
+            [HarmonyPrefix]
+            //CopyCoordinate(ChaFileCoordinate _coordinate)
+            [HarmonyPatch(typeof(ChaFile), nameof(ChaFile.CopyCoordinate), typeof(ChaFileCoordinate))]
+            public static void ChaFile_CopyCoordinateHook(ChaFile __instance, ChaFileCoordinate _coordinate)
+            {
+                CopyCoordExtData(_coordinate, __instance.coordinate);
+            }
+
             private static void CopyCoordExtData(ChaFileCoordinate fromCoord, ChaFileCoordinate toCoord)
             {
-                // Clear old data
+                // Clear old ext data
                 var oldData = ExtendedSave.GetAllExtendedData(toCoord);
                 if (oldData != null)
                 {
@@ -110,7 +118,7 @@ namespace KKAPI.Chara
                         ExtendedSave.SetExtendedDataById(toCoord, data.Key, null);
                 }
 
-                // Copy new data from the coordinate that is about to be swapped in
+                // Copy new ext data from the coordinate that is about to be swapped in
                 var newData = ExtendedSave.GetAllExtendedData(fromCoord);
                 if (newData != null)
                 {
@@ -153,8 +161,15 @@ namespace KKAPI.Chara
             [HarmonyPostfix]
             // public bool ChangeNowCoordinate(ChaFileCoordinate srcCoorde, bool reload = false, bool forceChange = true)
             [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeNowCoordinate), typeof(ChaFileCoordinate), typeof(bool), typeof(bool))]
-            public static void CharaData_InitializePost(ChaControl __instance)
+            public static void CharaData_InitializePost(ChaControl __instance, ChaFileCoordinate srcCoorde, bool reload, bool forceChange)
             {
+                if (srcCoorde == __instance.chaFile.coordinate)
+                {
+                    if (reload)
+                        ReloadChara(__instance);
+                    return;
+                }
+
                 // Make sure we were called by the correct methods to avoid triggering this when a character is being fully reloaded
                 // Need to inspect whole stack trace and grab the earliest methods in the stack to avoid MoreAccessories hooks
                 var isCoordinateLoad = new StackTrace().GetFrames()?.Any(f =>
