@@ -34,7 +34,11 @@ namespace KKAPI
         {
             if (MakerAPI.InsideMaker) return GameMode.Maker;
             if (StudioAPI.InsideStudio) return GameMode.Studio;
-            if (Scene.IsFind("Home")) return GameMode.MainGame;
+            try
+            {
+                if (Scene.IsFind("Home")) return GameMode.MainGame;
+            }
+            catch (ArgumentNullException) { }
             //if(HSceneFlagCtrl.IsInstance()) return 
             return GameMode.Unknown;
         }
@@ -45,7 +49,7 @@ namespace KKAPI
         /// </summary>
         public static Version GetGameVersion()
         {
-            if(_gameVersion == null)
+            if (_gameVersion == null)
             {
                 _gameVersion = new Version();
                 var versionFile = Path.Combine(DefaultData.Path, "system\\version.dat");
