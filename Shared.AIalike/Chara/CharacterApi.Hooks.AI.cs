@@ -177,6 +177,7 @@ namespace KKAPI.Chara
                     var method = f.GetMethod();
                     return method.Name == "UpdateClothEvent"
                            || method.Name == "LoadClothesFile"
+                           || method.DeclaringType?.Name == "ADVMainScene"
                            || method.DeclaringType?.Name == "HSceneSpriteCoordinatesCard";
                 });
 
