@@ -150,6 +150,17 @@ namespace KKAPI.Maker
             /// <summary>
             /// Store which coord load button was pressed before running the stock game code
             /// </summary>
+#if AI
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(CvsC_ClothesLoad), "Start")]
+            public static void CustomClothesWindow_ButtonClickedHook(CustomClothesWindow ___clothesLoadWin)
+            {
+                ___clothesLoadWin.onClick01 = (info => CoordinateButtonClicked = 1) + ___clothesLoadWin.onClick01;
+                ___clothesLoadWin.onClick02 = (info => CoordinateButtonClicked = 2) + ___clothesLoadWin.onClick02;
+                ___clothesLoadWin.onClick03 = (info => CoordinateButtonClicked = 3) + ___clothesLoadWin.onClick03;
+            }
+#elif HS2
+            // Changed to coroutine
             [HarmonyPostfix]
             [HarmonyPatch(typeof(CvsC_ClothesLoad), "Start")]
             public static void CustomClothesWindow_ButtonClickedHook(CustomClothesWindow ___clothesLoadWin, ref IEnumerator __result)
@@ -161,6 +172,7 @@ namespace KKAPI.Maker
                     ___clothesLoadWin.onClick03 = (info => CoordinateButtonClicked = 3) + ___clothesLoadWin.onClick03;
                 });
             }
+#endif
             internal static int CoordinateButtonClicked;
         }
     }
