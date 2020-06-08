@@ -5,6 +5,7 @@ using System.Linq;
 using AIChara;
 using CharaCustom;
 using HarmonyLib;
+using KKAPI.Utilities;
 using UnityEngine;
 
 namespace KKAPI.Maker
@@ -150,12 +151,15 @@ namespace KKAPI.Maker
             /// Store which coord load button was pressed before running the stock game code
             /// </summary>
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(CustomClothesWindow), "Start")]
-            public static void CustomClothesWindow_ButtonClickedHook(CustomClothesWindow __instance)
+            [HarmonyPatch(typeof(CvsC_ClothesLoad), "Start")]
+            public static void CustomClothesWindow_ButtonClickedHook(CustomClothesWindow ___clothesLoadWin, ref IEnumerator __result)
             {
-                __instance.onClick01 = (info => CoordinateButtonClicked = 1) + __instance.onClick01;
-                __instance.onClick02 = (info => CoordinateButtonClicked = 2) + __instance.onClick02;
-                __instance.onClick03 = (info => CoordinateButtonClicked = 3) + __instance.onClick03;
+                __result = __result.AppendCo(() =>
+                {
+                    ___clothesLoadWin.onClick01 = (info => CoordinateButtonClicked = 1) + ___clothesLoadWin.onClick01;
+                    ___clothesLoadWin.onClick02 = (info => CoordinateButtonClicked = 2) + ___clothesLoadWin.onClick02;
+                    ___clothesLoadWin.onClick03 = (info => CoordinateButtonClicked = 3) + ___clothesLoadWin.onClick03;
+                });
             }
             internal static int CoordinateButtonClicked;
         }
