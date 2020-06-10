@@ -18,7 +18,7 @@ namespace KKAPI.Maker
             [HarmonyPatch(typeof(CvsA_Slot), nameof(CvsA_Slot.ChangeAcsId), typeof(int))]
             public static void ChangeAcsIdPostfix(CvsA_Slot __instance, int id)
             {
-                OnAccessoryKindChanged(__instance, id);
+                OnAccessoryKindChanged(__instance, __instance.SNo);
             }
 
             [HarmonyPostfix]
