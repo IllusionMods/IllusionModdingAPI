@@ -50,31 +50,33 @@ namespace KKAPI.Maker
         [HarmonyTranspiler, HarmonyPatch(typeof(CustomControl), "Start")]
         internal static IEnumerable<CodeInstruction> FindSaveMethod(IEnumerable<CodeInstruction> instructions)
         {
+            var btnSaveField = AccessTools.Field(typeof(CustomControl), "btnSave") ?? throw new MissingFieldException("could not find btnSave");
+            var patchMethod = AccessTools.Method(typeof(MakerCardSave), nameof(CardSavePatch)) ?? throw new MissingMethodException("could not find CardSavePatch");
+
             var codes = instructions.ToList();
-            bool buttonFound = false;
+            bool buttonFound = false, success = false;
 
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
 
-                if (!buttonFound && code.opcode == OpCodes.Ldfld && code.operand == AccessTools.Field(typeof(CustomControl), "btnSave"))
+                if (!buttonFound && code.opcode == OpCodes.Ldfld && code.operand as FieldInfo == btnSaveField)
                     buttonFound = true;
 
-                if (buttonFound)
+                if (buttonFound && code.opcode == OpCodes.Ldftn)
                 {
-                    if (code.opcode == OpCodes.Ldftn)
+                    if (code.operand is MethodInfo methodInfo)
                     {
-                        if (code.operand is MethodInfo methodInfo)
-                        {
-                            var patchMethod = AccessTools.Method(typeof(MakerCardSave), nameof(CardSavePatch));
-                            _harmony.Patch(methodInfo, new HarmonyMethod(patchMethod));
-                            KoikatuAPI.Logger.LogDebug("Save method found for patching MakerCardSave - " + methodInfo.Name);
-                        }
-
-                        break;
+                        _harmony.Patch(methodInfo, new HarmonyMethod(patchMethod));
+                        KoikatuAPI.Logger.LogDebug("Save method found for patching MakerCardSave - " + methodInfo.Name);
+                        success = true;
                     }
+
+                    break;
                 }
             }
+
+            if (!success) KoikatuAPI.Logger.LogWarning("Could not find save method for patching MakerCardSave");
 
             return codes;
         }
@@ -97,7 +99,7 @@ namespace KKAPI.Maker
 #if KK
                     $"Koikatu_{(isMale ? "M" : "F")}_{DateTime.Now:yyyyMMddHHmmssfff}"
 #elif EC
-                    $"Emocre_{(isMale ? "M" : "F")}_{DateTime.Now:yyyyMMddHHmmssfff}" 
+                    $"Emocre_{(isMale ? "M" : "F")}_{DateTime.Now:yyyyMMddHHmmssfff}"
 #endif
                     : __instance.saveFileName;
 
