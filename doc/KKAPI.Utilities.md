@@ -74,7 +74,8 @@ Static Methods
 | `void` | DrawLabelWithShadow(`Rect` rect, `GUIContent` content, `GUIStyle` style, `Color` txtColor, `Color` shadowColor, `Vector2` shadowOffset) | Draw a label with a shadow | 
 | `Boolean` | DrawLayoutButtonWithShadow(`GUIContent` content, `GUIStyle` style, `Single` shadowAlpha, `Vector2` direction, `GUILayoutOption[]` options) |  | 
 | `void` | DrawLayoutLabelWithShadow(`GUIContent` content, `GUIStyle` style, `Color` txtColor, `Color` shadowColor, `Vector2` direction, `GUILayoutOption[]` options) |  | 
-| `void` | DrawSolidBox(`Rect` boxRect) | Draw a gray non-transparent GUI.Box at the specified rect. Use before a window or other controls to get rid of  the default transparency and make the GUI easier to read. | 
+| `void` | DrawSolidBox(`Rect` boxRect) | Draw a gray non-transparent GUI.Box at the specified rect. Use before a GUI.Window or other controls to get rid of  the default transparency and make the GUI easier to read.  <example>  IMGUIUtils.DrawSolidBox(screenRect);  GUILayout.Window(362, screenRect, TreeWindow, "Select character folder");  </example> | 
+| `void` | EatInputInRect(`Rect` eatRect) | Block input from going through to the game/canvases if the mouse cursor is within the specified Rect.  Use after a GUI.Window call or the window will not be able to get the inputs either.  <example>  GUILayout.Window(362, screenRect, TreeWindow, "Select character folder");  Utils.EatInputInRect(screenRect);  </example> | 
 
 
 ## `MemoryInfo`

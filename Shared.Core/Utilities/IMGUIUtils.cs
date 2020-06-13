@@ -10,8 +10,12 @@ namespace KKAPI.Utilities
         private static Texture2D SolidBoxTex { get; set; }
 
         /// <summary>
-        /// Draw a gray non-transparent GUI.Box at the specified rect. Use before a window or other controls to get rid of 
+        /// Draw a gray non-transparent GUI.Box at the specified rect. Use before a GUI.Window or other controls to get rid of 
         /// the default transparency and make the GUI easier to read.
+        /// <example>
+        /// IMGUIUtils.DrawSolidBox(screenRect);
+        /// GUILayout.Window(362, screenRect, TreeWindow, "Select character folder");
+        /// </example>
         /// </summary>
         public static void DrawSolidBox(Rect boxRect)
         {
@@ -29,6 +33,21 @@ namespace KKAPI.Utilities
 
             // It's necessary to make a new GUIStyle here or the texture doesn't show up
             GUI.Box(boxRect, GUIContent.none, new GUIStyle { normal = new GUIStyleState { background = SolidBoxTex } });
+        }
+
+        /// <summary>
+        /// Block input from going through to the game/canvases if the mouse cursor is within the specified Rect.
+        /// Use after a GUI.Window call or the window will not be able to get the inputs either.
+        /// <example>
+        /// GUILayout.Window(362, screenRect, TreeWindow, "Select character folder");
+        /// Utils.EatInputInRect(screenRect);
+        /// </example>
+        /// </summary>
+        /// <param name="eatRect"></param>
+        public static void EatInputInRect(Rect eatRect)
+        {
+            if (eatRect.Contains(new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y)))
+                Input.ResetInputAxes();
         }
 
         /// <summary>
