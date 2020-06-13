@@ -18,7 +18,11 @@ namespace KKAPI.Utilities
             if (SolidBoxTex == null)
             {
                 var windowBackground = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+#if KK || EC // Take the color correction filter into account
                 windowBackground.SetPixel(0, 0, new Color(0.84f, 0.84f, 0.84f));
+#else
+                windowBackground.SetPixel(0, 0, new Color(0.4f, 0.4f, 0.4f));
+#endif
                 windowBackground.Apply();
                 SolidBoxTex = windowBackground;
             }
