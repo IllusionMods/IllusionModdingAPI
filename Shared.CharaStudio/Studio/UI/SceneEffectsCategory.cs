@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using IllusionUtility.GetUtility;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace KKAPI.Studio.UI
 {
@@ -12,15 +15,47 @@ namespace KKAPI.Studio.UI
     {
         private const float OffsetMultiplier = -25f;
 
-        #region UI Element Paths
-        private const string HeaderSourcePath = "StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Image Depth of Field";
-        private const string ContentSourcePath = "StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Depth of Field";
-        private const string LabelSourcePath = "StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Depth of Field/Draw/TextMeshPro";
-        private const string ToggleSourcePath = "StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Depth of Field/Draw/Toggle";
-        private const string SliderSourcePath = "StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Depth of Field/Focal Size/Slider";
-        private const string InputSourcePath = "StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Depth of Field/Focal Size/InputField";
-        private const string ButtonSourcePath = "StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Depth of Field/Focal Size/Button Default";
-        #endregion
+        private static bool _wasInitialized;
+        private static GameObject _headerSource;
+        private static GameObject _contentSource;
+        private static GameObject _labelSource;
+        private static GameObject _toggleSource;
+        private static GameObject _sliderSource;
+        private static GameObject _inputSource;
+        private static GameObject _buttonSource;
+
+        private static void Initialize()
+        {
+            if (_wasInitialized) return;
+
+            const string headerSourcePath = "Screen Effect/Viewport/Content/Image Depth of Field";
+            const string contentSourcePath = "Screen Effect/Viewport/Content/Depth of Field";
+#if KK
+            const string labelSourcePath = "Screen Effect/Viewport/Content/Depth of Field/TextMeshPro Draw";
+            const string toggleSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Toggle Draw";
+            const string sliderSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Slider Focal Size";
+            const string inputSourcePath = "Screen Effect/Viewport/Content/Depth of Field/InputField Focal Size";
+            const string buttonSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Button Focal Size Default";
+#elif AI || HS2
+            const string labelSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Draw/TextMeshPro";
+            const string toggleSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Draw/Toggle";
+            const string sliderSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Focal Size/Slider";
+            const string inputSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Focal Size/InputField";
+            const string buttonSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Focal Size/Button Default";
+#endif
+
+            var sbc = global::Studio.Studio.Instance.systemButtonCtrl;
+            var sef = sbc.transform.FindLoop("01_Screen Effect");
+            _headerSource = sef.transform.Find(headerSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + headerSourcePath);
+            _contentSource = sef.transform.Find(contentSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + contentSourcePath);
+            _labelSource = sef.transform.Find(labelSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + labelSourcePath);
+            _toggleSource = sef.transform.Find(toggleSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + toggleSourcePath);
+            _sliderSource = sef.transform.Find(sliderSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + sliderSourcePath);
+            _inputSource = sef.transform.Find(inputSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + inputSourcePath);
+            _buttonSource = sef.transform.Find(buttonSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + buttonSourcePath);
+
+            _wasInitialized = true;
+        }
 
         /// <summary>
         /// Element that contains the header of the category.
@@ -46,19 +81,19 @@ namespace KKAPI.Studio.UI
         /// <param name="labelText">Text that will appear on the header of the category</param>
         public SceneEffectsCategory(string labelText)
         {
-            var headerSource = GameObject.Find(HeaderSourcePath);
-            Header = Object.Instantiate(headerSource);
+            Initialize();
+
+            Header = Object.Instantiate(_headerSource);
             Header.name = $"Image {labelText}";
-            Header.transform.SetParent(headerSource.transform.parent);
+            Header.transform.SetParent(_headerSource.transform.parent);
             Header.transform.localScale = new Vector3(1f, 1f, 1f);
 
             var label = Header.GetComponentInChildren<TextMeshProUGUI>();
             label.text = labelText;
 
-            var contentSource = GameObject.Find(ContentSourcePath);
-            Content = Object.Instantiate(contentSource);
+            Content = Object.Instantiate(_contentSource);
             Content.name = labelText;
-            Content.transform.SetParent(contentSource.transform.parent);
+            Content.transform.SetParent(_contentSource.transform.parent);
             Content.transform.localScale = new Vector3(1f, 1f, 1f);
             var vlg = Content.GetComponent<VerticalLayoutGroup>();
             Object.Destroy(vlg);
@@ -79,21 +114,18 @@ namespace KKAPI.Studio.UI
         /// <returns>Instance of the ToggleSet</returns>
         public SceneEffectsToggleSet AddToggleSet(string text, System.Action<bool> setter, bool initialValue)
         {
-            var labelSource = GameObject.Find(LabelSourcePath);
-            var toggleSource = GameObject.Find(ToggleSourcePath);
-
             var containingElement = new GameObject().AddComponent<RectTransform>();
             containingElement.name = text;
             containingElement.SetParent(Content.transform);
             containingElement.transform.localScale = new Vector3(1f, 1f, 1f);
             containingElement.transform.localPosition = new Vector3(0f, Offset, 0f);
 
-            var label = Object.Instantiate(labelSource).GetComponent<TextMeshProUGUI>();
+            var label = Object.Instantiate(_labelSource).GetComponent<TextMeshProUGUI>();
             label.transform.SetParent(containingElement.transform);
             label.transform.localScale = new Vector3(1f, 1f, 1f);
             label.transform.localPosition = new Vector3(4f, 0f, 0f);
 
-            var toggle = Object.Instantiate(toggleSource).GetComponent<Toggle>();
+            var toggle = Object.Instantiate(_toggleSource).GetComponent<Toggle>();
             toggle.transform.SetParent(containingElement.transform);
             toggle.transform.localScale = new Vector3(1f, 1f, 1f);
             toggle.transform.localPosition = new Vector3(160f, 0f, 0f);
@@ -114,33 +146,28 @@ namespace KKAPI.Studio.UI
         /// <returns>Instance of the SliderSet</returns>
         public SceneEffectsSliderSet AddSliderSet(string text, System.Action<float> setter, float initialValue, float sliderMinimum, float sliderMaximum)
         {
-            var labelSource = GameObject.Find(LabelSourcePath);
-            var sliderSource = GameObject.Find(SliderSourcePath);
-            var inputSource = GameObject.Find(InputSourcePath);
-            var buttonSource = GameObject.Find(ButtonSourcePath);
-
             var containingElement = new GameObject().AddComponent<RectTransform>();
             containingElement.name = text;
             containingElement.SetParent(Content.transform);
             containingElement.transform.localScale = new Vector3(1f, 1f, 1f);
             containingElement.transform.localPosition = new Vector3(0f, Offset, 0f);
 
-            var label = Object.Instantiate(labelSource).GetComponent<TextMeshProUGUI>();
+            var label = Object.Instantiate(_labelSource).GetComponent<TextMeshProUGUI>();
             label.transform.SetParent(containingElement.transform);
             label.transform.localScale = new Vector3(1f, 1f, 1f);
             label.transform.localPosition = new Vector3(4f, 0, 0f);
 
-            var slider = Object.Instantiate(sliderSource).GetComponent<Slider>();
+            var slider = Object.Instantiate(_sliderSource).GetComponent<Slider>();
             slider.transform.SetParent(containingElement.transform);
             slider.transform.localScale = new Vector3(1f, 1f, 1f);
             slider.transform.localPosition = new Vector3(160f, 0f, 0f);
 
-            var input = Object.Instantiate(inputSource).GetComponent<InputField>();
+            var input = Object.Instantiate(_inputSource).GetComponent<InputField>();
             input.transform.SetParent(containingElement.transform);
             input.transform.localScale = new Vector3(1f, 1f, 1f);
             input.transform.localPosition = new Vector3(295f, -10f, 0f);
 
-            var button = Object.Instantiate(buttonSource).GetComponent<Button>();
+            var button = Object.Instantiate(_buttonSource).GetComponent<Button>();
             button.transform.SetParent(containingElement.transform);
             button.transform.localScale = new Vector3(1f, 1f, 1f);
             button.transform.localPosition = new Vector3(340f, 0f, 0f);
