@@ -4,54 +4,47 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F4928B3C-E2B0-4AEC-9FBC-327BB2A0E6BB}</ProjectGuid>
+    <ProjectGuid>{32333D00-1E55-4714-AD80-291B514A4F6E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>KKAPI</RootNamespace>
-    <AssemblyName>ECAPI</AssemblyName>
+    <AssemblyName>HS2API</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>embedded</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;EC</DefineConstants>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;HS2</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>..\bin\ECAPI.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>embedded</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>TRACE;EC</DefineConstants>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE;HS2</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\bin\ECAPI.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\HS2API.xml</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="KoikatuAPI.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IllusionLibs.BepInEx.Harmony.2.0.0-beta2\lib\net35\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6\lib\net46\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp.2020.5.29\lib\net46\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6\lib\net35\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.Assembly-CSharp-firstpass.2020.5.29\lib\net35\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx, Version=5.0.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -62,59 +55,72 @@
       <HintPath>..\packages\IllusionLibs.BepInEx.Harmony.2.0.0-beta2\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="EC_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ExtensibleSaveFormat.EmotionCreators.15.0.0\lib\net46\EC_ExtensibleSaveFormat.dll</HintPath>
+    <Reference Include="HS2_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExtensibleSaveFormat.HoneySelect2.15.0.0\lib\net46\HS2_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IL, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IllusionLibs.EmotionCreators.IL.2019.6.6\lib\net46\IL.dll</HintPath>
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.IL.2020.5.29\lib\net46\IL.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Sirenix.Serialization, Version=2.0.13.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.Sirenix.Serialization.2020.5.29\lib\net46\Sirenix.Serialization.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="TextMeshPro-1.0.55.56.0b12, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IllusionLibs.EmotionCreators.TextMeshPro.2019.6.6\lib\net35\TextMeshPro-1.0.55.56.0b12.dll</HintPath>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UniRx, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.UniRx.2020.5.29\lib\net46\UniRx.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UniRx, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IllusionLibs.EmotionCreators.UniRx.2019.6.6\lib\net46\UniRx.dll</HintPath>
+    <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.Unity.TextMeshPro.2018.4.11\lib\net46\Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.1\lib\net46\UnityEngine.dll</HintPath>
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.2018.4.11\lib\net46\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IllusionLibs.EmotionCreators.UnityEngine.CoreModule.2017.4.24.1\lib\net46\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.UnityEngine.CoreModule.2018.4.11\lib\net46\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IllusionLibs.EmotionCreators.UnityEngine.ImageConversionModule.2017.4.24.1\lib\net46\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.UnityEngine.ImageConversionModule.2018.4.11\lib\net46\UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IllusionLibs.EmotionCreators.UnityEngine.IMGUIModule.2017.4.24.1\lib\net46\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.UnityEngine.IMGUIModule.2018.4.11\lib\net46\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IllusionLibs.EmotionCreators.UnityEngine.TextRenderingModule.2017.4.24.1\lib\net46\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.UnityEngine.TextRenderingModule.2018.4.11\lib\net46\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.1\lib\net46\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.UnityEngine.UI.2018.4.11\lib\net46\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IllusionLibs.EmotionCreators.UnityEngine.UIModule.2017.4.24.1\lib\net46\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\packages\IllusionLibs.HoneySelect2.UnityEngine.UIModule.2018.4.11\lib\net46\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="KoikatuAPI.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
-  <Import Project="..\Shared.KKalike\Shared.KKalike.projitems" Label="Shared" />
+  <Import Project="..\Shared.CharaStudio\Shared.CharaStudio.projitems" Label="Shared" />
+  <Import Project="..\Shared.AIalike\Shared.AIalike.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) EC</PostBuildEvent>
-  </PropertyGroup>
 </Project>
