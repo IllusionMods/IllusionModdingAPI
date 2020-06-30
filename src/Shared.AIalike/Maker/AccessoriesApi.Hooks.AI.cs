@@ -27,6 +27,13 @@ namespace KKAPI.Maker
             {
                 OnAccessoryKindChanged(__instance, __instance.SNo);
             }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(CvsA_Copy), "CopyAccessory")]
+            public static void CopyAccessory(CvsA_Copy __instance)
+            {
+                OnChangeAcs(__instance);
+            }
         }
     }
 }

@@ -216,13 +216,13 @@ namespace KKAPI.Maker
         {
             if (MakerAPI.InsideMaker)
             {
-				var cvsAccessoryField = AccessTools.Field(typeof(CustomAcsParentWindow), "cvsAccessory");
-				var cvsAccessories = (CvsAccessory[])cvsAccessoryField.GetValue(Object.FindObjectOfType<CustomAcsParentWindow>());
+                var cvsAccessoryField = AccessTools.Field(typeof(CustomAcsParentWindow), "cvsAccessory");
+                var cvsAccessories = (CvsAccessory[])cvsAccessoryField.GetValue(Object.FindObjectOfType<CustomAcsParentWindow>());
 
                 var changeSlot = Object.FindObjectOfType<CustomAcsChangeSlot>();
                 _accessorySlotCanvasGroup = changeSlot.GetComponent<CanvasGroup>();
 
-				if (MoreAccessoriesInstalled)
+                if (MoreAccessoriesInstalled)
                 {
                     var getCvsM = AccessTools.Method(_moreAccessoriesType, "GetCvsAccessory");
                     _getCvsAccessory = i => (CvsAccessory)getCvsM.Invoke(_moreAccessoriesInstance, new object[] { i });
@@ -326,7 +326,6 @@ namespace KKAPI.Maker
         }
 #endif
 
-#if !AI
         private static void OnChangeAcs(CvsAccessoryChange instance)
         {
             if (AccessoryTransferred == null) return;
@@ -346,6 +345,5 @@ namespace KKAPI.Maker
                 KoikatuAPI.Logger.LogError("Crash in AccessoryTransferred event: " + ex);
             }
         }
-#endif
     }
 }

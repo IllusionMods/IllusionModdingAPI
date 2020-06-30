@@ -56,7 +56,6 @@ namespace KKAPI.Maker
         /// <summary>
         /// Fires after user copies an accessory within a single coordinate by using the Transfer window.
         /// </summary>
-        [Obsolete("Not implemented")]
         public static event EventHandler<AccessoryTransferEventArgs> AccessoryTransferred;
 
         /// <summary>
@@ -266,6 +265,26 @@ namespace KKAPI.Maker
             catch (Exception ex)
             {
                 KoikatuAPI.Logger.LogError("Subscription to AccessoryKindChanged crashed: " + ex);
+            }
+        }
+
+        private static void OnChangeAcs(CvsA_Copy instance)
+        {
+            if (AccessoryTransferred == null) return;
+
+            try
+            {
+                var traverse = Traverse.Create(instance);
+                var selSrc = traverse.Field("selSrc").GetValue<int>();
+                var selDst = traverse.Field("selDst").GetValue<int>();
+
+                var args = new AccessoryTransferEventArgs(selSrc, selDst);
+
+                AccessoryTransferred(instance, args);
+            }
+            catch (Exception ex)
+            {
+                KoikatuAPI.Logger.LogError("Crash in AccessoryTransferred event: " + ex);
             }
         }
     }
