@@ -333,3 +333,4 @@ ASALocalRun/
 /KKAPI/KKAPI.csproj.DotSettings
 /lib
 PostBuild.bat
+*.DotSettings

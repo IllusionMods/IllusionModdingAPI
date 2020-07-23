@@ -127,8 +127,11 @@ namespace KKAPI.Maker.UI
             control.name += GuiApiNameAppendix;
 
             // Play nice with the accessory window (lower max width)
-            var layoutElement = control.GetComponent<LayoutElement>();
-            if (layoutElement != null) layoutElement.minWidth = 300;
+            if(MakerAPI.InsideMaker)
+            {
+                var layoutElement = control.GetComponent<LayoutElement>();
+                if (layoutElement != null) layoutElement.minWidth = 300;
+            }
 
             control.SetActive(Visible.Value);
             _controlObjects.Add(control);

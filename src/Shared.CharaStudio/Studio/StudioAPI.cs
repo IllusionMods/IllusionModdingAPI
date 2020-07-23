@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -146,7 +147,7 @@ namespace KKAPI.Studio
                     {
                         try
                         {
-                            ((EventHandler) callback)(KoikatuAPI.Instance, EventArgs.Empty);
+                            ((EventHandler)callback)(KoikatuAPI.Instance, EventArgs.Empty);
                         }
                         catch (Exception e)
                         {
@@ -155,8 +156,17 @@ namespace KKAPI.Studio
                     }
                 }
 
-                foreach (var cat in _customCurrentStateCategories)
-                    CreateCategory(cat);
+                // Delay to let plugins not using the api create their toggles so we don't overlap
+                KoikatuAPI.Instance.StartCoroutine(DelayedLoadCo());
+                IEnumerator DelayedLoadCo()
+                {
+                    yield return null;
+                    foreach (var cat in _customCurrentStateCategories)
+                        CreateCategory(cat);
+
+                    yield return null; // todo Only needed for compat with QAB. Can remove once QAB is using this API
+                    CustomToolbarButtons.OnStudioLoaded();
+                }
             }
         }
 
@@ -178,7 +188,10 @@ namespace KKAPI.Studio
             var cat2 = GetOrCreateCurrentStateCategory("Control test category");
             cat2.AddControl(new CurrentStateCategorySwitch("Test add", c => true)).Value.Subscribe(val => KoikatuAPI.Logger.LogMessage(val));
             cat2.AddControl(new CurrentStateCategorySlider("Test slider", c => 0.75f)).Value.Subscribe(val => KoikatuAPI.Logger.LogMessage(val));
-            cat2.AddControl(new CurrentStateCategoryDropdown("dropdown test", new[] {"item 1", "i2", "test 3"}, c => 1)).Value.Subscribe(val => KoikatuAPI.Logger.LogMessage("dd " + val));
+            cat2.AddControl(new CurrentStateCategoryDropdown("dropdown test", new[] { "item 1", "i2", "test 3" }, c => 1)).Value.Subscribe(val => KoikatuAPI.Logger.LogMessage("dd " + val));
+
+            CustomToolbarButtons.AddLeftToolbarButton(new Texture2D(32, 32), () => Console.WriteLine("click"));
+            CustomToolbarButtons.AddLeftToolbarToggle(new Texture2D(55, 32), true, v => Console.WriteLine("click " + v));
         }
     }
 }

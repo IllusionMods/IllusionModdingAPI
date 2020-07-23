@@ -83,9 +83,12 @@
 - [`CurrentStateCategorySubItemBase`](KKAPI.Studio.UI.md#currentstatecategorysubitembase)
 - [`CurrentStateCategorySwitch`](KKAPI.Studio.UI.md#currentstatecategoryswitch)
 - [`CurrentStateCategoryToggle`](KKAPI.Studio.UI.md#currentstatecategorytoggle)
+- [`CustomToolbarButtons`](KKAPI.Studio.UI.md#customtoolbarbuttons)
 - [`SceneEffectsCategory`](KKAPI.Studio.UI.md#sceneeffectscategory)
 - [`SceneEffectsSliderSet`](KKAPI.Studio.UI.md#sceneeffectssliderset)
 - [`SceneEffectsToggleSet`](KKAPI.Studio.UI.md#sceneeffectstoggleset)
+- [`ToolbarButton`](KKAPI.Studio.UI.md#toolbarbutton)
+- [`ToolbarToggle`](KKAPI.Studio.UI.md#toolbartoggle)
 
 ## [KKAPI.Utilities](KKAPI.Utilities.md)
 
