@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Illusion.Extensions;
 using KKAPI.Utilities;
 using Studio;
 using TMPro;
@@ -41,8 +40,8 @@ namespace KKAPI.Studio.UI
 #else
                 _originalObject = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/02_Kinematic/05_Etc/Eyes Draw");
                 // Unused controls, safe to remove for less overhead later on
-                foreach (var gameObject in _originalObject.Children().Where(t => t.name.StartsWith("Toggle")))
-                    Object.DestroyImmediate(gameObject);
+                foreach (var tr in _originalObject.transform.Cast<Transform>().Where(t => t.name.StartsWith("Toggle")))
+                    Object.DestroyImmediate(tr.gameObject);
 #endif
             }
 
