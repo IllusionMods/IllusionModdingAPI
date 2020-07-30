@@ -24,6 +24,7 @@ namespace KKAPI
         private static ManualLogSource _logger;
         private static ConfigWrapper<string> _nickname;
         private MakerText _authorText;
+        private static readonly HashSet<char> _invalidChars = new HashSet<char>(Path.GetInvalidFileNameChars().Concat(new[] { '.' }));
 
         private static string CurrentNickname
         {
@@ -66,8 +67,7 @@ namespace KKAPI
                 if (CurrentNickname != DefaultNickname)
                     addStr = $"{addStr}_{CurrentNickname}";
 
-                var invalid = Path.GetInvalidFileNameChars();
-                addStr = new string(addStr.Select(c => invalid.Contains(c) ? '?' : c).ToArray());
+                addStr = new string(addStr.Select(c => _invalidChars.Contains(c) ? '_' : c).ToArray());
 
                 return currentCardName + addStr;
             }
