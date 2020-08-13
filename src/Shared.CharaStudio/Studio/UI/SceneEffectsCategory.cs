@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using IllusionUtility.GetUtility;
 using TMPro;
@@ -85,18 +86,16 @@ namespace KKAPI.Studio.UI
 
             Header = Object.Instantiate(_headerSource);
             Header.name = $"Image {labelText}";
-            Header.transform.SetParent(_headerSource.transform.parent);
-            Header.transform.localScale = new Vector3(1f, 1f, 1f);
+            Header.transform.SetParent(_headerSource.transform.parent, false);
 
             var label = Header.GetComponentInChildren<TextMeshProUGUI>();
             label.text = labelText;
 
             Content = Object.Instantiate(_contentSource);
             Content.name = labelText;
-            Content.transform.SetParent(_contentSource.transform.parent);
-            Content.transform.localScale = new Vector3(1f, 1f, 1f);
+            Content.transform.SetParent(_contentSource.transform.parent, false);
             var vlg = Content.GetComponent<VerticalLayoutGroup>();
-            Object.Destroy(vlg);
+            Object.DestroyImmediate(vlg);
             var layoutElement = Content.GetComponent<LayoutElement>();
             layoutElement.preferredHeight = 70;
             layoutElement.preferredWidth = 375;
@@ -112,22 +111,20 @@ namespace KKAPI.Studio.UI
         /// <param name="setter">Method to be called when the toggle changes value</param>
         /// <param name="initialValue">Initial state of the toggle</param>
         /// <returns>Instance of the ToggleSet</returns>
-        public SceneEffectsToggleSet AddToggleSet(string text, System.Action<bool> setter, bool initialValue)
+        public SceneEffectsToggleSet AddToggleSet(string text, Action<bool> setter, bool initialValue)
         {
             var containingElement = new GameObject().AddComponent<RectTransform>();
             containingElement.name = text;
-            containingElement.SetParent(Content.transform);
-            containingElement.transform.localScale = new Vector3(1f, 1f, 1f);
-            containingElement.transform.localPosition = new Vector3(0f, Offset, 0f);
+            containingElement.SetParent(Content.transform, false);
+
+            KoikatuAPI.Instance.StartCoroutine(SetPosDelayed(containingElement.transform, GetCurrentOffset()));
 
             var label = Object.Instantiate(_labelSource).GetComponent<TextMeshProUGUI>();
-            label.transform.SetParent(containingElement.transform);
-            label.transform.localScale = new Vector3(1f, 1f, 1f);
+            label.transform.SetParent(containingElement.transform, false);
             label.transform.localPosition = new Vector3(4f, 0f, 0f);
 
             var toggle = Object.Instantiate(_toggleSource).GetComponent<Toggle>();
-            toggle.transform.SetParent(containingElement.transform);
-            toggle.transform.localScale = new Vector3(1f, 1f, 1f);
+            toggle.transform.SetParent(containingElement.transform, false);
             toggle.transform.localPosition = new Vector3(160f, 0f, 0f);
 
             var toggleSet = new SceneEffectsToggleSet(label, toggle, text, setter, initialValue);
@@ -148,28 +145,23 @@ namespace KKAPI.Studio.UI
         {
             var containingElement = new GameObject().AddComponent<RectTransform>();
             containingElement.name = text;
-            containingElement.SetParent(Content.transform);
-            containingElement.transform.localScale = new Vector3(1f, 1f, 1f);
-            containingElement.transform.localPosition = new Vector3(0f, Offset, 0f);
+            containingElement.SetParent(Content.transform, false);
+            KoikatuAPI.Instance.StartCoroutine(SetPosDelayed(containingElement.transform, GetCurrentOffset()));
 
             var label = Object.Instantiate(_labelSource).GetComponent<TextMeshProUGUI>();
-            label.transform.SetParent(containingElement.transform);
-            label.transform.localScale = new Vector3(1f, 1f, 1f);
+            label.transform.SetParent(containingElement.transform, false);
             label.transform.localPosition = new Vector3(4f, 0, 0f);
 
             var slider = Object.Instantiate(_sliderSource).GetComponent<Slider>();
-            slider.transform.SetParent(containingElement.transform);
-            slider.transform.localScale = new Vector3(1f, 1f, 1f);
+            slider.transform.SetParent(containingElement.transform, false);
             slider.transform.localPosition = new Vector3(160f, 0f, 0f);
 
             var input = Object.Instantiate(_inputSource).GetComponent<InputField>();
-            input.transform.SetParent(containingElement.transform);
-            input.transform.localScale = new Vector3(1f, 1f, 1f);
+            input.transform.SetParent(containingElement.transform, false);
             input.transform.localPosition = new Vector3(295f, -10f, 0f);
 
             var button = Object.Instantiate(_buttonSource).GetComponent<Button>();
-            button.transform.SetParent(containingElement.transform);
-            button.transform.localScale = new Vector3(1f, 1f, 1f);
+            button.transform.SetParent(containingElement.transform, false);
             button.transform.localPosition = new Vector3(340f, 0f, 0f);
 
             var sliderSet = new SceneEffectsSliderSet(label, slider, input, button, text, setter, initialValue, sliderMinimum, sliderMaximum);
@@ -177,6 +169,18 @@ namespace KKAPI.Studio.UI
             return sliderSet;
         }
 
-        private float Offset => OffsetMultiplier * (Toggles.Count + Sliders.Count);
+        private static IEnumerator SetPosDelayed(Transform tr, float offset)
+        {
+            // todo set positions of everything at the same time?
+            while (!tr.gameObject.activeInHierarchy)
+                yield return new WaitForSeconds(1);
+
+            yield return new WaitForEndOfFrame();
+
+            var v = new Vector3(0f, offset, 0f);
+            tr.localPosition = v;
+        }
+
+        private float GetCurrentOffset() => OffsetMultiplier * (Toggles.Count + Sliders.Count);
     }
 }
