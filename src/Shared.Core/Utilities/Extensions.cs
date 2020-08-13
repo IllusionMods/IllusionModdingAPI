@@ -38,5 +38,26 @@ namespace KKAPI.Utilities
             for (var i = 0; i < evt.GetPersistentEventCount(); i++)
                 evt.SetPersistentListenerState(i, UnityEventCallState.Off);
         }
+
+        /// <summary>
+        /// Attempt to project each element of the sequence into a new form (Select but ignore exceptions).
+        /// Exceptions thrown while doing this are ignored and any elements that fail to be converted are silently skipped.
+        /// </summary>
+        public static IEnumerable<T2> Attempt<T, T2>(this IEnumerable<T> items, Func<T, T2> action)
+        {
+            foreach (var item in items)
+            {
+                T2 result;
+                try
+                {
+                    result = action(item);
+                }
+                catch
+                {
+                    continue;
+                }
+                yield return result;
+            }
+        }
     }
 }
