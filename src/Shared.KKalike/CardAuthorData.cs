@@ -1,5 +1,7 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
+using ExtensibleSaveFormat;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
@@ -8,13 +10,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using BepInEx.Configuration;
-using ExtensibleSaveFormat;
 using UniRx;
 
 namespace KKAPI
 {
     [BepInPlugin(GUID, "Card Author Data", KoikatuAPI.VersionConst)]
+    [BepInDependency(ExtendedSave.GUID)]
     [Browsable(false)]
     internal class CardAuthorData : BaseUnityPlugin
     {
