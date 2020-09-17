@@ -35,6 +35,7 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `void` | ActuallyRemoveAllListeners(this `UnityEventBase` evt) | Same as RemoveAllListeners but also disables all PersistentListeners.  To avoid frustration always use this instead of RemoveAllListeners, unless you want to keep the PersistentListeners. | 
+| `IEnumerable<T2>` | Attempt(this `IEnumerable<T>` items, `Func<T, T2>` action) | Attempt to project each element of the sequence into a new form (Select but ignore exceptions).  Exceptions thrown while doing this are ignored and any elements that fail to be converted are silently skipped. | 
 | `void` | MarkXuaIgnored(this `Component` target) | Mark GameObject of this Component as ignored by AutoTranslator. Prevents AutoTranslator from trying to translate custom UI elements. | 
 | `ReadOnlyDictionary<TKey, TValue>` | ToReadOnlyDictionary(this `IDictionary<TKey, TValue>` original) | Wrap this dictionary in a read-only wrapper that will prevent any changes to it.  Warning: Any reference types inside the dictionary can still be modified. | 
 
