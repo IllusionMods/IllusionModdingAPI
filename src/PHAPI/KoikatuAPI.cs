@@ -22,12 +22,12 @@ namespace KKAPI
             CharacterApi.Init();
         }
 
-        private void Start()
-        {
-            // Needs to be called after moreaccessories has a chance to load
-            //todo implement
-            //AccessoriesApi.Init();
-        }
+        //private void Start()
+        //{
+        //    // Needs to be called after moreaccessories has a chance to load
+        //    //todo implement
+        //    //AccessoriesApi.Init();
+        //}
 
         /// <summary>
         /// Get current game mode. 
