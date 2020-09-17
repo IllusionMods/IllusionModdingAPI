@@ -15,7 +15,7 @@ using UniRx;
 namespace KKAPI
 {
     [BepInPlugin(GUID, "Card Author Data", KoikatuAPI.VersionConst)]
-    [BepInDependency(ExtendedSave.GUID)]
+    [BepInDependency(KoikatuAPI.GUID)]
     [Browsable(false)]
     internal class CardAuthorData : BaseUnityPlugin
     {
