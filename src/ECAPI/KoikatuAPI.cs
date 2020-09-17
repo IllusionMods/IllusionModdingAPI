@@ -12,8 +12,9 @@ namespace KKAPI
     {
         private void Awake()
         {
-            var insideStudio = Application.productName == "CharaStudio";
+            BaseAwake();
 
+            var insideStudio = Application.productName == "CharaStudio";
             MakerAPI.Init(insideStudio);
             CharacterApi.Init();
         }

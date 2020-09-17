@@ -15,6 +15,8 @@ namespace KKAPI
     {
         private void Awake()
         {
+            BaseAwake();
+
             var insideStudio = Application.productName == "StudioNEOV2";
             MakerAPI.Init(insideStudio);
             StudioAPI.Init(insideStudio);

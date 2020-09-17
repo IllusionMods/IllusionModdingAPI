@@ -51,9 +51,9 @@ namespace KKAPI
         internal static new ManualLogSource Logger { get; private set; }
 
         /// <summary>
-        /// Don't use manually
+        /// Needs to be called at the start of Awake
         /// </summary>
-        public KoikatuAPI()
+        private void BaseAwake()
         {
             Instance = this;
             Logger = base.Logger;
