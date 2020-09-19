@@ -231,7 +231,7 @@ namespace KKAPI.Maker
                         // Steam release messes with sizes a bit
                         var singleCellSize = KoikatuAPI.IsSteamRelease() ? 240 : 170;
 #else
-                        var singleCellSize = 240;
+                        var singleCellSize = 170;
 #endif
                         gridLayout.cellSize = _sidebarEntries.Count > 4 ? new Vector2(singleCellSize, 28) : new Vector2(singleCellSize * 2, 28);
 
