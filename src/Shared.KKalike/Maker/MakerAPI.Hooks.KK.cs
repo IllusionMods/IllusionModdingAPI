@@ -5,7 +5,7 @@ using System.Linq;
 using ChaCustom;
 using HarmonyLib;
 using KKAPI.Maker.UI;
-using UnityEngine;
+using KKAPI.Utilities;
 using UnityEngine.UI;
 
 namespace KKAPI.Maker
@@ -42,7 +42,7 @@ namespace KKAPI.Maker
                 var sw = Stopwatch.StartNew();
 
                 // Let maker objects run their Start methods
-                yield return new WaitForEndOfFrame();
+                yield return CoroutineUtils.WaitForEndOfFrame;
                 var sw1 = sw.ElapsedMilliseconds;
 
                 OnMakerStartedLoading();

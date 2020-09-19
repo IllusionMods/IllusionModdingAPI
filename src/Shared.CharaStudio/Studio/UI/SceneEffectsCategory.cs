@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using IllusionUtility.GetUtility;
+using KKAPI.Utilities;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -175,7 +176,7 @@ namespace KKAPI.Studio.UI
             while (!tr.gameObject.activeInHierarchy)
                 yield return new WaitForSeconds(1);
 
-            yield return new WaitForEndOfFrame();
+            yield return CoroutineUtils.WaitForEndOfFrame;
 
             var v = new Vector3(0f, offset, 0f);
             tr.localPosition = v;

@@ -158,7 +158,7 @@ namespace KKAPI.Maker
 
             yield return null;
             yield return null;
-            yield return new WaitForEndOfFrame();
+            yield return CoroutineUtils.WaitForEndOfFrame;
 
             var copyWindowContents = copyWindow.transform.Find("DrawWindow");
             Object.Destroy(copyWindowContents.GetComponent<CustomDrawMenu>());

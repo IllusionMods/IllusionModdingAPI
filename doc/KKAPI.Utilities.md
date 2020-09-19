@@ -6,6 +6,13 @@ public static class KKAPI.Utilities.CoroutineUtils
 
 ```
 
+Static Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `WaitForEndOfFrame` | WaitForEndOfFrame | Cached WaitForEndOfFrame. Use instead of creating a new instance every time to reduce garbage production. | 
+
+
 Static Methods
 
 | Type | Name | Summary | 

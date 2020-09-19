@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using HarmonyLib;
+using KKAPI.Utilities;
 using Studio;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace KKAPI.Studio
                 IEnumerator DelayedUpdateTrigger()
                 {
                     // Need to wait for the selected character to change or we risk overwriting current character with new character's data
-                    yield return new WaitForEndOfFrame();
+                    yield return CoroutineUtils.WaitForEndOfFrame;
 
                     if (_idx == 0)
                     {

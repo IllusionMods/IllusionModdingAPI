@@ -154,5 +154,11 @@ namespace KKAPI.Utilities
             coroutine = FlattenCo(coroutine);
             while (coroutine.MoveNext()) ;
         }
+
+        /// <summary>
+        /// Cached WaitForEndOfFrame. Use instead of creating a new instance every time to reduce garbage production.
+        /// </summary>
+        public static readonly WaitForEndOfFrame WaitForEndOfFrame = new WaitForEndOfFrame();
+
     }
 }

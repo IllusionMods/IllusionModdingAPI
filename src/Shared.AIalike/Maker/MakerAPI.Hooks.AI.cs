@@ -38,7 +38,7 @@ namespace KKAPI.Maker
                 var sw = Stopwatch.StartNew();
 
                 // Let maker objects run their Start methods
-                yield return new WaitForEndOfFrame();
+                yield return CoroutineUtils.WaitForEndOfFrame;
                 var sw1 = sw.ElapsedMilliseconds;
 
                 OnMakerStartedLoading();
