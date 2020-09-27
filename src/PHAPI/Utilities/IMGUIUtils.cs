@@ -58,7 +58,7 @@ namespace KKAPI.Utilities
         public static void DrawLabelWithOutline(Rect rect, string text, GUIStyle style, Color txtColor, Color outlineColor, int outlineThickness)
         {
             var backupColor = style.normal.textColor;
-            //Color backupGuiColor = GUI.color;
+            var backupGuiColor = GUI.color;
 
             style.normal.textColor = outlineColor;
             GUI.color = outlineColor;
@@ -84,10 +84,12 @@ namespace KKAPI.Utilities
                 GUI.Label(rect, text, style);
 
             style.normal.textColor = txtColor;
-            //GUI.color = backupGuiColor;
+            GUI.color = txtColor;
+
             GUI.Label(baseRect, text, style);
 
             style.normal.textColor = backupColor;
+            GUI.color = backupGuiColor;
         }
 
         /// <summary>
