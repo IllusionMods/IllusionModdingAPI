@@ -22,7 +22,7 @@ namespace KKAPI.Studio.UI
         /// <param name="iconTex">
         /// A 32x32 icon used for the button.
         /// You can find a template here
-        /// https://github.com/ManlyMarco/QuickAccessBox/blob/master/Shared_QuickAccessBox/UI/toolbar-icon.png
+        /// https://github.com/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
         /// </param>
         /// <param name="initialValue">Initial state of the toggle.</param>
         /// <param name="onValueChanged">
