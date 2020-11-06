@@ -120,7 +120,7 @@ namespace KKAPI.Maker.UI
                     data =>
                     {
                         var scrollDelta = data.scrollDelta.y;
-                        var valueChange = Mathf.Pow(10, Mathf.Round(Mathf.Log10(slider.maxValue / 100)));
+                        var valueChange = Mathf.Pow(10, Mathf.Round(Mathf.Log10(slider.maxValue / 10)));
 
                         if (scrollDelta < 0f)
                             slider.value += valueChange;
