@@ -1,11 +1,11 @@
-﻿using System;
+﻿//using KKAPI.Studio.SaveLoad;
+//using KKAPI.Studio.UI;
+using KKAPI.Chara;
+using Studio;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using KKAPI.Chara;
-//using KKAPI.Studio.SaveLoad;
-//using KKAPI.Studio.UI;
-using Studio;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,7 +19,7 @@ namespace KKAPI.Studio
     {
         //private static readonly List<CurrentStateCategory> _customCurrentStateCategories = new List<CurrentStateCategory>();
         private static GameObject _customStateRoot;
-        
+
         ///// <summary>
         ///// Add a new custom category to the Anim > CurrentState tab in the studio top-left menu.
         ///// Can use this at any point. Always returns null outside of studio.
@@ -69,8 +69,13 @@ namespace KKAPI.Studio
         /// </summary>
         public static IEnumerable<ObjectCtrlInfo> GetSelectedObjects()
         {
-            if (!StudioLoaded) return Enumerable.Empty<ObjectCtrlInfo>();
-            return GuideObjectManager.Instance.selectObjectKey.Select(global::Studio.Studio.GetCtrlInfo).Where(x => x != null);
+            if (!StudioLoaded)
+                yield break;
+
+            TreeNodeObject[] selectNodes = Singleton<global::Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+            for (int i = 0; i < selectNodes.Length; i++)
+                if (global::Studio.Studio.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
+                    yield return objectCtrlInfo;
         }
 
         //private static void CreateCategory(CurrentStateCategory category)
@@ -125,7 +130,7 @@ namespace KKAPI.Studio
                     {
                         try
                         {
-                            ((EventHandler) callback)(KoikatuAPI.Instance, EventArgs.Empty);
+                            ((EventHandler)callback)(KoikatuAPI.Instance, EventArgs.Empty);
                         }
                         catch (Exception e)
                         {

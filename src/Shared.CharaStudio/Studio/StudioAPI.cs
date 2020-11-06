@@ -1,12 +1,12 @@
-﻿using System;
+﻿using KKAPI.Chara;
+using KKAPI.Studio.SaveLoad;
+using KKAPI.Studio.UI;
+using Studio;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using KKAPI.Chara;
-using KKAPI.Studio.SaveLoad;
-using KKAPI.Studio.UI;
-using Studio;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -91,8 +91,13 @@ namespace KKAPI.Studio
         /// </summary>
         public static IEnumerable<ObjectCtrlInfo> GetSelectedObjects()
         {
-            if (!StudioLoaded) return Enumerable.Empty<ObjectCtrlInfo>();
-            return GuideObjectManager.Instance.selectObjectKey.Select(global::Studio.Studio.GetCtrlInfo).Where(x => x != null);
+            if (!StudioLoaded)
+                yield break;
+
+            TreeNodeObject[] selectNodes = Singleton<global::Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
+            for (int i = 0; i < selectNodes.Length; i++)
+                if (global::Studio.Studio.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
+                    yield return objectCtrlInfo;
         }
 
         private static void CreateCategory(CurrentStateCategory category)
