@@ -98,7 +98,7 @@ namespace KKAPI.Studio.UI
             var vlg = Content.GetComponent<VerticalLayoutGroup>();
             Object.DestroyImmediate(vlg);
             var layoutElement = Content.GetComponent<LayoutElement>();
-            layoutElement.preferredHeight = 70;
+            layoutElement.preferredHeight = 0;
             layoutElement.preferredWidth = 375;
 
             foreach (Transform child in Content.transform)
@@ -130,6 +130,9 @@ namespace KKAPI.Studio.UI
 
             var toggleSet = new SceneEffectsToggleSet(label, toggle, text, setter, initialValue);
             Toggles.Add(toggleSet);
+            
+            CorrectCategoryScale();
+            
             return toggleSet;
         }
 
@@ -167,9 +170,18 @@ namespace KKAPI.Studio.UI
 
             var sliderSet = new SceneEffectsSliderSet(label, slider, input, button, text, setter, initialValue, sliderMinimum, sliderMaximum);
             Sliders.Add(sliderSet);
+
+            CorrectCategoryScale();
+            
             return sliderSet;
         }
 
+        private void CorrectCategoryScale()
+        {
+            var layoutElement = Content.GetComponent<LayoutElement>();
+            layoutElement.preferredHeight += 25;
+        }
+        
         private static IEnumerator SetPosDelayed(Transform tr, float offset)
         {
             // todo set positions of everything at the same time?
