@@ -131,11 +131,11 @@ namespace KKAPI.Maker
             foreach (Transform categoryTransfrom in GameObject.Find("CvsMenuTree").transform)
                 CreateCustomControlsInCategory(categoryTransfrom);
 
+            var sidebarTop = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CvsDraw/Top").transform;
+
             // Create sidebar controls
             if (_sidebarEntries.Any())
             {
-                var sidebarTop = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CvsDraw/Top").transform;
-
                 var sep = new SidebarSeparator(KoikatuAPI.Instance);
                 sep.CreateControl(sidebarTop);
 
@@ -152,6 +152,42 @@ namespace KKAPI.Maker
 
             MakerLoadToggle.CreateCustomToggles();
             MakerCoordinateLoadToggle.CreateCustomToggles();
+
+            MakeSidebarScrollable(sidebarTop);
+        }
+
+        private static void MakeSidebarScrollable(Transform sidebarTop)
+        {
+            var elements = new List<Transform>();
+            foreach(Transform t in sidebarTop)
+                elements.Add(t);
+
+            var go = DefaultControls.CreateScrollView(new DefaultControls.Resources());
+            go.name = "SidebarScrollView";
+            go.transform.SetParent(sidebarTop.transform, false);
+
+            var scroll = go.GetComponent<ScrollRect>();
+            scroll.horizontal = false;
+            scroll.scrollSensitivity = 18f;
+            scroll.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
+            scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
+            GameObject.DestroyImmediate(scroll.GetComponent<Image>());
+            GameObject.DestroyImmediate(scroll.horizontalScrollbar.gameObject);
+            GameObject.DestroyImmediate(scroll.verticalScrollbar.gameObject);
+
+            scroll.gameObject.AddComponent<LayoutElement>();
+            sidebarTop.GetComponent<VerticalLayoutGroup>().childForceExpandHeight = true;
+
+            var vlg = scroll.content.gameObject.AddComponent<VerticalLayoutGroup>();
+            vlg.childControlWidth = true;
+            vlg.childControlHeight = true;
+            vlg.childForceExpandWidth = true;
+            vlg.childForceExpandHeight = false;
+
+            scroll.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            foreach(var item in elements)
+                item.SetParent(scroll.content);
         }
 
         private static void CreateCustomControlsInCategory(Transform categoryTransfrom)
