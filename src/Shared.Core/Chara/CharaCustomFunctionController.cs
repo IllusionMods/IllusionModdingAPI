@@ -1,4 +1,5 @@
 ﻿using KKAPI.Maker;
+using KKAPI.Utilities;
 using System;
 using System.Collections;
 #if KK
@@ -6,7 +7,6 @@ using KKAPI.MainGame;
 using UniRx;
 #elif AI || HS2
 using AIChara;
-using KKAPI.Utilities;
 #endif
 using ExtensibleSaveFormat;
 using UnityEngine;
@@ -248,14 +248,12 @@ namespace KKAPI.Chara
 
         internal void OnCoordinateBeingLoadedInternal(ChaFileCoordinate coordinate)
         {
-#if AI || HS2
             // If the controller didn't load yet then delay the coordinate load event until after onreload to avoid losing data from coordinate
             if (!_wasLoaded)
             {
                 StartCoroutine(new WaitUntil(() => _wasLoaded).AppendCo(() => OnCoordinateBeingLoadedInternal(coordinate)));
                 return;
             }
-#endif
 
             try
             {
