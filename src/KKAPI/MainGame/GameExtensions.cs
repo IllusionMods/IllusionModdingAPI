@@ -87,7 +87,7 @@ namespace KKAPI.MainGame
         {
             if (chaControl == null) throw new ArgumentNullException(nameof(chaControl));
 
-            if (!Manager.Game.IsInstance()) return null;
+            if (!Manager.Game.IsInstance() || Manager.Game.Instance.Player == null) return null;
             return Manager.Game.Instance.Player.chaCtrl == chaControl ? Manager.Game.Instance.Player : null;
         }
 
@@ -99,7 +99,7 @@ namespace KKAPI.MainGame
         {
             if (chaFile == null) throw new ArgumentNullException(nameof(chaFile));
 
-            if (!Manager.Game.IsInstance()) return null;
+            if (!Manager.Game.IsInstance() || Manager.Game.Instance.Player == null) return null;
             return Manager.Game.Instance.Player.GetRelatedChaFiles().Contains(chaFile)
                 ? Manager.Game.Instance.Player
                 : null;
