@@ -108,6 +108,22 @@ namespace KKAPI.Chara
                     if (other != null) other.OnReloadInternal(KoikatuAPI.GetCurrentGameMode());
                 }
             }
+
+            var player = ChaControl.GetPlayer();
+            if (player != null)
+            {
+                ExtendedSave.SetExtendedDataById(player.charFile, ExtendedDataId, data);
+
+                if (ChaControl != player.chaCtrl)
+                {
+                    ExtendedSave.SetExtendedDataById(player.chaCtrl.chaFile, ExtendedDataId, data);
+
+                    // Update other instance to reflect the new ext data
+                    var other = player.chaCtrl.GetComponent(GetType()) as CharaCustomFunctionController;
+                    if (other != null) other.OnReloadInternal(KoikatuAPI.GetCurrentGameMode());
+                }
+            }
+
 #endif
         }
 
