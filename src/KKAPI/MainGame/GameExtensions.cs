@@ -78,5 +78,49 @@ namespace KKAPI.MainGame
 
             return results;
         }
+
+        /// <summary>
+        /// Get the persisting player object that describes this character.
+        /// Returns null if the player could not be found. Works only in the main game.
+        /// </summary>
+        public static SaveData.Player GetPlayer(this ChaControl chaControl)
+        {
+            if (chaControl == null) throw new ArgumentNullException(nameof(chaControl));
+
+            if (!Manager.Game.IsInstance() || Manager.Game.Instance.Player == null) return null;
+            return Manager.Game.Instance.Player.chaCtrl == chaControl ? Manager.Game.Instance.Player : null;
+        }
+
+        /// <summary>
+        /// Get the persisting player object that describes this character.
+        /// Returns null if the player could not be found. Works only in the main game.
+        /// </summary>
+        public static SaveData.Player GetPlayer(this ChaFileControl chaFile)
+        {
+            if (chaFile == null) throw new ArgumentNullException(nameof(chaFile));
+
+            if (!Manager.Game.IsInstance() || Manager.Game.Instance.Player == null) return null;
+            return Manager.Game.Instance.Player.GetRelatedChaFiles().Contains(chaFile)
+                ? Manager.Game.Instance.Player
+                : null;
+        }
+
+        /// <summary>
+        /// Get ChaFiles that are related to this player. Warning: It might not return some copies.
+        /// </summary>
+        public static IEnumerable<ChaFileControl> GetRelatedChaFiles(this SaveData.Player player)
+        {
+            if (player == null) throw new ArgumentNullException(nameof(player));
+
+            var results = new HashSet<ChaFileControl>();
+
+            if (player.charFile != null)
+                results.Add(player.charFile);
+
+            if (player.chaCtrl != null && player.chaCtrl.chaFile != null)
+                results.Add(player.chaCtrl.chaFile);
+
+            return results;
+        }
     }
 }
