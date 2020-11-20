@@ -76,5 +76,10 @@ namespace KKAPI.MainGame
         /// Triggered when the current time of the day changes in story mode.
         /// </summary>
         protected internal virtual void OnPeriodChange(Cycle.Type period) { }
+
+        /// <summary>
+        /// Triggered when a new game is started in story mode.
+        /// </summary>
+        protected internal virtual void OnNewGame() { }
     }
 }
