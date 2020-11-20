@@ -39,5 +39,10 @@ namespace KKAPI.MainGame
         {
             KoikatuAPI.Logger.Log(LogLevel.Warning | LogLevel.Message, "GameController - OnPeriodChange - period:" + period);
         }
+
+        protected internal override void OnNewGame()
+        {
+            KoikatuAPI.Logger.Log(LogLevel.Warning | LogLevel.Message, "GameController - OnNewGame");
+        }
     }
 }

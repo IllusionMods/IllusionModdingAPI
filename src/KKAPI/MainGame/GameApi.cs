@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using ActionGame;
 using BepInEx.Bootstrap;
 using KKAPI.Studio;
@@ -19,6 +20,12 @@ namespace KKAPI.MainGame
 
         private static GameObject _functionControllerContainer;
 
+        // navigating these scenes in order triggers OnNewGame
+        private static readonly IList<string> _newGameDetectionScenes =
+            new List<string>(new[] {"Title", "EntryPlayer", "ClassRoomSelect", "Action"});
+
+        private static int _newGameDetectionIndex = -1;
+
         /// <summary>
         /// Fired after an H scene is ended, but before it is unloaded. Can be both in the main game and in free h.
         /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
@@ -36,6 +43,44 @@ namespace KKAPI.MainGame
         /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
         /// </summary>
         public static event EventHandler<GameSaveLoadEventArgs> GameSave;
+
+        /// <summary>
+        /// Get all registered behaviours for the game.
+        /// </summary>
+        public static IEnumerable<GameCustomFunctionController> GetBehaviours()
+        {
+            return _registeredHandlers.Keys.AsEnumerable();
+        }
+
+        /// <summary>
+        /// Get the first controller that was registered with the specified extendedDataId.
+        /// </summary>
+        public static GameCustomFunctionController GetRegisteredBehaviour(string extendedDataId)
+        {
+            return _registeredHandlers
+                .Where(registration => string.Equals(registration.Value, extendedDataId, StringComparison.Ordinal))
+                .Select(registration => registration.Key).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Get the first controller of the specified type that was registered. The type has to be an exact match.
+        /// </summary>
+        public static GameCustomFunctionController GetRegisteredBehaviour(Type controllerType)
+        {
+            return _registeredHandlers.Where(registration => registration.Key.GetType() == controllerType)
+                .Select(registration => registration.Key).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Get the first controller of the specified type that was registered with the specified extendedDataId. The type has to be an exact match.
+        /// </summary>
+        public static GameCustomFunctionController GetRegisteredBehaviour(Type controllerType, string extendedDataId)
+        {
+            return _registeredHandlers
+                .Where(registration => string.Equals(registration.Value, extendedDataId, StringComparison.Ordinal) &&
+                                       registration.Key.GetType() == controllerType)
+                .Select(registration => registration.Key).FirstOrDefault();
+        }
 
         /// <summary>
         /// Register new functionality that will be added to main game. Offers easy API for custom main game logic.
@@ -86,6 +131,28 @@ namespace KKAPI.MainGame
                         }
                     }
                 }
+            };
+
+            SceneManager.activeSceneChanged += (scene1, scene2) =>
+            {
+                var index = _newGameDetectionScenes.IndexOf(scene2.name);
+                // detect forward and backward navigation
+                if (index != -1 && scene1.name.IsNullOrWhiteSpace() && (
+                    index == _newGameDetectionIndex + 1 || index == _newGameDetectionIndex - 1))
+                {
+                    _newGameDetectionIndex = index;
+                    if (_newGameDetectionIndex + 1 == _newGameDetectionScenes.Count)
+                    {
+                        _newGameDetectionIndex = -1;
+                        OnNewGame();
+                        return;
+                    }
+                }
+                else
+                {
+                    _newGameDetectionIndex = -1;
+                }
+
             };
 
             if (KoikatuAPI.EnableDebugLogging)
@@ -213,6 +280,21 @@ namespace KKAPI.MainGame
                 try
                 {
                     behaviour.Key.OnPeriodChange(period);
+                }
+                catch (Exception e)
+                {
+                    KoikatuAPI.Logger.LogError(e);
+                }
+            }
+        }
+
+        private static void OnNewGame()
+        {
+            foreach (var behaviour in _registeredHandlers)
+            {
+                try
+                {
+                    behaviour.Key.OnNewGame();
                 }
                 catch (Exception e)
                 {
