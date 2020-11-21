@@ -9,6 +9,7 @@ using IllusionUtility.GetUtility;
 using KKAPI.Maker.UI;
 using KKAPI.Maker.UI.Sidebar;
 using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -158,6 +159,11 @@ namespace KKAPI.Maker
 
         private static void MakeSidebarScrollable(Transform sidebarTop)
         {
+            sidebarTop.Find("sldEyeOpen/Slider").GetComponent<ObservableScrollTrigger>().enabled = false;
+            sidebarTop.Find("sldMouthOpen/Slider").GetComponent<ObservableScrollTrigger>().enabled = false;
+            sidebarTop.Find("sldLightingX/Slider").GetComponent<ObservableScrollTrigger>().enabled = false;
+            sidebarTop.Find("sldLightingY/Slider").GetComponent<ObservableScrollTrigger>().enabled = false;
+
             var elements = new List<Transform>();
             foreach(Transform t in sidebarTop)
                 elements.Add(t);
@@ -168,7 +174,7 @@ namespace KKAPI.Maker
 
             var scroll = go.GetComponent<ScrollRect>();
             scroll.horizontal = false;
-            scroll.scrollSensitivity = 18f;
+            scroll.scrollSensitivity = 40f;
             scroll.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
             scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
             GameObject.DestroyImmediate(scroll.GetComponent<Image>());
