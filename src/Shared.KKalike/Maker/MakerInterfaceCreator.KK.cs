@@ -175,6 +175,7 @@ namespace KKAPI.Maker
             var scroll = go.GetComponent<ScrollRect>();
             scroll.horizontal = false;
             scroll.scrollSensitivity = 40f;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
             scroll.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
             scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
             GameObject.DestroyImmediate(scroll.GetComponent<Image>());
