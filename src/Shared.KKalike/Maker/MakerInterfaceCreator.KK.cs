@@ -159,6 +159,7 @@ namespace KKAPI.Maker
 
         private static void MakeSidebarScrollable(Transform sidebarTop)
         {
+            // Disable mousewheel scrolling for sliders in the sidebar
             sidebarTop.Find("sldEyeOpen/Slider").GetComponent<ObservableScrollTrigger>().enabled = false;
             sidebarTop.Find("sldMouthOpen/Slider").GetComponent<ObservableScrollTrigger>().enabled = false;
             sidebarTop.Find("sldLightingX/Slider").GetComponent<ObservableScrollTrigger>().enabled = false;
