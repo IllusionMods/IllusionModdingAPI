@@ -27,6 +27,12 @@ namespace KKAPI.MainGame
         private static int _newGameDetectionIndex = -1;
 
         /// <summary>
+        /// Fired after an H scene is loaded. Can be both in the main game and in free h.
+        /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
+        /// </summary>
+        public static event EventHandler StartH;
+
+        /// <summary>
         /// Fired after an H scene is ended, but before it is unloaded. Can be both in the main game and in free h.
         /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
         /// </summary>
@@ -43,6 +49,11 @@ namespace KKAPI.MainGame
         /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
         /// </summary>
         public static event EventHandler<GameSaveLoadEventArgs> GameSave;
+
+        /// <summary>
+        /// True if any sort of H scene is currently loaded.
+        /// </summary>
+        public static bool InsideHScene { get; private set; }
 
         /// <summary>
         /// Get all registered behaviours for the game.
@@ -99,12 +110,6 @@ namespace KKAPI.MainGame
             newBehaviour.ExtendedDataId = extendedDataId;
             _registeredHandlers.Add(newBehaviour, extendedDataId);
         }
-
-        /// <summary>
-        /// Fired after an H scene is loaded. Can be both in the main game and in free h.
-        /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
-        /// </summary>
-        public static event EventHandler StartH;
 
         internal static void Init(bool insideStudio)
         {
@@ -231,10 +236,13 @@ namespace KKAPI.MainGame
             {
                 KoikatuAPI.Logger.LogError(e);
             }
+
+            InsideHScene = false;
         }
 
         private static IEnumerator OnHStart(HSceneProc proc)
         {
+            InsideHScene = true;
             yield return null;
             foreach (var behaviour in _registeredHandlers)
             {
