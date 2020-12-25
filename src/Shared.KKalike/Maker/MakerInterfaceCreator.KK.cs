@@ -263,12 +263,60 @@ namespace KKAPI.Maker
                 }
 
                 CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
+
+                var listParent = slotTransform.Cast<Transform>().Where(x => x.name.EndsWith("Top")).First();
+                var elements = new List<Transform>();
+                foreach(Transform t in listParent)
+                    elements.Add(t);
+
+                var fitter = listParent.GetComponent<ContentSizeFitter>();
+                fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+                fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+                var go = DefaultControls.CreateScrollView(new DefaultControls.Resources());
+                go.name = $"{slotTransform.name}ScrollView";
+                go.transform.SetParent(listParent.transform, false);
+
+                var scroll = go.GetComponent<ScrollRect>();
+                scroll.horizontal = false;
+                scroll.scrollSensitivity = 40f;
+                scroll.movementType = ScrollRect.MovementType.Clamped;
+                scroll.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
+                scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
+                GameObject.DestroyImmediate(scroll.GetComponent<Image>());
+                GameObject.DestroyImmediate(scroll.horizontalScrollbar.gameObject);
+                GameObject.DestroyImmediate(scroll.verticalScrollbar.gameObject);
+
+                var le = scroll.gameObject.AddComponent<LayoutElement>();
+                var height = (GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/04_AccessoryTop/Slots").transform as RectTransform).rect.height;
+                le.preferredHeight = height;
+                le.preferredWidth = 360f;
+
+                var vlg = scroll.content.gameObject.AddComponent<VerticalLayoutGroup>();
+                vlg.childControlWidth = true;
+                vlg.childControlHeight = true;
+                vlg.childForceExpandWidth = true;
+                vlg.childForceExpandHeight = false;
+
+                scroll.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+                foreach(var item in elements)
+                    item.SetParent(scroll.content);
             }
+        }
+
+        public static void SetRect(this Transform self, float anchorLeft = 0f, float anchorBottom = 0f, float anchorRight = 1f, float anchorTop = 1f, float offsetLeft = 0f, float offsetBottom = 0f, float offsetRight = 0f, float offsetTop = 0f)
+        {
+            RectTransform rt = self as RectTransform;
+            rt.anchorMin = new Vector2(anchorLeft, anchorBottom);
+            rt.anchorMax = new Vector2(anchorRight, anchorTop);
+            rt.offsetMin = new Vector2(offsetLeft, offsetBottom);
+            rt.offsetMax = new Vector2(offsetRight, offsetTop);
         }
 
         internal static void OnMakerAccSlotAdded(Transform newSlotTransform)
         {
-            // Necessary because MoraAccessories copies existing slot, so controls get copied but with no events hooked up
+            // Necessary because MoreAccessories copies existing slot, so controls get copied but with no events hooked up
             RemoveCustomControlsInSubCategory(newSlotTransform);
 
             CreateCustomControlsInSubCategory(newSlotTransform, _accessoryWindowEntries);

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using BepInEx;
+﻿using BepInEx;
 using HarmonyLib;
 using KKAPI.Maker.UI;
 using KKAPI.Maker.UI.Sidebar;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -185,6 +185,8 @@ namespace KKAPI.Maker
                 .GroupBy(x => x.Category.SubCategoryName))
             {
                 var categorySubTransform = categoryTransfrom.Find("Mains")?.Find(subCategoryGroup.Key);
+                if (categorySubTransform == null)
+                    categorySubTransform = categoryTransfrom.Find("Main")?.Find(subCategoryGroup.Key); //For clothing categories
 
                 if (categorySubTransform != null)
                 {
