@@ -53,8 +53,8 @@
       <HintPath>..\packages\IllusionLibs.BepInEx.Harmony.2.0.0-beta2\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PH_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ExtensibleSaveFormat.PlayHome.15.0.0\lib\net35\PH_ExtensibleSaveFormat.dll</HintPath>
+    <Reference Include="PH_ExtensibleSaveFormat">
+      <HintPath>..\..\..\BepisPlugins\bin\BepInEx\plugins\PH_BepisPlugins\PH_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -111,6 +111,26 @@
     <Compile Include="Studio\StudioAPI.cs" />
     <Compile Include="Studio\StudioAPI.Hooks.cs" />
     <Compile Include="Studio\StudioObjectExtensions.cs" />
+    <Compile Include="Studio\SaveLoad\ObjectsCopiedEventArgs.cs" />
+    <Compile Include="Studio\SaveLoad\SceneCustomFunctionController.cs" />
+    <Compile Include="Studio\SaveLoad\SceneLoadEventArgs.cs" />
+    <Compile Include="Studio\SaveLoad\SceneOperationKind.cs" />
+    <Compile Include="Studio\SaveLoad\StudioSaveLoadApi.cs" />
+    <Compile Include="Studio\SaveLoad\StudioSaveLoadApi.Hooks.cs" />
+    <Compile Include="Studio\SaveLoad\TestSceneFunctionController.cs" />
+    <Compile Include="Studio\UI\BaseCurrentStateEditableGuiEntry.cs" />
+    <Compile Include="Studio\UI\CurrentStateCategory.cs" />
+    <Compile Include="Studio\UI\CurrentStateCategoryDropdown.cs" />
+    <Compile Include="Studio\UI\CurrentStateCategorySlider.cs" />
+    <Compile Include="Studio\UI\CurrentStateCategorySubItemBase.cs" />
+    <Compile Include="Studio\UI\CurrentStateCategoryToggle.cs" />
+    <Compile Include="Studio\UI\CustomStateCategorySwitch.cs" />
+    <Compile Include="Studio\UI\SceneEffectsCategory.cs" />
+    <Compile Include="Studio\UI\SceneEffectsCategorySlider.cs" />
+    <Compile Include="Studio\UI\SceneEffectsCategoryToggle.cs" />
+    <Compile Include="Studio\UI\Toolbars\CustomToolbarButtons.cs" />
+    <Compile Include="Studio\UI\Toolbars\ToolbarButton.cs" />
+    <Compile Include="Studio\UI\Toolbars\ToolbarToggle.cs" />
     <Compile Include="Utilities\CoroutineUtils.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\IMGUIUtils.cs" />
