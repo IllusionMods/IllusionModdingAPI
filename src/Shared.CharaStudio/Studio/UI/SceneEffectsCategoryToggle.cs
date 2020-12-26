@@ -1,6 +1,12 @@
-﻿using System;
-using TMPro;
+﻿#if KK || AI || HS2
+#define TMP
+#endif
+
+using System;
 using UnityEngine.UI;
+#if TMP
+using Text = TMPro.TextMeshProUGUI;
+#endif
 
 namespace KKAPI.Studio.UI
 {
@@ -19,7 +25,7 @@ namespace KKAPI.Studio.UI
         /// <summary>
         /// Label UI element.
         /// </summary>
-        public TextMeshProUGUI Label { get; set; }
+        public Text Label { get; set; }
         /// <summary>
         /// Toggle UI element.
         /// </summary>
@@ -62,7 +68,7 @@ namespace KKAPI.Studio.UI
         /// <param name="text">Label text</param>
         /// <param name="setter">Method that will be called on value change</param>
         /// <param name="initialValue">Initial state of the toggle</param>
-        public SceneEffectsToggleSet(TextMeshProUGUI label, Toggle toggle, string text, Action<bool> setter, bool initialValue)
+        public SceneEffectsToggleSet(Text label, Toggle toggle, string text, Action<bool> setter, bool initialValue)
         {
             Label = label;
             Toggle = toggle;

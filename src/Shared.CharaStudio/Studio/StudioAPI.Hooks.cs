@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using HarmonyLib;
+﻿using HarmonyLib;
 using KKAPI.Utilities;
 using Studio;
-using UnityEngine;
+using System.Collections;
 
 namespace KKAPI.Studio
 {
@@ -17,7 +16,7 @@ namespace KKAPI.Studio
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(MPCharCtrl), nameof(MPCharCtrl.OnClickRoot), typeof(int))]
-            public static void OnClickRoot(MPCharCtrl __instance, int _idx)
+            public static void OnClickRoot(int _idx, OCIChar ___m_OCIChar)
             {
                 IEnumerator DelayedUpdateTrigger()
                 {
@@ -27,7 +26,7 @@ namespace KKAPI.Studio
                     if (_idx == 0)
                     {
                         foreach (var stateCategory in _customCurrentStateCategories)
-                            stateCategory.UpdateInfo(__instance.ociChar);
+                            stateCategory.UpdateInfo(___m_OCIChar);
                     }
                 }
 

@@ -1,6 +1,12 @@
-﻿using System;
-using TMPro;
+﻿#if KK || AI || HS2
+#define TMP
+#endif
+
+using System;
 using UnityEngine.UI;
+#if TMP
+using Text = TMPro.TextMeshProUGUI;
+#endif
 
 namespace KKAPI.Studio.UI
 {
@@ -21,19 +27,19 @@ namespace KKAPI.Studio.UI
         /// <summary>
         /// Label UI element.
         /// </summary>
-        public TextMeshProUGUI Label { get; set; }
+        public Text Label { get; private set; }
         /// <summary>
         /// Slider UI element.
         /// </summary>
-        public Slider Slider { get; set; }
+        public Slider Slider { get; private set; }
         /// <summary>
         /// Input field UI element.
         /// </summary>
-        public InputField Input { get; set; }
+        public InputField Input { get; private set; }
         /// <summary>
         /// Reset button UI element.
         /// </summary>
-        public Button Button { get; set; }
+        public Button Button { get; private set; }
         /// <summary>
         /// Method called when the value of the toggle is changed.
         /// </summary>
@@ -42,6 +48,8 @@ namespace KKAPI.Studio.UI
         /// Initial state of the toggle.
         /// </summary>
         public float InitialValue { get; set; }
+        public bool ShowInput;
+        public bool ShowButton;
 
         /// <summary>
         /// Minimum value the slider can slide. Can be overriden by the user typing in the textbox if EnforceSliderMinimum is set to false.
@@ -104,6 +112,30 @@ namespace KKAPI.Studio.UI
         /// </summary>
         /// <param name="label">Label UI element</param>
         /// <param name="slider">Slider UI element</param>
+        /// <param name="text">Label text</param>
+        /// <param name="setter">Method that will be called on value change</param>
+        /// <param name="initialValue">Initial value of the slider and textbox</param>
+        /// <param name="sliderMinimum">Minimum value of the slider and textbox</param>
+        /// <param name="sliderMaximum">Maximum value of the slider and textbox</param>
+        public SceneEffectsSliderSet(Text label, Slider slider, string text, Action<float> setter, float initialValue, float sliderMinimum, float sliderMaximum)
+        {
+            Label = label;
+            Slider = slider;
+            Text = text;
+            Setter = setter;
+            InitialValue = initialValue;
+            SliderMinimum = sliderMinimum;
+            SliderMaximum = sliderMaximum;
+            ShowInput = false;
+            ShowButton = false;
+
+            Init();
+        }
+        /// <summary>
+        /// Create a new SliderSet. Typically you want to use SceneEffectsCategory.AddSliderSet instead of creating these manually.
+        /// </summary>
+        /// <param name="label">Label UI element</param>
+        /// <param name="slider">Slider UI element</param>
         /// <param name="input">Input field UI element</param>
         /// <param name="button">Reset button UI element</param>
         /// <param name="text">Label text</param>
@@ -111,7 +143,7 @@ namespace KKAPI.Studio.UI
         /// <param name="initialValue">Initial value of the slider and textbox</param>
         /// <param name="sliderMinimum">Minimum value of the slider and textbox</param>
         /// <param name="sliderMaximum">Maximum value of the slider and textbox</param>
-        public SceneEffectsSliderSet(TextMeshProUGUI label, Slider slider, InputField input, Button button, string text, Action<float> setter, float initialValue, float sliderMinimum, float sliderMaximum)
+        public SceneEffectsSliderSet(Text label, Slider slider, InputField input, Button button, string text, Action<float> setter, float initialValue, float sliderMinimum, float sliderMaximum)
         {
             Label = label;
             Slider = slider;
@@ -122,6 +154,8 @@ namespace KKAPI.Studio.UI
             InitialValue = initialValue;
             SliderMinimum = sliderMinimum;
             SliderMaximum = sliderMaximum;
+            ShowInput = true;
+            ShowButton = true;
 
             Init();
         }
@@ -129,13 +163,13 @@ namespace KKAPI.Studio.UI
         private void Init()
         {
             Slider.onValueChanged.RemoveAllListeners();
-            Input.onValueChanged.RemoveAllListeners();
-            Input.onEndEdit.RemoveAllListeners();
-            Button.onClick.RemoveAllListeners();
+            if (ShowInput) Input.onValueChanged.RemoveAllListeners();
+            if (ShowInput) Input.onEndEdit.RemoveAllListeners();
+            if (ShowButton) Button.onClick.RemoveAllListeners();
 
             Slider.maxValue = SliderMaximum;
             Slider.value = InitialValue;
-            Input.text = InitialValue.ToString();
+            if (ShowInput) Input.text = InitialValue.ToString();
 
             Slider.onValueChanged.AddListener(delegate (float value)
             {
@@ -143,11 +177,12 @@ namespace KKAPI.Studio.UI
                 SetValue(value);
             });
 
-            Input.onEndEdit.AddListener(delegate (string value)
-            {
-                if (!EventsEnabled) return;
-                SetValue(value);
-            });
+            if (ShowInput)
+                Input.onEndEdit.AddListener(delegate (string value)
+                {
+                    if (!EventsEnabled) return;
+                    SetValue(value);
+                });
 
             Button.onClick.AddListener(Reset);
             SetValue(InitialValue, false);
@@ -155,8 +190,9 @@ namespace KKAPI.Studio.UI
 
             Label.gameObject.name = $"Label {Text}";
             Slider.gameObject.name = $"Slider {Text}";
-            Input.gameObject.name = $"InputField {Text}";
-            Button.gameObject.name = $"Button {Text}";
+
+            if (ShowInput) Input.gameObject.name = $"InputField {Text}";
+            if (ShowButton) Button.gameObject.name = $"Button {Text}";
         }
 
         /// <summary>
@@ -201,7 +237,7 @@ namespace KKAPI.Studio.UI
             EventsEnabled = false;
             CurrentValue = value;
             Slider.value = value;
-            Input.text = value.ToString();
+            if (ShowInput) Input.text = value.ToString();
             EventsEnabled = true;
             if (triggerEvents)
                 Setter.Invoke(value);
@@ -220,7 +256,7 @@ namespace KKAPI.Studio.UI
             EventsEnabled = false;
             CurrentValue = InitialValue;
             Slider.value = InitialValue;
-            Input.text = InitialValue.ToString();
+            if (ShowInput) Input.text = InitialValue.ToString();
             EventsEnabled = true;
             if (triggerEvents)
                 Setter.Invoke(InitialValue);

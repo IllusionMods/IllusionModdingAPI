@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Studio;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Studio;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -74,7 +73,7 @@ namespace KKAPI.Studio.UI
             cat.name = CategoryName + "_Header_SAPI";
 
 #if AI || HS2
-            var t = cat.GetComponent<TextMeshProUGUI>();
+            var t = cat.GetComponent<TMPro.TextMeshProUGUI>();
             t.fontSize = 15;
             t.fontSizeMax = 15;
 #else

@@ -1,6 +1,8 @@
-using System;
-using System.Linq;
 using Studio;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 #if AI || HS2
 using AIChara;
 #endif
@@ -70,5 +72,21 @@ namespace KKAPI.Studio
             var charas = infos.Values.OfType<OCIChar>();
             return charas.FirstOrDefault(x => x.charInfo == chaControl);
         }
+
+#if PH
+        public static Human GetChaControl(this OCIChar ociChar) => ociChar.charInfo.human;
+#else
+        public static ChaControl GetChaControl(this OCIChar ociChar) => ociChar.charInfo;
+#endif
+
+#if PH
+        internal static List<Transform> Children(this Transform self)
+        {
+            List<Transform> list = new List<Transform>();
+            for (int i = 0; i < self.childCount; i++)
+                list.Add(self.GetChild(i));
+            return list;
+        }
+#endif
     }
 }
