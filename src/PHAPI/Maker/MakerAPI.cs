@@ -64,16 +64,16 @@ namespace KKAPI.Maker
             return control;
         }
 
-        ///// <summary>
-        ///// Add a control to the accessory selection and settings window. The control is wrapped to properly respond to changes in selected accessory slot (has unique values for each slot).
-        ///// </summary>
-        //public static AccessoryControlWrapper<T, TVal> AddEditableAccessoryWindowControl<T, TVal>(T control) where T : BaseEditableGuiEntry<TVal>
-        //{
-        //    if (control == null) throw new ArgumentNullException(nameof(control));
-        //    control.ThrowIfDisposed(nameof(control));
-        //    MakerInterfaceCreator.AddAccessoryWindowControl(control);
-        //    return new AccessoryControlWrapper<T, TVal>(control);
-        //}
+        /// <summary>
+        /// Add a control to the accessory selection and settings window. The control is wrapped to properly respond to changes in selected accessory slot (has unique values for each slot).
+        /// </summary>
+        public static AccessoryControlWrapper<T, TVal> AddEditableAccessoryWindowControl<T, TVal>(T control) where T : BaseEditableGuiEntry<TVal>
+        {
+            if (control == null) throw new ArgumentNullException(nameof(control));
+            control.ThrowIfDisposed(nameof(control));
+            MakerInterfaceCreator.AddAccessoryWindowControl(control);
+            return new AccessoryControlWrapper<T, TVal>(control);
+        }
 
         public static SEX GetMakerSex() => GetMakerBase().Sex;
 
@@ -411,12 +411,6 @@ namespace KKAPI.Maker
             // Check if the loading screen is currently visible
             if (pm == true)
                 return false;
-
-#if KK || EC
-            // Check if UI is hidden (by pressing space)
-            if (mbase.customCtrl.hideFrontUI)
-                return false;
-#endif
 
             return true;
         }

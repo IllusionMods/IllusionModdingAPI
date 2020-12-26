@@ -16,18 +16,11 @@ namespace KKAPI
         {
             var insideStudio = Application.productName.StartsWith("PlayHomeStudio");
 
-            //todo implement
             MakerAPI.Init(insideStudio);
             StudioAPI.Init(insideStudio);
             CharacterApi.Init();
+            AccessoriesApi.Init();
         }
-
-        //private void Start()
-        //{
-        //    // Needs to be called after moreaccessories has a chance to load
-        //    //todo implement
-        //    //AccessoriesApi.Init();
-        //}
 
         /// <summary>
         /// Get current game mode. 

@@ -31,9 +31,13 @@ namespace KKAPI.Maker
             [HarmonyPatch(typeof(EditMode), nameof(EditMode.Setup))]
             public static void EditModeSetup(EditMode __instance)
             {
+                var initRequired = currenEditMode != __instance;
+                currenEditMode = __instance;
                 InsideMaker = true;
-                Console.WriteLine("startm");
-                if (currenEditMode == __instance) return;
+
+                if (!initRequired) return;
+
+                KoikatuAPI.Logger.LogDebug("Entering character maker");
 
                 void OnMakerExit()
                 {
@@ -43,7 +47,6 @@ namespace KKAPI.Maker
                 }
 
                 __instance.OnDestroyAsObservable().Subscribe(unit => OnMakerExit());
-                currenEditMode = __instance;
                 //var categoryTransfrom = __instance.transform;
 
                 KoikatuAPI.Instance.StartCoroutine(OnMakerLoadingCo());

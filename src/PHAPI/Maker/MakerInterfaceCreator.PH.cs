@@ -115,10 +115,10 @@ namespace KKAPI.Maker
             AddSidebarControl(new SidebarToggle("Test toggle2", true, instance))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
 
-            //AddAccessoryWindowControl(new MakerToggle(cat, "test toggle", null))
-            //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Toggled to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
-            //AddAccessoryWindowControl(new MakerColor("test accessory color", false, cat, Color.cyan, instance) { ColorBoxWidth = 230 })
-            //    .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Color to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
+            AddAccessoryWindowControl(new MakerToggle(cat, "test toggle", null))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Toggled to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
+            AddAccessoryWindowControl(new MakerColor("test accessory color", false, cat, Color.cyan, instance) { ColorBoxWidth = 230 })
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage($"Color to {b} in accessory slot index {AccessoriesApi.SelectedMakerAccSlot}"));
         }
 
         public static void CreateCustomControls()
@@ -225,28 +225,33 @@ namespace KKAPI.Maker
 
         private static void CreateCustomAccessoryWindowControls()
         {
-            //todo
-            //var customAcsChangeSlot = Object.FindObjectOfType<CustomAcsChangeSlot>();
-            //if (customAcsChangeSlot == null) throw new ArgumentNullException(nameof(customAcsChangeSlot));
-            //var tglSlot01GameObject = customAcsChangeSlot.transform.FindLoop("tglSlot01");
-            //if (tglSlot01GameObject == null) throw new ArgumentNullException(nameof(tglSlot01GameObject));
-            //var container = tglSlot01GameObject.transform.parent;
-            //foreach (var slotTransform in container.Cast<Transform>().Where(x => x.name.StartsWith("tglSlot")).OrderBy(x => x.name))
-            //{
-            //    // Remove the red info text at the bottom to free up some space
-            //    var contentParent = FindSubcategoryContentParent(slotTransform);
-            //    foreach (var txtName in new[] { "txtExplanation", "txtAcsExplanation" }) // Named differently in KK and EC
-            //    {
-            //        var text = contentParent.Find(txtName);
-            //        if (text != null)
-            //        {
-            //            text.GetComponent<LayoutElement>().enabled = false;
-            //            text.Cast<Transform>().First().gameObject.SetActive(false);
-            //        }
-            //    }
-            //
-            //    CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
-            //}
+            var accCustomEdit = GetAccessoryCustomEdit();
+            if (accCustomEdit == null) throw new ArgumentNullException(nameof(accCustomEdit));
+            var container = accCustomEdit.transform.FindChild("Mains");
+            if (container == null) throw new ArgumentNullException(nameof(container));
+            var firstSlotObj = container.Cast<Transform>().First(x => x.name == "Slot01");
+            if (firstSlotObj == null) throw new ArgumentNullException(nameof(firstSlotObj));
+            foreach (var slotTransform in container.Cast<Transform>().OrderBy(x => x.name))
+            {
+                //// Remove the red info text at the bottom to free up some space
+                //var contentParent = FindSubcategoryContentParent(slotTransform);
+                //foreach (var txtName in new[] { "txtExplanation", "txtAcsExplanation" }) // Named differently in KK and EC
+                //{
+                //    var text = contentParent.Find(txtName);
+                //    if (text != null)
+                //    {
+                //        text.GetComponent<LayoutElement>().enabled = false;
+                //        text.Cast<Transform>().First().gameObject.SetActive(false);
+                //    }
+                //}
+
+                CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
+            }
+        }
+
+        internal static AccessoryCustomEdit GetAccessoryCustomEdit()
+        {
+            return MakerAPI.GetMakerBase()?.GetComponentInChildren<AccessoryCustomEdit>(true) ?? throw new ArgumentException("Couldn't find AccessoryCustomEdit");
         }
 
         internal static void OnMakerAccSlotAdded(Transform newSlotTransform)

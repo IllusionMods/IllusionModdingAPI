@@ -84,7 +84,13 @@
     <Compile Include="GameMode.cs" />
     <Compile Include="KoikatuAPI.cs" />
     <Compile Include="KoikatuAPIBase.cs" />
+    <Compile Include="Maker\AccessoriesApi.Hooks.PH2.cs" />
+    <Compile Include="Maker\AccessoriesApi.PH2.cs" />
+    <Compile Include="Maker\AccessoryControlWrapper.PH2.cs" />
     <Compile Include="Maker\CharacterLoadFlags.cs" />
+    <Compile Include="Maker\Events\AccessorySlotEventArgs.cs" />
+    <Compile Include="Maker\Events\AccessoryTransferEventArgs.cs" />
+    <Compile Include="Maker\Events\AccessoryWindowControlValueChangedEventArgs.cs" />
     <Compile Include="Maker\Events\CharacterChangedEventArgs.cs" />
     <Compile Include="Maker\Events\RegisterCustomControlsEvent.cs" />
     <Compile Include="Maker\Events\RegisterSubCategoriesEvent.cs" />
