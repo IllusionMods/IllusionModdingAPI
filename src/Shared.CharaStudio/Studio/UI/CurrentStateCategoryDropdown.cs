@@ -1,8 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿#if KK || AI || HS2
+#define TMP
+#endif
+
 using KKAPI.Utilities;
 using Studio;
-using TMPro;
+using System;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +20,13 @@ namespace KKAPI.Studio.UI
     {
         private readonly string[] _items;
         private static GameObject _originalObject;
+#if AI || HS2
+        private const string ObjectSourcePath = "StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Color Grading/Lookup Texture";
+#elif KK
+        private const string ObjectSourcePath = "StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/02_Kinematic/05_Etc/Eyes Draw";
+#elif PH
+        private const string ObjectSourcePath = "StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Atmosphere";
+#endif
 
         /// <summary>
         /// A dropdown for the Chara > CurrentState studio menu.
@@ -35,10 +45,8 @@ namespace KKAPI.Studio.UI
         {
             if (_originalObject == null)
             {
-#if AI || HS2
-                _originalObject = GameObject.Find("StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Color Grading/Lookup Texture");
-#else
-                _originalObject = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/02_Kinematic/05_Etc/Eyes Draw");
+                _originalObject = GameObject.Find(ObjectSourcePath);
+#if KK || PH
                 // Unused controls, safe to remove for less overhead later on
                 foreach (var tr in _originalObject.transform.Cast<Transform>().Where(t => t.name.StartsWith("Toggle")))
                     Object.DestroyImmediate(tr.gameObject);
@@ -54,7 +62,11 @@ namespace KKAPI.Studio.UI
             le.preferredHeight = 20;
             le.preferredWidth = 210;
 
-            var text = copy.transform.Find("TextMeshPro").GetComponentInChildren<TextMeshProUGUI>(true);
+#if TMP
+            var text = copy.transform.Find("TextMeshPro").GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
+#else
+            var text = copy.transform.Find("Text Draw").GetComponentInChildren<Text>(true);
+#endif
             text.lineSpacing = -20;
 
             text.gameObject.SetActive(true);
@@ -67,8 +79,15 @@ namespace KKAPI.Studio.UI
             var dropdown = copy.GetComponentInChildren<Dropdown>(true);
             dropdown.gameObject.SetActive(true);
             var drt = dropdown.GetComponent<RectTransform>();
+#if PH
+            drt.anchorMin = new Vector2(0, 1);
+            drt.anchorMax = new Vector2(0, 1);
+            drt.offsetMin = new Vector2(65, -20);
+            drt.offsetMax = new Vector2(150, 0);
+#else
             drt.offsetMin = new Vector2(100, -20);
             drt.offsetMax = new Vector2(210, 0);
+#endif
 
             dropdown.ClearOptions();
             dropdown.AddOptions(_items.ToList());

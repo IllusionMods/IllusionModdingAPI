@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿#if KK || AI || HS2
+#define TMP
+#endif
+
 using IllusionUtility.GetUtility;
 using KKAPI.Utilities;
-using TMPro;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+#if TMP
+using Text = TMPro.TextMeshProUGUI;
+#endif
 
 namespace KKAPI.Studio.UI
 {
@@ -23,8 +29,10 @@ namespace KKAPI.Studio.UI
         private static GameObject _labelSource;
         private static GameObject _toggleSource;
         private static GameObject _sliderSource;
+#if !PH
         private static GameObject _inputSource;
         private static GameObject _buttonSource;
+#endif
 
         private static void Initialize()
         {
@@ -44,6 +52,10 @@ namespace KKAPI.Studio.UI
             const string sliderSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Focal Size/Slider";
             const string inputSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Focal Size/InputField";
             const string buttonSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Focal Size/Button Default";
+#elif PH
+            const string labelSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Text Draw";
+            const string toggleSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Toggle Draw";
+            const string sliderSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Slider Focal Size";
 #endif
 
             var sbc = global::Studio.Studio.Instance.systemButtonCtrl;
@@ -53,8 +65,10 @@ namespace KKAPI.Studio.UI
             _labelSource = sef.transform.Find(labelSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + labelSourcePath);
             _toggleSource = sef.transform.Find(toggleSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + toggleSourcePath);
             _sliderSource = sef.transform.Find(sliderSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + sliderSourcePath);
+#if !PH
             _inputSource = sef.transform.Find(inputSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + inputSourcePath);
             _buttonSource = sef.transform.Find(buttonSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + buttonSourcePath);
+#endif
 
             _wasInitialized = true;
         }
@@ -89,7 +103,7 @@ namespace KKAPI.Studio.UI
             Header.name = $"Image {labelText}";
             Header.transform.SetParent(_headerSource.transform.parent, false);
 
-            var label = Header.GetComponentInChildren<TextMeshProUGUI>();
+            var label = Header.GetComponentInChildren<Text>();
             label.text = labelText;
 
             Content = Object.Instantiate(_contentSource);
@@ -120,7 +134,7 @@ namespace KKAPI.Studio.UI
 
             KoikatuAPI.Instance.StartCoroutine(SetPosDelayed(containingElement.transform, GetCurrentOffset()));
 
-            var label = Object.Instantiate(_labelSource).GetComponent<TextMeshProUGUI>();
+            var label = Object.Instantiate(_labelSource).GetComponent<Text>();
             label.transform.SetParent(containingElement.transform, false);
             label.transform.localPosition = new Vector3(4f, 0f, 0f);
 
@@ -130,9 +144,9 @@ namespace KKAPI.Studio.UI
 
             var toggleSet = new SceneEffectsToggleSet(label, toggle, text, setter, initialValue);
             Toggles.Add(toggleSet);
-            
+
             CorrectCategoryScale();
-            
+
             return toggleSet;
         }
 
@@ -152,7 +166,7 @@ namespace KKAPI.Studio.UI
             containingElement.SetParent(Content.transform, false);
             KoikatuAPI.Instance.StartCoroutine(SetPosDelayed(containingElement.transform, GetCurrentOffset()));
 
-            var label = Object.Instantiate(_labelSource).GetComponent<TextMeshProUGUI>();
+            var label = Object.Instantiate(_labelSource).GetComponent<Text>();
             label.transform.SetParent(containingElement.transform, false);
             label.transform.localPosition = new Vector3(4f, 0, 0f);
 
@@ -160,6 +174,7 @@ namespace KKAPI.Studio.UI
             slider.transform.SetParent(containingElement.transform, false);
             slider.transform.localPosition = new Vector3(160f, 0f, 0f);
 
+#if !PH
             var input = Object.Instantiate(_inputSource).GetComponent<InputField>();
             input.transform.SetParent(containingElement.transform, false);
             input.transform.localPosition = new Vector3(295f, -10f, 0f);
@@ -167,12 +182,17 @@ namespace KKAPI.Studio.UI
             var button = Object.Instantiate(_buttonSource).GetComponent<Button>();
             button.transform.SetParent(containingElement.transform, false);
             button.transform.localPosition = new Vector3(340f, 0f, 0f);
+#endif
 
+#if PH
+            var sliderSet = new SceneEffectsSliderSet(label, slider, text, setter, initialValue, sliderMinimum, sliderMaximum);
+#else
             var sliderSet = new SceneEffectsSliderSet(label, slider, input, button, text, setter, initialValue, sliderMinimum, sliderMaximum);
+#endif
             Sliders.Add(sliderSet);
 
             CorrectCategoryScale();
-            
+
             return sliderSet;
         }
 
@@ -181,7 +201,7 @@ namespace KKAPI.Studio.UI
             var layoutElement = Content.GetComponent<LayoutElement>();
             layoutElement.preferredHeight += 25;
         }
-        
+
         private static IEnumerator SetPosDelayed(Transform tr, float offset)
         {
             // todo set positions of everything at the same time?

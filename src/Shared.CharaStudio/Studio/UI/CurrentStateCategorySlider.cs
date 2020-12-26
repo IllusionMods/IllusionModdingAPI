@@ -1,10 +1,16 @@
-﻿using System;
+﻿#if AI || HS2
+#define TMP
+#endif
+
 using Studio;
-using TMPro;
+using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+#if TMP
+using Text = TMPro.TextMeshProUGUI;
+#endif
 
 namespace KKAPI.Studio.UI
 {
@@ -14,6 +20,11 @@ namespace KKAPI.Studio.UI
     public class CurrentStateCategorySlider : BaseCurrentStateEditableGuiEntry<float>
     {
         private static GameObject _originalObject;
+#if TMP
+        private const float LineSpacing = -20;
+#else
+        private const float LineSpacing = 0.5f;
+#endif
 
         /// <summary>
         /// Minimum value of the slider
@@ -51,13 +62,8 @@ namespace KKAPI.Studio.UI
             copy.name = "CustomSlider " + Name;
             copy.transform.localScale = Vector3.one;
 
-#if AI || HS2
-            var text = copy.GetComponentInChildren<TextMeshProUGUI>(true);
-            text.lineSpacing = -20;
-#else
             var text = copy.GetComponentInChildren<Text>(true);
-            text.lineSpacing = 0.5f;
-#endif
+            text.lineSpacing = LineSpacing;
             text.gameObject.SetActive(true);
             text.gameObject.name = "Text " + Name;
             text.text = Name;

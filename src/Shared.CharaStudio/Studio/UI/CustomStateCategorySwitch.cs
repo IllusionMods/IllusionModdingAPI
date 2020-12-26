@@ -1,9 +1,16 @@
-﻿using System;
+﻿#if AI || HS2
+#define TMP
+#endif
+
 using Studio;
+using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+#if TMP
+using Text = TMPro.TextMeshProUGUI;
+#endif
 
 namespace KKAPI.Studio.UI
 {
@@ -13,6 +20,11 @@ namespace KKAPI.Studio.UI
     public class CurrentStateCategorySwitch : BaseCurrentStateEditableGuiEntry<bool>
     {
         private static GameObject _originalObject;
+#if TMP
+        private const float LineSpacing = -20;
+#else
+        private const float LineSpacing = 0.5f;
+#endif
 
         /// <summary>
         /// A single button for the Chara > CurrentState studio menu.
@@ -33,13 +45,8 @@ namespace KKAPI.Studio.UI
             copy.transform.localScale = Vector3.one;
             copy.name = "CustomSwitch " + Name;
 
-#if AI || HS2
-            var text = copy.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
-            text.lineSpacing = -20;
-#else
             var text = copy.GetComponentInChildren<Text>(true);
-            text.lineSpacing = 0.5f;
-#endif
+            text.lineSpacing = LineSpacing;
             text.gameObject.SetActive(true);
             text.gameObject.name = "Text " + Name;
             text.text = Name;
@@ -51,6 +58,9 @@ namespace KKAPI.Studio.UI
             var toggle = copy.GetComponentInChildren<Toggle>(true);
             toggle.gameObject.SetActive(true);
             toggle.gameObject.name = $"Button {Name}";
+#if PH
+            toggle.transform.localPosition = new Vector3(100, 0, 0);
+#endif
 
             toggle.isOn = Value.Value;
 

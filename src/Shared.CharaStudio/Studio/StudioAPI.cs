@@ -75,7 +75,7 @@ namespace KKAPI.Studio
         /// </summary>
         public static IEnumerable<T> GetSelectedControllers<T>() where T : CharaCustomFunctionController
         {
-            return GetSelectedCharacters().Select(x => x.charInfo?.GetComponent<T>()).Where(x => x != null);
+            return GetSelectedCharacters().Select(x => x.GetChaControl()?.GetComponent<T>()).Where(x => x != null);
         }
 
         /// <summary>
@@ -140,7 +140,11 @@ namespace KKAPI.Studio
         /// </summary>
         public static event EventHandler StudioLoadedChanged;
 
+#if PH
+        private static void SceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode loadSceneMode)
+#else
         private static void SceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+#endif
         {
             if (!StudioLoaded && scene.name == "Studio")
             {
@@ -183,7 +187,12 @@ namespace KKAPI.Studio
                     new CurrentStateCategoryToggle(
                         "Test 1", 2, c =>
                         {
+#if PH
+                            var charInfoHuman = c?.charInfo?.human;
+                            KoikatuAPI.Logger.LogMessage((charInfoHuman == null ? "NULL" : charInfoHuman.GetCharacterName()) + " - updateValue");
+#else
                             KoikatuAPI.Logger.LogMessage(c?.charInfo?.name + " - updateValue");
+#endif
                             return 1;
                         }))
                 .Value.Subscribe(val => KoikatuAPI.Logger.LogMessage(val));

@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Reflection.Emit;
-using ExtensibleSaveFormat;
+﻿using ExtensibleSaveFormat;
 using HarmonyLib;
 using Studio;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 
 namespace KKAPI.Studio.SaveLoad
 {
@@ -92,6 +92,7 @@ namespace KKAPI.Studio.SaveLoad
                 ImportInProgress = true;
             }
 
+#if !PH
             [HarmonyPostfix]
             [HarmonyPatch(typeof(global::Studio.Studio), nameof(global::Studio.Studio.LoadSceneCoroutine))]
             public static void LoadSceneCoroutinePostfix(ref IEnumerator __result)
@@ -118,6 +119,7 @@ namespace KKAPI.Studio.SaveLoad
                 ImportDictionary.Clear();
                 LoadInProgress = true;
             }
+#endif
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(global::Studio.Studio), nameof(global::Studio.Studio.LoadScene))]

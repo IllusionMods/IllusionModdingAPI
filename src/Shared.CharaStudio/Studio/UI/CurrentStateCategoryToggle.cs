@@ -1,14 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿#if AI || HS2
+#define TMP
+#endif
+
 using Illusion.Extensions;
 using KKAPI.Utilities;
 using Studio;
-using TMPro;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+#if TMP
+using Text = TMPro.TextMeshProUGUI;
+#endif
 
 namespace KKAPI.Studio.UI
 {
@@ -18,6 +24,11 @@ namespace KKAPI.Studio.UI
     public class CurrentStateCategoryToggle : BaseCurrentStateEditableGuiEntry<int>
     {
         private static GameObject _originalToggle;
+#if TMP
+        private const float LineSpacing = -20;
+#else
+        private const float LineSpacing = 0.5f;
+#endif
 
         /// <summary>
         /// Number of the radio buttons, can be 2, 3 or 4
@@ -58,13 +69,8 @@ namespace KKAPI.Studio.UI
                 Object.Destroy(transform.gameObject);
 
             var textTr = children[0];
-#if AI || HS2
-            var text = textTr.GetComponent<TextMeshProUGUI>();
-            text.lineSpacing = -20;
-#else
             var text = textTr.GetComponent<Text>();
-            text.lineSpacing = 0.5f;
-#endif
+            text.lineSpacing = LineSpacing;
             textTr.name = "Text " + Name;
             text.text = Name;
 
@@ -75,7 +81,8 @@ namespace KKAPI.Studio.UI
             var copiedToggles = new List<Button>(ToggleCount);
             var liquidToggles = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Liquid");
             // Skip the first text and take the 3 toggle buttons
-            foreach (var origToggle in liquidToggles.transform.Children().Skip(1).Take(3))
+            var origToggles = liquidToggles.transform.Children().Skip(1).Take(3).ToList();
+            foreach (var origToggle in origToggles)
             {
                 if (ToggleCount <= copiedToggles.Count) break;
 
@@ -91,7 +98,11 @@ namespace KKAPI.Studio.UI
                     btn.onClick.ActuallyRemoveAllListeners();
                     copiedToggles.Add(btn);
 
+#if PH
+                    toggleCopy.localPosition = origToggles[0].transform.localPosition;
+#else
                     toggleCopy.localPosition += copiedToggles[1].transform.localPosition - copiedToggles[0].transform.localPosition;
+#endif
                 }
             }
 
@@ -103,7 +114,11 @@ namespace KKAPI.Studio.UI
                 copiedToggle.transform.name = $"Button {Name} {buttonIndex}";
                 copiedToggle.onClick.AddListener(() => Value.OnNext(buttonIndex));
 
+#if PH
+                copiedToggle.transform.localPosition = origToggles[0].transform.localPosition + new Vector3(17, 0, 0) * i;
+#else
                 copiedToggle.transform.localPosition = new Vector3(copiedToggle.transform.localPosition.x, 0, 0);
+#endif
                 copiedToggle.transform.localScale = Vector3.one;
                 copiedToggle.gameObject.SetActive(true);
             }
