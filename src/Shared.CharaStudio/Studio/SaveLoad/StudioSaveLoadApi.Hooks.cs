@@ -4,6 +4,7 @@ using Studio;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using UnityEngine;
 
 namespace KKAPI.Studio.SaveLoad
 {
@@ -152,6 +153,57 @@ namespace KKAPI.Studio.SaveLoad
                     _loadOrImportSuccess = false;
 
                     OnSceneBeingLoaded(operation);
+                }
+            }
+
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(OCIItem), nameof(OCIItem.OnDelete))]
+            [HarmonyPatch(typeof(OCIChar), nameof(OCIChar.OnDelete))]
+            [HarmonyPatch(typeof(OCIFolder), nameof(OCIFolder.OnDelete))]
+            [HarmonyPatch(typeof(OCILight), nameof(OCILight.OnDelete))]
+#if !PH
+            [HarmonyPatch(typeof(OCICamera), nameof(OCICamera.OnDelete))]
+            [HarmonyPatch(typeof(OCIRoute), nameof(OCIRoute.OnDelete))]
+#endif
+            private static void OCI_OnDelete(ObjectCtrlInfo __instance) => OnObjectBeingDeleted(__instance);
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(OCIItem), nameof(OCIItem.OnVisible))]
+            [HarmonyPatch(typeof(OCIChar), nameof(OCIChar.OnVisible))]
+            [HarmonyPatch(typeof(OCIFolder), nameof(OCIFolder.OnVisible))]
+            [HarmonyPatch(typeof(OCILight), nameof(OCILight.OnVisible))]
+#if !PH
+            [HarmonyPatch(typeof(OCICamera), nameof(OCICamera.OnVisible))]
+            [HarmonyPatch(typeof(OCIRoute), nameof(OCIRoute.OnVisible))]
+#endif
+            private static void OCI_OnVisible(ObjectCtrlInfo __instance, bool _visible) => OnObjectVisibilityToggled(__instance, _visible);
+
+            [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), "SelectSingle")]
+            private static void TreeNodeCtrl_SelectSingle(TreeNodeObject _node)
+            {
+                ObjectCtrlInfo ctrlInfo = global::Studio.Studio.GetCtrlInfo(_node);
+                if (ctrlInfo != null)
+                    OnObjectsSelected(new List<ObjectCtrlInfo> { ctrlInfo });
+            }
+
+            [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), "SelectMultiple")]
+            private static void TreeNodeCtrl_SelectMultiple()
+            {
+                List<ObjectCtrlInfo> selectedObjects = new List<ObjectCtrlInfo>();
+                foreach (var node in Singleton<global::Studio.Studio>.Instance.treeNodeCtrl.selectNodes)
+                    selectedObjects.Add(global::Studio.Studio.GetCtrlInfo(node));
+                OnObjectsSelected(selectedObjects);
+            }
+
+            [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), "SetSelectNode")]
+            private static void TreeNodeCtrl_SetSelectNode()
+            {
+                if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+                {
+                    List<ObjectCtrlInfo> selectedObjects = new List<ObjectCtrlInfo>();
+                    foreach (var node in Singleton<global::Studio.Studio>.Instance.treeNodeCtrl.selectNodes)
+                        selectedObjects.Add(global::Studio.Studio.GetCtrlInfo(node));
+                    OnObjectsSelected(selectedObjects);
                 }
             }
         }

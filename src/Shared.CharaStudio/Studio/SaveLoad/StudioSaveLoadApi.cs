@@ -1,8 +1,8 @@
-﻿using System;
+﻿using KKAPI.Utilities;
+using Studio;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using KKAPI.Utilities;
-using Studio;
 using UnityEngine;
 
 namespace KKAPI.Studio.SaveLoad
@@ -124,6 +124,78 @@ namespace KKAPI.Studio.SaveLoad
             }
         }
 
+        private static void OnObjectBeingDeleted(ObjectCtrlInfo objectCtrlInfo)
+        {
+            foreach (var behaviour in _registeredHandlers)
+            {
+                try
+                {
+                    behaviour.Key.OnObjectDeleted(objectCtrlInfo);
+                }
+                catch (Exception e)
+                {
+                    KoikatuAPI.Logger.LogError(e);
+                }
+            }
+
+            try
+            {
+                ObjectDeleted?.Invoke(KoikatuAPI.Instance, new ObjectDeletedEventArgs(objectCtrlInfo));
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError(e);
+            }
+        }
+
+        private static void OnObjectVisibilityToggled(ObjectCtrlInfo objectCtrlInfo, bool visible)
+        {
+            foreach (var behaviour in _registeredHandlers)
+            {
+                try
+                {
+                    behaviour.Key.OnObjectVisibilityToggled(objectCtrlInfo, visible);
+                }
+                catch (Exception e)
+                {
+                    KoikatuAPI.Logger.LogError(e);
+                }
+            }
+
+            try
+            {
+                ObjectVisibilityToggled?.Invoke(KoikatuAPI.Instance, new ObjectVisibilityToggledEventArgs(objectCtrlInfo, visible));
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError(e);
+            }
+        }
+
+        private static void OnObjectsSelected(List<ObjectCtrlInfo> objectCtrlInfos)
+        {
+            foreach (var behaviour in _registeredHandlers)
+            {
+                try
+                {
+                    behaviour.Key.OnObjectsSelected(objectCtrlInfos);
+                }
+                catch (Exception e)
+                {
+                    KoikatuAPI.Logger.LogError(e);
+                }
+            }
+
+            try
+            {
+                ObjectsSelected?.Invoke(KoikatuAPI.Instance, new ObjectsSelectedEventArgs(objectCtrlInfos));
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError(e);
+            }
+        }
+
         private static Dictionary<int, ObjectCtrlInfo> GetLoadedObjects(SceneOperationKind operation)
         {
             Dictionary<int, ObjectCtrlInfo> results;
@@ -163,6 +235,21 @@ namespace KKAPI.Studio.SaveLoad
         /// Fired when objects in the scene are copied
         /// </summary>
         public static event EventHandler<ObjectsCopiedEventArgs> ObjectsCopied;
+
+        /// <summary>
+        /// Fired when an object in the scene is being deleted
+        /// </summary>
+        public static event EventHandler<ObjectDeletedEventArgs> ObjectDeleted;
+
+        /// <summary>
+        /// Fired when an object in the scene had its visibility toggled
+        /// </summary>
+        public static event EventHandler<ObjectVisibilityToggledEventArgs> ObjectVisibilityToggled;
+
+        /// <summary>
+        /// Fired when an object in the scene is selected
+        /// </summary>
+        public static event EventHandler<ObjectsSelectedEventArgs> ObjectsSelected;
 
         /// <summary>
         /// A scene is currently being imported

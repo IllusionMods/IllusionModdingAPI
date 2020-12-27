@@ -1,7 +1,8 @@
-﻿using System;
-using ExtensibleSaveFormat;
+﻿using ExtensibleSaveFormat;
 using KKAPI.Utilities;
 using Studio;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace KKAPI.Studio.SaveLoad
@@ -39,6 +40,25 @@ namespace KKAPI.Studio.SaveLoad
         /// The IDs match the original object in the scene.
         /// To get current scene ID of the object call <see cref="StudioObjectExtensions.GetSceneId(ObjectCtrlInfo)"/></param>
         protected internal virtual void OnObjectsCopied(ReadOnlyDictionary<int, ObjectCtrlInfo> copiedItems) { }
+
+        /// <summary>
+        /// Fired when objects are deleted.
+        /// </summary>
+        /// <param name="objectCtrlInfo">ObjectCtrlInfo associated with the item being deleted</param>
+        protected internal virtual void OnObjectDeleted(ObjectCtrlInfo objectCtrlInfo) { }
+
+        /// <summary>
+        /// Fired when objects have their visibility toggled.
+        /// </summary>
+        /// <param name="objectCtrlInfo">ObjectCtrlInfo associated with the item being toggled</param>
+        /// <param name="visible">Visibility of the object</param>
+        protected internal virtual void OnObjectVisibilityToggled(ObjectCtrlInfo objectCtrlInfo, bool visible) { }
+
+        /// <summary>
+        /// Fired when objects are selected.
+        /// </summary>
+        /// <param name="objectCtrlInfo">ObjectCtrlInfo associated with the item being selected</param>
+        protected internal virtual void OnObjectsSelected(List<ObjectCtrlInfo> objectCtrlInfo) { }
 
         /// <summary>
         /// ID used for extended data by this controller. It's set when registering the controller

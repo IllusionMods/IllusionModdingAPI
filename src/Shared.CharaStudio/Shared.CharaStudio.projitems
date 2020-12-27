@@ -9,7 +9,10 @@
     <Import_RootNamespace>Shared.CharaStudio</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\ObjectDeletedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\ObjectsCopiedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\ObjectsSelectedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\ObjectVisibilityToggledEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\SceneCustomFunctionController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\SceneLoadEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\SceneOperationKind.cs" />
