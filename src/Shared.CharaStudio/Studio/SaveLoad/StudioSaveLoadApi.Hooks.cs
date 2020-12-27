@@ -186,6 +186,7 @@ namespace KKAPI.Studio.SaveLoad
                     OnObjectsSelected(new List<ObjectCtrlInfo> { ctrlInfo });
             }
 
+#if !PH
             [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), "SelectMultiple")]
             private static void TreeNodeCtrl_SelectMultiple()
             {
@@ -194,6 +195,7 @@ namespace KKAPI.Studio.SaveLoad
                     selectedObjects.Add(global::Studio.Studio.GetCtrlInfo(node));
                 OnObjectsSelected(selectedObjects);
             }
+#endif
 
             [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), "SetSelectNode")]
             private static void TreeNodeCtrl_SetSelectNode()
