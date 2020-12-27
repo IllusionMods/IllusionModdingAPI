@@ -209,6 +209,14 @@ public class KKAPI.Studio.UI.SceneEffectsSliderSet
 
 ```
 
+Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | ShowButton |  | 
+| `Boolean` | ShowInput |  | 
+
+
 Properties
 
 | Type | Name | Summary | 

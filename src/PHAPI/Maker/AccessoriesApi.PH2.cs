@@ -48,10 +48,10 @@ namespace KKAPI.Maker
         /// </summary>
         public static event EventHandler<AccessorySlotEventArgs> SelectedMakerAccSlotChanged;
 
-        /// <summary>
-        /// A new slot was added by MoreAccessories. Adding 10 slots triggers this 10 times.
-        /// </summary>
-        public static event EventHandler<AccessorySlotEventArgs> MakerAccSlotAdded;
+        ///// <summary>
+        ///// A new slot was added by MoreAccessories. Adding 10 slots triggers this 10 times.
+        ///// </summary>
+        //public static event EventHandler<AccessorySlotEventArgs> MakerAccSlotAdded;
 
         /// <summary>
         /// Fires when user selects a different accessory in the accessory window.
@@ -146,18 +146,18 @@ namespace KKAPI.Maker
                 {
                     _moreAccessoriesInstance = Object.FindObjectOfType(_moreAccessoriesType);
 
-                    var slotAddEvent = _moreAccessoriesType.GetEvent("onCharaMakerSlotAdded", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                    if (slotAddEvent != null)
-                    {
-                        slotAddEvent.AddEventHandler(
-                            _moreAccessoriesInstance,
-                            new Action<int, Transform>((i, transform) => OnMakerAccSlotAdded(_moreAccessoriesInstance, i, transform)));
-                    }
-                    else
-                    {
-                        _moreAccessoriesType = null;
-                        KoikatuAPI.Logger.LogWarning("WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
-                    }
+                    //var slotAddEvent = _moreAccessoriesType.GetEvent("onCharaMakerSlotAdded", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    //if (slotAddEvent != null)
+                    //{
+                    //    slotAddEvent.AddEventHandler(
+                    //        _moreAccessoriesInstance,
+                    //        new Action<int, Transform>((i, transform) => OnMakerAccSlotAdded(_moreAccessoriesInstance, i, transform)));
+                    //}
+                    //else
+                    //{
+                    //    _moreAccessoriesType = null;
+                    //    KoikatuAPI.Logger.LogWarning("WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
+                    //}
                 }
             }
             catch (Exception e)
@@ -204,23 +204,23 @@ namespace KKAPI.Maker
             }
         }
 
-        private static void OnMakerAccSlotAdded(object source, int newSlotIndex, Transform newSlotTransform)
-        {
-            if (KoikatuAPI.EnableDebugLogging)
-                KoikatuAPI.Logger.LogMessage("MakerAccSlotAdded - slot:" + newSlotIndex);
-
-            MakerInterfaceCreator.OnMakerAccSlotAdded(newSlotTransform);
-
-            if (MakerAccSlotAdded == null) return;
-            try
-            {
-                MakerAccSlotAdded(source, new AccessorySlotEventArgs(newSlotIndex));
-            }
-            catch (Exception ex)
-            {
-                KoikatuAPI.Logger.LogError("Subscription to SelectedMakerSlot crashed: " + ex);
-            }
-        }
+        //private static void OnMakerAccSlotAdded(object source, int newSlotIndex, Transform newSlotTransform)
+        //{
+        //    if (KoikatuAPI.EnableDebugLogging)
+        //        KoikatuAPI.Logger.LogMessage("MakerAccSlotAdded - slot:" + newSlotIndex);
+        //
+        //    MakerInterfaceCreator.OnMakerAccSlotAdded(newSlotTransform);
+        //
+        //    if (MakerAccSlotAdded == null) return;
+        //    try
+        //    {
+        //        MakerAccSlotAdded(source, new AccessorySlotEventArgs(newSlotIndex));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        KoikatuAPI.Logger.LogError("Subscription to SelectedMakerSlot crashed: " + ex);
+        //    }
+        //}
 
         private static void OnAccessoryChanged(object source, int slotNo)
         {

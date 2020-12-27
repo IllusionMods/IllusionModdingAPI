@@ -45,7 +45,10 @@ namespace KKAPI.Maker
             [HarmonyPatch(typeof(CvsAccessoryChange), "CopyAcs")]
             public static void ChangeCopyAcsPostfix(CvsAccessoryChange __instance)
             {
-                OnChangeAcs(__instance);
+                var traverse = Traverse.Create(__instance);
+                var selSrc = traverse.Field("selSrc").GetValue<int>();
+                var selDst = traverse.Field("selDst").GetValue<int>();
+                OnChangeAcs(__instance, selSrc, selDst);
             }
         }
     }

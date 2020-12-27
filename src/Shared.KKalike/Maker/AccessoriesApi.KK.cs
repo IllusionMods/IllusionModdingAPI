@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ChaCustom;
@@ -75,8 +76,68 @@ namespace KKAPI.Maker
         public static event EventHandler<AccessoryTransferEventArgs> AccessoryTransferred;
 
         /// <summary>
+        /// Get a list of all accessory objects for this character.
+        /// If an accessory slot exists but has no accessory in it, it will appear as null on the list.
+        /// </summary>
+        public static GameObject[] GetAccessoryObjects(this ChaControl character)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+            
+            if (!MoreAccessoriesInstalled) return character.objAccessory;
+
+            var dict = Traverse.Create(_moreAccessoriesInstance).Field("_accessoriesByChar").GetValue();
+            var m = dict.GetType().GetMethod("TryGetValue", AccessTools.allDeclared) ?? throw new ArgumentException("TryGetValue not found");
+            var parameters = new object[] { character.chaFile, null };
+            m.Invoke(dict, parameters);
+            var objs = Traverse.Create(parameters[1]).Field<ICollection<GameObject>>("objAccessory").Value;
+            return character.objAccessory.Concat(objs).ToArray();
+        }
+
+        /// <summary>
+        /// Get accessory objects of specified index for this character.
+        /// null will be returned if an accessory slot exists but has no accessory in it, or if the slot doesn't exist.
+        /// If index is below 0 or the character is null an exception will be thrown.
+        /// </summary>
+        public static GameObject GetAccessoryObject(this ChaControl character, int index)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+            return GetAccessory(character, index)?.gameObject;
+        }
+
+        /// <summary>
+        /// Get count of the UI entries for accessories (accessory slots).
+        /// Returns 0 outside of chara maker.
+        /// </summary>
+        public static int GetMakerAccessoryCount()
+        {
+            return GetCvsAccessoryCount();
+        }
+
+        /// <summary>
+        /// Get the character that owns this accessory
+        /// </summary>
+        public static ChaControl GetOwningCharacter(GameObject accessoryRootObject)
+        {
+            if (accessoryRootObject == null) throw new ArgumentNullException(nameof(accessoryRootObject));
+            return accessoryRootObject.GetComponentInParent<ChaControl>();
+        }
+
+        /// <summary>
+        /// Get index of this accessory, or -1 if it doesn't exist for the specified character.
+        /// </summary>
+        public static int GetAccessoryIndex(this ChaControl character, GameObject accessoryRootObject)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+            if (accessoryRootObject == null) throw new ArgumentNullException(nameof(accessoryRootObject));
+            var accessoryComponent = accessoryRootObject.GetComponent<ChaAccessoryComponent>();
+            if (accessoryComponent == null) return -1;
+            return _getChaAccessoryCmpIndex(character, accessoryComponent);
+        }
+
+        /// <summary>
         /// Get the accessory given a slot index.
         /// </summary>
+        [Obsolete]
         public static ChaAccessoryComponent GetAccessory(this ChaControl character, int accessoryIndex)
         {
             return _getChaAccessoryCmp(character, accessoryIndex);
@@ -85,6 +146,7 @@ namespace KKAPI.Maker
         /// <summary>
         /// Get slot index of his accessory, useful for referencing to the accesory in extended data.
         /// </summary>
+        [Obsolete]
         public static int GetAccessoryIndex(this ChaAccessoryComponent accessoryComponent)
         {
             var chaControl = GetOwningChaControl(accessoryComponent);
@@ -95,6 +157,7 @@ namespace KKAPI.Maker
         /// Get accessory UI entry in maker.
         /// Only works inside chara maker.
         /// </summary>
+        [Obsolete]
         public static CvsAccessory GetCvsAccessory(int index)
         {
             if (_getCvsAccessory == null) throw new InvalidOperationException("Can only call GetCvsAccessory when inside Chara Maker");
@@ -116,6 +179,7 @@ namespace KKAPI.Maker
         /// Get accessory PartsInfo entry in maker.
         /// Only works inside chara maker.
         /// </summary>
+        [Obsolete]
         public static ChaFileAccessory.PartsInfo GetPartsInfo(int index)
         {
             if (_getPartsInfo == null) throw new InvalidOperationException("Can only call GetPartsInfo when inside Chara Maker");
@@ -126,6 +190,7 @@ namespace KKAPI.Maker
         /// Get count of the UI entries for accessories (accessory slots).
         /// Returns 0 outside of chara maker.
         /// </summary>
+        [Obsolete]
         public static int GetCvsAccessoryCount()
         {
             if (_getCvsAccessoryCount == null) return 0;
@@ -135,6 +200,7 @@ namespace KKAPI.Maker
         /// <summary>
         /// Get the ChaControl that owns this accessory
         /// </summary>
+        [Obsolete]
         public static ChaControl GetOwningChaControl(this ChaAccessoryComponent accessoryComponent)
         {
             return accessoryComponent.GetComponentInParent<ChaControl>();
@@ -165,18 +231,6 @@ namespace KKAPI.Maker
                 _getChaAccessoryCmp = (control, i) => control.cusAcsCmp[i];
                 _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cusAcsCmp, component);
                 _getPartsInfo = i => MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[i];
-            }
-
-            if (KoikatuAPI.EnableDebugLogging)
-            {
-                SelectedMakerAccSlotChanged += (sender, args) => KoikatuAPI.Logger.LogMessage(
-                    $"SelectedMakerAccSlotChanged - id: {args.SlotIndex}, cvs: {args.CvsAccessory.transform.name}, component: {args.AccessoryComponent?.name ?? "null"}");
-#if KK
-                AccessoriesCopied += (sender, args) => KoikatuAPI.Logger.LogMessage(
-                    $"AccessoriesCopied - ids: {string.Join(", ", args.CopiedSlotIndexes.Select(x => x.ToString()).ToArray())}, src:{args.CopySource}, dst:{args.CopyDestination}");
-#endif
-                AccessoryTransferred += (sender, args) => KoikatuAPI.Logger.LogMessage(
-                    $"AccessoryTransferred - srcId:{args.SourceSlotIndex}, dstId:{args.DestinationSlotIndex}");
             }
         }
 
@@ -253,7 +307,7 @@ namespace KKAPI.Maker
             SelectedMakerAccSlot = newSlotIndex;
 
             if (KoikatuAPI.EnableDebugLogging)
-                KoikatuAPI.Logger.LogMessage("SelectedMakerSlotChanged - slot:" + newSlotIndex);
+                KoikatuAPI.Logger.LogMessage("SelectedMakerAccSlotChanged - slot:" + newSlotIndex);
 
             if (SelectedMakerAccSlotChanged == null) return;
             try
@@ -303,8 +357,7 @@ namespace KKAPI.Maker
 #if KK
         private static void OnCopyAcs(CvsAccessoryCopy instance)
         {
-            if (AccessoriesCopied == null) return;
-
+            if (AccessoriesCopied == null && !KoikatuAPI.EnableDebugLogging) return;
             try
             {
                 var selected = instance.GetComponentsInChildren<UnityEngine.UI.Toggle>()
@@ -317,7 +370,11 @@ namespace KKAPI.Maker
 
                 var args = new AccessoryCopyEventArgs(selected, (ChaFileDefine.CoordinateType)dropdowns[1].value, (ChaFileDefine.CoordinateType)dropdowns[0].value);
 
-                AccessoriesCopied(instance, args);
+                if (KoikatuAPI.EnableDebugLogging)
+                    KoikatuAPI.Logger.LogMessage($"AccessoriesCopied - ids: {string.Join(", ", args.CopiedSlotIndexes.Select(x => x.ToString()).ToArray())}, src:{args.CopySource}, dst:{args.CopyDestination}");
+
+                if (AccessoriesCopied != null)
+                    AccessoriesCopied(instance, args);
             }
             catch (Exception ex)
             {
@@ -326,16 +383,14 @@ namespace KKAPI.Maker
         }
 #endif
 
-        private static void OnChangeAcs(CvsAccessoryChange instance)
+        private static void OnChangeAcs(object instance, int selSrc, int selDst)
         {
-            if (AccessoryTransferred == null) return;
+            if (KoikatuAPI.EnableDebugLogging)
+                KoikatuAPI.Logger.LogMessage($"AccessoryTransferred - srcId:{selSrc}, dstId:{selDst}");
 
+            if (AccessoryTransferred == null) return;
             try
             {
-                var traverse = Traverse.Create(instance);
-                var selSrc = traverse.Field("selSrc").GetValue<int>();
-                var selDst = traverse.Field("selDst").GetValue<int>();
-
                 var args = new AccessoryTransferEventArgs(selSrc, selDst);
 
                 AccessoryTransferred(instance, args);

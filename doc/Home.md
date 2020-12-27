@@ -68,7 +68,10 @@
 
 ## [KKAPI.Studio.SaveLoad](KKAPI.Studio.SaveLoad.md)
 
+- [`ObjectDeletedEventArgs`](KKAPI.Studio.SaveLoad.md#objectdeletedeventargs)
 - [`ObjectsCopiedEventArgs`](KKAPI.Studio.SaveLoad.md#objectscopiedeventargs)
+- [`ObjectsSelectedEventArgs`](KKAPI.Studio.SaveLoad.md#objectsselectedeventargs)
+- [`ObjectVisibilityToggledEventArgs`](KKAPI.Studio.SaveLoad.md#objectvisibilitytoggledeventargs)
 - [`SceneCustomFunctionController`](KKAPI.Studio.SaveLoad.md#scenecustomfunctioncontroller)
 - [`SceneLoadEventArgs`](KKAPI.Studio.SaveLoad.md#sceneloadeventargs)
 - [`SceneOperationKind`](KKAPI.Studio.SaveLoad.md#sceneoperationkind)

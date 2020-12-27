@@ -1,3 +1,19 @@
+## `ObjectDeletedEventArgs`
+
+Arguments used in object deleted events
+```csharp
+public class KKAPI.Studio.SaveLoad.ObjectDeletedEventArgs
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `ObjectCtrlInfo` | DeletedObject | Object deleted by the event | 
+
+
 ## `ObjectsCopiedEventArgs`
 
 Arguments used in objects copied events
@@ -12,6 +28,39 @@ Properties
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `ReadOnlyDictionary<Int32, ObjectCtrlInfo>` | LoadedObjects | Objects copied by the event and their original IDs | 
+
+
+## `ObjectsSelectedEventArgs`
+
+Arguments used in object deleted events
+```csharp
+public class KKAPI.Studio.SaveLoad.ObjectsSelectedEventArgs
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `List<ObjectCtrlInfo>` | SelectedObjects | Object modified by the event | 
+
+
+## `ObjectVisibilityToggledEventArgs`
+
+Arguments used in object deleted events
+```csharp
+public class KKAPI.Studio.SaveLoad.ObjectVisibilityToggledEventArgs
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `ObjectCtrlInfo` | ToggledObject | Object being toggled | 
+| `Boolean` | Visible | Visibility of the object | 
 
 
 ## `SceneCustomFunctionController`
@@ -36,7 +85,10 @@ Methods
 | --- | --- | --- | 
 | `PluginData` | GetExtendedData() | Get extended data of the last loaded scene by using the ID you specified when registering this controller. | 
 | `Studio` | GetStudio() | Get the instance of the Studio game manager object. | 
+| `void` | OnObjectDeleted(`ObjectCtrlInfo` objectCtrlInfo) | Fired when objects are deleted. | 
 | `void` | OnObjectsCopied(`ReadOnlyDictionary<Int32, ObjectCtrlInfo>` copiedItems) | Fired when objects are copied. | 
+| `void` | OnObjectsSelected(`List<ObjectCtrlInfo>` objectCtrlInfo) | Fired when objects are selected. | 
+| `void` | OnObjectVisibilityToggled(`ObjectCtrlInfo` objectCtrlInfo, `Boolean` visible) | Fired when objects have their visibility toggled. | 
 | `void` | OnSceneLoad(`SceneOperationKind` operation, `ReadOnlyDictionary<Int32, ObjectCtrlInfo>` loadedItems) | Fired when a scene is successfully changed, either by loading, importing or resetting. | 
 | `void` | OnSceneSave() | Fired when a scene is about to be saved and any exteneded data needs to be written. | 
 | `void` | SetExtendedData(`PluginData` data) | Save your custom data to the scene under the ID you specified when registering this controller. | 
@@ -104,7 +156,10 @@ Static Events
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `EventHandler<ObjectDeletedEventArgs>` | ObjectDeleted | Fired when an object in the scene is being deleted | 
 | `EventHandler<ObjectsCopiedEventArgs>` | ObjectsCopied | Fired when objects in the scene are copied | 
+| `EventHandler<ObjectsSelectedEventArgs>` | ObjectsSelected | Fired when an object in the scene is selected | 
+| `EventHandler<ObjectVisibilityToggledEventArgs>` | ObjectVisibilityToggled | Fired when an object in the scene had its visibility toggled | 
 | `EventHandler<SceneLoadEventArgs>` | SceneLoad | Fired right after a scene is succesfully imported, loaded or cleared.  Runs immediately after all `KKAPI.Studio.SaveLoad.SceneCustomFunctionController` objects trigger their events. | 
 | `EventHandler` | SceneSave | Fired right before a scene is saved to file.  Runs immediately after all `KKAPI.Studio.SaveLoad.SceneCustomFunctionController` objects trigger their events. | 
 

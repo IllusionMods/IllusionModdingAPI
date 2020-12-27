@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using AIChara;
 using CharaCustom;
 using HarmonyLib;
@@ -14,6 +17,7 @@ namespace KKAPI.Maker
     /// </summary>
     public static partial class AccessoriesApi
     {
+        private static Object _moreAccessoriesInstance;
         private static Type _moreAccessoriesType;
 
         private static CanvasGroup _accessorySlotCanvasGroup;
@@ -59,8 +63,70 @@ namespace KKAPI.Maker
         public static event EventHandler<AccessoryTransferEventArgs> AccessoryTransferred;
 
         /// <summary>
+        /// Get a list of all accessory objects for this character.
+        /// If an accessory slot exists but has no accessory in it, it will appear as null on the list.
+        /// </summary>
+        public static GameObject[] GetAccessoryObjects(this ChaControl character)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+
+            if (!MoreAccessoriesInstalled) return character.objAccessory;
+
+            var dict = Traverse.Create(_moreAccessoriesInstance).Field("_charAdditionalData").GetValue();
+            var m = dict.GetType().GetMethod("TryGetValue", AccessTools.allDeclared) ?? throw new ArgumentException("TryGetValue not found");
+            var parameters = new object[] { character.chaFile, null };
+            m.Invoke(dict, parameters);
+            //List<MoreAccessories.AdditionalData.AccessoryObject> objects
+            var objs = Traverse.Create(parameters[1]).Field<ICollection>("objects").Value;
+            var objs2 = objs.Cast<object>().Select(x => Traverse.Create(x).Field<GameObject>("obj").Value);
+            return character.objAccessory.Concat(objs2).ToArray();
+        }
+
+        /// <summary>
+        /// Get accessory objects of specified index for this character.
+        /// null will be returned if an accessory slot exists but has no accessory in it, or if the slot doesn't exist.
+        /// If index is below 0 or the character is null an exception will be thrown.
+        /// </summary>
+        public static GameObject GetAccessoryObject(this ChaControl character, int index)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+            return GetAccessory(character, index)?.gameObject;
+        }
+
+        /// <summary>
+        /// Get count of the UI entries for accessories (accessory slots).
+        /// Returns 0 outside of chara maker.
+        /// </summary>
+        public static int GetMakerAccessoryCount()
+        {
+            return GetCvsAccessoryCount();
+        }
+
+        /// <summary>
+        /// Get the character that owns this accessory
+        /// </summary>
+        public static ChaControl GetOwningCharacter(GameObject accessoryRootObject)
+        {
+            if (accessoryRootObject == null) throw new ArgumentNullException(nameof(accessoryRootObject));
+            return accessoryRootObject.GetComponentInParent<ChaControl>();
+        }
+
+        /// <summary>
+        /// Get index of this accessory, or -1 if it doesn't exist for the specified character.
+        /// </summary>
+        public static int GetAccessoryIndex(this ChaControl character, GameObject accessoryRootObject)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+            if (accessoryRootObject == null) throw new ArgumentNullException(nameof(accessoryRootObject));
+            var accessoryComponent = accessoryRootObject.GetComponent<CmpAccessory>();
+            if (accessoryComponent == null) return -1;
+            return _getChaAccessoryCmpIndex(character, accessoryComponent);
+        }
+
+        /// <summary>
         /// Get the accessory given a slot index.
         /// </summary>
+        [Obsolete]
         public static CmpAccessory GetAccessory(this ChaControl character, int accessoryIndex)
         {
             return _getChaAccessoryCmp(character, accessoryIndex);
@@ -69,6 +135,7 @@ namespace KKAPI.Maker
         /// <summary>
         /// Get slot index of his accessory, useful for referencing to the accesory in extended data.
         /// </summary>
+        [Obsolete]
         public static int GetAccessoryIndex(this CmpAccessory accessoryComponent)
         {
             var chaControl = GetOwningChaControl(accessoryComponent);
@@ -79,6 +146,7 @@ namespace KKAPI.Maker
         /// Get accessory UI entry in maker.
         /// Only works inside chara maker.
         /// </summary>
+        [Obsolete]
         public static CustomAcsCorrectSet GetCvsAccessory()
         {
             if (!MakerAPI.InsideMaker) throw new InvalidOperationException("Can only call GetCvsAccessory when inside Chara Maker");
@@ -100,6 +168,7 @@ namespace KKAPI.Maker
         /// Get accessory PartsInfo entry in maker.
         /// Only works inside chara maker.
         /// </summary>
+        [Obsolete]
         public static ChaFileAccessory.PartsInfo GetPartsInfo(int index)
         {
             if (_getPartsInfo == null) throw new InvalidOperationException("Can only call GetPartsInfo when inside Chara Maker");
@@ -110,6 +179,7 @@ namespace KKAPI.Maker
         /// Get count of the UI entries for accessories (accessory slots).
         /// Returns 0 outside of chara maker.
         /// </summary>
+        [Obsolete]
         public static int GetCvsAccessoryCount()
         {
             if (_getCvsAccessoryCount == null) return 0;
@@ -119,6 +189,7 @@ namespace KKAPI.Maker
         /// <summary>
         /// Get the ChaControl that owns this accessory
         /// </summary>
+        [Obsolete]
         public static ChaControl GetOwningChaControl(this CmpAccessory accessoryComponent)
         {
             return accessoryComponent.GetComponentInParent<ChaControl>();
@@ -186,16 +257,6 @@ namespace KKAPI.Maker
                 _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cmpAccessory, component);
                 _getPartsInfo = i => MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[i];
             }
-
-            if (KoikatuAPI.EnableDebugLogging)
-            {
-                SelectedMakerAccSlotChanged += (sender, args) => KoikatuAPI.Logger.LogMessage(
-                    $"SelectedMakerAccSlotChanged - id: {args.SlotIndex}, cvs: {args.CvsAccessory?.transform.name}, component: {args.AccessoryComponent?.name ?? "null"}");
-                /* todo#if KK AccessoriesCopied += (sender, args) => KoikatuAPI.Logger.LogMessage(
-                    $"AccessoriesCopied - ids: {string.Join(", ", args.CopiedSlotIndexes.Select(x => x.ToString()).ToArray())}, src:{args.CopySource}, dst:{args.CopyDestination}"); #endif*/
-                AccessoryTransferred += (sender, args) => KoikatuAPI.Logger.LogMessage(
-                    $"AccessoryTransferred - srcId:{args.SourceSlotIndex}, dstId:{args.DestinationSlotIndex}");
-            }
         }
 
         private static void DetectMoreAccessories()
@@ -203,6 +264,8 @@ namespace KKAPI.Maker
             try
             {
                 _moreAccessoriesType = Type.GetType("MoreAccessoriesAI.MoreAccessories, MoreAccessories", false);
+                if (_moreAccessoriesType != null)
+                    _moreAccessoriesInstance = BepInEx.Bootstrap.Chainloader.ManagerObject.GetComponent(_moreAccessoriesType);
             }
             catch (Exception e)
             {
@@ -237,7 +300,7 @@ namespace KKAPI.Maker
             SelectedMakerAccSlot = newSlotIndex;
 
             if (KoikatuAPI.EnableDebugLogging)
-                KoikatuAPI.Logger.LogMessage("SelectedMakerSlotChanged - slot:" + newSlotIndex);
+                KoikatuAPI.Logger.LogMessage("SelectedMakerAccSlotChanged - slot:" + newSlotIndex);
 
             if (SelectedMakerAccSlotChanged == null) return;
             try
@@ -268,16 +331,14 @@ namespace KKAPI.Maker
             }
         }
 
-        private static void OnChangeAcs(CvsA_Copy instance)
+        private static void OnChangeAcs(object instance, int selSrc, int selDst)
         {
-            if (AccessoryTransferred == null) return;
+            if (KoikatuAPI.EnableDebugLogging)
+                KoikatuAPI.Logger.LogMessage($"AccessoryTransferred - srcId:{selSrc}, dstId:{selDst}");
 
+            if (AccessoryTransferred == null) return;
             try
             {
-                var traverse = Traverse.Create(instance);
-                var selSrc = traverse.Field("selSrc").GetValue<int>();
-                var selDst = traverse.Field("selDst").GetValue<int>();
-
                 var args = new AccessoryTransferEventArgs(selSrc, selDst);
 
                 AccessoryTransferred(instance, args);

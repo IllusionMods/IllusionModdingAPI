@@ -19,12 +19,11 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `ChaAccessoryComponent` | GetAccessory(this `ChaControl` character, `Int32` accessoryIndex) | Get the accessory given a slot index. | 
-| `Int32` | GetAccessoryIndex(this `ChaAccessoryComponent` accessoryComponent) | Get slot index of his accessory, useful for referencing to the accesory in extended data. | 
-| `CvsAccessory` | GetCvsAccessory(`Int32` index) | Get accessory UI entry in maker.  Only works inside chara maker. | 
-| `Int32` | GetCvsAccessoryCount() | Get count of the UI entries for accessories (accessory slots).  Returns 0 outside of chara maker. | 
-| `ChaControl` | GetOwningChaControl(this `ChaAccessoryComponent` accessoryComponent) | Get the ChaControl that owns this accessory | 
-| `PartsInfo` | GetPartsInfo(`Int32` index) | Get accessory PartsInfo entry in maker.  Only works inside chara maker. | 
+| `Int32` | GetAccessoryIndex(this `ChaControl` character, `GameObject` accessoryRootObject) | Get index of this accessory, or -1 if it doesn't exist for the specified character. | 
+| `GameObject` | GetAccessoryObject(this `ChaControl` character, `Int32` index) | Get accessory objects of specified index for this character.  null will be returned if an accessory slot exists but has no accessory in it, or if the slot doesn't exist.  If index is below 0 or the character is null an exception will be thrown. | 
+| `GameObject[]` | GetAccessoryObjects(this `ChaControl` character) | Get a list of all accessory objects for this character.  If an accessory slot exists but has no accessory in it, it will appear as null on the list. | 
+| `Int32` | GetMakerAccessoryCount() | Get count of the UI entries for accessories (accessory slots).  Returns 0 outside of chara maker. | 
+| `ChaControl` | GetOwningCharacter(`GameObject` accessoryRootObject) | Get the character that owns this accessory | 
 
 
 Static Events
