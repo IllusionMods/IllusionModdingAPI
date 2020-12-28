@@ -23,6 +23,7 @@ Static Methods
 | `GameObject` | GetAccessoryObject(this `ChaControl` character, `Int32` index) | Get accessory objects of specified index for this character.  null will be returned if an accessory slot exists but has no accessory in it, or if the slot doesn't exist.  If index is below 0 or the character is null an exception will be thrown. | 
 | `GameObject[]` | GetAccessoryObjects(this `ChaControl` character) | Get a list of all accessory objects for this character.  If an accessory slot exists but has no accessory in it, it will appear as null on the list. | 
 | `Int32` | GetMakerAccessoryCount() | Get count of the UI entries for accessories (accessory slots).  Returns 0 outside of chara maker. | 
+| `GameObject` | GetMakerAccessoryPageObject(`Int32` index = -1) | Get the root gameobject of the maker UI page for the specified accessory.  Returns null if the page doesn't exist or can't be accessed (e.g. when outside maker). | 
 | `ChaControl` | GetOwningCharacter(`GameObject` accessoryRootObject) | Get the character that owns this accessory | 
 
 
