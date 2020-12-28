@@ -100,6 +100,17 @@ namespace KKAPI.Maker
             return GetMakerToggles()?.Length ?? 0;
         }
 
+        /// <summary>
+        /// Get the root gameobject of the maker UI page for the specified accessory.
+        /// Returns null if the page doesn't exist or can't be accessed (e.g. when outside maker).
+        /// </summary>
+        /// <param name="index">Index of the accessory to get the UI for. Use -1 to get the currently opened accessory page</param>
+        public static GameObject GetMakerAccessoryPageObject(int index = -1)
+        {
+            if (index < 0) index = SelectedMakerAccSlot;
+            return GetMakerToggles()[index].gameObject;
+        }
+
         private static ToggleButton[] GetMakerToggles()
         {//nowTab
             if (!MakerAPI.InsideMaker || _accCustomEdit == null) return null;

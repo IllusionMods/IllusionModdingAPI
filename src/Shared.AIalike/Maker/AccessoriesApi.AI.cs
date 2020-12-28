@@ -103,6 +103,23 @@ namespace KKAPI.Maker
         }
 
         /// <summary>
+        /// Get the root gameobject of the maker UI page for the specified accessory.
+        /// </summary>
+        /// <param name="index">Index of the accessory to get the UI for. Use -1 to get the currently opened accessory page</param>
+        public static GameObject GetMakerAccessoryPageObject(int index = -1)
+        {
+            var cvsAccessory = GetCvsAccessory();
+            if (cvsAccessory == null) return null;
+            if (index >= 0 && cvsAccessory.slotNo != index)
+            {
+                KoikatuAPI.Logger.LogWarning("GetMakerAccessoryPageObject - Index did not match currently opened accessory page, therefore null was returned. This game only supports getting the currently opened page (since it's reused).");
+                return null;
+            }
+
+            return cvsAccessory.gameObject;
+        }
+
+        /// <summary>
         /// Get the character that owns this accessory
         /// </summary>
         public static ChaControl GetOwningCharacter(GameObject accessoryRootObject)
