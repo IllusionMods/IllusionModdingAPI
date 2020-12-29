@@ -65,7 +65,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="EC_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ExtensibleSaveFormat.EmotionCreators.16.2.0.1\lib\net46\EC_ExtensibleSaveFormat.dll</HintPath>
+      <HintPath>..\packages\ExtensibleSaveFormat.EmotionCreators.16.2.0.2\lib\net46\EC_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IL, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
