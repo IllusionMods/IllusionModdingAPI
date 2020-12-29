@@ -1,5 +1,7 @@
 ﻿using System;
 using ActionGame;
+using ExtensibleSaveFormat;
+using KKAPI.Maker;
 using UnityEngine;
 
 namespace KKAPI.MainGame
@@ -15,15 +17,31 @@ namespace KKAPI.MainGame
     /// </summary>
     public abstract class GameCustomFunctionController : MonoBehaviour
     {
-        // todo in the future add extended save to game saves
-
         private static Cycle _cycle;
 
         /// <summary>
         /// Extended save ID used by this function controller
         /// </summary>
-        [Obsolete("Not yet implemented")]
         public string ExtendedDataId { get; internal set; }
+        
+        /// <summary>
+        /// Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. 
+        /// </summary>
+        public PluginData GetExtendedData()
+        {
+            if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
+            return ExtendedSave.GetExtendedDataById(Manager.Game.Instance.saveData, ExtendedDataId);
+        }
+
+        /// <summary>
+        /// Save your custom data to the character card under the ID you specified when registering this controller.
+        /// </summary>
+        /// <param name="data">Your custom data to be written to the character card. Can be null to remove the data.</param>
+        public void SetExtendedData(PluginData data)
+        {
+            if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
+            ExtendedSave.SetExtendedDataById(Manager.Game.Instance.saveData, ExtendedDataId, data);
+        }
 
         /// <summary>
         /// Triggered when the H scene is ended, but before it is unloaded.
