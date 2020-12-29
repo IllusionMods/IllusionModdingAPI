@@ -43,10 +43,18 @@ public abstract class KKAPI.MainGame.GameCustomFunctionController
 
 ```
 
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `String` | ExtendedDataId | Extended save ID used by this function controller | 
+
+
 Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `PluginData` | GetExtendedData() | Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. | 
 | `void` | OnDayChange(`Week` day) | Triggered when the current day changes in story mode. | 
 | `void` | OnEndH(`HSceneProc` proc, `Boolean` freeH) | Triggered when the H scene is ended, but before it is unloaded.  Warning: This is triggered in free H as well! | 
 | `void` | OnEnterNightMenu() | Triggered when the night menu is entered at the end of the day (screen where you can save and load the game).  You can use `KKAPI.MainGame.GameCustomFunctionController.GetCycle` to see what day it is as well as other game state. | 
@@ -55,6 +63,7 @@ Methods
 | `void` | OnNewGame() | Triggered when a new game is started in story mode. | 
 | `void` | OnPeriodChange(`Type` period) | Triggered when the current time of the day changes in story mode. | 
 | `void` | OnStartH(`HSceneProc` proc, `Boolean` freeH) | Triggered after an H scene is loaded.  Warning: This is triggered in free H as well! | 
+| `void` | SetExtendedData(`PluginData` data) | Save your custom data to the character card under the ID you specified when registering this controller. | 
 
 
 Static Methods

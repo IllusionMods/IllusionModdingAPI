@@ -177,7 +177,7 @@ namespace KKAPI.Maker
 
         private static void CheckIndexRangeThrow(int accessoryIndex)
         {
-            if (accessoryIndex < 0 || accessoryIndex >= AccessoriesApi.GetCvsAccessoryCount())
+            if (accessoryIndex < 0 || accessoryIndex >= AccessoriesApi.GetMakerAccessoryCount())
                 throw new IndexOutOfRangeException("accessoryIndex has to be between 0 and AccessoriesApi.GetCvsAccessoryCount() - 1");
         }
 

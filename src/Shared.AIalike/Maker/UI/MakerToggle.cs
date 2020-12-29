@@ -11,8 +11,6 @@ namespace KKAPI.Maker.UI
     /// </summary>
     public class MakerToggle : BaseEditableGuiEntry<bool>
     {
-        private static Transform _toggleCopy;
-
         /// <summary>
         /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
         /// </summary>

@@ -136,7 +136,7 @@ namespace KKAPI.Maker
 
             public static void Init()
             {
-                var hi = BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
+                var hi = Harmony.CreateAndPatchAll(typeof(Hooks));
 
                 // AI LoadFile(BinaryReader br, int lang, bool noLoadPNG = false, bool noLoadStatus = true)
                 var target = AccessTools.GetDeclaredMethods(typeof(ChaFile))

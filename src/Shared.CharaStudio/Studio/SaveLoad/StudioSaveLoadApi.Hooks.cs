@@ -25,7 +25,7 @@ namespace KKAPI.Studio.SaveLoad
 
             public static void SetupHooks()
             {
-                BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
+                Harmony.CreateAndPatchAll(typeof(Hooks));
                 ExtendedSave.SceneBeingImported += path => _loadOrImportSuccess = true;
                 ExtendedSave.SceneBeingLoaded += path => _loadOrImportSuccess = true;
             }

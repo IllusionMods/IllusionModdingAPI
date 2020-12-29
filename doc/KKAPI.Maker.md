@@ -115,8 +115,6 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `ChaAccessoryComponent` | AccessoryComponent | Get accessory component. | 
-| `CvsAccessory` | CvsAccessory | Get accessory UI entry in maker. | 
 | `Int32` | SlotIndex | Currently opened accessory slot index. 0-indexed. | 
 
 

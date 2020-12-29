@@ -1,6 +1,7 @@
 ﻿using System;
 using AIChara;
 using CharaCustom;
+#pragma warning disable 612
 
 namespace KKAPI.Maker
 {

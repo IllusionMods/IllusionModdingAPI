@@ -17,7 +17,7 @@ namespace KKAPI.Chara
         {
             public static void InitHooks()
             {
-                var i = BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
+                var i = Harmony.CreateAndPatchAll(typeof(Hooks));
 
                 // Fuzzy argument lengths are needed for darkness compatibility
                 var target = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.Initialize) && info.GetParameters().Length >= 5);

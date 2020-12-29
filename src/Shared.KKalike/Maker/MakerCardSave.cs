@@ -21,8 +21,7 @@ namespace KKAPI.Maker
 
         static MakerCardSave()
         {
-            _harmony = new Harmony(nameof(MakerCardSave));
-            HarmonyWrapper.PatchAll(typeof(MakerCardSave), _harmony);
+            _harmony = Harmony.CreateAndPatchAll(typeof(MakerCardSave), nameof(MakerCardSave));
         }
 
         /// <summary>

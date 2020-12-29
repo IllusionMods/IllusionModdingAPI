@@ -7,6 +7,7 @@ using TMPro;
 using HarmonyLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
+#pragma warning disable 612
 
 namespace KKAPI.Maker
 {
@@ -221,7 +222,7 @@ namespace KKAPI.Maker
         {
             DetectMoreAccessories();
 
-            BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
+            Harmony.CreateAndPatchAll(typeof(Hooks));
 
             MakerAPI.InsideMakerChanged += MakerAPI_InsideMakerChanged;
             MakerAPI.MakerFinishedLoading += (sender, args) => OnSelectedMakerSlotChanged(sender, 0);

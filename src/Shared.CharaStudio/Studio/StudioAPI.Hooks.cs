@@ -11,7 +11,7 @@ namespace KKAPI.Studio
         {
             public static void SetupHooks()
             {
-                BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
+                Harmony.CreateAndPatchAll(typeof(Hooks));
             }
 
             [HarmonyPostfix]

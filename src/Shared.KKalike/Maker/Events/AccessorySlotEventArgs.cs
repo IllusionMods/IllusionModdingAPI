@@ -1,5 +1,6 @@
 ﻿using System;
 using ChaCustom;
+#pragma warning disable 612
 
 namespace KKAPI.Maker
 {
@@ -22,11 +23,13 @@ namespace KKAPI.Maker
         /// <summary>
         /// Get accessory UI entry in maker.
         /// </summary>
+        [Obsolete]
         public CvsAccessory CvsAccessory => AccessoriesApi.GetCvsAccessory(SlotIndex);
 
         /// <summary>
         /// Get accessory component.
         /// </summary>
+        [Obsolete]
         public ChaAccessoryComponent AccessoryComponent => MakerAPI.GetCharacterControl().GetAccessory(SlotIndex);
     }
 }

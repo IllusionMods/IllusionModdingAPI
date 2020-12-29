@@ -46,7 +46,7 @@ namespace KKAPI.Chara
             public bool MaintainState { get; set; }
 
             /// <summary>
-            /// If true, the current state of all controllers of this kind should be preserved inside <see cref="CharaCustomFunctionController.OnCoordinateBeingLoaded(CustomParameterCoordinate,bool)"/>.
+            /// If true, the current state of all controllers of this kind should be preserved inside <see cref="CharaCustomFunctionController.OnCoordinateBeingLoaded(Character.CustomParameter,bool)"/>.
             /// New extended data will not be read, instead currently data will be reused, or the load will not happen at all.
             /// </summary>
             public bool MaintainCoordinateState { get; set; }

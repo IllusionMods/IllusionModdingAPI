@@ -19,20 +19,20 @@ namespace KKAPI.Maker.UI
     [Obsolete("Not implemented")]
     public class MakerCoordinateLoadToggle : BaseEditableGuiEntry<bool>
     {
-        static MakerCoordinateLoadToggle()
-        {
-            var cloInstalled = Chainloader.Plugins.Where(x => x != null).Select(MetadataHelper.GetMetadata).Any(x => x.GUID == "KK_ClothesLoadOption");
-            _verticalOffset = cloInstalled ? 52 : 26;
-        }
-
-        private const int TotalWidth = 380 + 292;
-        private static readonly int _verticalOffset;
-        private static readonly List<MakerCoordinateLoadToggle> Toggles = new List<MakerCoordinateLoadToggle>();
-        private static Transform _baseToggle;
-        private static GameObject _root;
-
-        private static int _createdCount;
-        private static List<RectTransform> _baseToggles;
+        //static MakerCoordinateLoadToggle()
+        //{
+        //    var cloInstalled = Chainloader.Plugins.Where(x => x != null).Select(MetadataHelper.GetMetadata).Any(x => x.GUID == "KK_ClothesLoadOption");
+        //    _verticalOffset = cloInstalled ? 52 : 26;
+        //}
+        //
+        //private const int TotalWidth = 380 + 292;
+        //private static readonly int _verticalOffset;
+        //private static readonly List<MakerCoordinateLoadToggle> Toggles = new List<MakerCoordinateLoadToggle>();
+        //private static Transform _baseToggle;
+        //private static GameObject _root;
+        //
+        //private static int _createdCount;
+        //private static List<RectTransform> _baseToggles;
 
         /// <summary>
         /// Create a new coordinate load toggle. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/> 
@@ -53,7 +53,7 @@ namespace KKAPI.Maker.UI
         /// <summary>
         /// Check if any of the custom toggles are checked
         /// </summary>
-        public static bool AnyEnabled => Toggles.Any(x => x.Value);
+        public static bool AnyEnabled => false;//Toggles.Any(x => x.Value);
 
         internal static Button LoadButton { get; private set; }
 
@@ -119,7 +119,7 @@ namespace KKAPI.Maker.UI
             if (toggle == null) throw new ArgumentNullException(nameof(toggle));
             toggle.ThrowIfDisposed(nameof(toggle));
 
-            Toggles.Add(toggle);
+            //Toggles.Add(toggle);
             return toggle;
         }
 

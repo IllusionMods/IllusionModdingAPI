@@ -1,5 +1,6 @@
 ﻿using ChaCustom;
 using HarmonyLib;
+#pragma warning disable 612
 
 namespace KKAPI.Maker
 {

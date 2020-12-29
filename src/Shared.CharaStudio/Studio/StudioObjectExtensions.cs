@@ -73,6 +73,9 @@ namespace KKAPI.Studio
             return charas.FirstOrDefault(x => x.charInfo == chaControl);
         }
 
+        /// <summary>
+        /// Get character component for this studio object
+        /// </summary>
 #if PH
         public static Human GetChaControl(this OCIChar ociChar) => ociChar.charInfo.human;
 #else

@@ -21,7 +21,7 @@ namespace KKAPI.Maker.UI
     {
         static MakerCoordinateLoadToggle()
         {
-            var cloInstalled = Chainloader.Plugins.Where(x => x != null).Select(MetadataHelper.GetMetadata).Any(x => x.GUID == "KK_ClothesLoadOption");
+            var cloInstalled = Chainloader.PluginInfos.ContainsKey("KK_ClothesLoadOption");
             _verticalOffset = cloInstalled ? 52 : 26;
         }
 

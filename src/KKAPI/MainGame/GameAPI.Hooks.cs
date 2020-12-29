@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using ActionGame;
-using BepInEx.Harmony;
 using HarmonyLib;
 
 namespace KKAPI.MainGame
@@ -12,7 +11,7 @@ namespace KKAPI.MainGame
         {
             public static void SetupHooks()
             {
-                HarmonyWrapper.PatchAll(typeof(Hooks));
+                Harmony.CreateAndPatchAll(typeof(Hooks));
             }
 
             [HarmonyPostfix]

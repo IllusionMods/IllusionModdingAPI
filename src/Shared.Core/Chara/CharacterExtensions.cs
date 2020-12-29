@@ -4,9 +4,7 @@ using KKAPI.Maker;
 using KKAPI.Maker.UI;
 using UniRx;
 using UnityEngine;
-#if KK || EC
-using UniRx;
-#elif AI || HS2
+#if AI || HS2
 using AIChara;
 #endif
 

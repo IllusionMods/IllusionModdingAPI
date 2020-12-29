@@ -123,7 +123,9 @@ namespace KKAPI.Chara
 
             // Cards -------------------------
             ExtendedSave.CardBeingSaved += OnCardBeingSaved;
+#pragma warning disable 618
             MakerAPI.ChaFileLoaded += (sender, args) =>
+#pragma warning restore 618
             {
                 var chaControl = MakerAPI.GetCharacterControl();
                 if (chaControl != null)

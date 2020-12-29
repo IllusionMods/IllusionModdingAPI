@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
 using BepInEx;
 using HarmonyLib;
 using KKAPI.Maker;
-using Studio;
 
 namespace KKAPI.Chara
 {
@@ -18,7 +13,7 @@ namespace KKAPI.Chara
         {
             public static void InitHooks()
             {
-                var i = BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
+                var i = Harmony.CreateAndPatchAll(typeof(Hooks));
             }
 
             [HarmonyPostfix]

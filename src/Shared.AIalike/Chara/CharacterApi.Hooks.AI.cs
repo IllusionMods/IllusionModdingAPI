@@ -16,7 +16,7 @@ namespace KKAPI.Chara
         {
             public static void InitHooks()
             {
-                var i = BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
+                var i = Harmony.CreateAndPatchAll(typeof(Hooks));
 
                 var target = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.Initialize) && info.GetParameters().Length >= 5);
                 i.Patch(target, null, new HarmonyMethod(typeof(Hooks), nameof(ChaControl_InitializePostHook)));

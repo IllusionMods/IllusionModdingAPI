@@ -145,7 +145,7 @@ namespace KKAPI.Maker
 
             public static void Init()
             {
-                var hi = BepInEx.Harmony.HarmonyWrapper.PatchAll(typeof(Hooks));
+                var hi = Harmony.CreateAndPatchAll(typeof(Hooks));
 
                 // KK LoadFile(BinaryReader br, bool noLoadPNG, bool noLoadStatus)
                 // EC LoadFile(BinaryReader br, int lang, bool noLoadPNG, bool noLoadStatus)
