@@ -22,8 +22,8 @@ The API is required by many plugins made for Koikatsu, Emotion Creators and AI-G
 * and many more...
 
 ## How to install
-1. Download [the latest release](https://github.com/IllusionMods/IllusionModdingAPI/releases) for your game. **Warning:** You only need the version specific for your game (check the prefix, for example KK = for Koikatsu). Downloading version for the wrong game or multiple versions will break things!
-2. Install latest version of BepInEx 5.0 and BepisPlugins. If MoreAccessories is used, make sure it is up to date as well.
+1. Install at least [BepInEx 5.4.4](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.4) and [BepisPlugins r16.2](https://github.com/IllusionMods/BepisPlugins/releases) . If MoreAccessories is used, make sure it is up to date as well.
+2. Download [the latest release](https://github.com/IllusionMods/IllusionModdingAPI/releases) for your game. **Warning:** You only need the version specific for your game (check the prefix, for example KK = for Koikatsu). Downloading version for the wrong game or multiple versions will break things!
 3. Extract the archive into your game directory. The .dll file should end up inside BepInEx\plugins.
 
 ## Developers
