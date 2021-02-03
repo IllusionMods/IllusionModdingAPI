@@ -95,6 +95,7 @@
 
 ## [KKAPI.Utilities](KKAPI.Utilities.md)
 
+- [`ConfigurationManagerAttributes`](KKAPI.Utilities.md#configurationmanagerattributes)
 - [`CoroutineUtils`](KKAPI.Utilities.md#coroutineutils)
 - [`Extensions`](KKAPI.Utilities.md#extensions)
 - [`HSceneUtils`](KKAPI.Utilities.md#hsceneutils)
@@ -106,5 +107,6 @@
 - [`ResourceUtils`](KKAPI.Utilities.md#resourceutils)
 - [`TextureUtils`](KKAPI.Utilities.md#textureutils)
 - [`TextUtils`](KKAPI.Utilities.md#textutils)
+- [`TranslationHelper`](KKAPI.Utilities.md#translationhelper)
 - [`WindowsStringComparer`](KKAPI.Utilities.md#windowsstringcomparer)
 
