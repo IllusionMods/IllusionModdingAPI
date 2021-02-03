@@ -129,6 +129,40 @@ Static Methods
 | `MEMORYSTATUSEX` | GetCurrentStatus() | Can return null if the call fails for whatever reason | 
 
 
+## `ObservableExtensions`
+
+Additions to the UniRx IObservable extension methods
+```csharp
+public static class KKAPI.Utilities.ObservableExtensions
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `IObservable<Unit>` | OnGUIAsObservable(this `Component` component) | Get an observable that triggers on every OnGUI call on this gameObject | 
+| `IObservable<Unit>` | OnGUIAsObservable(this `Transform` transform) | Get an observable that triggers on every OnGUI call on this gameObject | 
+| `IObservable<Unit>` | OnGUIAsObservable(this `GameObject` gameObject) | Get an observable that triggers on every OnGUI call on this gameObject | 
+
+
+## `ObservableOnGUITrigger`
+
+Trigger component that implements `KKAPI.Utilities.ObservableExtensions.OnGUIAsObservable(UnityEngine.Component)`
+```csharp
+public class KKAPI.Utilities.ObservableOnGUITrigger
+    : ObservableTriggerBase
+
+```
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `IObservable<Unit>` | OnGUIAsObservable() | Get observable that triggers every time this component's OnGUI is called | 
+| `void` | RaiseOnCompletedOnDestroy() |  | 
+
+
 ## `OpenFileDialog`
 
 Gives access to the Windows open file dialog.  http://www.pinvoke.net/default.aspx/comdlg32/GetOpenFileName.html  http://www.pinvoke.net/default.aspx/Structures/OpenFileName.html  http://www.pinvoke.net/default.aspx/Enums/OpenSaveFileDialgueFlags.html  https://social.msdn.microsoft.com/Forums/en-US/2f4dd95e-5c7b-4f48-adfc-44956b350f38/getopenfilename-for-multiple-files?forum=csharpgeneral
