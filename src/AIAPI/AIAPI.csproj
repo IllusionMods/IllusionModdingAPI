@@ -97,9 +97,19 @@
       <HintPath>..\packages\IllusionLibs.AIGirl.UnityEngine.UIModule.2018.2.21.3\lib\net46\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Sirenix.Serialization,   Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.AIGirl.Sirenix.Serialization.2020.5.29.2\lib\net46\Sirenix.Serialization.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KoikatuAPI.cs" />
+    <Compile Include="MainGame\GameApi.cs" />
+    <Compile Include="MainGame\GameAPI.Hooks.cs" />
+    <Compile Include="MainGame\GameCustomFunctionController.cs" />
+    <Compile Include="MainGame\Events\GameSaveLoadEventArgs.cs" />
+    <!-- <Compile Include="MainGame\GameExtensions.cs" /> -->
+    <Compile Include="MainGame\TestGameFunctionController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

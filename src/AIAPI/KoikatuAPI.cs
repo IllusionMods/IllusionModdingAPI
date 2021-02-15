@@ -3,6 +3,7 @@ using BepInEx;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio;
+using KKAPI.MainGame;
 using Manager;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ namespace KKAPI
             MakerAPI.Init(insideStudio);
             StudioAPI.Init(insideStudio);
             CharacterApi.Init();
+            GameAPI.Init(insideStudio);
         }
 
         private void Start()
