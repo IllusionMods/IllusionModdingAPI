@@ -5,6 +5,8 @@ using KKAPI.Maker;
 using UnityEngine;
 using Manager;
 using AIProject;
+using AIChara;
+using CharaCustom;
 
 namespace KKAPI.MainGame
 {
@@ -19,32 +21,31 @@ namespace KKAPI.MainGame
     /// </summary>
     public abstract class GameCustomFunctionController : MonoBehaviour
     {
-        // private static Cycle _cycle; //TODO
+        private static EnvironmentSimulator _cycle;
 
         /// <summary>
         /// Extended save ID used by this function controller
         /// </summary>
         public string ExtendedDataId { get; internal set; }
         
-        //TODO where is AI equivalent saveData?
-        // /// <summary>
-        // /// Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. 
-        // /// </summary>
-        // public PluginData GetExtendedData()
-        // {
-        //     if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
-        //     return ExtendedSave.GetExtendedDataById(Manager.Game.Instance.saveData, ExtendedDataId);
-        // }
+        /// <summary>
+        /// Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. 
+        /// </summary>
+        public PluginData GetExtendedData()
+        {
+            if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
+            return ExtendedSave.GetExtendedDataById(Singleton<CustomBase>.Instance.defChaCtrl, ExtendedDataId);
+        }
 
-        // /// <summary>
-        // /// Save your custom data to the character card under the ID you specified when registering this controller.
-        // /// </summary>
-        // /// <param name="data">Your custom data to be written to the character card. Can be null to remove the data.</param>
-        // public void SetExtendedData(PluginData data)
-        // {
-        //     if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
-        //     ExtendedSave.SetExtendedDataById(Manager.Game.Instance.saveData, ExtendedDataId, data);
-        // }
+        /// <summary>
+        /// Save your custom data to the character card under the ID you specified when registering this controller.
+        /// </summary>
+        /// <param name="data">Your custom data to be written to the character card. Can be null to remove the data.</param>
+        public void SetExtendedData(PluginData data)
+        {
+            if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
+            ExtendedSave.SetExtendedDataById(Singleton<CustomBase>.Instance.defChaCtrl, ExtendedDataId, data);
+        }
 
         /// <summary>
         /// Triggered when the H scene is ended, but before it is unloaded.
@@ -78,16 +79,15 @@ namespace KKAPI.MainGame
         /// <param name="freeH">If true, the h scene was started from Main menu > Extra > FreeH</param>
         protected internal virtual void OnStartH(HSceneManager proc, bool freeH) { }
 
-        //TODO
-        // /// <summary>
-        // /// Get the current game Cycle object, if it exists.
-        // /// </summary>
-        // protected static Cycle GetCycle()
-        // {
-        //     if (_cycle == null)
-        //         _cycle = FindObjectOfType<Cycle>();
-        //     return _cycle;
-        // }
+        /// <summary>
+        /// Get the current game EnvironmentSimulator (Cycle in KK) object, if it exists.
+        /// </summary>
+        protected static EnvironmentSimulator GetCycle()
+        {
+            if (_cycle == null)
+                _cycle = FindObjectOfType<EnvironmentSimulator>();
+            return _cycle;
+        }
 
         /// <summary>
         /// Triggered when the current day changes in story mode.
