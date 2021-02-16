@@ -13,6 +13,8 @@ namespace KKAPI.MainGame
     {
         private class Hooks
         {
+            public static int currentDay = 1;//Always starts at 1
+
             public static void SetupHooks()
             {
                 Harmony.CreateAndPatchAll(typeof(Hooks));
@@ -69,10 +71,15 @@ namespace KKAPI.MainGame
             }
 
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(EnvironmentSimulator), nameof(EnvironmentSimulator.OldDayUpdatedTime), MethodType.Setter)]
-            public static void CycleChangeWeekHook(EnvironmentSimulator __instance)
+            [HarmonyPatch(typeof(EnviroSky), "SetGameTime")]
+            public static void CycleChangeDayHook(EnviroSky __instance)
             {
-                OnDayChange(__instance.OldDayUpdatedTime.Days);
+                var curDay = (int)__instance.currentDay;
+                if (currentDay != curDay)
+                {
+                    currentDay = curDay;
+                    OnDayChange(curDay);
+                }                
             }
         }
     }
