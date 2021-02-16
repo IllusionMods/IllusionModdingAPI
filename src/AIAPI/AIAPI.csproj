@@ -108,7 +108,7 @@
     <Compile Include="MainGame\GameAPI.Hooks.cs" />
     <Compile Include="MainGame\GameCustomFunctionController.cs" />
     <Compile Include="MainGame\Events\GameSaveLoadEventArgs.cs" />
-    <!-- <Compile Include="MainGame\GameExtensions.cs" /> -->
+    <Compile Include="MainGame\GameExtensions.cs" />
     <Compile Include="MainGame\TestGameFunctionController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

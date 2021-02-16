@@ -122,24 +122,6 @@ namespace KKAPI.MainGame
             _functionControllerContainer = new GameObject("GameCustomFunctionController Zoo");
             _functionControllerContainer.transform.SetParent(Chainloader.ManagerObject.transform, false);
 
-            SceneManager.sceneLoaded += (arg0, mode) =>
-            {
-                if (arg0.name == "MyRoom" && Manager.Scene.Instance.LoadSceneName != "H")
-                {
-                    foreach (var registeredHandler in _registeredHandlers)
-                    {
-                        try
-                        {
-                            registeredHandler.Key.OnEnterNightMenu();
-                        }
-                        catch (Exception e)
-                        {
-                            KoikatuAPI.Logger.LogError(e);
-                        }
-                    }
-                }
-            };
-
             SceneManager.activeSceneChanged += (scene1, scene2) =>
             {
                 var index = _newGameDetectionScenes.IndexOf(scene2.name);

@@ -12,11 +12,6 @@ namespace KKAPI.MainGame
             KoikatuAPI.Logger.LogWarning("GameController - OnEndH - FreeH:" + freeH);
         }
 
-        protected internal override void OnEnterNightMenu()
-        {
-            KoikatuAPI.Logger.LogWarning("GameController - OnEnterNightMenu");
-        }
-
         protected internal override void OnGameLoad(GameSaveLoadEventArgs args)
         {
             KoikatuAPI.Logger.LogWarning("GameController - OnGameLoad - Path:" + args.FullFilename);

@@ -56,12 +56,6 @@ namespace KKAPI.MainGame
         protected internal virtual void OnEndH(HSceneManager proc, bool freeH) { }
 
         /// <summary>
-        /// Triggered when the night menu is entered at the end of the day (screen where you can save and load the game).
-        /// You can use <see cref="GetCycle"/> to see what day it is as well as other game state.
-        /// </summary>
-        protected internal virtual void OnEnterNightMenu() { }
-
-        /// <summary>
         /// Triggered right after game state was loaded from a file. Some things might still be uninitialized.
         /// </summary>
         protected internal virtual void OnGameLoad(GameSaveLoadEventArgs args) { }
