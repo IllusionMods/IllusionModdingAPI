@@ -7,7 +7,7 @@ namespace KKAPI.MainGame
 {
     internal sealed class TestGameFunctionController : GameCustomFunctionController
     {
-        protected internal override void OnEndH(HSceneManager proc, bool freeH)
+        protected internal override void OnEndH(HScene proc, bool freeH)
         {
             KoikatuAPI.Logger.LogWarning("GameController - OnEndH - FreeH:" + freeH);
         }
@@ -22,7 +22,7 @@ namespace KKAPI.MainGame
             KoikatuAPI.Logger.LogWarning("GameController - OnGameSave - Path:" + args.FullFilename);
         }
 
-        protected internal override void OnStartH(HSceneManager proc, bool freeH)
+        protected internal override void OnStartH(HScene proc, bool freeH)
         {
             KoikatuAPI.Logger.LogWarning("GameController - OnStartH - FreeH:" + freeH);
         }

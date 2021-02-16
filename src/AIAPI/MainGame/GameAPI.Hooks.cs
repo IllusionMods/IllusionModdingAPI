@@ -13,7 +13,7 @@ namespace KKAPI.MainGame
     {
         private class Hooks
         {
-            public static int currentDay = 1;//Always starts at 1
+            public static int lastCurrentDay = 1;//Always starts at 1
 
             public static void SetupHooks()
             {
@@ -36,29 +36,15 @@ namespace KKAPI.MainGame
             }
 
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(HSceneManager), "HsceneInit", typeof(AgentActor[]))]
-            public static void StartProcPostAgent(HSceneManager __instance)
+            [HarmonyPatch(typeof(HScene), "InitCoroutine")]
+            public static void HScene_InitCoroutine(HScene __instance)
             {
                 OnHStart(__instance);
-            }
-            
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(HSceneManager), "HsceneInit", typeof(MerchantActor), typeof(AgentActor))]
-            public static void StartProcPostMerchant(HSceneManager __instance)
-            {
-                OnHStart(__instance);
-            }
-
-            // [HarmonyPostfix]
-            // [HarmonyPatch(typeof(HSceneManager), "NewHeroineEndProc")]
-            // public static void NewHeroineEndProcPost(HSceneManager __instance)
-            // {
-            //     OnHEnd(__instance);
-            // }
+            }      
 
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(HSceneManager), nameof(HSceneManager.EndHScene))]
-            public static void EndProcPost(HSceneManager __instance)
+            [HarmonyPatch(typeof(HScene), "EndProc")]
+            public static void HScene_EndProc(HScene __instance)
             {
                 OnHEnd(__instance);
             }
@@ -74,11 +60,11 @@ namespace KKAPI.MainGame
             [HarmonyPatch(typeof(EnviroSky), "SetGameTime")]
             public static void CycleChangeDayHook(EnviroSky __instance)
             {
-                var curDay = (int)__instance.currentDay;
-                if (currentDay != curDay)
+                var currentDay = (int)__instance.currentDay;
+                if (lastCurrentDay < currentDay)
                 {
-                    currentDay = curDay;
-                    OnDayChange(curDay);
+                    lastCurrentDay = currentDay;
+                    OnDayChange(currentDay);
                 }                
             }
         }

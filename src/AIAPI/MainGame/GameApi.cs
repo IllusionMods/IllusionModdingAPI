@@ -198,7 +198,7 @@ namespace KKAPI.MainGame
             }
         }
 
-        private static void OnHEnd(HSceneManager proc)
+        private static void OnHEnd(HScene proc)
         {
             foreach (var behaviour in _registeredHandlers)
             {
@@ -224,7 +224,7 @@ namespace KKAPI.MainGame
             InsideHScene = false;
         }
 
-        private static IEnumerator OnHStart(HSceneManager proc)
+        private static IEnumerator OnHStart(HScene proc)
         {
             InsideHScene = true;
             yield return null;

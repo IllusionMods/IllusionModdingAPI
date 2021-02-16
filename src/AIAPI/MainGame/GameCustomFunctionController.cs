@@ -53,7 +53,7 @@ namespace KKAPI.MainGame
         /// </summary>
         /// <param name="proc">H scene controller instance</param>
         /// <param name="freeH">If true, the h scene was started from Main menu > Extra > FreeH</param>
-        protected internal virtual void OnEndH(HSceneManager proc, bool freeH) { }
+        protected internal virtual void OnEndH(HScene proc, bool freeH) { }
 
         /// <summary>
         /// Triggered right after game state was loaded from a file. Some things might still be uninitialized.
@@ -71,7 +71,7 @@ namespace KKAPI.MainGame
         /// </summary>
         /// <param name="proc">H scene controller instance</param>
         /// <param name="freeH">If true, the h scene was started from Main menu > Extra > FreeH</param>
-        protected internal virtual void OnStartH(HSceneManager proc, bool freeH) { }
+        protected internal virtual void OnStartH(HScene proc, bool freeH) { }
 
         /// <summary>
         /// Get the current game EnvironmentSimulator (Cycle in KK) object, if it exists.
