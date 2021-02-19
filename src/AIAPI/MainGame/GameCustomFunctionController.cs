@@ -34,7 +34,7 @@ namespace KKAPI.MainGame
         public PluginData GetExtendedData()
         {
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
-            return ExtendedSave.GetExtendedDataById(Singleton<CustomBase>.Instance.defChaCtrl, ExtendedDataId);
+            return ExtendedSave.GetExtendedDataById(Singleton<Map>.Instance.Player.ChaControl.chaFile, ExtendedDataId);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace KKAPI.MainGame
         public void SetExtendedData(PluginData data)
         {
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
-            ExtendedSave.SetExtendedDataById(Singleton<CustomBase>.Instance.defChaCtrl, ExtendedDataId, data);
+            ExtendedSave.SetExtendedDataById(Singleton<Map>.Instance.Player.ChaControl.chaFile, ExtendedDataId, data);
         }
 
         /// <summary>
