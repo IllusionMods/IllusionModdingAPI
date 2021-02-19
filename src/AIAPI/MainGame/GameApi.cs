@@ -22,10 +22,6 @@ namespace KKAPI.MainGame
 
         private static GameObject _functionControllerContainer;
 
-        // navigating these scenes in order triggers OnNewGame
-        private static readonly IList<string> _newGameDetectionScenes =
-            new List<string>(new[] {"Title", "EntryPlayer", "ClassRoomSelect", "Action"});
-
         private static int _newGameDetectionIndex = -1;
 
         /// <summary>
@@ -121,28 +117,6 @@ namespace KKAPI.MainGame
 
             _functionControllerContainer = new GameObject("GameCustomFunctionController Zoo");
             _functionControllerContainer.transform.SetParent(Chainloader.ManagerObject.transform, false);
-
-            SceneManager.activeSceneChanged += (scene1, scene2) =>
-            {
-                var index = _newGameDetectionScenes.IndexOf(scene2.name);
-                // detect forward and backward navigation
-                if (index != -1 && scene1.name.IsNullOrWhiteSpace() && (
-                    index == _newGameDetectionIndex + 1 || index == _newGameDetectionIndex - 1))
-                {
-                    _newGameDetectionIndex = index;
-                    if (_newGameDetectionIndex + 1 == _newGameDetectionScenes.Count)
-                    {
-                        _newGameDetectionIndex = -1;
-                        OnNewGame();
-                        return;
-                    }
-                }
-                else
-                {
-                    _newGameDetectionIndex = -1;
-                }
-
-            };
 
             if (KoikatuAPI.EnableDebugLogging)
                 RegisterExtraBehaviour<TestGameFunctionController>(null);

@@ -3,6 +3,9 @@ using System.Collections;
 using HarmonyLib;
 using AIProject.SaveData;
 using AIProject;
+using Sirenix.Serialization;
+using AIProject.Scene;
+using Manager;
 
 namespace KKAPI.MainGame
 {
@@ -11,6 +14,7 @@ namespace KKAPI.MainGame
         private class Hooks
         {
             public static int lastCurrentDay = 1;//Always starts at 1
+            public static bool isNewGame = false;
 
             public static void SetupHooks()
             {
@@ -31,6 +35,20 @@ namespace KKAPI.MainGame
             {
                 OnGameBeingSaved(path, "");
             }
+
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(TitleLoadScene), "SetWorldData", typeof(WorldData), typeof(bool))]
+            public static void TitleLoadScene_SetWorldData(WorldData _worldData, bool isAuto)
+            {
+                isNewGame = _worldData?.SaveTime.Millisecond == 0;
+            } 
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(MapScene), "OnLoaded")]
+            public static void MapScene_OnLoaded(MapScene __instance)
+            {
+                if (isNewGame) OnNewGame();
+            } 
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(HScene), "InitCoroutine")]
