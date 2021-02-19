@@ -21,7 +21,7 @@ namespace KKAPI.MainGame
     /// </summary>
     public abstract class GameCustomFunctionController : MonoBehaviour
     {
-        private static EnvironmentSimulator _cycle;
+        private static EnvironmentSimulator _environmentSimulator;
 
         /// <summary>
         /// Extended save ID used by this function controller
@@ -78,9 +78,9 @@ namespace KKAPI.MainGame
         /// </summary>
         protected static EnvironmentSimulator GetCycle()
         {
-            if (_cycle == null)
-                _cycle = FindObjectOfType<EnvironmentSimulator>();
-            return _cycle;
+            if (_environmentSimulator == null)
+                _environmentSimulator = FindObjectOfType<EnvironmentSimulator>();
+            return _environmentSimulator;
         }
 
         /// <summary>

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections;
-// using ActionGame;
 using HarmonyLib;
 using AIProject.SaveData;
-using Manager;
 using AIProject;
-using Sirenix.Serialization;
 
 namespace KKAPI.MainGame
 {
@@ -51,14 +48,14 @@ namespace KKAPI.MainGame
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(EnvironmentSimulator), nameof(EnvironmentSimulator.SetTimeZone), typeof(AIProject.TimeZone))]
-            public static void CycleChangeTypeHook(AIProject.TimeZone zone)
+            public static void EnvironmentChangeTypeHook(AIProject.TimeZone zone)
             {
-                OnPeriodChange(zone);
+                OnPeriodChange(zone);//morning, day, evening
             }
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(EnviroSky), "SetGameTime")]
-            public static void CycleChangeDayHook(EnviroSky __instance)
+            public static void EnvironmentChangeDayHook(EnviroSky __instance)
             {
                 var currentDay = (int)__instance.currentDay;
                 if (lastCurrentDay < currentDay)
