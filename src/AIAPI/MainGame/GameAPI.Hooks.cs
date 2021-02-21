@@ -51,8 +51,8 @@ namespace KKAPI.MainGame
             } 
 
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(HScene), "InitCoroutine")]
-            public static void HScene_InitCoroutine(HScene __instance)
+            [HarmonyPatch(typeof(HScene), "SetStartVoice")]
+            public static void HScene_SetStartVoice(HScene __instance)
             {
                 OnHStart(__instance);
             }      

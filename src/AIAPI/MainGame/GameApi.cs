@@ -198,10 +198,9 @@ namespace KKAPI.MainGame
             InsideHScene = false;
         }
 
-        private static IEnumerator OnHStart(HScene proc)
+        private static void OnHStart(HScene proc)
         {
-            InsideHScene = true;
-            yield return null;
+            InsideHScene = true;            
             foreach (var behaviour in _registeredHandlers)
             {
                 try
