@@ -40,7 +40,7 @@ namespace KKAPI.MainGame
             [HarmonyPatch(typeof(TitleLoadScene), "SetWorldData", typeof(WorldData), typeof(bool))]
             public static void TitleLoadScene_SetWorldData(WorldData _worldData, bool isAuto)
             {
-                isNewGame = _worldData?.SaveTime.Millisecond == 0;
+                isNewGame = _worldData?.SaveTime == new DateTime(0);
             } 
 
             [HarmonyPostfix]
