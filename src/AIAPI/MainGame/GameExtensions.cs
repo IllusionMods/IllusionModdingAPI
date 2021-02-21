@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-// using ActionGame.Chara;
 using AIProject;
 using AIProject.SaveData;
 using AIChara;
@@ -15,56 +14,90 @@ namespace KKAPI.MainGame
     {
 
         /// <summary>
-        /// Get the persisting heroine object that describes this character.
-        /// Returns null if the heroine could not be found. Works only in the main game.
+        /// Get the persisting AgentData (heroine) object that describes this character.
+        /// Returns null if the AgentData (heroine) could not be found. Works only in the main game.
         /// </summary>
-        public static Actor GetHeroine(this ChaControl chaControl)
+        public static AgentData GetHeroine(this ChaControl chaControl)
         {
             if (chaControl == null) throw new ArgumentNullException(nameof(chaControl));
 
             if (!Manager.Map.IsInstance()) return null;
-            return Manager.Map.Instance.Actors.Find(heroine => heroine.ChaControl == chaControl);
+
+            var agentTable = Manager.Map.Instance.AgentTable;            
+            if (agentTable == null || agentTable.Count <= 0) return null;
+
+            foreach (int key in agentTable.Keys)
+			{
+				if (agentTable.TryGetValue(key, out AgentActor agentActor))
+				{
+                    if (agentActor?.ChaControl == chaControl) return agentActor.AgentData;
+                }
+            }           
+
+            return null;
         }
 
         /// <summary>
-        /// Get the persisting heroine object that describes this character.
-        /// Returns null if the heroine could not be found. Works only in the main game.
+        /// Get the persisting AgentData (heroine) object that describes this character.
+        /// Returns null if the AgentData (heroine) could not be found. Works only in the main game.
         /// </summary>
-        public static Actor GetHeroine(this ChaFileControl chaFile)
+        public static AgentData GetHeroine(this ChaFileControl chaFile)
         {
             if (chaFile == null) throw new ArgumentNullException(nameof(chaFile));
 
             if (!Manager.Map.IsInstance()) return null;
-            return Manager.Map.Instance.Actors.Find(heroine => heroine.ChaControl?.chaFile == chaFile);
+
+            var agentTable = Manager.Map.Instance.AgentTable;            
+            if (agentTable == null || agentTable.Count <= 0) return null;
+
+            foreach (int key in agentTable.Keys)
+			{
+				if (agentTable.TryGetValue(key, out AgentActor agentActor))
+				{
+                    if (agentActor?.ChaControl?.chaFile == chaFile) return agentActor.AgentData;
+                }
+            }  
+            return null;
         }
 
         /// <summary>
-        /// Get the NPC that represents this heroine in the game. Works only in the main game.
-        /// If the heroine has not been spawned into the game it returns null.
+        /// Get the AgentActor that represents this AgentData (heroine) in the game. Works only in the main game.
+        /// If the AgentData (heroine) has not been spawned into the game it returns null.
         /// </summary>
-        public static Actor GetNPC(this AgentActor heroine)
+        public static AgentActor GetNPC(this AgentData agentData)
         {
-            if (heroine == null) throw new ArgumentNullException(nameof(heroine));
+            if (agentData == null) throw new ArgumentNullException(nameof(agentData));
+            if (agentData.param == null) return null;
 
-            if (heroine.transform == null) return null;
-            return heroine.transform.GetComponent<Actor>();
+            var agentTable = Manager.Map.Instance.AgentTable;            
+            if (agentTable == null || agentTable.Count <= 0) return null;
+
+            foreach (int key in agentTable.Keys)
+			{
+				if (agentTable.TryGetValue(key, out AgentActor agentActor))
+				{
+                    if (agentActor?.charaID == agentData.param.charaID) return agentActor;
+                }
+            }  
+
+            return null;
         }
 
         /// <summary>
-        /// Get ChaFiles that are related to this heroine. Warning: It might not return some copies.
+        /// Get ChaFiles that are related to this AgentData (heroine). Warning: It might not return some copies.
         /// </summary>
-        public static IEnumerable<ChaFileControl> GetRelatedChaFiles(this AgentActor heroine)
+        public static IEnumerable<ChaFileControl> GetRelatedChaFiles(this AgentData agentData)
         {
-            if (heroine == null) throw new ArgumentNullException(nameof(heroine));
+            if (agentData == null) throw new ArgumentNullException(nameof(agentData));
 
             var results = new HashSet<ChaFileControl>();
 
-            if (heroine.ChaControl != null && heroine.ChaControl.chaFile != null)
-                results.Add(heroine.ChaControl.chaFile);
+            if (agentData.param?.actor?.ChaControl?.chaFile != null)
+                results.Add(agentData.param.actor.ChaControl.chaFile);
 
-            var npc = heroine.GetNPC();
-            if (npc != null && npc.ChaControl != null && npc.ChaControl.chaFile != null)
-                results.Add(npc.ChaControl.chaFile);
+            var agentActor = agentData.GetNPC();
+            if (agentActor?.ChaControl?.chaFile != null)
+                results.Add(agentActor.ChaControl.chaFile);
 
             return results;
         }
@@ -104,7 +137,7 @@ namespace KKAPI.MainGame
 
             var results = new HashSet<ChaFileControl>();
 
-            if (player.ChaControl != null && player.ChaControl.chaFile != null)
+            if (player.ChaControl?.chaFile != null)
                 results.Add(player.ChaControl.chaFile);
 
             return results;
