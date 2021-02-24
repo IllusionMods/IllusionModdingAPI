@@ -91,6 +91,8 @@ Static Methods
 | `Heroine` | GetLeadingHeroine(this `HSprite` hSprite) | Get the heroine that is currently in leading position in the h scene.  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
 | `Int32` | GetLeadingHeroineId(this `HFlag` hFlag) | Get ID of the heroine that is currently in leading position in the h scene. 0 is the main heroine, 1 is the "tag along".  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
 | `Int32` | GetLeadingHeroineId(this `HSprite` hSprite) | Get ID of the heroine that is currently in leading position in the h scene. 0 is the main heroine, 1 is the "tag along".  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
+| `Boolean` | IsHoushi(this `HFlag` hFlag) | Is current h mode service? | 
+| `Boolean` | IsSonyu(this `HFlag` hFlag) | Is current H mode penetration? | 
 
 
 ## `IMGUIUtils`
