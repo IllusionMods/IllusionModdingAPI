@@ -21,7 +21,6 @@ namespace KKAPI.MainGame
                 Harmony.CreateAndPatchAll(typeof(Hooks));
             }
 
-            //TODO SaveData.Load only has 1 param in AI and it's the path, does not include filename like KK
             [HarmonyPostfix]
             [HarmonyPatch(typeof(SaveData), nameof(SaveData.Load), new[] { typeof(string) })]
             public static void LoadHook(string fileName)
