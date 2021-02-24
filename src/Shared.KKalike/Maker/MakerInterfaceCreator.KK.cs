@@ -166,7 +166,7 @@ namespace KKAPI.Maker
             sidebarTop.Find("sldLightingY/Slider").GetComponent<ObservableScrollTrigger>().enabled = false;
 
             var elements = new List<Transform>();
-            foreach(Transform t in sidebarTop)
+            foreach (Transform t in sidebarTop)
                 elements.Add(t);
 
             var go = DefaultControls.CreateScrollView(new DefaultControls.Resources());
@@ -194,7 +194,7 @@ namespace KKAPI.Maker
 
             scroll.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            foreach(var item in elements)
+            foreach (var item in elements)
                 item.SetParent(scroll.content);
         }
 
@@ -225,14 +225,16 @@ namespace KKAPI.Maker
 
             var contentParent = FindSubcategoryContentParent(subCategoryTransform);
 
-            BaseUnityPlugin lastOwner = contentParent.childCount > 1 ? KoikatuAPI.Instance : null;
-            foreach (var customControl in entriesToAdd)
+            var needsSeparator = contentParent.childCount > 1;
+            foreach (var gr in entriesToAdd.GroupBy(x => x.GroupingID).OrderBy(x => x.Key))
             {
-                if (lastOwner != customControl.Owner && lastOwner != null)
+                if (needsSeparator)
                     new MakerSeparator(new MakerCategory(null, null), KoikatuAPI.Instance).CreateControl(contentParent);
 
-                customControl.CreateControl(contentParent);
-                lastOwner = customControl.Owner;
+                foreach (var control in gr)
+                    control.CreateControl(contentParent);
+
+                needsSeparator = true;
             }
 
             var category = entriesToAdd.First().Category;
