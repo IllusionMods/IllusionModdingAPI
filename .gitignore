@@ -334,3 +334,6 @@ ASALocalRun/
 /lib
 PostBuild.bat
 *.DotSettings
+
+#Ignore vscode config dir
+.vscode
