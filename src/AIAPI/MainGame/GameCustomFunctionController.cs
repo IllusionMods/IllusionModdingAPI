@@ -31,6 +31,7 @@ namespace KKAPI.MainGame
         /// <summary>
         /// Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. 
         /// </summary>
+        [Obsolete("This method is obsolete in AI.  WIll require update to ExtensibleSaveFormat to implement fully.", true)]
         public PluginData GetExtendedData()
         {
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
@@ -41,6 +42,7 @@ namespace KKAPI.MainGame
         /// Save your custom data to the character card under the ID you specified when registering this controller.
         /// </summary>
         /// <param name="data">Your custom data to be written to the character card. Can be null to remove the data.</param>
+        [Obsolete("This method is obsolete in AI.  WIll require update to ExtensibleSaveFormat to implement fully.", true)]
         public void SetExtendedData(PluginData data)
         {
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
