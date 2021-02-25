@@ -27,10 +27,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\BaseEditableGuiEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\BaseGuiEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\ISidebarControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ConfigurationManagerAttributes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CoroutineUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\HSceneUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\IMGUIUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\MemoryInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObservableExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ResourceUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TextureUtils.cs" />
@@ -38,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\OpenFileDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\RecycleBinUtil.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\TranslationHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\WindowsStringComparer.cs" />
   </ItemGroup>
 </Project>

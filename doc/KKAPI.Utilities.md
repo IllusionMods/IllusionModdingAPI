@@ -1,3 +1,31 @@
+## `ConfigurationManagerAttributes`
+
+Class that specifies how a setting should be displayed inside the ConfigurationManager settings window.    Usage:  You can use this copy of the class instead of including it in your own plugin.  Make a new instance, assign any fields that you want to override, and pass it as a tag for your setting.    If a field is null (default), it will be ignored and won't change how the setting is displayed.  If a field is non-null (you assigned a value to it), it will override default behavior.
+```csharp
+public class KKAPI.Utilities.ConfigurationManagerAttributes
+
+```
+
+Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Nullable<Boolean>` | Browsable | Show this setting in the settings screen at all? If false, don't show. | 
+| `String` | Category | Category the setting is under. Null to be directly under the plugin. | 
+| `Action<ConfigEntryBase>` | CustomDrawer | Custom setting editor (OnGUI code that replaces the default editor provided by ConfigurationManager).  See below for a deeper explanation. Using a custom drawer will cause many of the other fields to do nothing. | 
+| `Object` | DefaultValue | If set, a "Default" button will be shown next to the setting to allow resetting to default. | 
+| `String` | Description | Optional description shown when hovering over the setting.  Not recommended, provide the description when creating the setting instead. | 
+| `String` | DispName | Name of the setting. | 
+| `Nullable<Boolean>` | HideDefaultButton | Force the "Reset" button to not be displayed, even if a valid DefaultValue is available. | 
+| `Nullable<Boolean>` | HideSettingName | Force the setting name to not be displayed. Should only be used with a `KKAPI.Utilities.ConfigurationManagerAttributes.CustomDrawer` to get more space.  Can be used together with `KKAPI.Utilities.ConfigurationManagerAttributes.HideDefaultButton` to gain even more space. | 
+| `Nullable<Boolean>` | IsAdvanced | If true, don't show the setting by default. User has to turn on showing advanced settings or search for it. | 
+| `Func<Object, String>` | ObjToStr | Custom converter from setting type to string for the built-in editor textboxes. | 
+| `Nullable<Int32>` | Order | Order of the setting on the settings list relative to other settings in a category.  0 by default, higher number is higher on the list. | 
+| `Nullable<Boolean>` | ReadOnly | Only show the value, don't allow editing it. | 
+| `Nullable<Boolean>` | ShowRangeAsPercent | Should the setting be shown as a percentage (only use with value range settings). | 
+| `Func<String, Object>` | StrToObj | Custom converter from string to setting type for the built-in editor textboxes. | 
+
+
 ## `CoroutineUtils`
 
 Utility methods for working with coroutines.
@@ -63,6 +91,8 @@ Static Methods
 | `Heroine` | GetLeadingHeroine(this `HSprite` hSprite) | Get the heroine that is currently in leading position in the h scene.  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
 | `Int32` | GetLeadingHeroineId(this `HFlag` hFlag) | Get ID of the heroine that is currently in leading position in the h scene. 0 is the main heroine, 1 is the "tag along".  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
 | `Int32` | GetLeadingHeroineId(this `HSprite` hSprite) | Get ID of the heroine that is currently in leading position in the h scene. 0 is the main heroine, 1 is the "tag along".  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
+| `Boolean` | IsHoushi(this `HFlag` hFlag) | Is current h mode service? | 
+| `Boolean` | IsSonyu(this `HFlag` hFlag) | Is current H mode penetration? | 
 
 
 ## `IMGUIUtils`
@@ -99,6 +129,40 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `MEMORYSTATUSEX` | GetCurrentStatus() | Can return null if the call fails for whatever reason | 
+
+
+## `ObservableExtensions`
+
+Additions to the UniRx IObservable extension methods
+```csharp
+public static class KKAPI.Utilities.ObservableExtensions
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `IObservable<Unit>` | OnGUIAsObservable(this `Component` component) | Get an observable that triggers on every OnGUI call on this gameObject | 
+| `IObservable<Unit>` | OnGUIAsObservable(this `Transform` transform) | Get an observable that triggers on every OnGUI call on this gameObject | 
+| `IObservable<Unit>` | OnGUIAsObservable(this `GameObject` gameObject) | Get an observable that triggers on every OnGUI call on this gameObject | 
+
+
+## `ObservableOnGUITrigger`
+
+Trigger component that implements `KKAPI.Utilities.ObservableExtensions.OnGUIAsObservable(UnityEngine.Component)`
+```csharp
+public class KKAPI.Utilities.ObservableOnGUITrigger
+    : ObservableTriggerBase
+
+```
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `IObservable<Unit>` | OnGUIAsObservable() | Get observable that triggers every time this component's OnGUI is called | 
+| `void` | RaiseOnCompletedOnDestroy() |  | 
 
 
 ## `OpenFileDialog`
@@ -224,6 +288,29 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `String` | PascalCaseToSentenceCase(this `String` str) | Convert PascalCase to Sentence case. | 
+
+
+## `TranslationHelper`
+
+Class that abstracts away AutoTranslator. It lets you translate text to current language.
+```csharp
+public static class KKAPI.Utilities.TranslationHelper
+
+```
+
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | AutoTranslatorInstalled | True if a reasonably recent version of AutoTranslator is installed.  It might return false for some very old versions that don't have the necessary APIs to make this class work. | 
+
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `void` | TranslateAsync(`String` untranslatedText, `Action<String>` onCompleted) | Queries AutoTranslator to provide a translated text for the untranslated text.  If the translation cannot be found in the cache, it will make a request to the translator selected by the user.  If AutoTranslator is not installed, this will do nothing. | 
+| `Boolean` | TryTranslate(`String` untranslatedText, `String&` translatedText) | Queries the plugin to provide a translated text for the untranslated text.  If the translation cannot be found in the cache, the method returns false  and returns null as the untranslated text. | 
 
 
 ## `WindowsStringComparer`

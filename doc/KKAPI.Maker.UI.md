@@ -43,6 +43,7 @@ Properties
 | `GameObject` | ControlObject | GameObject of the control. Populated once instantiated.  If there are multiple objects, returns one of them. Use `KKAPI.Maker.UI.BaseGuiEntry.ControlObjects` in that case. | 
 | `IEnumerable<GameObject>` | ControlObjects | GameObject(s) of the control. Populated once instantiated.  Contains 1 item in most cases, can contain multiple in case of accessory window controls. | 
 | `Boolean` | Exists | True if the control is currently instantiated in the scene | 
+| `String` | GroupingID | ID used when grouping controls into groups separated by separators. Groups are sorted alphabetically.  If multiple plugins use the same group, the controls are placed together.  By default each plugin has its own group. Set to null to use the "misc" group. | 
 | `Boolean` | IsDisposed | If true, the control has been disposed and can no longer be used, likely because the character maker exited.  A new control has to be created to be used again. | 
 | `BaseUnityPlugin` | Owner | The plugin that owns this custom control. | 
 | `Color` | TextColor | Text color of the control's description text (usually on the left).  Can only set this before the control is created. | 

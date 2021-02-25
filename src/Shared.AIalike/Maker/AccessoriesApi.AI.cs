@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using AIChara;
 using CharaCustom;
 using HarmonyLib;
@@ -295,19 +296,38 @@ namespace KKAPI.Maker
 
         private static void MakerAPI_InsideMakerChanged(object sender, EventArgs e)
         {
+
+            if (MoreAccessoriesInstalled)
+            {
+                FieldInfo additionalDataField = AccessTools.Field(_moreAccessoriesType, "_makerAdditionalData");
+                if (additionalDataField == null)
+                {
+                    _getCvsAccessoryCount = () => 20;
+                }
+                else
+                {
+                    FieldInfo partsField = AccessTools.Field(additionalDataField.FieldType, "parts");
+                    _getCvsAccessoryCount = () => {
+                        var additionalData = additionalDataField.GetValue(_moreAccessoriesInstance);
+                        List<ChaFileAccessory.PartsInfo> partsList = (List<ChaFileAccessory.PartsInfo>)partsField.GetValue(additionalData);
+                        return 20 + partsList.Count();
+                    };
+                }
+
+            }
+            else
+            {
+                _getCvsAccessoryCount = () => 20;
+            }
+
             if (MakerAPI.InsideMaker)
             {
                 _accessorySlotCanvasGroup = GameObject.Find("SubMenuAccessory").GetComponent<CanvasGroup>();
-
-                _getCvsAccessoryCount = () => 20;
-
                 SelectedMakerAccSlot = 0;
             }
             else
             {
-                _accessorySlotCanvasGroup = null;
-                _getCvsAccessoryCount = null;
-
+                _accessorySlotCanvasGroup = null;             
                 SelectedMakerAccSlot = -1;
             }
         }
