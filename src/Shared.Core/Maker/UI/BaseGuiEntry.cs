@@ -36,6 +36,10 @@ namespace KKAPI.Maker.UI
             Category = category;
             Owner = owner;
 
+            var metadata = Owner?.Info?.Metadata;
+            if (metadata != null)
+                GroupingID = metadata.GUID;
+
             Visible = new BehaviorSubject<bool>(true);
             Visible.Subscribe(
                 b =>
@@ -127,7 +131,7 @@ namespace KKAPI.Maker.UI
             control.name += GuiApiNameAppendix;
 
             // Play nice with the accessory window (lower max width)
-            if(MakerAPI.InsideMaker)
+            if (MakerAPI.InsideMaker)
             {
                 var layoutElement = control.GetComponent<LayoutElement>();
                 if (layoutElement != null) layoutElement.minWidth = 300;
@@ -153,6 +157,13 @@ namespace KKAPI.Maker.UI
         /// The plugin that owns this custom control.
         /// </summary>
         public BaseUnityPlugin Owner { get; }
+
+        /// <summary>
+        /// ID used when grouping controls into groups separated by separators. Groups are sorted alphabetically.
+        /// If multiple plugins use the same group, the controls are placed together.
+        /// By default each plugin has its own group. Set to null to use the "misc" group.
+        /// </summary>
+        public string GroupingID { get; set; }
 
         /// <summary>
         /// The control is visible to the user (usually the same as it's GameObject being active).

@@ -75,6 +75,10 @@
       <HintPath>..\packages\IllusionLibs.Koikatu.UnityEngine.UI.5.6.2.2\lib\net35\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="XUnity.AutoTranslator.Plugin.Core, Version=4.13.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.4.13.0\lib\net35\XUnity.AutoTranslator.Plugin.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Maker\AccessoryCopyEventArgs.cs" />

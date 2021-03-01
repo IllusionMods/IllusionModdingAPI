@@ -31,22 +31,24 @@ namespace KKAPI.MainGame
         /// <summary>
         /// Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. 
         /// </summary>
-        [Obsolete("This method is obsolete in AI.  WIll require update to ExtensibleSaveFormat to implement fully.", true)]
+        [Obsolete("This method is not implemented in AI.  WIll require update to ExtensibleSaveFormat to implement.", true)]
         public PluginData GetExtendedData()
         {
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
-            return ExtendedSave.GetExtendedDataById(Singleton<Map>.Instance.Player.ChaControl.chaFile, ExtendedDataId);
+            throw new NotImplementedException();
+            //return ExtendedSave.GetExtendedDataById(Singleton<Map>.Instance.Player.ChaControl.chaFile, ExtendedDataId);
         }
 
         /// <summary>
         /// Save your custom data to the character card under the ID you specified when registering this controller.
         /// </summary>
         /// <param name="data">Your custom data to be written to the character card. Can be null to remove the data.</param>
-        [Obsolete("This method is obsolete in AI.  WIll require update to ExtensibleSaveFormat to implement fully.", true)]
+        [Obsolete("This method is not implemented in AI.  WIll require update to ExtensibleSaveFormat to implement.", true)]
         public void SetExtendedData(PluginData data)
         {
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
-            ExtendedSave.SetExtendedDataById(Singleton<Map>.Instance.Player.ChaControl.chaFile, ExtendedDataId, data);
+            throw new NotImplementedException();
+            //ExtendedSave.SetExtendedDataById(Singleton<Map>.Instance.Player.ChaControl.chaFile, ExtendedDataId, data);
         }
 
         /// <summary>

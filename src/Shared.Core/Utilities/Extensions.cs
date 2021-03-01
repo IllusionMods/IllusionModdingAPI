@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -59,5 +61,84 @@ namespace KKAPI.Utilities
                 yield return result;
             }
         }
+
+        /// <summary>
+        /// Destroy this GameObject. Safe to use on null objects.
+        /// </summary>
+        /// <param name="self">Object to destroy</param>
+        /// <param name="useDestroyImmediate">Use DestroyImmediate instead of Destroy</param>
+        /// <param name="detachParent">Set parent of the object to null before destroying it (useful when doing FindInChildren and such immediately after destroying to make sure that this destroyed object isn't included in the results)</param>
+        public static void FancyDestroy(this GameObject self, bool useDestroyImmediate = false, bool detachParent = false)
+        {
+            if (self == null) return;
+            if (detachParent) self.transform.SetParent(null);
+            if (useDestroyImmediate) GameObject.DestroyImmediate(self);
+            else GameObject.Destroy(self);
+        }
+
+        /// <summary>
+        /// Get full GameObject "path" to this GameObject.
+        /// Example: RootObject\ChildObject1\ChildObject2
+        /// </summary>
+        public static string GetFullPath(this GameObject self)
+        {
+            if (self == null) return string.Empty;
+
+            var result = new StringBuilder();
+            var first = true;
+            var transform = self.transform;
+            while (transform != null)
+            {
+                if (first) first = false;
+                else result.Insert(0, "/");
+                result.Insert(0, transform.gameObject.name);
+                transform = transform.parent;
+            }
+            return result.ToString();
+        }
+
+        /// <summary>
+        /// Get full GameObject "path" to this Component.
+        /// Example: RootObject\ChildObject1\ChildObject2 [Renderer]
+        /// </summary>
+        public static string GetFullPath(this Component self)
+        {
+            if (self == null) return string.Empty;
+            return $"{self.gameObject.GetFullPath()} [{self.GetType().Name}]";
+        }
+
+        /// <summary>
+        /// Get the topmost parent of Transform that this this Component is attached to.
+        /// </summary>
+        public static Transform GetTopmostParent(this Component src)
+        {
+            return GetTopmostParent(src.transform);
+        }
+        /// <summary>
+        /// Get the topmost parent of this GameObject.
+        /// </summary>
+        public static Transform GetTopmostParent(this GameObject src)
+        {
+            return GetTopmostParent(src.transform);
+        }
+        /// <summary>
+        /// Get the topmost parent of this Transform.
+        /// </summary>
+        public static Transform GetTopmostParent(this Transform src)
+        {
+            while (src.parent)
+                src = src.parent;
+            return src;
+        }
+
+#if KK||EC
+        /// <summary>
+        /// Get value of the aaWeightsBody field
+        /// </summary>
+        public static AssignedAnotherWeights GetAaWeightsBody(this ChaControl ctrl)
+        {
+            return Traverse.Create(ctrl).Field<AssignedAnotherWeights>("aaWeightsBody").Value;
+        }
+#endif
     }
 }

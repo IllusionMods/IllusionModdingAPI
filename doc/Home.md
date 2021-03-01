@@ -95,16 +95,20 @@
 
 ## [KKAPI.Utilities](KKAPI.Utilities.md)
 
+- [`ConfigurationManagerAttributes`](KKAPI.Utilities.md#configurationmanagerattributes)
 - [`CoroutineUtils`](KKAPI.Utilities.md#coroutineutils)
 - [`Extensions`](KKAPI.Utilities.md#extensions)
 - [`HSceneUtils`](KKAPI.Utilities.md#hsceneutils)
 - [`IMGUIUtils`](KKAPI.Utilities.md#imguiutils)
 - [`MemoryInfo`](KKAPI.Utilities.md#memoryinfo)
+- [`ObservableExtensions`](KKAPI.Utilities.md#observableextensions)
+- [`ObservableOnGUITrigger`](KKAPI.Utilities.md#observableonguitrigger)
 - [`OpenFileDialog`](KKAPI.Utilities.md#openfiledialog)
 - [`ReadOnlyDictionary<TKey, TValue>`](KKAPI.Utilities.md#readonlydictionarytkey-tvalue)
 - [`RecycleBinUtil`](KKAPI.Utilities.md#recyclebinutil)
 - [`ResourceUtils`](KKAPI.Utilities.md#resourceutils)
 - [`TextureUtils`](KKAPI.Utilities.md#textureutils)
 - [`TextUtils`](KKAPI.Utilities.md#textutils)
+- [`TranslationHelper`](KKAPI.Utilities.md#translationhelper)
 - [`WindowsStringComparer`](KKAPI.Utilities.md#windowsstringcomparer)
 
