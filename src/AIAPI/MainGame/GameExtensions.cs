@@ -103,6 +103,21 @@ namespace KKAPI.MainGame
         }
 
         /// <summary>
+        /// Get ChaFiles that are related to this AgentActor (heroine). Warning: It might not return some copies.
+        /// </summary>
+        public static IEnumerable<ChaFileControl> GetRelatedChaFiles(this AgentActor agentActor)
+        {
+            if (agentActor == null) throw new ArgumentNullException(nameof(agentActor));
+
+            var results = new HashSet<ChaFileControl>();
+
+            if (agentActor?.ChaControl?.chaFile != null)
+                results.Add(agentActor.ChaControl.chaFile);        
+
+            return results;
+        }
+
+        /// <summary>
         /// Get the persisting player object that describes this character.
         /// Returns null if the player could not be found. Works only in the main game.
         /// </summary>
