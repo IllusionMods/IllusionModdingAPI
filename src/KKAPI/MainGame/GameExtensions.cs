@@ -52,7 +52,7 @@ namespace KKAPI.MainGame
         public static NPC GetNPC(this SaveData.Heroine heroine)
         {
             if (heroine == null) throw new ArgumentNullException(nameof(heroine));
-
+            if (heroine.charaBase is NPC npc) return npc;
             if (heroine.transform == null) return null;
             return heroine.transform.GetComponent<NPC>();
         }
