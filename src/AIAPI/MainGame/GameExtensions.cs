@@ -76,7 +76,7 @@ namespace KKAPI.MainGame
 			{
 				if (agentTable.TryGetValue(key, out AgentActor agentActor))
 				{
-                    if (agentActor?.charaID == agentData.param.charaID) return agentActor;
+                    if (agentActor?.ChaControl.name == agentData.param?.actor.ChaControl.name) return agentActor;
                 }
             }  
 
