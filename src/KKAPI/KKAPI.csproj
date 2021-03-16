@@ -81,7 +81,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainGame\CustomActionIcon.cs" />
+    <Compile Include="MainGame\ActionIcons\CustomActionIcon.cs" />
     <Compile Include="Maker\AccessoryCopyEventArgs.cs" />
     <Compile Include="MainGame\GameApi.cs" />
     <Compile Include="MainGame\GameAPI.Hooks.cs" />
@@ -97,6 +97,10 @@
       <Link>.editorconfig</Link>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MainGame\ActionIcons\Action_Icon_Off_Template.png" />
+    <None Include="MainGame\ActionIcons\Action_Icon_On_Template.png" />
   </ItemGroup>
   <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
   <Import Project="..\Shared.KKalike\Shared.KKalike.projitems" Label="Shared" />
