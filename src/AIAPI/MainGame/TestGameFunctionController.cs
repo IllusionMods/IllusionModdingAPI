@@ -1,9 +1,4 @@
-﻿// using ActionGame;
-using BepInEx.Logging;
-using AIProject;
-using Manager;
-
-namespace KKAPI.MainGame
+﻿namespace KKAPI.MainGame
 {
     internal sealed class TestGameFunctionController : GameCustomFunctionController
     {

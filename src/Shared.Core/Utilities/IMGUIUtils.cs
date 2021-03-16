@@ -122,11 +122,13 @@ namespace KKAPI.Utilities
             style.normal.textColor = backupColor;
         }
 
+        /// <inheritdoc cref="DrawLabelWithShadow"/>
         public static void DrawLayoutLabelWithShadow(GUIContent content, GUIStyle style, Color txtColor, Color shadowColor, Vector2 direction, params GUILayoutOption[] options)
         {
             DrawLabelWithShadow(GUILayoutUtility.GetRect(content, style, options), content, style, txtColor, shadowColor, direction);
         }
 
+        /// <inheritdoc cref="DrawLabelWithShadow"/>
         public static bool DrawButtonWithShadow(Rect r, GUIContent content, GUIStyle style, float shadowAlpha, Vector2 direction)
         {
             GUIStyle letters = new GUIStyle(style);
@@ -143,6 +145,7 @@ namespace KKAPI.Utilities
             return result;
         }
 
+        /// <inheritdoc cref="DrawLabelWithShadow"/>
         public static bool DrawLayoutButtonWithShadow(GUIContent content, GUIStyle style, float shadowAlpha, Vector2 direction, params GUILayoutOption[] options)
         {
             return DrawButtonWithShadow(GUILayoutUtility.GetRect(content, style, options), content, style, shadowAlpha, direction);

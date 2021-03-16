@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections;
 using HarmonyLib;
 using AIProject.SaveData;
 using AIProject;
-using Sirenix.Serialization;
 using AIProject.Scene;
-using Manager;
 
 namespace KKAPI.MainGame
 {
@@ -13,8 +10,8 @@ namespace KKAPI.MainGame
     {
         private class Hooks
         {
-            public static int lastCurrentDay = 1;//Always starts at 1
-            public static bool isNewGame = false;
+            private static int _lastCurrentDay = 1; //Always starts at 1
+            private static bool _isNewGame;
 
             public static void SetupHooks()
             {
@@ -22,14 +19,14 @@ namespace KKAPI.MainGame
             }
 
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(SaveData), nameof(SaveData.Load), new[] { typeof(string) })]
+            [HarmonyPatch(typeof(SaveData), nameof(SaveData.Load), typeof(string))]
             public static void LoadHook(string fileName)
             {
                 OnGameBeingLoaded("", fileName);
             }
 
             [HarmonyPrefix]
-            [HarmonyPatch(typeof(SaveData), nameof(SaveData.SaveFile), new[] { typeof(string) })]
+            [HarmonyPatch(typeof(SaveData), nameof(SaveData.SaveFile), typeof(string))]
             public static void SaveHook(string path)
             {
                 OnGameBeingSaved(path, "");
@@ -39,22 +36,22 @@ namespace KKAPI.MainGame
             [HarmonyPatch(typeof(TitleLoadScene), "SetWorldData", typeof(WorldData), typeof(bool))]
             public static void TitleLoadScene_SetWorldData(WorldData _worldData, bool isAuto)
             {
-                isNewGame = _worldData?.SaveTime == new DateTime(0);
-            } 
+                _isNewGame = _worldData?.SaveTime == new DateTime(0);
+            }
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(MapScene), "OnLoaded")]
             public static void MapScene_OnLoaded(MapScene __instance)
             {
-                if (isNewGame) OnNewGame();
-            } 
+                if (_isNewGame) OnNewGame();
+            }
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(HScene), "SetStartVoice")]
             public static void HScene_SetStartVoice(HScene __instance)
             {
                 OnHStart(__instance);
-            }      
+            }
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(HScene), "EndProc")]
@@ -75,11 +72,11 @@ namespace KKAPI.MainGame
             public static void EnvironmentChangeDayHook(EnviroSky __instance)
             {
                 var currentDay = (int)__instance.currentDay;
-                if (lastCurrentDay < currentDay)
+                if (_lastCurrentDay < currentDay)
                 {
-                    lastCurrentDay = currentDay;
+                    _lastCurrentDay = currentDay;
                     OnDayChange(currentDay);
-                }                
+                }
             }
         }
     }

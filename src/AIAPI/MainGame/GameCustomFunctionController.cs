@@ -1,12 +1,7 @@
 ﻿using System;
-// using ActionGame;
 using ExtensibleSaveFormat;
-using KKAPI.Maker;
 using UnityEngine;
-using Manager;
 using AIProject;
-using AIChara;
-using CharaCustom;
 
 namespace KKAPI.MainGame
 {

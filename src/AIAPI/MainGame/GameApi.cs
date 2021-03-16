@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Bootstrap;
 using KKAPI.Studio;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using Manager;
-using AIProject;
 
 namespace KKAPI.MainGame
 {
@@ -20,8 +16,6 @@ namespace KKAPI.MainGame
         private static readonly Dictionary<GameCustomFunctionController, string> _registeredHandlers = new Dictionary<GameCustomFunctionController, string>();
 
         private static GameObject _functionControllerContainer;
-
-        private static int _newGameDetectionIndex = -1;
 
         /// <summary>
         /// Fired after an H scene is loaded. Can be both in the main game and in free h.
