@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using ActionGame.Chara;
+using HarmonyLib;
+using UnityEngine;
 
 namespace KKAPI.MainGame
 {
@@ -121,6 +123,17 @@ namespace KKAPI.MainGame
                 results.Add(player.chaCtrl.chaFile);
 
             return results;
+        }
+
+        /// <summary>
+        /// Set the value of isCursorLock (setter is private by default).
+        /// Used to regain mouse cursor during roaming mode.
+        /// Best used together with setting <see cref="Time.timeScale"/> to 0 to pause the game.
+        /// </summary>
+        public static void SetIsCursorLock(this ActionScene actScene, bool value)
+        {
+            var lockField = Traverse.Create(actScene).Field<bool>("_isCursorLock");
+            lockField.Value = value;
         }
     }
 }
