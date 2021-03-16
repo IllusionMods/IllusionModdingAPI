@@ -71,6 +71,7 @@ Static Methods
 | --- | --- | --- | 
 | `void` | ActuallyRemoveAllListeners(this `UnityEventBase` evt) | Same as RemoveAllListeners but also disables all PersistentListeners.  To avoid frustration always use this instead of RemoveAllListeners, unless you want to keep the PersistentListeners. | 
 | `IEnumerable<T2>` | Attempt(this `IEnumerable<T>` items, `Func<T, T2>` action) | Attempt to project each element of the sequence into a new form (Select but ignore exceptions).  Exceptions thrown while doing this are ignored and any elements that fail to be converted are silently skipped. | 
+| `IEnumerable<T2>` | Attempt(this `IEnumerable<T>` items, `Func<T, T2>` action, `Action<Exception>` onError) | Attempt to project each element of the sequence into a new form (Select but ignore exceptions).  Exceptions thrown while doing this are ignored and any elements that fail to be converted are silently skipped. | 
 | `void` | FancyDestroy(this `GameObject` self, `Boolean` useDestroyImmediate = False, `Boolean` detachParent = False) | Destroy this GameObject. Safe to use on null objects. | 
 | `AssignedAnotherWeights` | GetAaWeightsBody(this `ChaControl` ctrl) | Get value of the aaWeightsBody field | 
 | `String` | GetFullPath(this `GameObject` self) | Get full GameObject "path" to this GameObject.  Example: RootObject\ChildObject1\ChildObject2 | 
@@ -78,6 +79,7 @@ Static Methods
 | `Transform` | GetTopmostParent(this `Component` src) | Get the topmost parent of Transform that this this Component is attached to. | 
 | `Transform` | GetTopmostParent(this `GameObject` src) | Get the topmost parent of Transform that this this Component is attached to. | 
 | `Transform` | GetTopmostParent(this `Transform` src) | Get the topmost parent of Transform that this this Component is attached to. | 
+| `Boolean` | IsDestroyed(this `Object` obj) | Return true if the object is a "fake" null (i.e. it was destroyed). | 
 | `void` | MarkXuaIgnored(this `Component` target) | Mark GameObject of this Component as ignored by AutoTranslator. Prevents AutoTranslator from trying to translate custom UI elements. | 
 | `ReadOnlyDictionary<TKey, TValue>` | ToReadOnlyDictionary(this `IDictionary<TKey, TValue>` original) | Wrap this dictionary in a read-only wrapper that will prevent any changes to it.  Warning: Any reference types inside the dictionary can still be modified. | 
 

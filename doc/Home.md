@@ -112,3 +112,7 @@
 - [`TranslationHelper`](KKAPI.Utilities.md#translationhelper)
 - [`WindowsStringComparer`](KKAPI.Utilities.md#windowsstringcomparer)
 
+## [KoiSkinOverlayX](KoiSkinOverlayX.md)
+
+- [`TextureStorage`](KoiSkinOverlayX.md#texturestorage)
+
