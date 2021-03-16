@@ -10,8 +10,8 @@ namespace KKAPI.MainGame
     {
         private class Hooks
         {
-            private static int _lastCurrentDay = 1; //Always starts at 1
             private static bool _isNewGame;
+            private static int _day = 0;
 
             public static void SetupHooks()
             {
@@ -64,20 +64,15 @@ namespace KKAPI.MainGame
             [HarmonyPatch(typeof(EnvironmentSimulator), nameof(EnvironmentSimulator.SetTimeZone), typeof(AIProject.TimeZone))]
             public static void EnvironmentChangeTypeHook(AIProject.TimeZone zone)
             {
+                if (zone == AIProject.TimeZone.Morning)
+                {
+                    OnDayChange(_day);
+                    _day++;
+                }
+
                 OnPeriodChange(zone);//morning, day, evening
             }
 
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(EnviroSky), "SetGameTime")]
-            public static void EnvironmentChangeDayHook(EnviroSky __instance)
-            {
-                var currentDay = (int)__instance.currentDay;
-                if (_lastCurrentDay < currentDay)
-                {
-                    _lastCurrentDay = currentDay;
-                    OnDayChange(currentDay);
-                }
-            }
         }
     }
 }
