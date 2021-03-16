@@ -35,6 +35,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObservableExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ResourceUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\TextureStorage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TextureUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TextUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\OpenFileDialog.cs" />
