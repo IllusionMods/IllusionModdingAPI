@@ -116,11 +116,12 @@ namespace KKAPI.MainGame
 
         /// <summary>
         /// Register a new action icon in roaming mode (like the icons for training/studying, club report screen, peeping).
+        /// Icon templates can be found here https://github.com/IllusionMods/IllusionModdingAPI/tree/master/src/KKAPI/MainGame/ActionIcons
         /// </summary>
         /// <param name="mapNo">Identification number of the map the icon should be spawned on</param>
         /// <param name="position">Position of the icon. All default icons are spawned at y=0, but different heights work fine to a degree.
         /// You can figure out the position by walking to it and getting the player position with RUE.</param>
-        /// <param name="iconOn">Icon shown when player is in range to click it.</param>
+        /// <param name="iconOn">Icon shown when player is in range to click it (excited state).</param>
         /// <param name="iconOff">Icon shown when player is out of range.</param>
         /// <param name="onOpen">Action triggered when player clicks the icon (If you want to open your own menu, use <see cref="GameExtensions.SetIsCursorLock"/>
         /// to enable mouse cursor and hide the action icon to prevent it from being clicked again.).</param>
