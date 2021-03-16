@@ -47,6 +47,12 @@ namespace KKAPI.Utilities
         /// </summary>
         public static IEnumerable<T2> Attempt<T, T2>(this IEnumerable<T> items, Func<T, T2> action)
         {
+            return Attempt(items, action, null);
+        }
+
+        /// <inheritdoc cref="Attempt{T,T2}(IEnumerable{T},Func{T,T2})"/>
+        public static IEnumerable<T2> Attempt<T, T2>(this IEnumerable<T> items, Func<T, T2> action, Action<Exception> onError)
+        {
             foreach (var item in items)
             {
                 T2 result;
@@ -54,8 +60,9 @@ namespace KKAPI.Utilities
                 {
                     result = action(item);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    onError?.Invoke(ex);
                     continue;
                 }
                 yield return result;
@@ -72,8 +79,8 @@ namespace KKAPI.Utilities
         {
             if (self == null) return;
             if (detachParent) self.transform.SetParent(null);
-            if (useDestroyImmediate) GameObject.DestroyImmediate(self);
-            else GameObject.Destroy(self);
+            if (useDestroyImmediate) UnityEngine.Object.DestroyImmediate(self);
+            else UnityEngine.Object.Destroy(self);
         }
 
         /// <summary>
@@ -129,6 +136,14 @@ namespace KKAPI.Utilities
             while (src.parent)
                 src = src.parent;
             return src;
+        }
+
+        /// <summary>
+        /// Return true if the object is a "fake" null (i.e. it was destroyed).
+        /// </summary>
+        public static bool IsDestroyed(this UnityEngine.Object obj)
+        {
+            return !ReferenceEquals(obj, null) && !obj;
         }
 
 #if KK||EC
