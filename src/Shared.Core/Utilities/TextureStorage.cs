@@ -14,7 +14,7 @@ namespace KoiSkinOverlayX
     /// A class for storing textures that should be saved and loaded from extended data's <see cref="PluginData"/> (e.g. to character cards and scenes).
     /// Duplicate textures are automatically handled so that only one copy of the texture is held in memory and saved.
     /// </summary>
-    internal class TextureStorage : IDisposable
+    public class TextureStorage : IDisposable
     {
         // Do not change or it will break stuff that used this marker previously
         private const string DataMarker = "_TextureID_";
