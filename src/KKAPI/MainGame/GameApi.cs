@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using ActionGame;
 using BepInEx.Bootstrap;
+using HarmonyLib;
+using Illusion.Component;
 using KKAPI.Studio;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,7 +25,7 @@ namespace KKAPI.MainGame
 
         // navigating these scenes in order triggers OnNewGame
         private static readonly IList<string> _newGameDetectionScenes =
-            new List<string>(new[] {"Title", "EntryPlayer", "ClassRoomSelect", "Action"});
+            new List<string>(new[] { "Title", "EntryPlayer", "ClassRoomSelect", "Action" });
 
         private static int _newGameDetectionIndex = -1;
 
@@ -111,11 +114,31 @@ namespace KKAPI.MainGame
             _registeredHandlers.Add(newBehaviour, extendedDataId);
         }
 
+        /// <summary>
+        /// Register a new action icon in roaming mode (like the icons for training/studying, club report screen, peeping).
+        /// </summary>
+        /// <param name="mapNo">Identification number of the map the icon should be spawned on</param>
+        /// <param name="position">Position of the icon. All default icons are spawned at y=0, but different heights work fine to a degree.
+        /// You can figure out the position by walking to it and getting the player position with RUE.</param>
+        /// <param name="iconOn">Icon shown when player is in range to click it.</param>
+        /// <param name="iconOff">Icon shown when player is out of range.</param>
+        /// <param name="onOpen">Action triggered when player clicks the icon (If you want to open your own menu, use <see cref="GameExtensions.SetIsCursorLock"/>
+        /// to enable mouse cursor and hide the action icon to prevent it from being clicked again.).</param>
+        /// <param name="onCreated">Optional action to run after the icon is created.
+        /// Use to attach extra code to the icon, e.g. by using <see cref="ObservableTriggerExtensions.UpdateAsObservable(Component)"/> and similar methods.</param>
+        public static void AddActionIcon(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated = null)
+        {
+            if (StudioAPI.InsideStudio) return;
+            CustomActionIcon.AddActionIcon(mapNo, position, iconOn, iconOff, onOpen, onCreated);
+        }
+
         internal static void Init(bool insideStudio)
         {
             if (insideStudio) return;
 
-            Hooks.SetupHooks();
+            var hi = new Harmony(typeof(GameAPI).FullName);
+            hi.PatchAll(typeof(Hooks));
+            hi.PatchAll(typeof(CustomActionIcon));
 
             _functionControllerContainer = new GameObject("GameCustomFunctionController Zoo");
             _functionControllerContainer.transform.SetParent(Chainloader.ManagerObject.transform, false);

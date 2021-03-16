@@ -17,6 +17,7 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `void` | AddActionIcon(`Int32` mapNo, `Vector3` position, `Sprite` iconOn, `Sprite` iconOff, `Action` onOpen, `Action<TriggerEnterExitEvent>` onCreated = null) | Register a new action icon in roaming mode (like the icons for training/studying, club report screen, peeping). | 
 | `IEnumerable<GameCustomFunctionController>` | GetBehaviours() | Get all registered behaviours for the game. | 
 | `GameCustomFunctionController` | GetRegisteredBehaviour(`String` extendedDataId) | Get the first controller that was registered with the specified extendedDataId. | 
 | `GameCustomFunctionController` | GetRegisteredBehaviour(`Type` controllerType) | Get the first controller that was registered with the specified extendedDataId. | 
@@ -93,6 +94,7 @@ Static Methods
 | `IEnumerable<ChaFileControl>` | GetRelatedChaFiles(this `Heroine` heroine) | Get ChaFiles that are related to this heroine. Warning: It might not return some copies. | 
 | `IEnumerable<ChaFileControl>` | GetRelatedChaFiles(this `Player` player) | Get ChaFiles that are related to this heroine. Warning: It might not return some copies. | 
 | `Boolean` | IsShowerPeeping(this `HFlag` hFlag) | Returns true if the H scene is peeping in the shower.  Use `HFlag.mode` to get info on what mode the H scene is in. | 
+| `void` | SetIsCursorLock(this `ActionScene` actScene, `Boolean` value) | Set the value of isCursorLock (setter is private by default).  Used to regain mouse cursor during roaming mode.  Best used together with setting `UnityEngine.Time.timeScale` to 0 to pause the game. | 
 
 
 ## `GameSaveLoadEventArgs`
