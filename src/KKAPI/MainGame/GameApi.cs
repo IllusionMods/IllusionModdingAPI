@@ -10,6 +10,7 @@ using KKAPI.Studio;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace KKAPI.MainGame
 {
@@ -133,6 +134,22 @@ namespace KKAPI.MainGame
             CustomActionIcon.AddActionIcon(mapNo, position, iconOn, iconOff, onOpen, onCreated);
         }
 
+        /// <summary>
+        /// Register a new touch icon in talk scenes in roaming mode (like the touch and look buttons on top right when talking to a character).
+        /// Icon templates can be found here https://github.com/IllusionMods/IllusionModdingAPI/tree/master/src/KKAPI/MainGame/TouchIcons
+        /// By default this functions as a simple button. If you want to turn this into a toggle you have to manually switch button.image.sprite as needed.
+        /// </summary>
+        /// <param name="icon">Icon shown by default</param>
+        /// <param name="onCreated">Action to run after the icon is created.
+        /// Use to subscribe to the onClick event and/or attach extra code to the button, e.g. by using <see cref="ObservableTriggerExtensions.UpdateAsObservable(Component)"/> and similar methods.</param>
+        /// <param name="row">Row of the button, counted from top at 0. Buttons are added from right to left. Row has to be between 0 and 5, but 0 to 2 are recommended.</param>
+        /// <param name="order">Order of the buttons in a row. Lower value is placed more to the right. By default order of adding the icons is used.</param>
+        public static void AddTouchIcon(Sprite icon, Action<Button> onCreated, int row = 1, int order = 0)
+        {
+            if (StudioAPI.InsideStudio) return;
+            CustomTalkSceneTouchIcon.AddTouchIcon(icon, onCreated, row, order);
+        }
+
         internal static void Init(bool insideStudio)
         {
             if (insideStudio) return;
@@ -140,6 +157,7 @@ namespace KKAPI.MainGame
             var hi = new Harmony(typeof(GameAPI).FullName);
             hi.PatchAll(typeof(Hooks));
             hi.PatchAll(typeof(CustomActionIcon));
+            hi.PatchAll(typeof(CustomTalkSceneTouchIcon));
 
             _functionControllerContainer = new GameObject("GameCustomFunctionController Zoo");
             _functionControllerContainer.transform.SetParent(Chainloader.ManagerObject.transform, false);

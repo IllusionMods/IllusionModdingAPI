@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainGame\ActionIcons\CustomActionIcon.cs" />
+    <Compile Include="MainGame\TouchIcons\CustomTalkSceneTouchIcon.cs" />
     <Compile Include="Maker\AccessoryCopyEventArgs.cs" />
     <Compile Include="MainGame\GameApi.cs" />
     <Compile Include="MainGame\GameAPI.Hooks.cs" />
@@ -101,6 +102,10 @@
   <ItemGroup>
     <None Include="MainGame\ActionIcons\Action_Icon_Off_Template.png" />
     <None Include="MainGame\ActionIcons\Action_Icon_On_Template.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MainGame\TouchIcons\Touch_Icon_Deselected_Template.png.png" />
+    <None Include="MainGame\TouchIcons\Touch_Icon_Selected_Template.png" />
   </ItemGroup>
   <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
   <Import Project="..\Shared.KKalike\Shared.KKalike.projitems" Label="Shared" />
