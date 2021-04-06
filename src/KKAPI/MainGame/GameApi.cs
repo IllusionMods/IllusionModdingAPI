@@ -7,6 +7,7 @@ using BepInEx.Bootstrap;
 using HarmonyLib;
 using Illusion.Component;
 using KKAPI.Studio;
+using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -117,6 +118,7 @@ namespace KKAPI.MainGame
 
         /// <summary>
         /// Register a new action icon in roaming mode (like the icons for training/studying, club report screen, peeping).
+        /// Dispose the return value to remove the icon.
         /// Icon templates can be found here https://github.com/IllusionMods/IllusionModdingAPI/tree/master/src/KKAPI/MainGame/ActionIcons
         /// </summary>
         /// <param name="mapNo">Identification number of the map the icon should be spawned on</param>
@@ -128,14 +130,24 @@ namespace KKAPI.MainGame
         /// to enable mouse cursor and hide the action icon to prevent it from being clicked again.).</param>
         /// <param name="onCreated">Optional action to run after the icon is created.
         /// Use to attach extra code to the icon, e.g. by using <see cref="ObservableTriggerExtensions.UpdateAsObservable(Component)"/> and similar methods.</param>
-        public static void AddActionIcon(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated = null)
+        /// <param name="delayed">Should the icon be spawned every time the map is entered</param>
+        /// <param name="immediate">Should the icon be spawned immediately if the player is on the correct map</param>
+        public static IDisposable AddActionIcon(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated = null, bool delayed = true, bool immediate = false)
         {
-            if (StudioAPI.InsideStudio) return;
-            CustomActionIcon.AddActionIcon(mapNo, position, iconOn, iconOff, onOpen, onCreated);
+            if (StudioAPI.InsideStudio) return Disposable.Empty;
+            return CustomActionIcon.AddActionIcon(mapNo, position, iconOn, iconOff, onOpen, onCreated, delayed, immediate);
+        }
+
+        /// <inheritdoc cref="AddActionIcon(int,Vector3,Sprite,Sprite,Action,Action{TriggerEnterExitEvent},bool,bool)"/>
+        [Obsolete]
+        public static void AddActionIcon(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated)
+        {
+            AddActionIcon(mapNo, position, iconOn, iconOff, onOpen, onCreated, true, false);
         }
 
         /// <summary>
         /// Register a new touch icon in talk scenes in roaming mode (like the touch and look buttons on top right when talking to a character).
+        /// Dispose the return value to remove the icon.
         /// Icon templates can be found here https://github.com/IllusionMods/IllusionModdingAPI/tree/master/src/KKAPI/MainGame/TouchIcons
         /// By default this functions as a simple button. If you want to turn this into a toggle you have to manually switch button.image.sprite as needed.
         /// </summary>
@@ -144,10 +156,10 @@ namespace KKAPI.MainGame
         /// Use to subscribe to the onClick event and/or attach extra code to the button, e.g. by using <see cref="ObservableTriggerExtensions.UpdateAsObservable(Component)"/> and similar methods.</param>
         /// <param name="row">Row of the button, counted from top at 0. Buttons are added from right to left. Row has to be between 0 and 5, but 0 to 2 are recommended.</param>
         /// <param name="order">Order of the buttons in a row. Lower value is placed more to the right. By default order of adding the icons is used.</param>
-        public static void AddTouchIcon(Sprite icon, Action<Button> onCreated, int row = 1, int order = 0)
+        public static IDisposable AddTouchIcon(Sprite icon, Action<Button> onCreated, int row = 1, int order = 0)
         {
-            if (StudioAPI.InsideStudio) return;
-            CustomTalkSceneTouchIcon.AddTouchIcon(icon, onCreated, row, order);
+            if (StudioAPI.InsideStudio) return Disposable.Empty;
+            return CustomTalkSceneTouchIcon.AddTouchIcon(icon, onCreated, row, order);
         }
 
         internal static void Init(bool insideStudio)

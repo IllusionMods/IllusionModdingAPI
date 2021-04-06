@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using KKAPI.Utilities;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -17,6 +18,7 @@ namespace KKAPI.MainGame
             public readonly int Row;
             public readonly int Order;
             public readonly Action<Button> OnCreated;
+            internal Object Instance;
 
             public TouchIconEntry(Sprite icon, Action<Button> onCreated, int row, int order)
             {
@@ -25,11 +27,16 @@ namespace KKAPI.MainGame
                 Row = row;
                 Order = order;
             }
+
+            public void Dispose()
+            {
+                Object.Destroy(Instance);
+            }
         }
 
         private static readonly List<TouchIconEntry> _buttons = new List<TouchIconEntry>();
 
-        public static void AddTouchIcon(Sprite icon, Action<Button> onCreated, int row = 1, int order = 0)
+        public static IDisposable AddTouchIcon(Sprite icon, Action<Button> onCreated, int row = 1, int order = 0)
         {
             if (icon == null) throw new ArgumentNullException(nameof(icon));
             if (onCreated == null) throw new ArgumentNullException(nameof(onCreated));
@@ -37,7 +44,14 @@ namespace KKAPI.MainGame
 
             Object.DontDestroyOnLoad(icon);
 
-            _buttons.Add(new TouchIconEntry(icon, onCreated, row, order));
+            var entry = new TouchIconEntry(icon, onCreated, row, order);
+            _buttons.Add(entry);
+
+            return Disposable.Create(() =>
+            {
+                _buttons.Remove(entry);
+                entry.Dispose();
+            });
         }
 
         [HarmonyPostfix]
@@ -60,7 +74,6 @@ namespace KKAPI.MainGame
                 foreach (var entry in entryRow.OrderBy(x => x.Order).ThenBy(x => _buttons.IndexOf(x)))
                 {
                     var copy = Object.Instantiate(sourceTransform.gameObject, sourceTransform.parent, false);
-
                     copy.transform.localPosition = lastPosition + new Vector3(change, 0, 0);
                     lastPosition = copy.transform.localPosition;
 
@@ -69,6 +82,7 @@ namespace KKAPI.MainGame
 
                     btn.image.sprite = entry.Icon;
 
+                    entry.Instance = copy;
                     entry.OnCreated(btn);
                 }
             }

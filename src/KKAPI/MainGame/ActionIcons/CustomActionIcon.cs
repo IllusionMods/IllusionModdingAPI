@@ -22,6 +22,8 @@ namespace KKAPI.MainGame
             public readonly Action OnOpen;
             public readonly Action<TriggerEnterExitEvent> OnCreated;
 
+            public Object Instance;
+
             public ActionIconEntry(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated)
             {
                 IconOff = iconOff;
@@ -31,11 +33,16 @@ namespace KKAPI.MainGame
                 MapNo = mapNo;
                 Position = position;
             }
+
+            public void Dispose()
+            {
+                Object.Destroy(Instance);
+            }
         }
 
         private static readonly List<ActionIconEntry> _entries = new List<ActionIconEntry>();
 
-        public static void AddActionIcon(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated = null)
+        public static IDisposable AddActionIcon(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated = null, bool delayed = true, bool immediate = false)
         {
             if (iconOn == null) throw new ArgumentNullException(nameof(iconOn));
             if (iconOff == null) throw new ArgumentNullException(nameof(iconOff));
@@ -45,7 +52,18 @@ namespace KKAPI.MainGame
             Object.DontDestroyOnLoad(iconOff);
 
             var entry = new ActionIconEntry(mapNo, position, iconOn, iconOff, onOpen, onCreated);
-            _entries.Add(entry);
+
+            if (delayed)
+                _entries.Add(entry);
+
+            if (immediate && Game.IsInstance() && Game.Instance.actScene != null && mapNo == Game.Instance.actScene.Player?.mapNo)
+                SpawnActionPoint(entry, 100);
+
+            return Disposable.Create(() =>
+            {
+                _entries.Remove(entry);
+                entry.Dispose();
+            });
         }
 
         [HarmonyPostfix]
@@ -62,7 +80,7 @@ namespace KKAPI.MainGame
                 {
                     try
                     {
-                        SpawnActionPoint(iconEntry);
+                        SpawnActionPoint(iconEntry, created);
                         created++;
                     }
                     catch (Exception e)
@@ -76,9 +94,10 @@ namespace KKAPI.MainGame
                 KoikatuAPI.Logger.LogDebug($"Created {created} custom action points on map no {__instance.no}");
         }
 
-        private static void SpawnActionPoint(ActionIconEntry iconEntry)
+        private static void SpawnActionPoint(ActionIconEntry iconEntry, int created)
         {
             var inst = CommonLib.LoadAsset<GameObject>("map/playeractionpoint/00.unity3d", "PlayerActionPoint_05", true);
+            inst.gameObject.name = "CustomActionPoint_" + created;
             var parent = GameObject.Find("Map/ActionPoints");
             inst.transform.SetParent(parent.transform, true);
 
@@ -93,6 +112,7 @@ namespace KKAPI.MainGame
             var animator = iconRootObject.GetComponentInChildren<Animator>();
             var rendererIcon = iconRootObject.GetComponentInChildren<SpriteRenderer>();
             rendererIcon.sprite = iconEntry.IconOff;
+            rendererIcon.flipX = true; // Needed to fix images being flipped
             var playerInRange = false;
             evt.onTriggerEnter += c =>
             {
@@ -111,12 +131,13 @@ namespace KKAPI.MainGame
                 c.GetComponent<Player>().actionPointList.Remove(evt);
             };
 
-            var player = Singleton<Game>.Instance.actScene.Player;
+            var game = Singleton<Game>.Instance;
+            var player = game.actScene.Player;
             evt.UpdateAsObservable()
                 .Subscribe(_ =>
                 {
                     // Hide in H scenes and other places
-                    var isVisible = Singleton<Game>.IsInstance() && !Singleton<Game>.Instance.IsRegulate(true);
+                    var isVisible = !game.IsRegulate(true) && !game.actScene.isEventNow;
                     if (rendererIcon.enabled != isVisible)
                         rendererIcon.enabled = isVisible;
 
@@ -125,6 +146,8 @@ namespace KKAPI.MainGame
                         iconEntry.OnOpen();
                 })
                 .AddTo(evt);
+
+            iconEntry.Instance = inst;
 
             iconEntry.OnCreated?.Invoke(evt);
         }
