@@ -116,6 +116,8 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `Rect` | DragResizeEatWindow(`Int32` windowId, `Rect` windowRect) | Handle both dragging and resizing of OnGUI windows, as well as eat mouse inputs when cursor is over the window.  Use this instead of `UnityEngine.GUI.DragWindow(UnityEngine.Rect)` and `KKAPI.Utilities.IMGUIUtils.EatInputInRect(UnityEngine.Rect)`. Don't use these methods at the same time as DragResizeEatWindow.  To use, place this at the end of your Window method: _windowRect = IMGUIUtils.DragResizeEatWindow(windowId, _windowRect); | 
+| `Rect` | DragResizeWindow(`Int32` windowId, `Rect` windowRect) | Handle both dragging and resizing of OnGUI windows.  Use this instead of GUI.DragWindow(), don't use both at the same time.  To use, place this at the end of your Window method: _windowRect = IMGUIUtils.DragResizeWindow(windowId, _windowRect); | 
 | `Boolean` | DrawButtonWithShadow(`Rect` r, `GUIContent` content, `GUIStyle` style, `Single` shadowAlpha, `Vector2` direction) |  | 
 | `void` | DrawLabelWithOutline(`Rect` rect, `String` text, `GUIStyle` style, `Color` txtColor, `Color` outlineColor, `Int32` outlineThickness) | Draw a label with an outline | 
 | `void` | DrawLabelWithShadow(`Rect` rect, `GUIContent` content, `GUIStyle` style, `Color` txtColor, `Color` shadowColor, `Vector2` shadowOffset) | Draw a label with a shadow | 
