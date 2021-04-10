@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using BepInEx;
@@ -83,6 +84,42 @@ namespace KKAPI
             SceneManager.sceneLoaded += (scene, mode) => Logger.LogDebug($"SceneManager.sceneLoaded - {scene.name} in {mode} mode");
             SceneManager.sceneUnloaded += scene => Logger.LogDebug($"SceneManager.sceneUnloaded - {scene.name}");
             SceneManager.activeSceneChanged += (prev, next) => Logger.LogDebug($"SceneManager.activeSceneChanged - from {prev.name} to {next.name}");
+
+            if (!TomlTypeConverter.CanConvert(typeof(Rect)))
+            {
+                TomlTypeConverter.AddConverter(typeof(Rect), new TypeConverter
+                {
+                    ConvertToObject = (s, type) =>
+                    {
+                        var result = new Rect();
+                        if (s != null)
+                        {
+                            var cleaned = s.Trim('{', '}').Replace(" ", "");
+                            foreach (var part in cleaned.Split(','))
+                            {
+                                var parts = part.Split(':');
+                                if (parts.Length == 2 && float.TryParse(parts[1], out var value))
+                                {
+                                    var id = parts[0].Trim('"');
+                                    if (id == "x") result.x = value;
+                                    else if (id == "y") result.y = value;
+                                    // Check z and w in case something was using Vector4 to serialize a Rect before
+                                    else if (id == "width" || id == "z") result.width = value;
+                                    else if (id == "height" || id == "w") result.height = value;
+                                }
+                            }
+                        }
+                        return result;
+                    },
+                    ConvertToString = (o, type) =>
+                    {
+                        var rect = (Rect)o;
+                        return string.Format(CultureInfo.InvariantCulture,
+                            "{{ \"x\":{0}, \"y\":{1}, \"width\":{2}, \"height\":{3} }}",
+                            rect.x, rect.y, rect.width, rect.height);
+                    }
+                });
+            }
         }
 
         /// <summary>
