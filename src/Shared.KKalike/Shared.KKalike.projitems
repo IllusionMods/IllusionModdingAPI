@@ -29,6 +29,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerLoadToggle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerRadioButtons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerSeparator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerSliderint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerSlider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerText.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\MakerTextbox.cs" />
