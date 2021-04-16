@@ -131,9 +131,6 @@ namespace KKAPI.Maker.UI
 
             var inputField = tr.Find("InputField").GetComponent<TMP_InputField>();
             if (MakerAPI.InsideMaker) Singleton<ChaCustom.CustomBase>.Instance.lstTmpInputField.Add(inputField);
-
-            InputField(_defaultValue, inputField);
-
             inputField.onEndEdit.AddListener(
                 txt =>
                 {
@@ -151,7 +148,12 @@ namespace KKAPI.Maker.UI
             slider.onValueChanged.AddListener(
                 f =>
                 {
-                    InputField(f, inputField);
+                    if (ValueToString != null)
+                        inputField.text = ValueToString(f);
+                    else if (_Wholenumbers)
+                        inputField.text = f.ToString();
+                    else
+                        inputField.text = Mathf.RoundToInt(f * 100).ToString();
                 });
 
             var resetButton = tr.Find("Button").GetComponent<Button>();
@@ -160,15 +162,6 @@ namespace KKAPI.Maker.UI
             BufferedValueChanged.Subscribe(f => slider.value = f);
 
             return tr.gameObject;
-        }
-        private void InputField(float f, TMP_InputField inputField)
-        {
-            if (ValueToString != null)
-                inputField.text = ValueToString(f);
-            else if (_Wholenumbers)
-                inputField.text = f.ToString();
-            else
-                inputField.text = Mathf.RoundToInt(f * 100).ToString();
         }
     }
 }
