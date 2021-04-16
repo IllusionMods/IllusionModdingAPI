@@ -1,5 +1,5 @@
-﻿using System;
-using BepInEx;
+﻿using BepInEx;
+using System;
 using TMPro;
 using UniRx;
 using UniRx.Triggers;
@@ -21,6 +21,7 @@ namespace KKAPI.Maker.UI
         private readonly float _maxValue;
         private readonly float _minValue;
         private readonly float _defaultValue;
+        private readonly bool _Wholenumbers;
 
         /// <summary>
         /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
@@ -31,10 +32,11 @@ namespace KKAPI.Maker.UI
         /// <param name="minValue">Lowest allowed value (inclusive)</param>
         /// <param name="maxValue">Highest allowed value (inclusive)</param>
         /// <param name="defaultValue">Value the slider will be set to after creation</param>
-        public MakerSlider(MakerCategory category, string settingName, float minValue, float maxValue, float defaultValue, BaseUnityPlugin owner) : base(category, defaultValue, owner)
+        /// <param name="Wholenumbers">Bind value to integer</param>
+        public MakerSlider(MakerCategory category, string settingName, float minValue, float maxValue, float defaultValue, BaseUnityPlugin owner, bool Wholenumbers = false) : base(category, defaultValue, owner)
         {
             _settingName = settingName;
-
+            _Wholenumbers = Wholenumbers;
             _minValue = minValue;
             _maxValue = maxValue;
             _defaultValue = defaultValue;
@@ -110,8 +112,9 @@ namespace KKAPI.Maker.UI
             var slider = tr.Find("Slider").GetComponent<Slider>();
             slider.minValue = _minValue;
             slider.maxValue = _maxValue;
+            slider.wholeNumbers = _Wholenumbers;
             slider.onValueChanged.AddListener(SetValue);
-
+            slider.value = _defaultValue;
             slider.GetComponent<ObservableScrollTrigger>()
                 .OnScrollAsObservable()
                 .Subscribe(
@@ -147,6 +150,8 @@ namespace KKAPI.Maker.UI
                 {
                     if (ValueToString != null)
                         inputField.text = ValueToString(f);
+                    else if (_Wholenumbers)
+                        inputField.text = f.ToString();
                     else
                         inputField.text = Mathf.RoundToInt(f * 100).ToString();
                 });
