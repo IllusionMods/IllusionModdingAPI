@@ -1,5 +1,5 @@
-﻿using System;
-using BepInEx;
+﻿using BepInEx;
+using System;
 using TMPro;
 using UniRx;
 using UniRx.Triggers;
@@ -51,6 +51,11 @@ namespace KKAPI.Maker.UI
         /// If not set, <code>Mathf.RoundToInt(f * 100).ToString()</code> is used.
         /// </summary>
         public Func<float, string> ValueToString { get; set; }
+
+        /// <summary>
+        /// Use integers instead of floats
+        /// </summary>
+        public bool WholeNumbers { get; set; }
 
         private static Transform SliderCopy
         {
@@ -110,8 +115,9 @@ namespace KKAPI.Maker.UI
             var slider = tr.Find("Slider").GetComponent<Slider>();
             slider.minValue = _minValue;
             slider.maxValue = _maxValue;
+            slider.wholeNumbers = WholeNumbers;
             slider.onValueChanged.AddListener(SetValue);
-
+            slider.value = _defaultValue;
             slider.GetComponent<ObservableScrollTrigger>()
                 .OnScrollAsObservable()
                 .Subscribe(
@@ -128,6 +134,12 @@ namespace KKAPI.Maker.UI
 
             var inputField = tr.Find("InputField").GetComponent<TMP_InputField>();
             if (MakerAPI.InsideMaker) Singleton<ChaCustom.CustomBase>.Instance.lstTmpInputField.Add(inputField);
+
+            if (WholeNumbers)
+            {
+                InputField(_defaultValue, inputField);
+            }
+
             inputField.onEndEdit.AddListener(
                 txt =>
                 {
@@ -145,10 +157,7 @@ namespace KKAPI.Maker.UI
             slider.onValueChanged.AddListener(
                 f =>
                 {
-                    if (ValueToString != null)
-                        inputField.text = ValueToString(f);
-                    else
-                        inputField.text = Mathf.RoundToInt(f * 100).ToString();
+                    InputField(f, inputField);
                 });
 
             var resetButton = tr.Find("Button").GetComponent<Button>();
@@ -158,5 +167,16 @@ namespace KKAPI.Maker.UI
 
             return tr.gameObject;
         }
+
+        private void InputField(float f, TMP_InputField inputField)
+        {
+            if (ValueToString != null)
+                inputField.text = ValueToString(f);
+            else if (WholeNumbers)
+                inputField.text = f.ToString();
+            else
+                inputField.text = Mathf.RoundToInt(f * 100).ToString();
+        }
+
     }
 }
