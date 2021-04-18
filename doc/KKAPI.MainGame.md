@@ -1,3 +1,38 @@
+## `EventUtils`
+
+Utilities for creating and playing custom ADV scenes (talking scenes with the text box at the bottom).
+```csharp
+public static class KKAPI.MainGame.EventUtils
+
+```
+
+Static Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `String` | Heroine | Avoid using, not sure what's the use  Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work | 
+| `String` | HeroineFullName | Name + Surname  Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work | 
+| `String` | HeroineName | Should be used when indicating who is speaking  Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work | 
+| `String` | HeroineNickname | Nickname. Doesn't seem to work, not set with Program.SetParam? | 
+| `String` | HeroineSurname | Some characters might not have a surname, safer to use HeroineFullName  Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work | 
+| `String` | Narrator | Use as Text owner to get the neutral white text used to describe the situation | 
+| `String` | Player | Returns empty on default character. Not sure what's the intended use, could be used to set text to player's color while not having player name appear  Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work | 
+| `String` | PlayerFullName | Name + Surname. Returns same as PlayerName on default character since he has no surname  Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work | 
+| `String` | PlayerName | Should be used when indicating who is speaking  Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work | 
+| `String` | PlayerNickname | Nickname. Doesn't seem to work, not set with Program.SetParam? | 
+| `String` | PlayerSurname | Returns empty on default character. Avoid using, better to use PlayerFullName  Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work | 
+
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `List<Transfer>` | CreateNewEvent(`Boolean` waitForSceneFade = False, `Boolean` setPlayerParam = True) | Helper for creating a new event command list. Sets up player variables automatically. | 
+| `Player` | GetPlayerData() | Get current save data of the player | 
+| `IEnumerator` | StartAdvEvent(`List<Transfer>` list, `Boolean` dialogOnly, `Vector3` position, `Quaternion` rotation, `OpenDataProc` extraData = null, `CameraData` camera = null, `List<Heroine>` heroines = null) | Start a new ADV event. Can be used in roaming mode and some other cases. Do not use in TalkScenes, use `KKAPI.MainGame.EventUtils.StartTextSceneEvent(TalkScene,System.Collections.Generic.List{ADV.Program.Transfer},System.Boolean,System.Boolean)` instead.  Can get variables set in the commands through actScene.AdvScene.Scenario.Vars  You can use Program.SetParam(player, list) to add all parameters related to player/heroine. Alternatively use the CharaChange command. | 
+| `IEnumerator` | StartTextSceneEvent(`TalkScene` talkScene, `List<Transfer>` list, `Boolean` endTalkScene = False, `Boolean` decreaseTalkTime = False) | Start a new ADV event inside of a TalkScene (same as stock game events when talking).  The target heroine is automatically added to the heroine list, and its vars are set at the very start. | 
+
+
 ## `GameAPI`
 
 Provides API for interfacing with the main game. It is useful mostly in the actual game, but some  functions will work outside of it (for example in FreeH).
@@ -87,14 +122,18 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `Int32` | GetClassMaxSeatCount(this `SaveData` saveData, `Int32` classNumber) | Get seat count in a class based on game settings. | 
+| `IEnumerable<Heroine>` | GetFreeClassSlots(this `SaveData` saveData, `Int32` classNumber) | Get a list of free slots in class roster. New heroines can be added to these slots in saveData.heroineList.  <example>  var freeSlot = saveData.GetFreeClassSlots(1).FirstOrDefault();  freeSlot.SetCharFile(fairyCard.charFile);  freeSlot.charFileInitialized = true;  saveData.heroineList.Add(freeSlot);  </example> | 
 | `Heroine` | GetHeroine(this `ChaControl` chaControl) | Get the persisting heroine object that describes this character.  Returns null if the heroine could not be found. Works only in the main game. | 
 | `Heroine` | GetHeroine(this `ChaFileControl` chaFile) | Get the persisting heroine object that describes this character.  Returns null if the heroine could not be found. Works only in the main game. | 
+| `Heroine` | GetHeroineAtSeat(this `SaveData` saveData, `Int32` classNumber, `Int32` classIndex) | Get heroine at a specified class and seat. | 
 | `NPC` | GetNPC(this `Heroine` heroine) | Get the NPC that represents this heroine in the game. Works only in the main game.  If the heroine has not been spawned into the game it returns null. | 
 | `Player` | GetPlayer(this `ChaControl` chaControl) | Get the persisting player object that describes this character.  Returns null if the player could not be found. Works only in the main game. | 
 | `Player` | GetPlayer(this `ChaFileControl` chaFile) | Get the persisting player object that describes this character.  Returns null if the player could not be found. Works only in the main game. | 
 | `IEnumerable<ChaFileControl>` | GetRelatedChaFiles(this `Heroine` heroine) | Get ChaFiles that are related to this heroine. Warning: It might not return some copies. | 
 | `IEnumerable<ChaFileControl>` | GetRelatedChaFiles(this `Player` player) | Get ChaFiles that are related to this heroine. Warning: It might not return some copies. | 
 | `Boolean` | IsShowerPeeping(this `HFlag` hFlag) | Returns true if the H scene is peeping in the shower.  Use `HFlag.mode` to get info on what mode the H scene is in. | 
+| `Boolean` | IsValidClassSeat(this `SaveData` saveData, `Int32` classNumber, `Int32` classIndex) | Check if the seat can be used for heroines.  Returns true even if the seats are disabled by config, use `KKAPI.MainGame.GameExtensions.GetClassMaxSeatCount(SaveData,System.Int32)` to check for this case. | 
 | `void` | SetIsCursorLock(this `ActionScene` actScene, `Boolean` value) | Set the value of isCursorLock (setter is private by default).  Used to regain mouse cursor during roaming mode.  Best used together with setting `UnityEngine.Time.timeScale` to 0 to pause the game. | 
 
 
@@ -114,5 +153,45 @@ Properties
 | `String` | FileName | Name of the safe file. | 
 | `String` | FullFilename | Full filename of the save file. | 
 | `String` | Path | Path to which the save file will be written. | 
+
+
+## `IgnoreCaseEqualityComparer`
+
+An equality comparer that uses StringComparison.OrdinalIgnoreCase rule
+```csharp
+public class KKAPI.MainGame.IgnoreCaseEqualityComparer
+    : IEqualityComparer<String>
+
+```
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | Equals(`String` x, `String` y) |  | 
+| `Int32` | GetHashCode(`String` obj) |  | 
+
+
+Static Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `IgnoreCaseEqualityComparer` | Instance | Instance of the comparer for use in linq and such | 
+
+
+## `TalkSceneUtils`
+
+Utility methods for use with TalkScenes in main game roaming mode
+```csharp
+public static class KKAPI.MainGame.TalkSceneUtils
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `List<Param>` | GetSenarioData(`Heroine` girl, `String` asset) | Get scenario data for a specified girl. The data is inside abdata\adv\scenario. | 
+| `void` | Touch(this `TalkScene` talkScene, `TouchLocation` touchLocation, `TouchKind` touchKind, `Vector3` touchPosition = null) | Simulate touching the character in TalkScene with mouse. | 
 
 
