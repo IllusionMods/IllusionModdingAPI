@@ -83,12 +83,14 @@
   <ItemGroup>
     <Compile Include="MainGame\ActionIcons\CustomActionIcon.cs" />
     <Compile Include="MainGame\TouchIcons\CustomTalkSceneTouchIcon.cs" />
+    <Compile Include="MainGame\Utilities\EventUtils.cs" />
+    <Compile Include="MainGame\Utilities\TalkSceneUtils.cs" />
     <Compile Include="Maker\AccessoryCopyEventArgs.cs" />
     <Compile Include="MainGame\GameApi.cs" />
     <Compile Include="MainGame\GameAPI.Hooks.cs" />
     <Compile Include="MainGame\GameCustomFunctionController.cs" />
     <Compile Include="MainGame\Events\GameSaveLoadEventArgs.cs" />
-    <Compile Include="MainGame\GameExtensions.cs" />
+    <Compile Include="MainGame\Utilities\GameExtensions.cs" />
     <Compile Include="MainGame\TestGameFunctionController.cs" />
     <Compile Include="KoikatuAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -107,6 +109,7 @@
     <None Include="MainGame\TouchIcons\Touch_Icon_Deselected_Template.png.png" />
     <None Include="MainGame\TouchIcons\Touch_Icon_Selected_Template.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
   <Import Project="..\Shared.KKalike\Shared.KKalike.projitems" Label="Shared" />
   <Import Project="..\Shared.CharaStudio\Shared.CharaStudio.projitems" Label="Shared" />
