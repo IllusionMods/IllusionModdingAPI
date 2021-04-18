@@ -155,5 +155,75 @@ namespace KKAPI.Utilities
             return Traverse.Create(ctrl).Field<AssignedAnotherWeights>("aaWeightsBody").Value;
         }
 #endif
+
+        /// <summary>
+        /// Get value of a property through reflection
+        /// </summary>
+        /// <param name="self">Object that has the property</param>
+        /// <param name="name">Name of the property</param>
+        /// <param name="value">Value returned by the property</param>
+        /// <returns>True if the property exists, flase if it doesn't</returns>
+        public static bool GetPropertyValue(this object self, string name, out object value)
+        {
+            var property = Traverse.Create(self).Property(name);
+            if (property.PropertyExists())
+            {
+                value = property.GetValue();
+                return true;
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning($"Property {name} doesn't exist on {self?.GetType().FullName}");
+                value = null;
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// Set value of a property through reflection
+        /// </summary>
+        /// <param name="self">Object that has the property</param>
+        /// <param name="name">Name of the property</param>
+        /// <param name="value">Value to be set to the property</param>
+        /// <returns>True if the property exists, flase if it doesn't</returns>
+        public static bool SetPropertyValue(this object self, string name, object value)
+        {
+            return Traverse.Create(self).Property(name).SetValue(value).PropertyExists();
+        }
+
+        /// <summary>
+        /// Get value of a field through reflection
+        /// </summary>
+        /// <param name="self">Object that has the field</param>
+        /// <param name="name">Name of the field</param>
+        /// <param name="value">Value returned by the field</param>
+        /// <returns>True if the field exists, flase if it doesn't</returns>
+        public static bool GetFieldValue(this object self, string name, out object value)
+        {
+            var field = Traverse.Create(self).Field(name);
+            if (field.FieldExists())
+            {
+                value = field.GetValue();
+                return true;
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning($"Field {name} doesn't exist on {self?.GetType().FullName}");
+                value = null;
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// Set value of a field through reflection
+        /// </summary>
+        /// <param name="self">Object that has the field</param>
+        /// <param name="name">Name of the property</param>
+        /// <param name="value">Value to be set to the field</param>
+        /// <returns>True if the field exists, flase if it doesn't</returns>
+        public static bool SetFieldValue(this object self, string name, object value)
+        {
+            return Traverse.Create(self).Field(name).SetValue(value).FieldExists();
+        }
     }
 }

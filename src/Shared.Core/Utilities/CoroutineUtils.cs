@@ -152,7 +152,31 @@ namespace KKAPI.Utilities
         public static void RunImmediately(this IEnumerator coroutine)
         {
             coroutine = FlattenCo(coroutine);
-            while (coroutine.MoveNext()) ;
+            while (coroutine.MoveNext()) { }
+        }
+
+        /// <summary>
+        /// Prevent a coroutine from getting stopped by exceptions. Exceptions are caught and logged.
+        /// Code after the exception is thrown doesn't run up until the next yield. The coroutine continues after the yield then.
+        /// </summary>
+        public static IEnumerator PreventFromCrashing(this IEnumerator coroutine)
+        {
+            if (coroutine == null)
+                throw new ArgumentNullException(nameof(coroutine));
+            while (true)
+            {
+                try
+                {
+                    if (!coroutine.MoveNext())
+                        break;
+                }
+                catch (Exception ex)
+                {
+                    UnityEngine.Debug.LogException(ex);
+                    break;
+                }
+                yield return coroutine.Current;
+            }
         }
 
         /// <summary>
