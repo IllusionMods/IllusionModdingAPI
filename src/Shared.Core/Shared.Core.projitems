@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ConfigurationManagerAttributes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\CoroutineUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\HSceneUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\IgnoreCaseEqualityComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\IMGUIUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\MemoryInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObservableExtensions.cs" />
