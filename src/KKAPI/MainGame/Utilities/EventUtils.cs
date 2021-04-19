@@ -116,7 +116,7 @@ namespace KKAPI.MainGame
 
             AccessTools.Field(typeof(TalkScene), "isUpdateCamera").SetValue(talkScene, false);
             AccessTools.Method(typeof(TalkScene), "StartADV", new[] { typeof(List<Program.Transfer>) }).Invoke(talkScene, new object[] { list });
-            
+
             yield return null;
             yield return Program.Wait("Talk");
             if (decreaseTalkTime)
@@ -150,7 +150,7 @@ namespace KKAPI.MainGame
             List<SaveData.Heroine> heroines = null)
         {
             if (list == null) throw new ArgumentNullException(nameof(list));
-            
+
             if (KoikatuAPI.EnableDebugLogging && list.All(x => x.param.Command != Command.Close))
             {
                 list.Add(Program.Transfer.Close());
@@ -166,6 +166,9 @@ namespace KKAPI.MainGame
 
             var prevBgm = string.Empty;
             var prevVolume = 1f;
+
+            yield return new WaitWhile(() => Singleton<Scene>.Instance.IsNowLoadingFade);
+            yield return null;
 
             // Set up full adv scene with disabled NPCs, custom bgm and such
             if (!dialogOnly)
