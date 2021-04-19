@@ -1,6 +1,6 @@
 ## `EventUtils`
 
-Utilities for creating and playing custom ADV scenes (talking scenes with the text box at the bottom).  <code>  var list = EventUtils.CreateNewEvent();  list.Add(Program.Transfer.Text(EventUtils.HeroineName, "Hi, what's your hobby?"));  list.Add(Program.Transfer.Text(EventUtils.PlayerName, "I make plugins for KK!"));  list.Add(Program.Transfer.Text(EventUtils.HeroineName, "That got me wet, take me now!"));  list.Add(Program.Transfer.Text(EventUtils.PlayerName, "No time, writing code."));  list.Add(Program.Transfer.Close());  return EventUtils.StartTextSceneEvent(talkScene, list, decreaseTalkTime: true);  </code>
+Utilities for creating and playing custom ADV scenes (talking scenes with the text box at the bottom).  Check CommandList.CommandGet in dnSpy to see source for different ADV commands that you can use.  You can use the ADV_Editor plugin to help with creating custom events: https://github.com/ManlyMarco/ADV_Editor  <code>  var list = EventUtils.CreateNewEvent();  list.Add(Program.Transfer.Text(EventUtils.HeroineName, "Hi, what's your hobby?"));  list.Add(Program.Transfer.Text(EventUtils.PlayerName, "I make plugins for KK!"));  list.Add(Program.Transfer.Text(EventUtils.HeroineName, "That got me wet, take me now!"));  list.Add(Program.Transfer.Text(EventUtils.PlayerName, "No time, writing code."));  list.Add(Program.Transfer.Close());  return EventUtils.StartTextSceneEvent(talkScene, list, decreaseTalkTime: true);  </code>
 ```csharp
 public static class KKAPI.MainGame.EventUtils
 

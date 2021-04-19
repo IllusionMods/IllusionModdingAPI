@@ -14,6 +14,8 @@ namespace KKAPI.MainGame
 {
     /// <summary>
     /// Utilities for creating and playing custom ADV scenes (talking scenes with the text box at the bottom).
+    /// Check CommandList.CommandGet in dnSpy to see source for different ADV commands that you can use.
+    /// You can use the ADV_Editor plugin to help with creating custom events: https://github.com/ManlyMarco/ADV_Editor
     /// <code>
     /// var list = EventUtils.CreateNewEvent();
     /// list.Add(Program.Transfer.Text(EventUtils.HeroineName, "Hi, what's your hobby?"));
