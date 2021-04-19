@@ -14,6 +14,15 @@ namespace KKAPI.MainGame
 {
     /// <summary>
     /// Utilities for creating and playing custom ADV scenes (talking scenes with the text box at the bottom).
+    /// <code>
+    /// var list = EventUtils.CreateNewEvent();
+    /// list.Add(Program.Transfer.Text(EventUtils.HeroineName, "Hi, what's your hobby?"));
+    /// list.Add(Program.Transfer.Text(EventUtils.PlayerName, "I make plugins for KK!"));
+    /// list.Add(Program.Transfer.Text(EventUtils.HeroineName, "That got me wet, take me now!"));
+    /// list.Add(Program.Transfer.Text(EventUtils.PlayerName, "No time, writing code."));
+    /// list.Add(Program.Transfer.Close());
+    /// return EventUtils.StartTextSceneEvent(talkScene, list, decreaseTalkTime: true);
+    /// </code>
     /// </summary>
     public static class EventUtils
     {
