@@ -311,11 +311,10 @@ namespace KKAPI.Maker
         internal static void OnMakerAccSlotAdded(Transform newSlotTransform)
         {
             // Necessary because MoreAccessories copies existing slot, so controls get copied but with no events hooked up
-
+#if KK
             //KeelsChildNeglect(newSlotTransform, 0); //used to print children paths in case it's needed in the future, like horizontal support or something
-
             newSlotTransform = newSlotTransform.GetChild(1).GetChild(0).GetChild(0);
-
+#endif
             RemoveCustomControlsInSubCategory(newSlotTransform);
 
             CreateCustomControlsInSubCategory(newSlotTransform, _accessoryWindowEntries);
