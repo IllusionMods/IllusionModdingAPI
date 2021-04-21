@@ -1,13 +1,12 @@
-﻿using System;
+﻿using ChaCustom;
+using IllusionUtility.GetUtility;
+using KKAPI.Maker.UI;
+using KKAPI.Maker.UI.Sidebar;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using BepInEx;
-using ChaCustom;
-using IllusionUtility.GetUtility;
-using KKAPI.Maker.UI;
-using KKAPI.Maker.UI.Sidebar;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -263,63 +262,59 @@ namespace KKAPI.Maker
                         text.Cast<Transform>().First().gameObject.SetActive(false);
                     }
                 }
-
                 CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
+#if KK
+                var listParent = slotTransform.Cast<Transform>().Where(x => x.name.EndsWith("Top")).First();
+                var elements = new List<Transform>();
+                foreach (Transform t in listParent)
+                    elements.Add(t);
 
-                // todo unfinished scrolling of accessory windows, tell Keel to finish this
-                //var listParent = slotTransform.Cast<Transform>().Where(x => x.name.EndsWith("Top")).First();
-                //var elements = new List<Transform>();
-                //foreach(Transform t in listParent)
-                //    elements.Add(t);
-                //
-                //var fitter = listParent.GetComponent<ContentSizeFitter>();
-                //fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-                //fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-                //
-                //var go = DefaultControls.CreateScrollView(new DefaultControls.Resources());
-                //go.name = $"{slotTransform.name}ScrollView";
-                //go.transform.SetParent(listParent.transform, false);
-                //
-                //var scroll = go.GetComponent<ScrollRect>();
-                //scroll.horizontal = false;
-                //scroll.scrollSensitivity = 40f;
-                //scroll.movementType = ScrollRect.MovementType.Clamped;
-                //scroll.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
-                //scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
-                //GameObject.DestroyImmediate(scroll.GetComponent<Image>());
-                //GameObject.DestroyImmediate(scroll.horizontalScrollbar.gameObject);
-                //GameObject.DestroyImmediate(scroll.verticalScrollbar.gameObject);
-                //
-                //var le = scroll.gameObject.AddComponent<LayoutElement>();
-                //var height = (GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/04_AccessoryTop/Slots").transform as RectTransform).rect.height;
-                //le.preferredHeight = height;
-                //le.preferredWidth = 360f;
-                //
-                //var vlg = scroll.content.gameObject.AddComponent<VerticalLayoutGroup>();
-                //vlg.childControlWidth = true;
-                //vlg.childControlHeight = true;
-                //vlg.childForceExpandWidth = true;
-                //vlg.childForceExpandHeight = false;
-                //
-                //scroll.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-                //
-                //foreach(var item in elements)
-                //    item.SetParent(scroll.content);
-                //
-                //public static void SetRect(this Transform self, float anchorLeft = 0f, float anchorBottom = 0f, float anchorRight = 1f, float anchorTop = 1f, float offsetLeft = 0f, float offsetBottom = 0f, float offsetRight = 0f, float offsetTop = 0f)
-                //{
-                //    RectTransform rt = self as RectTransform;
-                //    rt.anchorMin = new Vector2(anchorLeft, anchorBottom);
-                //    rt.anchorMax = new Vector2(anchorRight, anchorTop);
-                //    rt.offsetMin = new Vector2(offsetLeft, offsetBottom);
-                //    rt.offsetMax = new Vector2(offsetRight, offsetTop);
-                //}
+                var fitter = listParent.GetComponent<ContentSizeFitter>();
+                fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+                fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+                var go = DefaultControls.CreateScrollView(new DefaultControls.Resources());
+                go.name = $"{slotTransform.name}ScrollView";
+                go.transform.SetParent(listParent.transform, false);
+
+                var scroll = go.GetComponent<ScrollRect>();
+                scroll.horizontal = false;
+                scroll.scrollSensitivity = 40f;
+                scroll.movementType = ScrollRect.MovementType.Clamped;
+                scroll.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
+                scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
+                GameObject.DestroyImmediate(scroll.GetComponent<Image>());
+                GameObject.DestroyImmediate(scroll.horizontalScrollbar.gameObject);
+                GameObject.DestroyImmediate(scroll.verticalScrollbar.gameObject);
+
+                var le = scroll.gameObject.AddComponent<LayoutElement>();
+                var height = (GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/04_AccessoryTop/Slots").transform as RectTransform).rect.height;
+                le.preferredHeight = height;
+                le.preferredWidth = 360f;
+
+                var vlg = scroll.content.gameObject.AddComponent<VerticalLayoutGroup>();
+                vlg.childControlWidth = true;
+                vlg.childControlHeight = true;
+                vlg.childForceExpandWidth = true;
+                vlg.childForceExpandHeight = false;
+
+                scroll.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+                foreach (var item in elements)
+                    item.SetParent(scroll.content);
+                slotTransform.SetParent(scroll.content);
+                CreateCustomControlsInSubCategory(listParent.parent.transform, _accessoryWindowEntries);
+#endif
             }
         }
 
         internal static void OnMakerAccSlotAdded(Transform newSlotTransform)
         {
             // Necessary because MoreAccessories copies existing slot, so controls get copied but with no events hooked up
+#if KK
+            //KeelsChildNeglect(newSlotTransform, 0); //used to print children paths in case it's needed in the future, like horizontal support or something
+            newSlotTransform = newSlotTransform.GetChild(1).GetChild(0).GetChild(0);
+#endif
             RemoveCustomControlsInSubCategory(newSlotTransform);
 
             CreateCustomControlsInSubCategory(newSlotTransform, _accessoryWindowEntries);
@@ -328,9 +323,28 @@ namespace KKAPI.Maker
         private static void RemoveCustomControlsInSubCategory(Transform newSlotTransform)
         {
             var contentParent = FindSubcategoryContentParent(newSlotTransform);
-
+            //string children = "";
+            //for (int i = 0, n = contentParent.childCount; i < n; i++)
+            //{
+            //    children += contentParent.GetChild(i).name;
+            //    if (i == n - 2)
+            //    {
+            //        children += " and ";
+            //    }
+            //    else if (i == n - 1)
+            //    {
+            //        children += ".";
+            //    }
+            //    else
+            //    {
+            //        children += ", ";
+            //    }
+            //}
+            //KoikatuAPI.Logger.LogWarning($"Content Parent is {contentParent.name}, has {contentParent.childCount} children, and child of {contentParent.parent} and is the parent of " + children);
             foreach (var customControl in contentParent.Cast<Transform>().Where(x => x.name.EndsWith(BaseGuiEntry.GuiApiNameAppendix)))
+            {
                 Object.Destroy(customControl.gameObject);
+            }
         }
 
         internal static Transform FindSubcategoryContentParent(Transform categorySubTransform)
@@ -431,8 +445,23 @@ namespace KKAPI.Maker
 
             var accs = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/cosFileControl/charaFileWindow/WinRect/CoordinateLoad/Select/tglItem02")?.GetComponentInChildren<Toggle>(true);
             if (accs == null) return null;
-
             return new CoordinateLoadFlags { Clothes = clothes.isOn, Accessories = accs.isOn };
         }
+
+        //private static void KeelsChildNeglect(Transform parent, int generation)
+        //{
+        //    generation++;
+        //    string tabs = "";
+        //    for (int i = 0; i < generation; i++)
+        //    {
+        //        tabs += "\t";
+        //    }
+        //    for (int i = 0, n = parent.childCount; i < n; i++)
+        //    {
+        //        var child = parent.GetChild(i);
+        //        KoikatuAPI.Logger.LogWarning(tabs + $"{child.name} (child {i} of {generation} generation) has {child.childCount} children; Parent is {child.parent}");
+        //        KeelsChildNeglect(child, generation);
+        //    }
+        //}
     }
 }
