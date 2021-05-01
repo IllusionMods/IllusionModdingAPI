@@ -303,7 +303,6 @@ namespace KKAPI.Maker
                 foreach (var item in elements)
                     item.SetParent(scroll.content);
                 slotTransform.SetParent(scroll.content);
-                CreateCustomControlsInSubCategory(listParent.parent.transform, _accessoryWindowEntries);
 #endif
             }
         }
