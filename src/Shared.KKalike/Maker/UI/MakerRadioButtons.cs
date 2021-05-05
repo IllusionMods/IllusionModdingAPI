@@ -134,7 +134,6 @@ namespace KKAPI.Maker.UI
                         }
                     });
             }
-            Buttons[DefaultValue].isOn = true;
 
             BufferedValueChanged.Subscribe(
                 i =>
