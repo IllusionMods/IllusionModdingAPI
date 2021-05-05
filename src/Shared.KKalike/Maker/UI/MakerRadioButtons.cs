@@ -1,7 +1,7 @@
-﻿using System;
+﻿using BepInEx;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using BepInEx;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -17,7 +17,8 @@ namespace KKAPI.Maker.UI
     {
         private readonly string _settingName;
         private readonly string[] _buttons;
-
+        private int _Rows = 1;
+        private int DefaultValue = 0;
         private static Transform _radioCopy;
 
         /// <summary>
@@ -48,7 +49,25 @@ namespace KKAPI.Maker.UI
 
             _settingName = settingName;
             _buttons = buttons;
+            DefaultValue = initialValue;
         }
+
+        /// <summary>
+        /// Number of Rows to create; Defaults to 1
+        /// Recommended: adding a Null MakerText per additional row not including seperators
+        /// </summary>
+        public int Rows
+        {
+            get { return _Rows; }
+            set { _Rows = Math.Min(Math.Max(1, value), _buttons.Length); }
+        }
+
+        /// <summary>
+        /// Only use if control is added with AddAccessoryWindowControl
+        /// Syncs the state of all radio buttons for accessory window
+        /// Without this the value displayed will be wrong on accessories
+        /// </summary>
+        public bool Unify_AccessoryWindowControl = false;
 
         /// <inheritdoc />
         protected internal override void Initialize()
@@ -69,31 +88,35 @@ namespace KKAPI.Maker.UI
             settingName.color = TextColor;
 
             var sourceToggle = tr.Find("rb00");
-
             Buttons = _buttons.Select(
-                    (x, i) =>
-                    {
-                        if (i == 0)
-                            return sourceToggle;
+                     (x, i) =>
+                     {
+                         if (i == 0)
+                             return sourceToggle;
 
-                        var newButton = Object.Instantiate(sourceToggle, tr, false);
-                        newButton.name = "rb0" + i;
+                         var newButton = Object.Instantiate(sourceToggle, tr, false);
+                         newButton.name = "rb0" + i;
 
-                        return newButton;
-                    })
-                .Select(x => x.GetComponent<Toggle>())
-                .ToList()
-                .AsReadOnly();
+                         return newButton;
+                     })
+                 .Select(x => x.GetComponent<Toggle>())
+                 .ToList()
+                 .AsReadOnly();
 
-            var singleToggleWidth = 280 / Buttons.Count;
+            RadioToggleGroup RadioGroup = new RadioToggleGroup();
+            var Ratio = Buttons.Count / _Rows + (Buttons.Count % _Rows) % 2;
+            var singleToggleWidth = 280 / Ratio;
             for (var index = 0; index < Buttons.Count; index++)
             {
                 var toggle = Buttons[index];
 
+                RadioGroup.RegisterToggle(toggle);
+                toggle.group = RadioGroup;
+                toggle.isOn = false;
                 var rt = toggle.GetComponent<RectTransform>();
-                rt.offsetMin = new Vector2(singleToggleWidth * index - 280, 8);
-                rt.offsetMax = new Vector2(singleToggleWidth * (index + 1) - 280, -8);
-
+                rt.offsetMin = new Vector2(singleToggleWidth * (index % Ratio) - 280, 8);
+                rt.offsetMax = new Vector2(singleToggleWidth * (index % Ratio + 1) - 280, -8);
+                rt.position += new Vector3(0, -24 * (index / Ratio), 0);
                 toggle.GetComponentInChildren<TextMeshProUGUI>().text = _buttons[index];
 
                 var indexCopy = index;
@@ -101,17 +124,32 @@ namespace KKAPI.Maker.UI
                     a =>
                     {
                         if (a || indexCopy == Value)
+                        {
                             SetValue(indexCopy);
+                            if (!RadioGroup.AnyTogglesOn())
+                            {
+                                toggle.isOn = true;
+                            }
+                            RadioGroup.NotifyToggleOn(toggle);
+                        }
                     });
             }
+            Buttons[DefaultValue].isOn = true;
 
             BufferedValueChanged.Subscribe(
                 i =>
                 {
-                    for (var index = 0; index < Buttons.Count; index++)
+                    //for (var index = 0; index < Buttons.Count; index++)
+                    //{
+                    //    var tgl = Buttons[index];
+                    //    tgl.isOn = index == i;
+                    //}
+                    if (Unify_AccessoryWindowControl)
                     {
-                        var tgl = Buttons[index];
-                        tgl.isOn = index == i;
+                        for (int j = 0, n = ControlObjects.Count(); j < n; j++)
+                        {
+                            ControlObjects.ElementAt(j).GetComponentsInChildren<Toggle>()[Value].isOn = true;
+                        }
                     }
                 });
 
@@ -158,5 +196,8 @@ namespace KKAPI.Maker.UI
 
             RemoveLocalisation(_radioCopy.gameObject);
         }
+
+        private class RadioToggleGroup : ToggleGroup
+        { }
     }
 }
