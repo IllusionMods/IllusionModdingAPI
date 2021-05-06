@@ -111,7 +111,6 @@ namespace KKAPI.Maker.UI
                 var toggle = Buttons[index];
 
                 RadioGroup.RegisterToggle(toggle);
-                toggle.group = RadioGroup;
                 toggle.isOn = false;
                 var rt = toggle.GetComponent<RectTransform>();
                 rt.offsetMin = new Vector2(singleToggleWidth * (index % Ratio) - 280, 8);
