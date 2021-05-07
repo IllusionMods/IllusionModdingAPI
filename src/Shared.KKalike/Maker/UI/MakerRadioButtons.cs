@@ -18,7 +18,6 @@ namespace KKAPI.Maker.UI
         private readonly string _settingName;
         private readonly string[] _buttons;
         private int _Rows = 1;
-        private int DefaultValue = 0;
         private static Transform _radioCopy;
 
         /// <summary>
@@ -49,7 +48,6 @@ namespace KKAPI.Maker.UI
 
             _settingName = settingName;
             _buttons = buttons;
-            DefaultValue = initialValue;
         }
 
         /// <summary>
