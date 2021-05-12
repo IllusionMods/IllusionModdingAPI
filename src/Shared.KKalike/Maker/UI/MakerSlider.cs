@@ -135,10 +135,7 @@ namespace KKAPI.Maker.UI
             var inputField = tr.Find("InputField").GetComponent<TMP_InputField>();
             if (MakerAPI.InsideMaker) Singleton<ChaCustom.CustomBase>.Instance.lstTmpInputField.Add(inputField);
 
-            if (WholeNumbers)
-            {
-                InputField(_defaultValue, inputField);
-            }
+            InputField(_defaultValue, inputField);
 
             inputField.onEndEdit.AddListener(
                 txt =>
@@ -177,6 +174,5 @@ namespace KKAPI.Maker.UI
             else
                 inputField.text = Mathf.RoundToInt(f * 100).ToString();
         }
-
     }
 }
