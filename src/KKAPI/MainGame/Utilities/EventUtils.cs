@@ -182,10 +182,10 @@ namespace KKAPI.MainGame
             yield return null;
 
             // Set up full adv scene with disabled NPCs, custom bgm and such
+            actScene.Player.isActionNow = true;
             if (!dialogOnly)
             {
                 actScene.SetPropertyValue("_isInChargeBGM", true);
-                actScene.Player.isActionNow = true;
                 actScene.SetPropertyValue("isEventNow", true);
                 actScene.Player.isLesMotionPlay = false;
                 actScene.SetPropertyValue("shortcutKey", false);
@@ -200,9 +200,10 @@ namespace KKAPI.MainGame
                 actScene.Player.SetActive(false);
                 actScene.npcList.ForEach(delegate (NPC p) { p.SetActive(false); });
                 actScene.npcList.ForEach(delegate (NPC p) { p.Pause(true); });
-            }
 
-            if (dialogOnly)
+                list.Insert(0, Program.Transfer.Create(false, Command.CameraSetFov, "23"));
+            }
+            else
             {
                 if (camera == null)
                 {
@@ -212,10 +213,6 @@ namespace KKAPI.MainGame
                         rotation = actScene.cameraTransform.rotation
                     };
                 }
-            }
-            else
-            {
-                list.Insert(0, Program.Transfer.Create(false, Command.CameraSetFov, "23"));
             }
 
             if (extraData == null)
@@ -249,6 +246,7 @@ namespace KKAPI.MainGame
             actScene.AdvScene.nowScene = prevNowScene;
 
             // Restore the game to normal after the full ADV scene
+            actScene.Player.isActionNow = false;
             if (!dialogOnly)
             {
                 actScene.npcList.ForEach(delegate (NPC p) { p.SetActive(p.mapNo == actScene.Map.no); });
@@ -266,7 +264,6 @@ namespace KKAPI.MainGame
                 actScene.SetPropertyValue("shortcutKey", true);
                 actScene.SetPropertyValue("_isInChargeBGM", false);
                 actScene.SetPropertyValue("isEventNow", false);
-                actScene.Player.isActionNow = false;
                 actScene.Player.move.isStop = false;
                 actScene.Player.isPopOK = true;
                 actScene.Player.SetActive(true);
