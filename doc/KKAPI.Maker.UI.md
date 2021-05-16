@@ -253,6 +253,7 @@ Properties
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `ReadOnlyCollection<Toggle>` | Buttons | Objects of all of the radio buttons | 
+| `Int32` | ColumnCount | How many buttons to show in a each row. By default show all buttons in a single row.  If set to 3, 3 buttons will be shown in a row, then the next 3 buttons will be shown in a row below, and so on. | 
 
 
 Methods
@@ -295,6 +296,7 @@ Properties
 | --- | --- | --- | 
 | `Func<String, Single>` | StringToValue | Custom converter from text in the textbox to the slider value.  If not set, <code>float.Parse(txt) / 100f</code> is used. | 
 | `Func<Single, String>` | ValueToString | Custom converter from the slider value to what's displayed in the textbox.  If not set, <code>Mathf.RoundToInt(f * 100).ToString()</code> is used. | 
+| `Boolean` | WholeNumbers | Use integers instead of floats | 
 
 
 Methods

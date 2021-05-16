@@ -95,6 +95,10 @@ namespace KKAPI.Maker
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(new MakerRadioButtons(cat, instance, "radio btns", "b1", "b2"))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            AddControl(new MakerRadioButtons(cat, instance, "radio btns 1 row", "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8"))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            AddControl(new MakerRadioButtons(cat, instance, "radio btns 5 per row", "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8") { ColumnCount = 5 })
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(new MakerSlider(cat, "test slider", 0, 1, 1, instance))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(
