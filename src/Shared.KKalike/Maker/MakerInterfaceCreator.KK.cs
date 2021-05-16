@@ -262,10 +262,6 @@ namespace KKAPI.Maker
                         text.Cast<Transform>().First().gameObject.SetActive(false);
                     }
                 }
-#if KK
-                //classroom maker fix, controls will be off until this is called in maker
-                RemoveCustomControlsInSubCategory(slotTransform.GetChild(1).GetChild(0).GetChild(0));
-#endif
                 CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
 #if KK
                 var listParent = slotTransform.Cast<Transform>().Where(x => x.name.EndsWith("Top")).First();
@@ -316,7 +312,12 @@ namespace KKAPI.Maker
             // Necessary because MoreAccessories copies existing slot, so controls get copied but with no events hooked up
 #if KK
             //KeelsChildNeglect(newSlotTransform, 0); //used to print children paths in case it's needed in the future, like horizontal support or something
-            newSlotTransform = newSlotTransform.GetChild(1).GetChild(0).GetChild(0);
+            if (MakerAPI.IsInsideClassMaker() && !MakerAPI.InsideAndLoaded)
+            {
+                return;//Maker slots are added before CreateCustomAccessoryWindowControls is called. don't create controls yet
+            }
+            //find parent of Content where controls are placed, additional Slots are copies of first slot
+            newSlotTransform = newSlotTransform.Find("Slot01Top/tglSlot01ScrollView/Viewport");
 #endif
             RemoveCustomControlsInSubCategory(newSlotTransform);
 
