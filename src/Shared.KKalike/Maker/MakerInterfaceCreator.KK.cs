@@ -312,7 +312,7 @@ namespace KKAPI.Maker
             // Necessary because MoreAccessories copies existing slot, so controls get copied but with no events hooked up
 #if KK
             //KeelsChildNeglect(newSlotTransform, 0); //used to print children paths in case it's needed in the future, like horizontal support or something
-            if (MakerAPI.IsInsideClassMaker() && !MakerAPI.InsideAndLoaded)
+            if (!MakerAPI.InsideAndLoaded)
             {
                 return;//Maker slots are added before CreateCustomAccessoryWindowControls is called. don't create controls yet
             }
