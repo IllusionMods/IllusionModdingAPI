@@ -103,8 +103,8 @@ namespace KKAPI.Chara
         /// </summary>
         /// <typeparam name="T">Type with your custom logic to add to a character</typeparam>
         /// <param name="extendedDataId">Extended data ID used by this behaviour. Set to null if not used. Needed to copy the data in some situations.</param>
-        /// <param name="Priority">Decrease to increase priority or vice versa such on <see cref="CharaCustomFunctionController.OnReload(GameMode)"/> or related functions.</param>
-        public static void RegisterExtraBehaviour<T>(string extendedDataId, int Priority) where T : CharaCustomFunctionController, new()
+        /// <param name="priority">Default value is 1000, Decrease to increase priority or vice versa such on <see cref="CharaCustomFunctionController.OnReload(GameMode)"/> or related functions.</param>
+        public static void RegisterExtraBehaviour<T>(string extendedDataId, int priority) where T : CharaCustomFunctionController, new()
         {
             void BasicCopier(ChaFile dst, ChaFile src)
             {
@@ -114,7 +114,7 @@ namespace KKAPI.Chara
 
             var copier = extendedDataId == null ? (CopyExtendedDataFunc)null : BasicCopier;
 
-            RegisterExtraBehaviour<T>(extendedDataId, copier, Priority);
+            RegisterExtraBehaviour<T>(extendedDataId, copier, priority);
         }
 
 
@@ -142,14 +142,14 @@ namespace KKAPI.Chara
         /// <typeparam name="T">Type with your custom logic to add to a character</typeparam>
         /// <param name="extendedDataId">Extended data ID used by this behaviour. Set to null if not used.</param>
         /// <param name="customDataCopier">Override default extended data copy logic</param>
-        /// <param name="Priority">Decrease to increase priority or vice versa such on <see cref="CharaCustomFunctionController.OnReload(GameMode)"/> or related functions.</param>
-        public static void RegisterExtraBehaviour<T>(string extendedDataId, CopyExtendedDataFunc customDataCopier, int Priority) where T : CharaCustomFunctionController, new()
+        /// <param name="priority">Default value is 1000, Decrease to increase priority or vice versa such on <see cref="CharaCustomFunctionController.OnReload(GameMode)"/> or related functions.</param>
+        public static void RegisterExtraBehaviour<T>(string extendedDataId, CopyExtendedDataFunc customDataCopier, int priority) where T : CharaCustomFunctionController, new()
         {
-            while (_registeredHandlers.ContainsKey(Priority))
+            while (_registeredHandlers.ContainsKey(priority))
             {
-                Priority++;
+                priority++;
             }
-            _registeredHandlers.Add(Priority, new ControllerRegistration(typeof(T), extendedDataId, customDataCopier));
+            _registeredHandlers.Add(priority, new ControllerRegistration(typeof(T), extendedDataId, customDataCopier));
         }
 
         internal static void Init()
