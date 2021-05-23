@@ -1,11 +1,11 @@
-﻿using KKAPI.Maker;
+﻿using ExtensibleSaveFormat;
+using KKAPI.Maker;
+using KKAPI.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using ExtensibleSaveFormat;
-using KKAPI.Utilities;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -24,12 +24,12 @@ namespace KKAPI.Chara
     {
         internal static readonly HashSet<ChaControl> ChaControls = new HashSet<ChaControl>();
 
-        private static readonly List<ControllerRegistration> _registeredHandlers = new List<ControllerRegistration>();
+        private readonly static SortedList<int, ControllerRegistration> _registeredHandlers = new SortedList<int, ControllerRegistration>();
 
         /// <summary>
         /// All currently registered kinds of <see cref="CharaCustomFunctionController"/> controllers.
         /// </summary>
-        public static IEnumerable<ControllerRegistration> RegisteredHandlers => _registeredHandlers.AsReadOnly();
+        public static IEnumerable<ControllerRegistration> RegisteredHandlers => _registeredHandlers.Values.ToList().AsReadOnly();
 
         /// <summary>
         /// Override to supply custom extended data copying logic.
@@ -53,7 +53,7 @@ namespace KKAPI.Chara
         public static IEnumerable<CharaCustomFunctionController> GetBehaviours(ChaControl character = null)
         {
             if (character == null)
-                return _registeredHandlers.SelectMany(x => x.Instances);
+                return _registeredHandlers.SelectMany(x => x.Value.Instances);
 
             return character.GetComponents<CharaCustomFunctionController>();
         }
@@ -63,7 +63,7 @@ namespace KKAPI.Chara
         /// </summary>
         public static ControllerRegistration GetRegisteredBehaviour(string extendedDataId)
         {
-            return _registeredHandlers.Find(registration => string.Equals(registration.ExtendedDataId, extendedDataId, StringComparison.Ordinal));
+            return _registeredHandlers.Values.First(registration => string.Equals(registration.ExtendedDataId, extendedDataId, StringComparison.Ordinal));
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace KKAPI.Chara
         /// </summary>
         public static ControllerRegistration GetRegisteredBehaviour(Type controllerType)
         {
-            return _registeredHandlers.Find(registration => registration.ControllerType == controllerType);
+            return _registeredHandlers.Values.First(registration => registration.ControllerType == controllerType);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace KKAPI.Chara
         /// </summary>
         public static ControllerRegistration GetRegisteredBehaviour(Type controllerType, string extendedDataId)
         {
-            return _registeredHandlers.Find(registration => registration.ControllerType == controllerType && string.Equals(registration.ExtendedDataId, extendedDataId, StringComparison.Ordinal));
+            return _registeredHandlers.Values.First(registration => registration.ControllerType == controllerType && string.Equals(registration.ExtendedDataId, extendedDataId, StringComparison.Ordinal));
         }
 
         /// <summary>
@@ -92,6 +92,20 @@ namespace KKAPI.Chara
         /// <param name="extendedDataId">Extended data ID used by this behaviour. Set to null if not used. Needed to copy the data in some situations.</param>
         public static void RegisterExtraBehaviour<T>(string extendedDataId) where T : CharaCustomFunctionController, new()
         {
+            RegisterExtraBehaviour<T>(extendedDataId, 1000);
+        }
+
+        /// <summary>
+        /// Register new functionality that will be automatically added to all characters (where applicable).
+        /// Offers easy API for saving and loading extended data, and for running logic to apply it to the characters.
+        /// All necessary hooking and event subscribing is done for you. All you have to do is create a type
+        /// that inherits from <code>CharaExtraBehaviour</code> (don't make instances, the API will make them for you).
+        /// </summary>
+        /// <typeparam name="T">Type with your custom logic to add to a character</typeparam>
+        /// <param name="extendedDataId">Extended data ID used by this behaviour. Set to null if not used. Needed to copy the data in some situations.</param>
+        /// <param name="Priority">Defaults to 1000, Decrease to increase priority or vice versa such on <see cref="CharaCustomFunctionController.OnReload(GameMode)"/> or related functions.</param>
+        public static void RegisterExtraBehaviour<T>(string extendedDataId, int Priority = 1000) where T : CharaCustomFunctionController, new()
+        {
             void BasicCopier(ChaFile dst, ChaFile src)
             {
                 var extendedData = ExtendedSave.GetExtendedDataById(src, extendedDataId);
@@ -100,8 +114,9 @@ namespace KKAPI.Chara
 
             var copier = extendedDataId == null ? (CopyExtendedDataFunc)null : BasicCopier;
 
-            RegisterExtraBehaviour<T>(extendedDataId, copier);
+            RegisterExtraBehaviour<T>(extendedDataId, copier, Priority);
         }
+
 
         /// <summary>
         /// Register new functionality that will be automatically added to all characters (where applicable).
@@ -114,7 +129,27 @@ namespace KKAPI.Chara
         /// <param name="customDataCopier">Override default extended data copy logic</param>
         public static void RegisterExtraBehaviour<T>(string extendedDataId, CopyExtendedDataFunc customDataCopier) where T : CharaCustomFunctionController, new()
         {
-            _registeredHandlers.Add(new ControllerRegistration(typeof(T), extendedDataId, customDataCopier));
+            RegisterExtraBehaviour<T>(extendedDataId, customDataCopier, 1000);
+        }
+
+
+        /// <summary>
+        /// Register new functionality that will be automatically added to all characters (where applicable).
+        /// Offers easy API for saving and loading extended data, and for running logic to apply it to the characters.
+        /// All necessary hooking and event subscribing is done for you. All you have to do is create a type
+        /// that inherits from <code>CharaExtraBehaviour</code> (don't make instances, the API will make them for you).
+        /// </summary>
+        /// <typeparam name="T">Type with your custom logic to add to a character</typeparam>
+        /// <param name="extendedDataId">Extended data ID used by this behaviour. Set to null if not used.</param>
+        /// <param name="customDataCopier">Override default extended data copy logic</param>
+        /// <param name="Priority">Defaults to 1000, Decrease to increase priority or vice versa such on <see cref="CharaCustomFunctionController.OnReload(GameMode)"/> or related functions.</param>
+        public static void RegisterExtraBehaviour<T>(string extendedDataId, CopyExtendedDataFunc customDataCopier, int Priority = 1000) where T : CharaCustomFunctionController, new()
+        {
+            while (_registeredHandlers.ContainsKey(Priority))
+            {
+                Priority++;
+            }
+            _registeredHandlers.Add(Priority, new ControllerRegistration(typeof(T), extendedDataId, customDataCopier));
         }
 
         internal static void Init()
@@ -188,15 +223,15 @@ namespace KKAPI.Chara
         {
             foreach (var handler in _registeredHandlers)
             {
-                var existing = target.gameObject.GetComponents(handler.ControllerType)
+                var existing = target.gameObject.GetComponents(handler.Value.ControllerType)
                     .Cast<CharaCustomFunctionController>()
-                    .FirstOrDefault(x => x.ExtendedDataId == handler.ExtendedDataId);
+                    .FirstOrDefault(x => x.ExtendedDataId == handler.Value.ExtendedDataId);
 
                 if (existing == null)
                 {
                     try
                     {
-                        handler.CreateInstance(target);
+                        handler.Value.CreateInstance(target);
                     }
                     catch (Exception e)
                     {

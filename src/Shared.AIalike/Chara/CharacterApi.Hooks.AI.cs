@@ -1,12 +1,12 @@
-﻿using AIChara;
+﻿using ADV;
+using AIChara;
+using ExtensibleSaveFormat;
+using HarmonyLib;
 using KKAPI.Maker;
 using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq;
-using ADV;
-using HarmonyLib;
-using ExtensibleSaveFormat;
 
 namespace KKAPI.Chara
 {
@@ -58,12 +58,12 @@ namespace KKAPI.Chara
             {
                 foreach (var handler in _registeredHandlers)
                 {
-                    if (handler.ExtendedDataCopier == null)
+                    if (handler.Value.ExtendedDataCopier == null)
                         continue;
 
                     try
                     {
-                        handler.ExtendedDataCopier(destination, source);
+                        handler.Value.ExtendedDataCopier(destination, source);
                     }
                     catch (Exception e)
                     {
