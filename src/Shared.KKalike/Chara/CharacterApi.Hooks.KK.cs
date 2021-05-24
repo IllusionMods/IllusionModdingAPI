@@ -1,4 +1,6 @@
-﻿using ChaCustom;
+﻿using ADV;
+using ChaCustom;
+using HarmonyLib;
 using KKAPI.Maker;
 using System;
 using System.Collections;
@@ -6,8 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using ADV;
-using HarmonyLib;
 
 namespace KKAPI.Chara
 {
@@ -87,12 +87,12 @@ namespace KKAPI.Chara
             {
                 foreach (var handler in _registeredHandlers)
                 {
-                    if (handler.ExtendedDataCopier == null)
+                    if (handler.Value.ExtendedDataCopier == null)
                         continue;
 
                     try
                     {
-                        handler.ExtendedDataCopier(destination, source);
+                        handler.Value.ExtendedDataCopier(destination, source);
                     }
                     catch (Exception e)
                     {
@@ -209,5 +209,5 @@ namespace KKAPI.Chara
                 ClothesFileControlLoading = false;
             }
         }
-	}
+    }
 }
