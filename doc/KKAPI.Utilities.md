@@ -288,6 +288,7 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `Texture2D` | LoadTexture(this `Byte[]` texBytes, `TextureFormat` format = ARGB32, `Boolean` mipMaps = False) | Create texture from an image stored in a byte array, for example a png file read from disk. | 
+| `Texture2D` | ResizeTexture(this `Texture2D` pSource, `ImageFilterMode` pFilterMode, `Single` pScale) | Create a resized copy of this texture.  http://blog.collectivemass.com/2014/03/resizing-textures-in-unity/ | 
 | `Sprite` | ToSprite(this `Texture2D` texture) | Create a sprite based on this texture. | 
 | `Texture2D` | ToTexture2D(this `Texture` tex, `TextureFormat` format = ARGB32, `Boolean` mipMaps = False) | Copy this texture inside a new editable Texture2D. | 
 
