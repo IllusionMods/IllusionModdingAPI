@@ -96,7 +96,7 @@ namespace KKAPI.Maker
                 var folder = UserData.Path + (isMale ? "chara/male/" : "chara/female/");
 
                 var fileName = __instance.saveNew ?
-#if KK
+#if KK || KKS
                     $"Koikatu_{(isMale ? "M" : "F")}_{DateTime.Now:yyyyMMddHHmmssfff}"
 #elif EC
                     $"Emocre_{(isMale ? "M" : "F")}_{DateTime.Now:yyyyMMddHHmmssfff}"

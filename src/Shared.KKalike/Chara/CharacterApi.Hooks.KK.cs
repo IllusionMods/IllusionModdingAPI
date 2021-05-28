@@ -29,7 +29,7 @@ namespace KKAPI.Chara
                 var target3 = typeof(ChaFile).GetMethods().Single(info => info.Name == nameof(ChaFile.CopyAll));
                 i.Patch(target3, null, new HarmonyMethod(typeof(Hooks), nameof(ChaFile_CopyChaFileHook)));
 
-#if KK
+#if KK //todo || KKS
                 // Find the ADV character Start lambda to hook for extended data copying. The inner type names change between versions so try them all.
                 var transpiler = new HarmonyMethod(typeof(Hooks), nameof(FixEventSceneLambdaTpl));
                 var lambdaOuter = AccessTools.Inner(typeof(FixEventSceneEx), "<Start>c__AnonStorey1");
@@ -101,7 +101,7 @@ namespace KKAPI.Chara
                 }
             }
 
-#if KK
+#if KK || KKS
             /// <summary>
             /// Fix extended data being lost in ADV by copying it over when chara data is copied
             /// </summary>

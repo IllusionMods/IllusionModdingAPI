@@ -7,7 +7,7 @@ namespace KKAPI.Utilities
     /// </summary>
     public static class HSceneUtils
     {
-#if KK
+#if KK || KKS
         /// <summary>
         /// Get the heroine that is currently in leading position in the h scene. 
         /// In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine.

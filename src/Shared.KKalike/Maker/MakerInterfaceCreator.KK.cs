@@ -267,7 +267,7 @@ namespace KKAPI.Maker
                     }
                 }
                 CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
-#if KK
+#if KK || KKS
                 var listParent = slotTransform.Cast<Transform>().Where(x => x.name.EndsWith("Top")).First();
                 var elements = new List<Transform>();
                 foreach (Transform t in listParent)
@@ -314,7 +314,7 @@ namespace KKAPI.Maker
         internal static void OnMakerAccSlotAdded(Transform newSlotTransform)
         {
             // Necessary because MoreAccessories copies existing slot, so controls get copied but with no events hooked up
-#if KK
+#if KK || KKS
             //KeelsChildNeglect(newSlotTransform, 0); //used to print children paths in case it's needed in the future, like horizontal support or something
             if (!MakerAPI.InsideAndLoaded)
             {
