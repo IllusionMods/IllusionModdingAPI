@@ -64,7 +64,7 @@ namespace KKAPI.Maker
         /// </summary>
         public static event EventHandler<AccessorySlotEventArgs> AccessoryKindChanged;
 
-#if KK 
+#if KK || KKS 
         /// <summary>
         /// Fires after user copies accessories between coordinates by using the Copy window.
         /// </summary>
@@ -366,7 +366,7 @@ namespace KKAPI.Maker
             }
         }
 
-#if KK
+#if KK || KKS
         private static void OnCopyAcs(CvsAccessoryCopy instance)
         {
             if (AccessoriesCopied == null && !KoikatuAPI.EnableDebugLogging) return;

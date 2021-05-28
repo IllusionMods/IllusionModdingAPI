@@ -1,4 +1,4 @@
-﻿#if AI || HS2
+﻿#if AI || HS2 || KKS
 using System;
 #endif
 using BepInEx;

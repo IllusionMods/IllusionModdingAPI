@@ -4,7 +4,7 @@ using KKAPI.Chara;
 using KKAPI.Maker.UI;
 using KKAPI.Maker.UI.Sidebar;
 using UnityEngine;
-#if KK || EC
+#if KK || KKS || EC
 using ChaCustom;
 #elif AI || HS2
 using CharaCustom;
@@ -77,7 +77,7 @@ namespace KKAPI.Maker
         /// 0 is male, 1 is female
         /// </summary>
         public static int GetMakerSex()
-#if KK || EC
+#if KK || KKS || EC
             => GetMakerBase().modeSex;
 #elif AI || HS2
             => CharaCustom.CharaCustom.modeSex;
@@ -100,7 +100,15 @@ namespace KKAPI.Maker
         /// Check if the maker was loaded from within classroom select screen in main game
         /// </summary>
         public static bool IsInsideClassMaker() => InsideMaker && Manager.Scene.Instance.NowSceneNames.Contains("ClassRoomSelect");
+#elif KKS
+        /// <summary>
+        /// Check if the maker was loaded from within classroom select screen in main game
+        /// </summary>
+        [Obsolete("Not implemented, always false")]
+        public static bool IsInsideClassMaker() => false;
+#endif
 
+#if KK || KKS
         /// <summary>
         /// Currently selected maker coordinate
         /// </summary>
@@ -228,7 +236,7 @@ namespace KKAPI.Maker
         {
             MakerInterfaceCreator.CreateCustomControls();
 
-#if KK
+#if KK || KKS
             // Fix some plugins failing to update interface and losing state
             if (IsInsideClassMaker())
             {
@@ -413,7 +421,7 @@ namespace KKAPI.Maker
             if (GetIsNowLoadingFade())
                 return false;
 
-#if KK || EC
+#if KK || KKS || EC
             // Check if UI is hidden (by pressing space)
             if (mbase.customCtrl.hideFrontUI)
                 return false;
@@ -430,7 +438,7 @@ namespace KKAPI.Maker
 
         private static string GetAddSceneName()
         {
-#if HS2
+#if HS2 || KKS
             return Manager.Scene.AddSceneName;
 #else
             return Manager.Scene.Instance.AddSceneName;
@@ -439,7 +447,7 @@ namespace KKAPI.Maker
 
         private static bool GetIsNowLoadingFade()
         {
-#if HS2
+#if HS2 || KKS
             return Manager.Scene.IsNowLoadingFade;
 #else
             return Manager.Scene.Instance.IsNowLoadingFade;

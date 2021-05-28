@@ -146,7 +146,7 @@ namespace KKAPI.Utilities
             return !ReferenceEquals(obj, null) && !obj;
         }
 
-#if KK||EC
+#if KK || KKS||EC
         /// <summary>
         /// Get value of the aaWeightsBody field
         /// </summary>

@@ -240,7 +240,7 @@ namespace KKAPI.Chara
                 }
             }
 
-#if KK
+#if KK || KKS
             var controllers = target.GetComponents<CharaCustomFunctionController>();
             target.UpdateAsObservable().Subscribe(
                 _ =>

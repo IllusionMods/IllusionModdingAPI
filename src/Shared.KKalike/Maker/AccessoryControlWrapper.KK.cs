@@ -28,7 +28,7 @@ namespace KKAPI.Maker
 
             AccessoriesApi.SelectedMakerAccSlotChanged += OnSelectedMakerAccSlotChanged;
             AccessoriesApi.AccessoryKindChanged += OnAccessoryKindChanged;
-#if KK
+#if KK || KKS
             AccessoriesApi.AccessoriesCopied += OnAccessoriesCopied;
 #endif
             AccessoriesApi.AccessoryTransferred += OnAccessoryTransferred;
@@ -40,7 +40,7 @@ namespace KKAPI.Maker
             AccessoryTransferred?.Invoke(sender, e);
         }
 
-#if KK
+#if KK || KKS
         private void OnAccessoriesCopied(object sender, AccessoryCopyEventArgs e)
         {
             if (CheckDisposed()) return;
@@ -163,7 +163,7 @@ namespace KKAPI.Maker
         /// </summary>
         public event EventHandler<AccessorySlotEventArgs> AccessoryKindChanged;
 
-#if KK
+#if KK || KKS
         /// <summary>
         /// Fires after user copies accessories between coordinates by using the Copy window.
         /// </summary>
@@ -206,7 +206,7 @@ namespace KKAPI.Maker
                 AccessoriesApi.AccessoryKindChanged -= OnAccessoryKindChanged;
                 AccessoriesApi.AccessoryTransferred -= OnAccessoryTransferred;
 
-#if KK
+#if KK || KKS
                 AccessoriesCopied = null;
                 AccessoriesApi.AccessoriesCopied -= OnAccessoriesCopied;
 #endif

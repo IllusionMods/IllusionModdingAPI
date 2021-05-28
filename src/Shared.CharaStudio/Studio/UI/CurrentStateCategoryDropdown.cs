@@ -1,4 +1,4 @@
-﻿#if KK || AI || HS2
+﻿#if KK || KKS || AI || HS2
 #define TMP
 #endif
 
@@ -20,7 +20,7 @@ namespace KKAPI.Studio.UI
     {
         private readonly string[] _items;
         private static GameObject _originalObject;
-#if AI || HS2
+#if AI || HS2 || KKS //todo KKS needs a check whenever studio comes out
         private const string ObjectSourcePath = "StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Color Grading/Lookup Texture";
 #elif KK
         private const string ObjectSourcePath = "StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/02_Kinematic/05_Etc/Eyes Draw";
@@ -46,7 +46,7 @@ namespace KKAPI.Studio.UI
             if (_originalObject == null)
             {
                 _originalObject = GameObject.Find(ObjectSourcePath);
-#if KK || PH
+#if KK || KKS || PH
                 // Unused controls, safe to remove for less overhead later on
                 foreach (var tr in _originalObject.transform.Cast<Transform>().Where(t => t.name.StartsWith("Toggle")))
                     Object.DestroyImmediate(tr.gameObject);
