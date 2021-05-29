@@ -13,6 +13,19 @@ namespace KKAPI
     [BepInDependency(ExtensibleSaveFormat.ExtendedSave.GUID, "12.2")]
     public partial class KoikatuAPI : BaseUnityPlugin
     {
+        /// <summary>
+        /// The studio process name for use with <see cref="BepInProcess"/> attributes.
+        /// </summary>
+        public const string StudioProcessName = "StudioNEOV2";
+        /// <summary>
+        /// The game process name for use with <see cref="BepInProcess"/> attributes.
+        /// </summary>
+        public const string GameProcessName = "HoneySelect2";
+        /// <summary>
+        /// The VR module process name for use with <see cref="BepInProcess"/> attributes.
+        /// </summary>
+        public const string VRProcessName = "HoneySelect2VR";
+
         private void Awake()
         {
             BaseAwake();
