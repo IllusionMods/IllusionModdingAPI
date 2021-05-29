@@ -17,7 +17,11 @@ namespace KKAPI.Maker
             private static bool _makerStarting;
 
             [HarmonyPrefix]
+#if KKS //todo check if the same hook won't work on older games
+            [HarmonyPatch(typeof(UI_ToggleGroupCtrl), nameof(UI_ToggleGroupCtrl.Initialize))]
+#else
             [HarmonyPatch(typeof(UI_ToggleGroupCtrl), "Start")]
+#endif
             public static void HBeforeToggleGroupStart(UI_ToggleGroupCtrl __instance)
             {
                 var categoryTransfrom = __instance.transform;
@@ -110,16 +114,11 @@ namespace KKAPI.Maker
             public static ChaFile InternalLastLoadedChaFile;
 
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(ChaFileControl), "LoadFileLimited", new[]
-            {
-                typeof(string),
-                typeof(byte),
-                typeof(bool),
-                typeof(bool),
-                typeof(bool),
-                typeof(bool),
-                typeof(bool)
-            })]
+#if KKS
+            [HarmonyPatch(typeof(ChaFileControl), "LoadFileLimited", typeof(string), typeof(byte), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool))]
+#else
+            [HarmonyPatch(typeof(ChaFileControl), "LoadFileLimited", typeof(string), typeof(byte), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool))]
+#endif
             public static void ChaFileControl_LoadLimitedPostHook(string filename, byte sex, bool face, bool body,
                 bool hair, bool parameter, bool coordinate, ChaFileControl __instance)
             {

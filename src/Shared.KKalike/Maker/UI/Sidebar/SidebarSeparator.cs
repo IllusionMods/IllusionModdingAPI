@@ -18,8 +18,8 @@ namespace KKAPI.Maker.UI.Sidebar
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var orig = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CvsDraw/Top/Separate");
-            var copy = Object.Instantiate(orig, orig.transform.parent);
+            var orig = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CvsDraw/Top", "Separate");
+            var copy = Object.Instantiate(orig.gameObject, orig.transform.parent);
             return copy;
         }
     }

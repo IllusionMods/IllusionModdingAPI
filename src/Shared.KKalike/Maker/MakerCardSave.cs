@@ -15,6 +15,9 @@ namespace KKAPI.Maker
     /// <summary>
     /// API for modifying the process of saving cards in maker.
     /// </summary>
+#if KKS //todo
+    [Obsolete("Not implemented in KKS, need to hook into btnsave lambda in CustomControl")]
+#endif
     public static class MakerCardSave
     {
         private static readonly Harmony _harmony;

@@ -157,7 +157,10 @@ namespace KKAPI.Maker
             MakerLoadToggle.CreateCustomToggles();
             MakerCoordinateLoadToggle.CreateCustomToggles();
 
+#if !KKS
+            // KKS sidebar is already scrollable
             MakeSidebarScrollable(sidebarTop);
+#endif
         }
 
         private static void MakeSidebarScrollable(Transform sidebarTop)
@@ -267,7 +270,13 @@ namespace KKAPI.Maker
                     }
                 }
                 CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
-#if KK || KKS
+#if KK 
+                /*todo KKS version
+                 copy existing scroll view and use that instead of making a new one
+                CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/03_ClothesTop/tglGloves/GlovesTop/Scroll View/Viewport/Content 
+                unparent everything under content, copy it into a work copy, reparent
+                copy to acc slots, reparent all the controls, destroy old layout elements and image
+                */
                 var listParent = slotTransform.Cast<Transform>().Where(x => x.name.EndsWith("Top")).First();
                 var elements = new List<Transform>();
                 foreach (Transform t in listParent)
@@ -357,7 +366,13 @@ namespace KKAPI.Maker
 
         internal static Transform FindSubcategoryContentParent(Transform categorySubTransform)
         {
-            var top = categorySubTransform.Cast<Transform>().First(x => x.name != "imgOff");
+            var content = categorySubTransform.Find("Scroll View/Viewport/Content");
+            if (content != null) return content;
+
+            var imgoff = categorySubTransform.Find("imgOff");
+            if (imgoff == null) return categorySubTransform;
+
+            var top = categorySubTransform.Cast<Transform>().First(x => x != imgoff);
             return top.Find("Scroll View/Viewport/Content") ?? top;
         }
 

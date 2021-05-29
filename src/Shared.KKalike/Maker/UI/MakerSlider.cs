@@ -85,7 +85,11 @@ namespace KKAPI.Maker.UI
             inputField.onSubmit.RemoveAllListeners();
             inputField.onEndEdit.RemoveAllListeners();
 
+#if KKS
+            var resetButton = _sliderCopy.Find("btnReset").GetComponent<Button>();
+#else
             var resetButton = _sliderCopy.Find("Button").GetComponent<Button>();
+#endif
             resetButton.onClick.RemoveAllListeners();
 
             foreach (var renderer in _sliderCopy.GetComponentsInChildren<Image>())
@@ -157,7 +161,11 @@ namespace KKAPI.Maker.UI
                     InputField(f, inputField);
                 });
 
+#if KKS
+            var resetButton = tr.Find("btnReset").GetComponent<Button>();
+#else
             var resetButton = tr.Find("Button").GetComponent<Button>();
+#endif
             resetButton.onClick.AddListener(() => slider.value = _defaultValue);
 
             BufferedValueChanged.Subscribe(f => slider.value = f);
