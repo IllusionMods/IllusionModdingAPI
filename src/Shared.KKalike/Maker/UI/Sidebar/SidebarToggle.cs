@@ -24,8 +24,8 @@ namespace KKAPI.Maker.UI.Sidebar
         /// <inheritdoc />
         protected override GameObject OnCreateControl(Transform subCategoryList)
         {
-            var origTgl = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CvsDraw/Top/tglBlink");
-            var copy = Object.Instantiate(origTgl, origTgl.transform.parent);
+            var origTgl = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CvsDraw/Top", "tglBlink");
+            var copy = Object.Instantiate(origTgl.gameObject, origTgl.transform.parent);
 
             RemoveLocalisation(copy);
 

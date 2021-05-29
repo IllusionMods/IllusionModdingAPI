@@ -115,7 +115,7 @@ namespace KKAPI.Chara
                  64	00C4	stfld	uint8[] ChaFile::pngData
                  */
 
-				var il = instructions.ToList();
+                var il = instructions.ToList();
 
                 var target = AccessTools.Field(typeof(ChaFile), nameof(ChaFile.pngData));
                 if (target == null) throw new ArgumentNullException(nameof(target));
@@ -171,7 +171,14 @@ namespace KKAPI.Chara
             /// It's needed because after 1st day since loading the characters are reset but not reloaded, and can cause issues
             /// </summary>
             [HarmonyPrefix]
+#if KKS
+            // For some reason both of these methods are copies of each other and are called from the same place (one or the other)
+            // todo this needs a check when full KKS game comes out
+            [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.NPCLoadAll), new Type[0])]
+            [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.NPCLoadAll), typeof(bool))]
+#else
             [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.NPCLoadAll))]
+#endif
             public static void ActionScene_NPCLoadAllPreHook(ActionScene __instance)
             {
                 __instance.StartCoroutine(DelayedReloadChara(null));

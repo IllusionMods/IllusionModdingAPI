@@ -51,7 +51,11 @@ namespace KKAPI.Maker.UI
 
         private static void MakeCopy()
         {
+#if KKS
+            var originalSlider = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/tglVisualSettings", "ddRampG");
+#else
             var originalSlider = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/tglConfig", "ddRamp");
+#endif
 
             _dropdownCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, false);
             _dropdownCopy.gameObject.SetActive(false);
