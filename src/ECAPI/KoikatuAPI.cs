@@ -10,6 +10,11 @@ namespace KKAPI
     [BepInPlugin(GUID, "Modding API", VersionConst)]
     public partial class KoikatuAPI : BaseUnityPlugin
     {
+        /// <summary>
+        /// The game process name for use with <see cref="BepInProcess"/> attributes.
+        /// </summary>
+        public const string GameProcessName = "EmotionCreators";
+
         private void Awake()
         {
             BaseAwake();
