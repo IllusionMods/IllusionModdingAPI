@@ -63,8 +63,8 @@
       <HintPath>..\packages\IllusionLibs.BepInEx.Harmony.2.3.2\lib\net35\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KKS_ExtensibleSaveFormat">
-      <HintPath>..\..\..\BepisPlugins\bin\BepInEx\plugins\KKS_BepisPlugins\KKS_ExtensibleSaveFormat.dll</HintPath>
+    <Reference Include="KKS_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExtensibleSaveFormat.KoikatsuSunshine.16.3.0\lib\net46\KKS_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sirenix.Serialization, Version=2.1.13.0, Culture=neutral, processorArchitecture=MSIL">
