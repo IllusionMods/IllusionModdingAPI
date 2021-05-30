@@ -30,8 +30,13 @@ Static Fields
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `String` | GameProcessName | The game process name for use with `BepInEx.BepInProcess` attributes.  This is for the jp release. In almost all cases should be used together with the steam version. | 
+| `String` | GameProcessNameSteam | The game process name for use with `BepInEx.BepInProcess` attributes.  This is for the steam release. In almost all cases should be used together with the jp version. | 
 | `String` | GUID | GUID of this plugin, use for checking dependancies with `BepInEx.BepInDependency`."/&gt; | 
+| `String` | StudioProcessName | The studio process name for use with `BepInEx.BepInProcess` attributes. | 
 | `String` | VersionConst | Version of this assembly/plugin.  WARNING: This is a const field, therefore it will be copied to your assembly!  Use this field to check if the installed version of the plugin is up to date by adding this attribute to your plugin class:  <code>[BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]</code>  THIS VALUE WILL NOT BE READ FROM THE INSTALLED VERSION, YOU WILL READ THE VALUE FROM THIS VERSION THAT YOU COMPILE YOUR PLUGIN AGAINST!  More info: https://stackoverflow.com/questions/55984/what-is-the-difference-between-const-and-readonly | 
+| `String` | VRProcessName | The VR module process name for use with `BepInEx.BepInProcess` attributes.  This is for the jp release. In almost all cases should be used together with the steam version. | 
+| `String` | VRProcessNameSteam | The VR module process name for use with `BepInEx.BepInProcess` attributes.  This is for the steam release. In almost all cases should be used together with the jp version. | 
 
 
 Static Properties
