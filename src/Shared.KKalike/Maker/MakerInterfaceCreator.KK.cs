@@ -256,14 +256,10 @@ namespace KKAPI.Maker
             var tglSlot01GameObject = customAcsChangeSlot.transform.FindLoop("tglSlot01");
             if (tglSlot01GameObject == null) throw new ArgumentNullException(nameof(tglSlot01GameObject));
             var container = tglSlot01GameObject.transform.parent;
-#if KK || KKS
-            //Set source early rather than search every time
-            var original_scroll = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/03_ClothesTop/tglTop/TopTop/Scroll View").transform.GetComponent<ScrollRect>();
 #if KKS
-            var content_image = original_scroll.content.GetComponent<Image>();
-#endif
-            var scroll_bar_area_sprite = original_scroll.verticalScrollbar.GetComponent<Image>().sprite;
-            var scroll_bar_handle_sprite = original_scroll.verticalScrollbar.image.sprite;
+            //can possibly work with KK/KKP 
+            //Set source early rather than search every time
+            var original_scroll = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/03_ClothesTop/tglTop/TopTop/Scroll View").transform;
 #endif
             foreach (var slotTransform in container.Cast<Transform>().Where(x => x.name.StartsWith("tglSlot")).OrderBy(x => x.name))
             {
@@ -280,10 +276,14 @@ namespace KKAPI.Maker
                 }
                 CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
 #if KK || KKS
+                /*todo KKS version
+                 copy existing scroll view and use that instead of making a new one
+                CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/03_ClothesTop/tglGloves/GlovesTop/Scroll View/Viewport/Content 
+                unparent everything under content, copy it into a work copy, reparent
+                copy to acc slots, reparent all the controls, destroy old layout elements and image
+                */
                 var listParent = slotTransform.Cast<Transform>().Where(x => x.name.EndsWith("Top")).First();
-#if KKS
-                GameObject.DestroyImmediate(listParent.GetComponent<Image>());//Destroy image that contains scrollbar
-#endif
+
                 var elements = new List<Transform>();
                 foreach (Transform t in listParent)
                     elements.Add(t);
@@ -291,38 +291,26 @@ namespace KKAPI.Maker
                 var fitter = listParent.GetComponent<ContentSizeFitter>();
                 fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
                 fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+#if KK 
+                //Possibly removeable with KKS version
+                var go = DefaultControls.CreateScrollView(new DefaultControls.Resources());
+                go.name = $"{slotTransform.name}ScrollView";
+                go.transform.SetParent(listParent.transform, false);
 
-                var scrollTransform = DefaultControls.CreateScrollView(new DefaultControls.Resources());
-                scrollTransform.name = $"{slotTransform.name}ScrollView";
-                scrollTransform.transform.SetParent(listParent.transform, false);
-
-                var scroll = scrollTransform.GetComponent<ScrollRect>();
+                var scroll = go.GetComponent<ScrollRect>();
                 scroll.horizontal = false;
                 scroll.scrollSensitivity = 40f;
                 scroll.movementType = ScrollRect.MovementType.Clamped;
+                scroll.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
                 scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
-                scroll.verticalScrollbar.image.sprite = scroll_bar_handle_sprite;
-                scroll.verticalScrollbar.GetComponent<Image>().sprite = scroll_bar_area_sprite;
-#if KKS
-                //Add image that doesn't contain scroll bar
-                var image = scroll.content.gameObject.AddComponent<Image>();
-                image.sprite = content_image.sprite;
-                image.type = content_image.type;
-#endif
-                Object.DestroyImmediate(scroll.horizontalScrollbar.gameObject);
-                var content = scroll.content.transform;
-                Object.Destroy(scroll.GetComponent<Image>());
+                GameObject.DestroyImmediate(scroll.GetComponent<Image>());
+                GameObject.DestroyImmediate(scroll.horizontalScrollbar.gameObject);
+                GameObject.DestroyImmediate(scroll.verticalScrollbar.gameObject);
 
-                var s_LE = scroll.gameObject.AddComponent<LayoutElement>();
-#if KK
+                var le = scroll.gameObject.AddComponent<LayoutElement>();
                 var height = (GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/04_AccessoryTop/Slots").transform as RectTransform).rect.height;
-                var width = 360f;
-#else
-                var height = 875f;   //Slots from KK doesn't exist
-                var width = 380f;
-#endif
-                s_LE.preferredHeight = height;
-                s_LE.preferredWidth = width;
+                le.preferredHeight = height;
+                le.preferredWidth = 360f;
 
                 var vlg = scroll.content.gameObject.AddComponent<VerticalLayoutGroup>();
                 vlg.childControlWidth = true;
@@ -331,7 +319,29 @@ namespace KKAPI.Maker
                 vlg.childForceExpandHeight = false;
 
                 scroll.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+#elif KKS
+                var scrollTransform = Object.Instantiate(original_scroll, listParent.transform, false);
+                scrollTransform.name = $"{slotTransform.name}ScrollView";
+                var scroll = scrollTransform.GetComponent<ScrollRect>();
+                scroll.verticalScrollbarSpacing = 15; //optional
 
+                var content = scroll.content.transform;
+
+                GameObject.DestroyImmediate(content.GetComponent<Image>());//Destroy smaller image that doesn't contain scroll
+                GameObject.DestroyImmediate(scroll.GetComponent<Image>());//standard unity image that devs didn't remove themselves
+
+                for (int i = 0; i < content.childCount; i++)//Remove original gameobjects
+                {
+                    Object.Destroy(content.GetChild(i).gameObject);
+                }
+
+                var s_LE = scroll.gameObject.AddComponent<LayoutElement>();
+                var V_LE = scroll.viewport.gameObject.AddComponent<LayoutElement>();
+                s_LE.preferredHeight = V_LE.preferredHeight = 850; //Slots from KK doesn't exist
+                s_LE.preferredWidth = V_LE.preferredWidth = 380;
+
+                //VerticalLayoutGroup already exists
+#endif
                 foreach (var item in elements)
                     item.SetParent(scroll.content);
                 slotTransform.SetParent(scroll.content);
@@ -348,8 +358,8 @@ namespace KKAPI.Maker
             {
                 return;//Maker slots are added before CreateCustomAccessoryWindowControls is called. don't create controls yet
             }
-            //find Content where controls are placed, additional Slots are copies of first slot as such they are currently named downstream Slot01
-            newSlotTransform = newSlotTransform.Find("Slot01Top/tglSlot01ScrollView/Viewport/Content");
+            //find parent of Content where controls are placed, additional Slots are copies of first slot as such they are currently named downstream Slot01
+            newSlotTransform = newSlotTransform.Find("Slot01Top/tglSlot01ScrollView/Viewport");
 #endif
             RemoveCustomControlsInSubCategory(newSlotTransform);
 
