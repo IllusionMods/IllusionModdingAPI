@@ -265,7 +265,8 @@ namespace KKAPI.Chara
 #endif
 
             // Trigger the equivalent of "Start" reload from controllers
-            target.StartCoroutine(CoroutineUtils.CreateCoroutine(new WaitForEndOfFrame(), () => { }, () => OnCharacterReloaded(target)));
+            if (!MakerAPI.InsideMaker)
+                target.StartCoroutine(CoroutineUtils.CreateCoroutine(new WaitForEndOfFrame(), () => { }, () => OnCharacterReloaded(target)));
         }
 
         private static void OnCardBeingSaved(ChaFile chaFile)
