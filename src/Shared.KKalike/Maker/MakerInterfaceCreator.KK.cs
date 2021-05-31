@@ -256,8 +256,7 @@ namespace KKAPI.Maker
             var tglSlot01GameObject = customAcsChangeSlot.transform.FindLoop("tglSlot01");
             if (tglSlot01GameObject == null) throw new ArgumentNullException(nameof(tglSlot01GameObject));
             var container = tglSlot01GameObject.transform.parent;
-#if KKS
-            //can possibly work with KK/KKP 
+#if KK || KKS
             //Set source early rather than search every time
             var original_scroll = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/03_ClothesTop/tglTop/TopTop/Scroll View").transform;
 #endif
@@ -276,14 +275,8 @@ namespace KKAPI.Maker
                 }
                 CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
 #if KK || KKS
-                /*todo KKS version
-                 copy existing scroll view and use that instead of making a new one
-                CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/03_ClothesTop/tglGloves/GlovesTop/Scroll View/Viewport/Content 
-                unparent everything under content, copy it into a work copy, reparent
-                copy to acc slots, reparent all the controls, destroy old layout elements and image
-                */
                 var listParent = slotTransform.Cast<Transform>().Where(x => x.name.EndsWith("Top")).First();
-
+                GameObject.DestroyImmediate(listParent.GetComponent<Image>());//Destroy smaller image that contains scrollbar
                 var elements = new List<Transform>();
                 foreach (Transform t in listParent)
                     elements.Add(t);
@@ -291,43 +284,18 @@ namespace KKAPI.Maker
                 var fitter = listParent.GetComponent<ContentSizeFitter>();
                 fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
                 fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-#if KK 
-                //Possibly removeable with KKS version
-                var go = DefaultControls.CreateScrollView(new DefaultControls.Resources());
-                go.name = $"{slotTransform.name}ScrollView";
-                go.transform.SetParent(listParent.transform, false);
 
-                var scroll = go.GetComponent<ScrollRect>();
-                scroll.horizontal = false;
-                scroll.scrollSensitivity = 40f;
-                scroll.movementType = ScrollRect.MovementType.Clamped;
-                scroll.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
-                scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
-                GameObject.DestroyImmediate(scroll.GetComponent<Image>());
-                GameObject.DestroyImmediate(scroll.horizontalScrollbar.gameObject);
-                GameObject.DestroyImmediate(scroll.verticalScrollbar.gameObject);
-
-                var le = scroll.gameObject.AddComponent<LayoutElement>();
-                var height = (GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/04_AccessoryTop/Slots").transform as RectTransform).rect.height;
-                le.preferredHeight = height;
-                le.preferredWidth = 360f;
-
-                var vlg = scroll.content.gameObject.AddComponent<VerticalLayoutGroup>();
-                vlg.childControlWidth = true;
-                vlg.childControlHeight = true;
-                vlg.childForceExpandWidth = true;
-                vlg.childForceExpandHeight = false;
-
-                scroll.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-#elif KKS
                 var scrollTransform = Object.Instantiate(original_scroll, listParent.transform, false);
                 scrollTransform.name = $"{slotTransform.name}ScrollView";
                 var scroll = scrollTransform.GetComponent<ScrollRect>();
-                scroll.verticalScrollbarSpacing = 15; //optional
+
+                scroll.horizontalScrollbarSpacing = 5f;
+                scroll.scrollSensitivity = 40f;
+
+                scrollTransform.Find("Scrollbar Vertical/Sliding Area/Handle").GetComponent<Image>().raycastTarget = true; //terrible solution to scroll not working but it works
 
                 var content = scroll.content.transform;
 
-                GameObject.DestroyImmediate(content.GetComponent<Image>());//Destroy smaller image that doesn't contain scroll
                 GameObject.DestroyImmediate(scroll.GetComponent<Image>());//standard unity image that devs didn't remove themselves
 
                 for (int i = 0; i < content.childCount; i++)//Remove original gameobjects
@@ -336,12 +304,18 @@ namespace KKAPI.Maker
                 }
 
                 var s_LE = scroll.gameObject.AddComponent<LayoutElement>();
-                var V_LE = scroll.viewport.gameObject.AddComponent<LayoutElement>();
-                s_LE.preferredHeight = V_LE.preferredHeight = 850; //Slots from KK doesn't exist
-                s_LE.preferredWidth = V_LE.preferredWidth = 380;
+#if KK
+                var height = (GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/04_AccessoryTop/Slots").transform as RectTransform).rect.height;
+                var width = 360f;
+#else
+                var height = 875f;   //Slots from KK doesn't exist
+                var width = 380f;
+#endif
+                s_LE.preferredHeight = height;
+                s_LE.preferredWidth = width;
 
                 //VerticalLayoutGroup already exists
-#endif
+
                 foreach (var item in elements)
                     item.SetParent(scroll.content);
                 slotTransform.SetParent(scroll.content);
