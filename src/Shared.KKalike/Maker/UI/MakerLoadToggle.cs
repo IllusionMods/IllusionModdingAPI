@@ -17,7 +17,11 @@ namespace KKAPI.Maker.UI
     /// </summary>
     public class MakerLoadToggle : BaseEditableGuiEntry<bool>
     {
+#if KKS
+        private const int TotalWidth = 380 + 292 - 25; // KKS has fatter all on/off buttons
+#else
         private const int TotalWidth = 380 + 292 - 5; // -5 for KKP
+#endif
 
         private static readonly List<MakerLoadToggle> Toggles = new List<MakerLoadToggle>();
         private static Transform _baseToggle;
@@ -89,7 +93,10 @@ namespace KKAPI.Maker.UI
         {
             yield return new WaitUntil(() => rt.gameObject.activeInHierarchy);
             yield return null;
-
+#if KKS
+            // Need to fix text positioning in KKS
+            rt.GetComponent<HorizontalLayoutGroup>().enabled = true;
+#endif
             LayoutRebuilder.MarkLayoutForRebuild(rt);
         }
 
@@ -128,12 +135,21 @@ namespace KKAPI.Maker.UI
                 var baseToggle = baseToggles[index];
                 baseToggle.localPosition = new Vector3(_baseToggle.localPosition.x + singleWidth * index, 52, 0);
                 baseToggle.offsetMax = new Vector2(baseToggle.offsetMin.x + singleWidth, baseToggle.offsetMin.y + 26);
+#if KKS
+                // Need to fix text positioning in KKS
+                KoikatuAPI.Instance.StartCoroutine(FixLayout(baseToggle));
+#endif
             }
 
             var allon = _root.transform.Find("btnAllOn");
             allon.GetComponentInChildren<Button>().onClick.AddListener(OnAllOn);
             var alloff = _root.transform.Find("btnAllOff");
             alloff.GetComponentInChildren<Button>().onClick.AddListener(OnAllOff);
+
+#if KKS
+            allon.GetComponent<RectTransform>().sizeDelta = new Vector2(82, 24);
+            alloff.GetComponent<RectTransform>().sizeDelta = new Vector2(82, 24);
+#endif
 
             LoadButton = _root.transform.parent.Find("btnLoad").GetComponent<Button>();
         }
@@ -143,6 +159,10 @@ namespace KKAPI.Maker.UI
             var baseToggles = new List<RectTransform>();
             foreach (var child in root.transform.Cast<Transform>().ToList())
             {
+#if KKS
+                // Ignore unused toggle in KKS trial
+                if (!child.gameObject.activeSelf) continue;
+#endif
                 if (child.name.StartsWith("tglHeader"))
                 {
                     // Fix for Koikatsu Party, the toggles are now grouped

@@ -68,6 +68,10 @@ namespace KKAPI.Maker.UI
                 var baseToggle = _baseToggles[index];
                 baseToggle.localPosition = new Vector3(_baseToggle.localPosition.x + singleWidth * index, _verticalOffset, 0);
                 baseToggle.offsetMax = new Vector2(baseToggle.offsetMin.x + singleWidth, baseToggle.offsetMin.y + 26);
+#if KKS
+                // Need to fix text positioning in KKS
+                KoikatuAPI.Instance.StartCoroutine(FixLayout(baseToggle));
+#endif
             }
         }
 
@@ -106,7 +110,10 @@ namespace KKAPI.Maker.UI
         {
             yield return new WaitUntil(() => rt == null || rt.gameObject.activeInHierarchy);
             yield return null;
-
+#if KKS
+            // Need to fix text positioning in KKS
+            rt.GetComponent<HorizontalLayoutGroup>().enabled = true;
+#endif
             LayoutRebuilder.MarkLayoutForRebuild(rt);
         }
 
