@@ -348,8 +348,8 @@ namespace KKAPI.Maker
             {
                 return;//Maker slots are added before CreateCustomAccessoryWindowControls is called. don't create controls yet
             }
-            //find parent of Content where controls are placed, additional Slots are copies of first slot as such they are currently named downstream Slot01
-            newSlotTransform = newSlotTransform.Find("Slot01Top/tglSlot01ScrollView/Viewport");
+            //find Content where controls are placed, additional Slots are copies of first slot as such they are currently named downstream Slot01
+            newSlotTransform = newSlotTransform.Find("Slot01Top/tglSlot01ScrollView/Viewport/Content");
 #endif
             RemoveCustomControlsInSubCategory(newSlotTransform);
 
