@@ -258,7 +258,12 @@ namespace KKAPI.Maker
             var container = tglSlot01GameObject.transform.parent;
 #if KK || KKS
             //Set source early rather than search every time
-            var original_scroll = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/03_ClothesTop/tglTop/TopTop/Scroll View").transform;
+            var original_scroll = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/03_ClothesTop/tglTop/TopTop/Scroll View").transform.GetComponent<ScrollRect>();
+#if KKS
+            var content_image = original_scroll.content.GetComponent<Image>();
+#endif
+            var scroll_bar_area_sprite = original_scroll.verticalScrollbar.GetComponent<Image>().sprite;
+            var scroll_bar_handle_sprite = original_scroll.verticalScrollbar.image.sprite;
 #endif
             foreach (var slotTransform in container.Cast<Transform>().Where(x => x.name.StartsWith("tglSlot")).OrderBy(x => x.name))
             {
@@ -276,7 +281,9 @@ namespace KKAPI.Maker
                 CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
 #if KK || KKS
                 var listParent = slotTransform.Cast<Transform>().Where(x => x.name.EndsWith("Top")).First();
-                GameObject.DestroyImmediate(listParent.GetComponent<Image>());//Destroy smaller image that contains scrollbar
+#if KKS
+                GameObject.DestroyImmediate(listParent.GetComponent<Image>());//Destroy image that contains scrollbar
+#endif
                 var elements = new List<Transform>();
                 foreach (Transform t in listParent)
                     elements.Add(t);
@@ -285,23 +292,26 @@ namespace KKAPI.Maker
                 fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
                 fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-                var scrollTransform = Object.Instantiate(original_scroll, listParent.transform, false);
+                var scrollTransform = DefaultControls.CreateScrollView(new DefaultControls.Resources());
                 scrollTransform.name = $"{slotTransform.name}ScrollView";
+                scrollTransform.transform.SetParent(listParent.transform, false);
+
                 var scroll = scrollTransform.GetComponent<ScrollRect>();
-
-                scroll.horizontalScrollbarSpacing = 5f;
+                scroll.horizontal = false;
                 scroll.scrollSensitivity = 40f;
-
-                scrollTransform.Find("Scrollbar Vertical/Sliding Area/Handle").GetComponent<Image>().raycastTarget = true; //terrible solution to scroll not working but it works
-
+                scroll.movementType = ScrollRect.MovementType.Clamped;
+                scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
+                scroll.verticalScrollbar.image.sprite = scroll_bar_handle_sprite;
+                scroll.verticalScrollbar.GetComponent<Image>().sprite = scroll_bar_area_sprite;
+#if KKS
+                //Add image that doesn't contain scroll bar
+                var image = scroll.content.gameObject.AddComponent<Image>();
+                image.sprite = content_image.sprite;
+                image.type = content_image.type;
+#endif
+                Object.DestroyImmediate(scroll.horizontalScrollbar.gameObject);
                 var content = scroll.content.transform;
-
-                GameObject.DestroyImmediate(scroll.GetComponent<Image>());//standard unity image that devs didn't remove themselves
-
-                for (int i = 0; i < content.childCount; i++)//Remove original gameobjects
-                {
-                    Object.Destroy(content.GetChild(i).gameObject);
-                }
+                Object.Destroy(scroll.GetComponent<Image>());
 
                 var s_LE = scroll.gameObject.AddComponent<LayoutElement>();
 #if KK
@@ -314,7 +324,13 @@ namespace KKAPI.Maker
                 s_LE.preferredHeight = height;
                 s_LE.preferredWidth = width;
 
-                //VerticalLayoutGroup already exists
+                var vlg = scroll.content.gameObject.AddComponent<VerticalLayoutGroup>();
+                vlg.childControlWidth = true;
+                vlg.childControlHeight = true;
+                vlg.childForceExpandWidth = true;
+                vlg.childForceExpandHeight = false;
+
+                scroll.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
                 foreach (var item in elements)
                     item.SetParent(scroll.content);
