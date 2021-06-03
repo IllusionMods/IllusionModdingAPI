@@ -497,8 +497,13 @@ namespace KKAPI.Maker
             return new CoordinateLoadFlags { Clothes = clothes.isOn, Accessories = accs.isOn };
         }
 
-        internal static void AutomaticAccessoryControlVisibility(bool show)
+        internal static void AutomaticAccessoryControlVisibility(bool show, bool different)
         {
+            MakerAPI.OnVisibilityTrigger(new AccessoryContolVisibilityArgs(show));
+
+            if (!different)
+            { return; }
+
             foreach (var item in _accessoryWindowEntries)
             {
                 if (item.Automate_Visible)

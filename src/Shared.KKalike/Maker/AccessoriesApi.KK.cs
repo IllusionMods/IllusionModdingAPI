@@ -28,7 +28,7 @@ namespace KKAPI.Maker
         private static Func<int> _getCvsAccessoryCount;
         private static Func<ChaControl, int, ChaAccessoryComponent> _getChaAccessoryCmp;
         private static Func<ChaControl, ChaAccessoryComponent, int> _getChaAccessoryCmpIndex;
-        private static bool _control_show_state = true;
+        internal static bool _control_show_state = true;
 
         /// <summary>
         /// Returns true if the accessory tab in maker is currently selected.
@@ -424,13 +424,11 @@ namespace KKAPI.Maker
             if (partsinfo == null)
                 return;
 
-            //if show state is different run
             var result = partsinfo.type != 120;
-            if (result == _control_show_state)
-                return;
+            bool different = result != _control_show_state;
+            _control_show_state = result;
 
-            _control_show_state = !_control_show_state;
-            MakerInterfaceCreator.AutomaticAccessoryControlVisibility(_control_show_state);
+            MakerInterfaceCreator.AutomaticAccessoryControlVisibility(_control_show_state, different);
         }
     }
 }

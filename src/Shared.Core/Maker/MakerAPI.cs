@@ -266,6 +266,9 @@ namespace KKAPI.Maker
             }
 
             MakerInterfaceCreator.RemoveCustomControls();
+#if KK || KKS || EC
+            AccessoriesApi._control_show_state = true;
+#endif
         }
 
         /// <summary>
@@ -313,7 +316,31 @@ namespace KKAPI.Maker
         /// EventArgs can be either <see cref="CharaReloadEventArgs"/> or <see cref="CoordinateEventArgs"/> depending on why the reload happened.
         /// </summary>
         public static event EventHandler ReloadCustomInterface;
+#if KK || KKS || EC
+        /// <summary>
+        /// Fired when the visbility state of accessory controls, added by <see cref="AddAccessoryWindowControl"/>, should change state if not managed automatically by api.
+        /// </summary>
+        public static event EventHandler<AccessoryContolVisibilityArgs> AccessoryContolVisibility;
 
+        internal static void OnVisibilityTrigger(AccessoryContolVisibilityArgs args)
+        {
+            if (AccessoryContolVisibility != null)
+            {
+                foreach (var handler in AccessoryContolVisibility.GetInvocationList())
+                {
+                    try
+                    {
+                        ((EventHandler<AccessoryContolVisibilityArgs>)handler).Invoke(KoikatuAPI.Instance, args);
+                    }
+                    catch (Exception e)
+                    {
+                        KoikatuAPI.Logger.LogError(e);
+                    }
+                }
+            }
+        }
+
+#endif
         internal static void OnReloadInterface(EventArgs args)
         {
             if (ReloadCustomInterface != null)
