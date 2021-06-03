@@ -21,6 +21,7 @@ namespace KKAPI.Maker
         private static readonly List<BaseGuiEntry> _guiEntries = new List<BaseGuiEntry>();
         private static readonly List<BaseGuiEntry> _sidebarEntries = new List<BaseGuiEntry>();
         private static readonly List<BaseGuiEntry> _accessoryWindowEntries = new List<BaseGuiEntry>();
+        private static readonly List<BaseGuiEntry> _accessoryWindowseperator = new List<BaseGuiEntry>();
 
         private static readonly MakerCategory _accessorySlotWindowCategory = new MakerCategory("04_AccessoryTop", "Slots");
 
@@ -231,7 +232,7 @@ namespace KKAPI.Maker
             }
         }
 
-        private static void CreateCustomControlsInSubCategory(Transform subCategoryTransform, ICollection<BaseGuiEntry> entriesToAdd)
+        private static void CreateCustomControlsInSubCategory(Transform subCategoryTransform, ICollection<BaseGuiEntry> entriesToAdd, bool accessorieswindow = false)
         {
             if (entriesToAdd.Count == 0) return;
 
@@ -241,7 +242,15 @@ namespace KKAPI.Maker
             foreach (var gr in entriesToAdd.GroupBy(x => x.GroupingID).OrderBy(x => x.Key))
             {
                 if (needsSeparator)
-                    new MakerSeparator(new MakerCategory(null, null), KoikatuAPI.Instance).CreateControl(contentParent);
+                {
+                    var seperator = new MakerSeparator(new MakerCategory(null, null), KoikatuAPI.Instance);
+                    seperator.CreateControl(contentParent);
+                    if (accessorieswindow)
+                    {
+                        seperator.GroupingID = gr.ElementAt(0).GroupingID;
+                        _accessoryWindowseperator.Add(seperator);
+                    }
+                }
 
                 foreach (var control in gr)
                     control.CreateControl(contentParent);
@@ -284,7 +293,7 @@ namespace KKAPI.Maker
                         text.Cast<Transform>().First().gameObject.SetActive(false);
                     }
                 }
-                CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
+                CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries, true);
 #if KK || KKS
                 var listParent = slotTransform.Cast<Transform>().Where(x => x.name.EndsWith("Top")).First();
 #if KKS
@@ -502,12 +511,29 @@ namespace KKAPI.Maker
             MakerAPI.OnVisibilityTrigger(new AccessoryContolVisibilityArgs(show));
 
             if (!different)
-            { return; }
+            {
+                SeperatorVisibility();
+                return;
+            }
 
             foreach (var item in _accessoryWindowEntries)
             {
                 if (item.Automate_Visible)
                     item.Visible.OnNext(show);
+            }
+            SeperatorVisibility();
+        }
+
+        private static void SeperatorVisibility()
+        {
+            foreach (var gr in _accessoryWindowEntries.GroupBy(x => x.GroupingID).OrderBy(x => x.Key))
+            {
+                bool show = !gr.All(x => !x.Visible.Value);//if not all are false, show
+                var results = _accessoryWindowseperator.FindAll(x => x.GroupingID == gr.ElementAt(0).GroupingID);
+                foreach (var item in results)
+                {
+                    item.Visible.OnNext(show);
+                }
             }
         }
 

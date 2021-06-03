@@ -318,7 +318,7 @@ namespace KKAPI.Maker
         public static event EventHandler ReloadCustomInterface;
 #if KK || KKS || EC
         /// <summary>
-        /// Fired when the visbility state of accessory controls, added by <see cref="AddAccessoryWindowControl"/>, should change state if not managed automatically by api.
+        /// Fired when the visbility state of accessory controls, added by <see cref="AddAccessoryWindowControl"/>, should change state if not managed automatically by the api.
         /// </summary>
         public static event EventHandler<AccessoryContolVisibilityArgs> AccessoryContolVisibility;
 
