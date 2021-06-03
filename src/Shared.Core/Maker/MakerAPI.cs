@@ -236,14 +236,9 @@ namespace KKAPI.Maker
         {
             MakerInterfaceCreator.CreateCustomControls();
 
-#if KK || KKS
-            // Fix some plugins failing to update interface and losing state
-            if (IsInsideClassMaker())
-            {
-                OnChaFileLoaded(new ChaFileLoadedEventArgs(null, (byte)GetMakerSex(), true, true, true, true, true, GetCharacterControl().chaFile, LastLoadedChaFile));
-                OnReloadInterface(new CharaReloadEventArgs(GetCharacterControl()));
-            }
-#endif
+            // todo prevent reloads from happening before this point? this needs testing in AIS and HS2
+            OnChaFileLoaded(new ChaFileLoadedEventArgs(null, (byte)GetMakerSex(), true, true, true, true, true, GetCharacterControl().chaFile, LastLoadedChaFile));
+            OnReloadInterface(new CharaReloadEventArgs(GetCharacterControl()));
         }
 
         private static void OnMakerExiting()

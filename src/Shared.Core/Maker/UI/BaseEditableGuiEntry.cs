@@ -82,7 +82,8 @@ namespace KKAPI.Maker.UI
             if (!wasCreated)
             {
                 _incomingValue.OnNext(_incomingValue.Value);
-                _outgoingValue.OnNext(_incomingValue.Value);
+                if (!MakerAPI.InsideAndLoaded)
+                    _outgoingValue.OnNext(_incomingValue.Value);
             }
         }
 
