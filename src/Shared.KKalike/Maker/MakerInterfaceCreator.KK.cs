@@ -63,7 +63,13 @@ namespace KKAPI.Maker
 
         public static T AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
         {
+            return AddAccessoryWindowControl(control, true);
+        }
+
+        public static T AddAccessoryWindowControl<T>(T control, bool automate_visible) where T : BaseGuiEntry
+        {
             control.Category = _accessorySlotWindowCategory;
+            control.Automate_Visible = automate_visible;
             _accessoryWindowEntries.Add(control);
             return control;
         }
@@ -337,6 +343,7 @@ namespace KKAPI.Maker
                 slotTransform.SetParent(scroll.content);
 #endif
             }
+            AccessoriesApi.AutomaticControlVisibility();
         }
 
         internal static void OnMakerAccSlotAdded(Transform newSlotTransform)
@@ -488,6 +495,15 @@ namespace KKAPI.Maker
             var accs = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/cosFileControl/charaFileWindow/WinRect/CoordinateLoad/Select/tglItem02")?.GetComponentInChildren<Toggle>(true);
             if (accs == null) return null;
             return new CoordinateLoadFlags { Clothes = clothes.isOn, Accessories = accs.isOn };
+        }
+
+        internal static void AutomaticAccessoryControlVisibility(bool show)
+        {
+            foreach (var item in _accessoryWindowEntries)
+            {
+                if (item.Automate_Visible)
+                    item.Visible.OnNext(show);
+            }
         }
 
         //private static void KeelsChildNeglect(Transform parent, int generation)

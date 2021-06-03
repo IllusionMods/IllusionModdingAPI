@@ -10,9 +10,10 @@ namespace KKAPI.Maker
         {
             [HarmonyPostfix]
             [HarmonyPatch(typeof(CustomAcsSelectKind), nameof(CustomAcsSelectKind.ChangeSlot))]
-            public static void ChangeSlotPostfix(CustomAcsSelectKind __instance, int _no, bool open)
+            public static void ChangeSlotPostfix(CustomAcsSelectKind __instance, int _no)
             {
                 OnSelectedMakerSlotChanged(__instance, _no);
+                AutomaticControlVisibility();
             }
 
             [HarmonyBefore(new string[] { "com.joan6694.kkplugins.moreaccessories" })]
@@ -33,12 +34,26 @@ namespace KKAPI.Maker
                     OnAccessoryKindChanged(__instance, (int)__instance.slotNo);
             }
 
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessory), typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool))]
+            public static void ChangeAccessoryPostfix()
+            {
+                AutomaticControlVisibility();
+            }
+
 #if KK || KKS
             [HarmonyPostfix]
             [HarmonyPatch(typeof(CvsAccessoryCopy), "CopyAcs")]
             public static void CopyCopyAcsPostfix(CvsAccessoryCopy __instance)
             {
                 OnCopyAcs(__instance);
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeCoordinateType), typeof(ChaFileDefine.CoordinateType), typeof(bool))]
+            public static void ChangeCoordinateTypePostfix()
+            {
+                AutomaticControlVisibility();
             }
 #endif
 

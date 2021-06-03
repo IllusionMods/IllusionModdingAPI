@@ -207,7 +207,9 @@ namespace KKAPI.Maker
                     }
                 }
             }
-
+#if KK || KKS ||EC
+            AccessoriesApi.AutomaticControlVisibility();
+#endif
             _makerLoaded = true;
         }
 
@@ -328,6 +330,9 @@ namespace KKAPI.Maker
                     }
                 }
             }
+#if KK || KKS || EC
+            AccessoriesApi.AutomaticControlVisibility();
+#endif
         }
 
         private static bool _insideMaker;

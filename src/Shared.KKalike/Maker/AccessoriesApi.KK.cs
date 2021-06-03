@@ -1,10 +1,10 @@
-﻿using System;
+﻿using ChaCustom;
+using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ChaCustom;
 using TMPro;
-using HarmonyLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #pragma warning disable 612
@@ -28,6 +28,7 @@ namespace KKAPI.Maker
         private static Func<int> _getCvsAccessoryCount;
         private static Func<ChaControl, int, ChaAccessoryComponent> _getChaAccessoryCmp;
         private static Func<ChaControl, ChaAccessoryComponent, int> _getChaAccessoryCmpIndex;
+        private static bool _control_show_state = true;
 
         /// <summary>
         /// Returns true if the accessory tab in maker is currently selected.
@@ -83,7 +84,7 @@ namespace KKAPI.Maker
         public static GameObject[] GetAccessoryObjects(this ChaControl character)
         {
             if (character == null) throw new ArgumentNullException(nameof(character));
-            
+
             if (!MoreAccessoriesInstalled) return character.objAccessory;
 
             var dict = Traverse.Create(_moreAccessoriesInstance).Field("_accessoriesByChar").GetValue();
@@ -411,6 +412,25 @@ namespace KKAPI.Maker
             {
                 KoikatuAPI.Logger.LogError("Crash in AccessoryTransferred event: " + ex);
             }
+        }
+
+        internal static void AutomaticControlVisibility()
+        {
+            var slot = SelectedMakerAccSlot;
+            if (slot < 0)
+                return;
+
+            var partsinfo = GetPartsInfo(slot);
+            if (partsinfo == null)
+                return;
+
+            //if show state is different run
+            var result = partsinfo.type != 120;
+            if (result == _control_show_state)
+                return;
+
+            _control_show_state = !_control_show_state;
+            MakerInterfaceCreator.AutomaticAccessoryControlVisibility(_control_show_state);
         }
     }
 }
