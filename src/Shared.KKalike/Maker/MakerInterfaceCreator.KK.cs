@@ -264,6 +264,18 @@ namespace KKAPI.Maker
 #endif
             var scroll_bar_area_sprite = original_scroll.verticalScrollbar.GetComponent<Image>().sprite;
             var scroll_bar_handle_sprite = original_scroll.verticalScrollbar.image.sprite;
+
+#if KK
+            var root = container.parent.parent.parent;
+            root.Find("tglCopy").GetComponent<LayoutElement>().minWidth = 200f;
+            root.Find("tglChange").GetComponent<LayoutElement>().minWidth = 200f;
+#endif
+            foreach (var slotTransform in container.Cast<Transform>())
+            {
+                var layout = slotTransform.GetComponent<LayoutElement>();
+                layout.minWidth = 200f;
+                layout.preferredWidth = 200f;
+            }
 #endif
             foreach (var slotTransform in container.Cast<Transform>().Where(x => x.name.StartsWith("tglSlot")).OrderBy(x => x.name))
             {
@@ -295,14 +307,16 @@ namespace KKAPI.Maker
                 var scrollTransform = DefaultControls.CreateScrollView(new DefaultControls.Resources());
                 scrollTransform.name = $"{slotTransform.name}ScrollView";
                 scrollTransform.transform.SetParent(listParent.transform, false);
-
+                listParent.transform.position -= new Vector3(30, 0, 0);
                 var scroll = scrollTransform.GetComponent<ScrollRect>();
                 scroll.horizontal = false;
                 scroll.scrollSensitivity = 40f;
+
                 scroll.movementType = ScrollRect.MovementType.Clamped;
                 scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
                 scroll.verticalScrollbar.image.sprite = scroll_bar_handle_sprite;
                 scroll.verticalScrollbar.GetComponent<Image>().sprite = scroll_bar_area_sprite;
+
 #if KKS
                 //Add image that doesn't contain scroll bar
                 var image = scroll.content.gameObject.AddComponent<Image>();
@@ -316,10 +330,10 @@ namespace KKAPI.Maker
                 var s_LE = scroll.gameObject.AddComponent<LayoutElement>();
 #if KK
                 var height = (GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/04_AccessoryTop/Slots").transform as RectTransform).rect.height;
-                var width = 360f;
+                var width = 400f;
 #else
                 var height = 875f;   //Slots from KK doesn't exist
-                var width = 380f;
+                var width = 400f;
 #endif
                 s_LE.preferredHeight = height;
                 s_LE.preferredWidth = width;
