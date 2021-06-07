@@ -82,5 +82,14 @@ namespace KKAPI
         {
             return typeof(DownloadScene).GetProperty("isSteam", AccessTools.all) != null;
         }
+
+        /// <summary>
+        /// Check if the game is running the Darkness version
+        /// <remarks>It's best to not rely on this and instead make the same code works either way (if possible).</remarks>
+        /// </summary>
+        public static bool IsDarkness()
+        {
+            return typeof(ChaControl).GetProperty("exType", AccessTools.all) != null;
+        }
     }
 }
