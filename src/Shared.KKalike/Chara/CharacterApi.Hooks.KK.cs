@@ -1,4 +1,6 @@
-﻿using ChaCustom;
+﻿using ADV;
+using ChaCustom;
+using HarmonyLib;
 using KKAPI.Maker;
 using System;
 using System.Collections;
@@ -6,8 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using ADV;
-using HarmonyLib;
 
 namespace KKAPI.Chara
 {
@@ -29,7 +29,7 @@ namespace KKAPI.Chara
                 var target3 = typeof(ChaFile).GetMethods().Single(info => info.Name == nameof(ChaFile.CopyAll));
                 i.Patch(target3, null, new HarmonyMethod(typeof(Hooks), nameof(ChaFile_CopyChaFileHook)));
 
-#if KK
+#if KK //todo || KKS
                 // Find the ADV character Start lambda to hook for extended data copying. The inner type names change between versions so try them all.
                 var transpiler = new HarmonyMethod(typeof(Hooks), nameof(FixEventSceneLambdaTpl));
                 var lambdaOuter = AccessTools.Inner(typeof(FixEventSceneEx), "<Start>c__AnonStorey1");
@@ -87,12 +87,12 @@ namespace KKAPI.Chara
             {
                 foreach (var handler in _registeredHandlers)
                 {
-                    if (handler.ExtendedDataCopier == null)
+                    if (handler.Value.ExtendedDataCopier == null)
                         continue;
 
                     try
                     {
-                        handler.ExtendedDataCopier(destination, source);
+                        handler.Value.ExtendedDataCopier(destination, source);
                     }
                     catch (Exception e)
                     {
@@ -101,7 +101,7 @@ namespace KKAPI.Chara
                 }
             }
 
-#if KK
+#if KK || KKS
             /// <summary>
             /// Fix extended data being lost in ADV by copying it over when chara data is copied
             /// </summary>
@@ -115,7 +115,7 @@ namespace KKAPI.Chara
                  64	00C4	stfld	uint8[] ChaFile::pngData
                  */
 
-				var il = instructions.ToList();
+                var il = instructions.ToList();
 
                 var target = AccessTools.Field(typeof(ChaFile), nameof(ChaFile.pngData));
                 if (target == null) throw new ArgumentNullException(nameof(target));
@@ -171,7 +171,14 @@ namespace KKAPI.Chara
             /// It's needed because after 1st day since loading the characters are reset but not reloaded, and can cause issues
             /// </summary>
             [HarmonyPrefix]
+#if KKS
+            // For some reason both of these methods are copies of each other and are called from the same place (one or the other)
+            // todo this needs a check when full KKS game comes out
+            [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.NPCLoadAll), new Type[0])]
+            [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.NPCLoadAll), typeof(bool))]
+#else
             [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.NPCLoadAll))]
+#endif
             public static void ActionScene_NPCLoadAllPreHook(ActionScene __instance)
             {
                 __instance.StartCoroutine(DelayedReloadChara(null));
@@ -209,5 +216,5 @@ namespace KKAPI.Chara
                 ClothesFileControlLoading = false;
             }
         }
-	}
+    }
 }

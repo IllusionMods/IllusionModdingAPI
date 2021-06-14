@@ -9,9 +9,9 @@ namespace KKAPI.MainGame
     {
         private class Hooks
         {
-            public static void SetupHooks()
+            public static void SetupHooks(Harmony hi)
             {
-                Harmony.CreateAndPatchAll(typeof(Hooks));
+                hi.PatchAll(typeof(Hooks));
             }
 
             [HarmonyPostfix]

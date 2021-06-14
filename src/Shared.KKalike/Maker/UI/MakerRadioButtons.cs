@@ -26,6 +26,12 @@ namespace KKAPI.Maker.UI
         public ReadOnlyCollection<Toggle> Buttons { get; private set; }
 
         /// <summary>
+        /// How many buttons to show in a each row. By default show all buttons in a single row.
+        /// If set to 3, 3 buttons will be shown in a row, then the next 3 buttons will be shown in a row below, and so on.
+        /// </summary>
+        public int ColumnCount { get; set; } = 9999;
+
+        /// <summary>
         /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
         /// </summary>
         /// <param name="settingName">Text displayed next to the buttons</param>
@@ -85,25 +91,40 @@ namespace KKAPI.Maker.UI
                 .ToList()
                 .AsReadOnly();
 
-            var singleToggleWidth = 280 / Buttons.Count;
-            for (var index = 0; index < Buttons.Count; index++)
+            // If there's less toggles than the number of toggles in a row, expand them to fill all space
+            var singleToggleWidth = 280 / Mathf.Min(Buttons.Count, ColumnCount);
+            var rowCount = Mathf.CeilToInt((float)Buttons.Count / ColumnCount);
+            tr.GetComponent<LayoutElement>().minHeight = 40 * rowCount;
+            var buttonIndex = 0;
+            for (var rowIndex = 0; rowIndex < rowCount; rowIndex++)
             {
-                var toggle = Buttons[index];
+                for (var columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
+                {
+                    if (buttonIndex >= Buttons.Count) break;
+                    var toggle = Buttons[buttonIndex];
 
-                var rt = toggle.GetComponent<RectTransform>();
-                rt.offsetMin = new Vector2(singleToggleWidth * index - 280, 8);
-                rt.offsetMax = new Vector2(singleToggleWidth * (index + 1) - 280, -8);
+                    var rt = toggle.GetComponent<RectTransform>();
+                    rt.offsetMin = new Vector2(singleToggleWidth * columnIndex - 280, 8);
+                    rt.offsetMax = new Vector2(singleToggleWidth * (columnIndex + 1) - 280, -8);
 
-                toggle.GetComponentInChildren<TextMeshProUGUI>().text = _buttons[index];
+                    rt.anchorMax = new Vector2(1, 1 - rowIndex / (float)rowCount);
+                    rt.anchorMin = new Vector2(1, 1 - (rowIndex + 1) / (float)rowCount);
 
-                var indexCopy = index;
-                toggle.onValueChanged.AddListener(
-                    a =>
-                    {
-                        if (a || indexCopy == Value)
-                            SetValue(indexCopy);
-                    });
+                    toggle.GetComponentInChildren<TextMeshProUGUI>().text = _buttons[buttonIndex];
+
+                    var indexCopy = buttonIndex;
+                    toggle.onValueChanged.AddListener(
+                        a =>
+                        {
+                            if (a || indexCopy == Value)
+                                SetValue(indexCopy);
+                        });
+
+                    buttonIndex++;
+                }
             }
+
+            UnityEngine.Debug.Assert(buttonIndex >= Buttons.Count, "Didn't loop over all radio buttons, only " + buttonIndex);
 
             BufferedValueChanged.Subscribe(
                 i =>

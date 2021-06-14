@@ -75,6 +75,10 @@ namespace KKAPI.Maker
             return new AccessoryControlWrapper<T, TVal>(control);
         }
 
+        /// <summary>
+        /// Get sex of currently edited character
+        /// </summary>
+        /// <returns></returns>
         public static SEX GetMakerSex() => GetMakerBase().Sex;
 
         /// <summary>

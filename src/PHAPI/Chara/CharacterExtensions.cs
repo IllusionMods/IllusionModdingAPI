@@ -107,6 +107,9 @@ namespace KKAPI.Chara
 
         #endregion
 
+        /// <summary>
+        /// Get name of the character for use in UI and logging
+        /// </summary>
         public static string GetCharacterName(this Human h)
         {
             if (StudioAPI.InsideStudio)

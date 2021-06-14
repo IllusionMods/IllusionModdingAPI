@@ -13,6 +13,31 @@ namespace KKAPI
     [BepInPlugin(GUID, "Modding API", VersionConst)]
     public partial class KoikatuAPI : BaseUnityPlugin
     {
+        /// <summary>
+        /// The studio process name for use with <see cref="BepInProcess"/> attributes.
+        /// </summary>
+        public const string StudioProcessName = "CharaStudio";
+        /// <summary>
+        /// The game process name for use with <see cref="BepInProcess"/> attributes.
+        /// This is for the jp release. In almost all cases should be used together with the steam version.
+        /// </summary>
+        public const string GameProcessName = "Koikatu";
+        /// <summary>
+        /// The game process name for use with <see cref="BepInProcess"/> attributes.
+        /// This is for the steam release. In almost all cases should be used together with the jp version.
+        /// </summary>
+        public const string GameProcessNameSteam = "Koikatsu Party";
+        /// <summary>
+        /// The VR module process name for use with <see cref="BepInProcess"/> attributes.
+        /// This is for the jp release. In almost all cases should be used together with the steam version.
+        /// </summary>
+        public const string VRProcessName = "KoikatuVR";
+        /// <summary>
+        /// The VR module process name for use with <see cref="BepInProcess"/> attributes.
+        /// This is for the steam release. In almost all cases should be used together with the jp version.
+        /// </summary>
+        public const string VRProcessNameSteam = "Koikatsu Party VR";
+
         private void Awake()
         {
             BaseAwake();
@@ -56,6 +81,15 @@ namespace KKAPI
         public static bool IsSteamRelease()
         {
             return typeof(DownloadScene).GetProperty("isSteam", AccessTools.all) != null;
+        }
+
+        /// <summary>
+        /// Check if the game is running the Darkness version
+        /// <remarks>It's best to not rely on this and instead make the same code works either way (if possible).</remarks>
+        /// </summary>
+        public static bool IsDarkness()
+        {
+            return typeof(ChaControl).GetProperty("exType", AccessTools.all) != null;
         }
     }
 }

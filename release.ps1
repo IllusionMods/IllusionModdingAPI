@@ -1,4 +1,4 @@
-$array = @("KKAPI", "ECAPI", "AIAPI", "PHAPI", "HS2API")
+$array = @("KKAPI", "ECAPI", "AIAPI", "PHAPI", "HS2API", "KKSAPI")
 
 if ($PSScriptRoot -match '.+?\\bin\\?') {
     $dir = $PSScriptRoot + "\"

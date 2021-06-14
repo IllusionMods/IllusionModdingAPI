@@ -1,4 +1,4 @@
-﻿#if HS2 || AI
+﻿#if HS2 || AI || KKS
 using System;
 #endif
 using UniRx;
@@ -42,7 +42,7 @@ namespace KKAPI.Utilities
         }
 
         /// <inheritdoc />
-        protected override void RaiseOnCompletedOnDestroy()
+        public override void RaiseOnCompletedOnDestroy()
         {
             _onGui?.OnCompleted();
         }

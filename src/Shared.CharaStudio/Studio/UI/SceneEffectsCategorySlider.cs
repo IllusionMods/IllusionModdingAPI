@@ -1,8 +1,9 @@
-﻿#if KK || AI || HS2
+﻿#if KK || KKS || AI || HS2
 #define TMP
 #endif
 
 using System;
+using System.Globalization;
 using UnityEngine.UI;
 #if TMP
 using Text = TMPro.TextMeshProUGUI;
@@ -15,14 +16,12 @@ namespace KKAPI.Studio.UI
     /// </summary>
     public class SceneEffectsSliderSet
     {
-        private float CurrentValue = 0f;
-        private bool EventsEnabled = false;
+        private float _currentValue;
+        private bool _eventsEnabled;
 
-        #region Backing Fields
         private string _text;
         private float _sliderMinimum;
         private float _sliderMaximum;
-        #endregion
 
         /// <summary>
         /// Label UI element.
@@ -48,7 +47,16 @@ namespace KKAPI.Studio.UI
         /// Initial state of the toggle.
         /// </summary>
         public float InitialValue { get; set; }
+
+        /// <summary>
+        /// Show the input field for typing in values.
+        /// todo Not actually working?
+        /// </summary>
         public bool ShowInput;
+        /// <summary>
+        /// Show the reset button.
+        /// todo Not actually working?
+        /// </summary>
         public bool ShowButton;
 
         /// <summary>
@@ -169,24 +177,24 @@ namespace KKAPI.Studio.UI
 
             Slider.maxValue = SliderMaximum;
             Slider.value = InitialValue;
-            if (ShowInput) Input.text = InitialValue.ToString();
+            if (ShowInput) Input.text = InitialValue.ToString(CultureInfo.InvariantCulture);
 
             Slider.onValueChanged.AddListener(delegate (float value)
             {
-                if (!EventsEnabled) return;
+                if (!_eventsEnabled) return;
                 SetValue(value);
             });
 
             if (ShowInput)
                 Input.onEndEdit.AddListener(delegate (string value)
                 {
-                    if (!EventsEnabled) return;
+                    if (!_eventsEnabled) return;
                     SetValue(value);
                 });
 
             Button.onClick.AddListener(Reset);
             SetValue(InitialValue, false);
-            EventsEnabled = true;
+            _eventsEnabled = true;
 
             Label.gameObject.name = $"Label {Text}";
             Slider.gameObject.name = $"Slider {Text}";
@@ -199,7 +207,7 @@ namespace KKAPI.Studio.UI
         /// Get the value of the slider set.
         /// </summary>
         /// <returns>Value of the slider set</returns>
-        public float GetValue() => CurrentValue;
+        public float GetValue() => _currentValue;
         /// <summary>
         /// Set the value of the slider set, update the UI elements, and trigger the Setter method.
         /// </summary>
@@ -212,8 +220,8 @@ namespace KKAPI.Studio.UI
         /// <param name="triggerEvents">Whether to trigger the Setter method</param>
         public void SetValue(string value, bool triggerEvents)
         {
-            if (!float.TryParse(value, out float valuef))
-                valuef = CurrentValue;
+            if (!float.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var valuef))
+                valuef = _currentValue;
             SetValue(valuef, triggerEvents);
         }
 
@@ -234,11 +242,11 @@ namespace KKAPI.Studio.UI
             if (EnforceSliderMaximum && value > SliderMaximum)
                 value = SliderMaximum;
 
-            EventsEnabled = false;
-            CurrentValue = value;
+            _eventsEnabled = false;
+            _currentValue = value;
             Slider.value = value;
-            if (ShowInput) Input.text = value.ToString();
-            EventsEnabled = true;
+            if (ShowInput) Input.text = value.ToString(CultureInfo.InvariantCulture);
+            _eventsEnabled = true;
             if (triggerEvents)
                 Setter.Invoke(value);
         }
@@ -253,11 +261,11 @@ namespace KKAPI.Studio.UI
         /// <param name="triggerEvents">Whether to trigger the Setter method</param>
         public void Reset(bool triggerEvents)
         {
-            EventsEnabled = false;
-            CurrentValue = InitialValue;
+            _eventsEnabled = false;
+            _currentValue = InitialValue;
             Slider.value = InitialValue;
-            if (ShowInput) Input.text = InitialValue.ToString();
-            EventsEnabled = true;
+            if (ShowInput) Input.text = InitialValue.ToString(CultureInfo.InvariantCulture);
+            _eventsEnabled = true;
             if (triggerEvents)
                 Setter.Invoke(InitialValue);
         }

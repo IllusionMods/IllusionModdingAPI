@@ -213,8 +213,8 @@ Fields
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Boolean` | ShowButton |  | 
-| `Boolean` | ShowInput |  | 
+| `Boolean` | ShowButton | Show the reset button.  todo Not actually working? | 
+| `Boolean` | ShowInput | Show the input field for typing in values.  todo Not actually working? | 
 
 
 Properties

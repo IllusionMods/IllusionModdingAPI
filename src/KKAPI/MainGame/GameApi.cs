@@ -4,9 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using ActionGame;
 using BepInEx.Bootstrap;
+using HarmonyLib;
+using Illusion.Component;
 using KKAPI.Studio;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace KKAPI.MainGame
 {
@@ -22,7 +27,7 @@ namespace KKAPI.MainGame
 
         // navigating these scenes in order triggers OnNewGame
         private static readonly IList<string> _newGameDetectionScenes =
-            new List<string>(new[] {"Title", "EntryPlayer", "ClassRoomSelect", "Action"});
+            new List<string>(new[] { "Title", "EntryPlayer", "ClassRoomSelect", "Action" });
 
         private static int _newGameDetectionIndex = -1;
 
@@ -111,11 +116,60 @@ namespace KKAPI.MainGame
             _registeredHandlers.Add(newBehaviour, extendedDataId);
         }
 
+        /// <summary>
+        /// Register a new action icon in roaming mode (like the icons for training/studying, club report screen, peeping).
+        /// Dispose the return value to remove the icon.
+        /// Icon templates can be found here https://github.com/IllusionMods/IllusionModdingAPI/tree/master/src/KKAPI/MainGame/ActionIcons
+        /// </summary>
+        /// <param name="mapNo">Identification number of the map the icon should be spawned on</param>
+        /// <param name="position">Position of the icon. All default icons are spawned at y=0, but different heights work fine to a degree.
+        /// You can figure out the position by walking to it and getting the player position with RUE.</param>
+        /// <param name="iconOn">Icon shown when player is in range to click it (excited state).</param>
+        /// <param name="iconOff">Icon shown when player is out of range.</param>
+        /// <param name="onOpen">Action triggered when player clicks the icon (If you want to open your own menu, use <see cref="GameExtensions.SetIsCursorLock"/>
+        /// to enable mouse cursor and hide the action icon to prevent it from being clicked again.).</param>
+        /// <param name="onCreated">Optional action to run after the icon is created.
+        /// Use to attach extra code to the icon, e.g. by using <see cref="ObservableTriggerExtensions.UpdateAsObservable(Component)"/> and similar methods.</param>
+        /// <param name="delayed">Should the icon be spawned every time the map is entered</param>
+        /// <param name="immediate">Should the icon be spawned immediately if the player is on the correct map</param>
+        public static IDisposable AddActionIcon(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated = null, bool delayed = true, bool immediate = false)
+        {
+            if (StudioAPI.InsideStudio) return Disposable.Empty;
+            return CustomActionIcon.AddActionIcon(mapNo, position, iconOn, iconOff, onOpen, onCreated, delayed, immediate);
+        }
+
+        /// <inheritdoc cref="AddActionIcon(int,Vector3,Sprite,Sprite,Action,Action{TriggerEnterExitEvent},bool,bool)"/>
+        [Obsolete]
+        public static void AddActionIcon(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated)
+        {
+            AddActionIcon(mapNo, position, iconOn, iconOff, onOpen, onCreated, true, false);
+        }
+
+        /// <summary>
+        /// Register a new touch icon in talk scenes in roaming mode (like the touch and look buttons on top right when talking to a character).
+        /// Dispose the return value to remove the icon.
+        /// Icon templates can be found here https://github.com/IllusionMods/IllusionModdingAPI/tree/master/src/KKAPI/MainGame/TouchIcons
+        /// By default this functions as a simple button. If you want to turn this into a toggle you have to manually switch button.image.sprite as needed.
+        /// </summary>
+        /// <param name="icon">Icon shown by default</param>
+        /// <param name="onCreated">Action to run after the icon is created.
+        /// Use to subscribe to the onClick event and/or attach extra code to the button, e.g. by using <see cref="ObservableTriggerExtensions.UpdateAsObservable(Component)"/> and similar methods.</param>
+        /// <param name="row">Row of the button, counted from top at 0. Buttons are added from right to left. Row has to be between 0 and 5, but 0 to 2 are recommended.</param>
+        /// <param name="order">Order of the buttons in a row. Lower value is placed more to the right. By default order of adding the icons is used.</param>
+        public static IDisposable AddTouchIcon(Sprite icon, Action<Button> onCreated, int row = 1, int order = 0)
+        {
+            if (StudioAPI.InsideStudio) return Disposable.Empty;
+            return CustomTalkSceneTouchIcon.AddTouchIcon(icon, onCreated, row, order);
+        }
+
         internal static void Init(bool insideStudio)
         {
             if (insideStudio) return;
 
-            Hooks.SetupHooks();
+            var hi = new Harmony(typeof(GameAPI).FullName);
+            hi.PatchAll(typeof(Hooks));
+            hi.PatchAll(typeof(CustomActionIcon));
+            hi.PatchAll(typeof(CustomTalkSceneTouchIcon));
 
             _functionControllerContainer = new GameObject("GameCustomFunctionController Zoo");
             _functionControllerContainer.transform.SetParent(Chainloader.ManagerObject.transform, false);

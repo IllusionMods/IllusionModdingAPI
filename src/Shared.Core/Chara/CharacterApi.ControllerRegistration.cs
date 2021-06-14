@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-#if KK || EC
+#if KK || KKS || EC
 using UniRx;
 #elif AI || HS2
 using AIChara;

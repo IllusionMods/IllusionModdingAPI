@@ -1,13 +1,12 @@
-﻿using System;
+﻿using ChaCustom;
+using IllusionUtility.GetUtility;
+using KKAPI.Maker.UI;
+using KKAPI.Maker.UI.Sidebar;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using BepInEx;
-using ChaCustom;
-using IllusionUtility.GetUtility;
-using KKAPI.Maker.UI;
-using KKAPI.Maker.UI.Sidebar;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -96,6 +95,10 @@ namespace KKAPI.Maker
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(new MakerRadioButtons(cat, instance, "radio btns", "b1", "b2"))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            AddControl(new MakerRadioButtons(cat, instance, "radio btns 1 row", "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8"))
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+            AddControl(new MakerRadioButtons(cat, instance, "radio btns 5 per row", "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8") { ColumnCount = 5 })
+                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(new MakerSlider(cat, "test slider", 0, 1, 1, instance))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             AddControl(
@@ -154,7 +157,10 @@ namespace KKAPI.Maker
             MakerLoadToggle.CreateCustomToggles();
             MakerCoordinateLoadToggle.CreateCustomToggles();
 
+#if !KKS
+            // KKS sidebar is already scrollable
             MakeSidebarScrollable(sidebarTop);
+#endif
         }
 
         private static void MakeSidebarScrollable(Transform sidebarTop)
@@ -166,7 +172,7 @@ namespace KKAPI.Maker
             sidebarTop.Find("sldLightingY/Slider").GetComponent<ObservableScrollTrigger>().enabled = false;
 
             var elements = new List<Transform>();
-            foreach(Transform t in sidebarTop)
+            foreach (Transform t in sidebarTop)
                 elements.Add(t);
 
             var go = DefaultControls.CreateScrollView(new DefaultControls.Resources());
@@ -194,7 +200,7 @@ namespace KKAPI.Maker
 
             scroll.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            foreach(var item in elements)
+            foreach (var item in elements)
                 item.SetParent(scroll.content);
         }
 
@@ -225,14 +231,16 @@ namespace KKAPI.Maker
 
             var contentParent = FindSubcategoryContentParent(subCategoryTransform);
 
-            BaseUnityPlugin lastOwner = contentParent.childCount > 1 ? KoikatuAPI.Instance : null;
-            foreach (var customControl in entriesToAdd)
+            var needsSeparator = contentParent.childCount > 1;
+            foreach (var gr in entriesToAdd.GroupBy(x => x.GroupingID).OrderBy(x => x.Key))
             {
-                if (lastOwner != customControl.Owner && lastOwner != null)
+                if (needsSeparator)
                     new MakerSeparator(new MakerCategory(null, null), KoikatuAPI.Instance).CreateControl(contentParent);
 
-                customControl.CreateControl(contentParent);
-                lastOwner = customControl.Owner;
+                foreach (var control in gr)
+                    control.CreateControl(contentParent);
+
+                needsSeparator = true;
             }
 
             var category = entriesToAdd.First().Category;
@@ -248,6 +256,27 @@ namespace KKAPI.Maker
             var tglSlot01GameObject = customAcsChangeSlot.transform.FindLoop("tglSlot01");
             if (tglSlot01GameObject == null) throw new ArgumentNullException(nameof(tglSlot01GameObject));
             var container = tglSlot01GameObject.transform.parent;
+#if KK || KKS
+            //Set source early rather than search every time
+            var original_scroll = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/03_ClothesTop/tglTop/TopTop/Scroll View").transform.GetComponent<ScrollRect>();
+#if KKS
+            var content_image = original_scroll.content.GetComponent<Image>();
+#endif
+            var scroll_bar_area_sprite = original_scroll.verticalScrollbar.GetComponent<Image>().sprite;
+            var scroll_bar_handle_sprite = original_scroll.verticalScrollbar.image.sprite;
+
+#if KK
+            var root = container.parent.parent.parent;
+            root.Find("tglCopy").GetComponent<LayoutElement>().minWidth = 200f;
+            root.Find("tglChange").GetComponent<LayoutElement>().minWidth = 200f;
+#endif
+            foreach (var slotTransform in container.Cast<Transform>())
+            {
+                var layout = slotTransform.GetComponent<LayoutElement>();
+                layout.minWidth = 200f;
+                layout.preferredWidth = 200f;
+            }
+#endif
             foreach (var slotTransform in container.Cast<Transform>().Where(x => x.name.StartsWith("tglSlot")).OrderBy(x => x.name))
             {
                 // Remove the red info text at the bottom to free up some space
@@ -261,63 +290,81 @@ namespace KKAPI.Maker
                         text.Cast<Transform>().First().gameObject.SetActive(false);
                     }
                 }
-
                 CreateCustomControlsInSubCategory(slotTransform, _accessoryWindowEntries);
+#if KK || KKS
+                var listParent = slotTransform.Cast<Transform>().Where(x => x.name.EndsWith("Top")).First();
+#if KKS
+                GameObject.DestroyImmediate(listParent.GetComponent<Image>());//Destroy image that contains scrollbar
+#endif
+                var elements = new List<Transform>();
+                foreach (Transform t in listParent)
+                    elements.Add(t);
 
-                // todo unfinished scrolling of accessory windows, tell Keel to finish this
-                //var listParent = slotTransform.Cast<Transform>().Where(x => x.name.EndsWith("Top")).First();
-                //var elements = new List<Transform>();
-                //foreach(Transform t in listParent)
-                //    elements.Add(t);
-                //
-                //var fitter = listParent.GetComponent<ContentSizeFitter>();
-                //fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-                //fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-                //
-                //var go = DefaultControls.CreateScrollView(new DefaultControls.Resources());
-                //go.name = $"{slotTransform.name}ScrollView";
-                //go.transform.SetParent(listParent.transform, false);
-                //
-                //var scroll = go.GetComponent<ScrollRect>();
-                //scroll.horizontal = false;
-                //scroll.scrollSensitivity = 40f;
-                //scroll.movementType = ScrollRect.MovementType.Clamped;
-                //scroll.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
-                //scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
-                //GameObject.DestroyImmediate(scroll.GetComponent<Image>());
-                //GameObject.DestroyImmediate(scroll.horizontalScrollbar.gameObject);
-                //GameObject.DestroyImmediate(scroll.verticalScrollbar.gameObject);
-                //
-                //var le = scroll.gameObject.AddComponent<LayoutElement>();
-                //var height = (GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/04_AccessoryTop/Slots").transform as RectTransform).rect.height;
-                //le.preferredHeight = height;
-                //le.preferredWidth = 360f;
-                //
-                //var vlg = scroll.content.gameObject.AddComponent<VerticalLayoutGroup>();
-                //vlg.childControlWidth = true;
-                //vlg.childControlHeight = true;
-                //vlg.childForceExpandWidth = true;
-                //vlg.childForceExpandHeight = false;
-                //
-                //scroll.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-                //
-                //foreach(var item in elements)
-                //    item.SetParent(scroll.content);
-                //
-                //public static void SetRect(this Transform self, float anchorLeft = 0f, float anchorBottom = 0f, float anchorRight = 1f, float anchorTop = 1f, float offsetLeft = 0f, float offsetBottom = 0f, float offsetRight = 0f, float offsetTop = 0f)
-                //{
-                //    RectTransform rt = self as RectTransform;
-                //    rt.anchorMin = new Vector2(anchorLeft, anchorBottom);
-                //    rt.anchorMax = new Vector2(anchorRight, anchorTop);
-                //    rt.offsetMin = new Vector2(offsetLeft, offsetBottom);
-                //    rt.offsetMax = new Vector2(offsetRight, offsetTop);
-                //}
+                var fitter = listParent.GetComponent<ContentSizeFitter>();
+                fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+                fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+                var scrollTransform = DefaultControls.CreateScrollView(new DefaultControls.Resources());
+                scrollTransform.name = $"{slotTransform.name}ScrollView";
+                scrollTransform.transform.SetParent(listParent.transform, false);
+                listParent.transform.position -= new Vector3(30, 0, 0);
+                var scroll = scrollTransform.GetComponent<ScrollRect>();
+                scroll.horizontal = false;
+                scroll.scrollSensitivity = 40f;
+
+                scroll.movementType = ScrollRect.MovementType.Clamped;
+                scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
+                scroll.verticalScrollbar.image.sprite = scroll_bar_handle_sprite;
+                scroll.verticalScrollbar.GetComponent<Image>().sprite = scroll_bar_area_sprite;
+
+#if KKS
+                //Add image that doesn't contain scroll bar
+                var image = scroll.content.gameObject.AddComponent<Image>();
+                image.sprite = content_image.sprite;
+                image.type = content_image.type;
+#endif
+                Object.DestroyImmediate(scroll.horizontalScrollbar.gameObject);
+                var content = scroll.content.transform;
+                Object.Destroy(scroll.GetComponent<Image>());
+
+                var s_LE = scroll.gameObject.AddComponent<LayoutElement>();
+#if KK
+                var height = (GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/04_AccessoryTop/Slots").transform as RectTransform).rect.height;
+                var width = 400f;
+#else
+                var height = 875f;   //Slots from KK doesn't exist
+                var width = 400f;
+#endif
+                s_LE.preferredHeight = height;
+                s_LE.preferredWidth = width;
+
+                var vlg = scroll.content.gameObject.AddComponent<VerticalLayoutGroup>();
+                vlg.childControlWidth = true;
+                vlg.childControlHeight = true;
+                vlg.childForceExpandWidth = true;
+                vlg.childForceExpandHeight = false;
+
+                scroll.content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+                foreach (var item in elements)
+                    item.SetParent(scroll.content);
+                slotTransform.SetParent(scroll.content);
+#endif
             }
         }
 
         internal static void OnMakerAccSlotAdded(Transform newSlotTransform)
         {
             // Necessary because MoreAccessories copies existing slot, so controls get copied but with no events hooked up
+#if KK || KKS
+            //KeelsChildNeglect(newSlotTransform, 0); //used to print children paths in case it's needed in the future, like horizontal support or something
+            if (!MakerAPI.InsideAndLoaded)
+            {
+                return;//Maker slots are added before CreateCustomAccessoryWindowControls is called. don't create controls yet
+            }
+            //find Content where controls are placed, additional Slots are copies of first slot as such they are currently named downstream Slot01
+            newSlotTransform = newSlotTransform.Find("Slot01Top/tglSlot01ScrollView/Viewport/Content");
+#endif
             RemoveCustomControlsInSubCategory(newSlotTransform);
 
             CreateCustomControlsInSubCategory(newSlotTransform, _accessoryWindowEntries);
@@ -326,14 +373,39 @@ namespace KKAPI.Maker
         private static void RemoveCustomControlsInSubCategory(Transform newSlotTransform)
         {
             var contentParent = FindSubcategoryContentParent(newSlotTransform);
-
+            //string children = "";
+            //for (int i = 0, n = contentParent.childCount; i < n; i++)
+            //{
+            //    children += contentParent.GetChild(i).name;
+            //    if (i == n - 2)
+            //    {
+            //        children += " and ";
+            //    }
+            //    else if (i == n - 1)
+            //    {
+            //        children += ".";
+            //    }
+            //    else
+            //    {
+            //        children += ", ";
+            //    }
+            //}
+            //KoikatuAPI.Logger.LogWarning($"Content Parent is {contentParent.name}, has {contentParent.childCount} children, and child of {contentParent.parent} and is the parent of " + children);
             foreach (var customControl in contentParent.Cast<Transform>().Where(x => x.name.EndsWith(BaseGuiEntry.GuiApiNameAppendix)))
+            {
                 Object.Destroy(customControl.gameObject);
+            }
         }
 
         internal static Transform FindSubcategoryContentParent(Transform categorySubTransform)
         {
-            var top = categorySubTransform.Cast<Transform>().First(x => x.name != "imgOff");
+            var content = categorySubTransform.Find("Scroll View/Viewport/Content");
+            if (content != null) return content;
+
+            var imgoff = categorySubTransform.Find("imgOff");
+            if (imgoff == null) return categorySubTransform;
+
+            var top = categorySubTransform.Cast<Transform>().First(x => x != imgoff);
             return top.Find("Scroll View/Viewport/Content") ?? top;
         }
 
@@ -429,8 +501,23 @@ namespace KKAPI.Maker
 
             var accs = GameObject.Find("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/06_SystemTop/cosFileControl/charaFileWindow/WinRect/CoordinateLoad/Select/tglItem02")?.GetComponentInChildren<Toggle>(true);
             if (accs == null) return null;
-
             return new CoordinateLoadFlags { Clothes = clothes.isOn, Accessories = accs.isOn };
         }
+
+        //private static void KeelsChildNeglect(Transform parent, int generation)
+        //{
+        //    generation++;
+        //    string tabs = "";
+        //    for (int i = 0; i < generation; i++)
+        //    {
+        //        tabs += "\t";
+        //    }
+        //    for (int i = 0, n = parent.childCount; i < n; i++)
+        //    {
+        //        var child = parent.GetChild(i);
+        //        KoikatuAPI.Logger.LogWarning(tabs + $"{child.name} (child {i} of {generation} generation) has {child.childCount} children; Parent is {child.parent}");
+        //        KeelsChildNeglect(child, generation);
+        //    }
+        //}
     }
 }

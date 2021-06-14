@@ -3,6 +3,7 @@ using BepInEx;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Studio;
+using KKAPI.MainGame;
 using Manager;
 using UnityEngine;
 
@@ -12,6 +13,16 @@ namespace KKAPI
     [BepInDependency(ExtensibleSaveFormat.ExtendedSave.GUID, "12.2")]
     public partial class KoikatuAPI : BaseUnityPlugin
     {
+        /// <summary>
+        /// The studio process name for use with <see cref="BepInProcess"/> attributes.
+        /// </summary>
+        public const string StudioProcessName = "StudioNEOV2";
+        /// <summary>
+        /// The game process name for use with <see cref="BepInProcess"/> attributes.
+        /// It's the same for jp and steam releases.
+        /// </summary>
+        public const string GameProcessName = "AI-Syoujyo";
+        
         private void Awake()
         {
             BaseAwake();
@@ -20,6 +31,7 @@ namespace KKAPI
             MakerAPI.Init(insideStudio);
             StudioAPI.Init(insideStudio);
             CharacterApi.Init();
+            GameAPI.Init(insideStudio);
         }
 
         private void Start()

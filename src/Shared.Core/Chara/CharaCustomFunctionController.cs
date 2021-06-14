@@ -2,7 +2,7 @@
 using KKAPI.Utilities;
 using System;
 using System.Collections;
-#if KK
+#if KK || KKS
 using KKAPI.MainGame;
 using UniRx;
 #elif AI || HS2
@@ -82,7 +82,7 @@ namespace KKAPI.Chara
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
             ExtendedSave.SetExtendedDataById(ChaFileControl, ExtendedDataId, data);
 
-#if KK 
+#if KK //todo || KKS 
             // Needed for propagating changes back to the original charFile since they don't get copied back.
             var heroine = ChaControl.GetHeroine();
             if (heroine != null)
@@ -284,7 +284,7 @@ namespace KKAPI.Chara
             }
         }
 
-#if KK
+#if KK || KKS
         /// <summary>
         /// Currently selected clothes on this character. Can subscribe to listen for changes.
         /// </summary>
@@ -304,7 +304,7 @@ namespace KKAPI.Chara
         /// </summary>
         protected virtual void OnDestroy()
         {
-#if KK
+#if KK || KKS
             CurrentCoordinate.Dispose();
 #endif
         }
@@ -325,7 +325,7 @@ namespace KKAPI.Chara
         protected virtual void Awake()
         {
             ChaControl = GetComponent<ChaControl>();
-#if KK
+#if KK || KKS
             CurrentCoordinate = new BehaviorSubject<ChaFileDefine.CoordinateType>((ChaFileDefine.CoordinateType)ChaControl.fileStatus.coordinateType);
 #endif
         }

@@ -60,7 +60,7 @@ namespace KKAPI
 
                 var param = MakerAPI.GetCharacterControl().fileParam;
                 var charaName = param.fullname.Trim();
-#if KK
+#if KK || KKS
                 if (charaName.Length == 0) charaName = param.nickname.Trim();
 #endif
                 var addStr = $"_{charaName}";

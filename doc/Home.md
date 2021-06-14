@@ -15,10 +15,13 @@
 
 ## [KKAPI.MainGame](KKAPI.MainGame.md)
 
+- [`EventUtils`](KKAPI.MainGame.md#eventutils)
 - [`GameAPI`](KKAPI.MainGame.md#gameapi)
 - [`GameCustomFunctionController`](KKAPI.MainGame.md#gamecustomfunctioncontroller)
 - [`GameExtensions`](KKAPI.MainGame.md#gameextensions)
 - [`GameSaveLoadEventArgs`](KKAPI.MainGame.md#gamesaveloadeventargs)
+- [`IgnoreCaseEqualityComparer`](KKAPI.MainGame.md#ignorecaseequalitycomparer)
+- [`TalkSceneUtils`](KKAPI.MainGame.md#talksceneutils)
 
 ## [KKAPI.Maker](KKAPI.Maker.md)
 
@@ -111,4 +114,8 @@
 - [`TextUtils`](KKAPI.Utilities.md#textutils)
 - [`TranslationHelper`](KKAPI.Utilities.md#translationhelper)
 - [`WindowsStringComparer`](KKAPI.Utilities.md#windowsstringcomparer)
+
+## [KoiSkinOverlayX](KoiSkinOverlayX.md)
+
+- [`TextureStorage`](KoiSkinOverlayX.md#texturestorage)
 

@@ -53,6 +53,7 @@ Static Methods
 | `IEnumerator` | CreateCoroutine(`Action[]` actions) | Create a coroutine that calls each of the action delegates on consecutive frames.  One action is called per frame. First action is called right away. There is no frame skip after the last action. | 
 | `IEnumerator` | CreateCoroutine(`YieldInstruction` yieldInstruction, `Action[]` actions) | Create a coroutine that calls each of the action delegates on consecutive frames.  One action is called per frame. First action is called right away. There is no frame skip after the last action. | 
 | `IEnumerator` | FlattenCo(this `IEnumerator` coroutine) | Flatten the coroutine to yield all values directly. Any coroutines yield returned by this coroutine will have their values directly returned by this new coroutine (this is recursive).  For example if another coroutine is yielded by this coroutine, the yielded coroutine will not be returned and instead the values that it yields will be returned.  If a yielded coroutine yields yet another coroutine, that second coroutine's values will be returned directly from the flattened coroutine. | 
+| `IEnumerator` | PreventFromCrashing(this `IEnumerator` coroutine) | Prevent a coroutine from getting stopped by exceptions. Exceptions are caught and logged.  Code after the exception is thrown doesn't run up until the next yield. The coroutine continues after the yield then. | 
 | `void` | RunImmediately(this `IEnumerator` coroutine) | Fully executes the coroutine synchronously (immediately run all of its code till completion). | 
 | `IEnumerator` | StripYields(this `IEnumerator` coroutine, `Boolean` onlyStripNulls = True, `Boolean` flatten = True) | Remove yields from the coroutine, making its code run immediately. | 
 
@@ -71,7 +72,20 @@ Static Methods
 | --- | --- | --- | 
 | `void` | ActuallyRemoveAllListeners(this `UnityEventBase` evt) | Same as RemoveAllListeners but also disables all PersistentListeners.  To avoid frustration always use this instead of RemoveAllListeners, unless you want to keep the PersistentListeners. | 
 | `IEnumerable<T2>` | Attempt(this `IEnumerable<T>` items, `Func<T, T2>` action) | Attempt to project each element of the sequence into a new form (Select but ignore exceptions).  Exceptions thrown while doing this are ignored and any elements that fail to be converted are silently skipped. | 
+| `IEnumerable<T2>` | Attempt(this `IEnumerable<T>` items, `Func<T, T2>` action, `Action<Exception>` onError) | Attempt to project each element of the sequence into a new form (Select but ignore exceptions).  Exceptions thrown while doing this are ignored and any elements that fail to be converted are silently skipped. | 
+| `void` | FancyDestroy(this `GameObject` self, `Boolean` useDestroyImmediate = False, `Boolean` detachParent = False) | Destroy this GameObject. Safe to use on null objects. | 
+| `AssignedAnotherWeights` | GetAaWeightsBody(this `ChaControl` ctrl) | Get value of the aaWeightsBody field | 
+| `Boolean` | GetFieldValue(this `Object` self, `String` name, `Object&` value) | Get value of a field through reflection | 
+| `String` | GetFullPath(this `GameObject` self) | Get full GameObject "path" to this GameObject.  Example: RootObject\ChildObject1\ChildObject2 | 
+| `String` | GetFullPath(this `Component` self) | Get full GameObject "path" to this GameObject.  Example: RootObject\ChildObject1\ChildObject2 | 
+| `Boolean` | GetPropertyValue(this `Object` self, `String` name, `Object&` value) | Get value of a property through reflection | 
+| `Transform` | GetTopmostParent(this `Component` src) | Get the topmost parent of Transform that this this Component is attached to. | 
+| `Transform` | GetTopmostParent(this `GameObject` src) | Get the topmost parent of Transform that this this Component is attached to. | 
+| `Transform` | GetTopmostParent(this `Transform` src) | Get the topmost parent of Transform that this this Component is attached to. | 
+| `Boolean` | IsDestroyed(this `Object` obj) | Return true if the object is a "fake" null (i.e. it was destroyed). | 
 | `void` | MarkXuaIgnored(this `Component` target) | Mark GameObject of this Component as ignored by AutoTranslator. Prevents AutoTranslator from trying to translate custom UI elements. | 
+| `Boolean` | SetFieldValue(this `Object` self, `String` name, `Object` value) | Set value of a field through reflection | 
+| `Boolean` | SetPropertyValue(this `Object` self, `String` name, `Object` value) | Set value of a property through reflection | 
 | `ReadOnlyDictionary<TKey, TValue>` | ToReadOnlyDictionary(this `IDictionary<TKey, TValue>` original) | Wrap this dictionary in a read-only wrapper that will prevent any changes to it.  Warning: Any reference types inside the dictionary can still be modified. | 
 
 
@@ -91,6 +105,8 @@ Static Methods
 | `Heroine` | GetLeadingHeroine(this `HSprite` hSprite) | Get the heroine that is currently in leading position in the h scene.  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
 | `Int32` | GetLeadingHeroineId(this `HFlag` hFlag) | Get ID of the heroine that is currently in leading position in the h scene. 0 is the main heroine, 1 is the "tag along".  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
 | `Int32` | GetLeadingHeroineId(this `HSprite` hSprite) | Get ID of the heroine that is currently in leading position in the h scene. 0 is the main heroine, 1 is the "tag along".  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
+| `Boolean` | IsHoushi(this `HFlag` hFlag) | Is current h mode service? | 
+| `Boolean` | IsSonyu(this `HFlag` hFlag) | Is current H mode penetration? | 
 
 
 ## `IMGUIUtils`
@@ -105,6 +121,8 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `Rect` | DragResizeEatWindow(`Int32` windowId, `Rect` windowRect) | Handle both dragging and resizing of OnGUI windows, as well as eat mouse inputs when cursor is over the window.  Use this instead of `UnityEngine.GUI.DragWindow(UnityEngine.Rect)` and `KKAPI.Utilities.IMGUIUtils.EatInputInRect(UnityEngine.Rect)`. Don't use these methods at the same time as DragResizeEatWindow.  To use, place this at the end of your Window method: _windowRect = IMGUIUtils.DragResizeEatWindow(windowId, _windowRect); | 
+| `Rect` | DragResizeWindow(`Int32` windowId, `Rect` windowRect) | Handle both dragging and resizing of OnGUI windows.  Use this instead of GUI.DragWindow(), don't use both at the same time.  To use, place this at the end of your Window method: _windowRect = IMGUIUtils.DragResizeWindow(windowId, _windowRect); | 
 | `Boolean` | DrawButtonWithShadow(`Rect` r, `GUIContent` content, `GUIStyle` style, `Single` shadowAlpha, `Vector2` direction) |  | 
 | `void` | DrawLabelWithOutline(`Rect` rect, `String` text, `GUIStyle` style, `Color` txtColor, `Color` outlineColor, `Int32` outlineThickness) | Draw a label with an outline | 
 | `void` | DrawLabelWithShadow(`Rect` rect, `GUIContent` content, `GUIStyle` style, `Color` txtColor, `Color` shadowColor, `Vector2` shadowOffset) | Draw a label with a shadow | 
@@ -184,7 +202,8 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `void` | Show(`Action<String[]>` onAccept, `String` title, `String` initialDir, `String` filter, `String` defaultExt, `OpenSaveFileDialgueFlags` flags = OFN_FILEMUSTEXIST, OFN_EXPLORER, OFN_LONGNAMES) | Show windows file open dialog. Doesn't pause the game. | 
-| `String[]` | ShowDialog(`String` title, `String` initialDir, `String` filter, `String` defaultExt, `OpenSaveFileDialgueFlags` flags, `IntPtr` owner) | Show windows file open dialog. Blocks the thread until user closes the dialog. Returns list of selected files, or null if user cancelled the action. | 
+| `String[]` | ShowDialog(`String` title, `String` initialDir, `String` filter, `String` defaultExt, `OpenSaveFileDialgueFlags` flags, `IntPtr` owner = null) |  | 
+| `String[]` | ShowDialog(`String` title, `String` initialDir, `String` filter, `String` defaultExt, `OpenSaveFileDialgueFlags` flags, `String` defaultFilename, `IntPtr` owner = null) |  | 
 
 
 ## `ReadOnlyDictionary<TKey, TValue>`
@@ -269,6 +288,7 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `Texture2D` | LoadTexture(this `Byte[]` texBytes, `TextureFormat` format = ARGB32, `Boolean` mipMaps = False) | Create texture from an image stored in a byte array, for example a png file read from disk. | 
+| `Texture2D` | ResizeTexture(this `Texture2D` pSource, `ImageFilterMode` pFilterMode, `Single` pScale) | Create a resized copy of this texture.  http://blog.collectivemass.com/2014/03/resizing-textures-in-unity/ | 
 | `Sprite` | ToSprite(this `Texture2D` texture) | Create a sprite based on this texture. | 
 | `Texture2D` | ToTexture2D(this `Texture` tex, `TextureFormat` format = ARGB32, `Boolean` mipMaps = False) | Copy this texture inside a new editable Texture2D. | 
 

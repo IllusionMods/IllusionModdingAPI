@@ -337,14 +337,16 @@ namespace KKAPI.Maker
             if (contentParent == null)
                 contentParent = subCategoryTransform;
 
-            BaseUnityPlugin lastOwner = contentParent.childCount > 1 ? KoikatuAPI.Instance : null;
-            foreach (var customControl in entriesToAdd)
+            var needsSeparator = contentParent.childCount > 1;
+            foreach (var gr in entriesToAdd.GroupBy(x => x.GroupingID).OrderBy(x => x.Key))
             {
-                if (lastOwner != customControl.Owner && lastOwner != null)
+                if (needsSeparator)
                     new MakerSeparator(new MakerCategory(null, null), KoikatuAPI.Instance).CreateControl(contentParent);
 
-                customControl.CreateControl(contentParent);
-                lastOwner = customControl.Owner;
+                foreach (var control in gr)
+                    control.CreateControl(contentParent);
+
+                needsSeparator = true;
             }
 
             var category = entriesToAdd.First().Category;

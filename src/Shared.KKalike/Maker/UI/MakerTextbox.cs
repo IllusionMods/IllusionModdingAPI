@@ -73,7 +73,11 @@ namespace KKAPI.Maker.UI
             inputField.onSubmit.ActuallyRemoveAllListeners();
             inputField.onEndEdit.ActuallyRemoveAllListeners();
 
+#if KKS
+            var resetButton = _textboxCopy.Find("btnReset").GetComponent<Button>();
+#else
             var resetButton = _textboxCopy.Find("Button").GetComponent<Button>();
+#endif
             resetButton.onClick.ActuallyRemoveAllListeners();
 
             foreach (var renderer in _textboxCopy.GetComponentsInChildren<Image>())
@@ -122,7 +126,11 @@ namespace KKAPI.Maker.UI
 
             if (MakerAPI.InsideMaker) Singleton<ChaCustom.CustomBase>.Instance.lstTmpInputField.Add(inputField);
 
+#if KKS
+            var resetButton = tr.Find("btnReset").GetComponent<Button>();
+#else
             var resetButton = tr.Find("Button").GetComponent<Button>();
+#endif
             resetButton.onClick.AddListener(() => SetValue(_defaultValue));
 
             BufferedValueChanged.Subscribe(text => inputField.text = text);

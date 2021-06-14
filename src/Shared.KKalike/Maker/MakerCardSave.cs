@@ -15,6 +15,9 @@ namespace KKAPI.Maker
     /// <summary>
     /// API for modifying the process of saving cards in maker.
     /// </summary>
+#if KKS //todo
+    [Obsolete("Not implemented in KKS, need to hook into btnsave lambda in CustomControl")]
+#endif
     public static class MakerCardSave
     {
         private static readonly Harmony _harmony;
@@ -96,7 +99,7 @@ namespace KKAPI.Maker
                 var folder = UserData.Path + (isMale ? "chara/male/" : "chara/female/");
 
                 var fileName = __instance.saveNew ?
-#if KK
+#if KK || KKS
                     $"Koikatu_{(isMale ? "M" : "F")}_{DateTime.Now:yyyyMMddHHmmssfff}"
 #elif EC
                     $"Emocre_{(isMale ? "M" : "F")}_{DateTime.Now:yyyyMMddHHmmssfff}"

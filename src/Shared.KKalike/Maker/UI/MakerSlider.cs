@@ -1,5 +1,5 @@
-﻿using System;
-using BepInEx;
+﻿using BepInEx;
+using System;
 using TMPro;
 using UniRx;
 using UniRx.Triggers;
@@ -52,6 +52,11 @@ namespace KKAPI.Maker.UI
         /// </summary>
         public Func<float, string> ValueToString { get; set; }
 
+        /// <summary>
+        /// Use integers instead of floats
+        /// </summary>
+        public bool WholeNumbers { get; set; }
+
         private static Transform SliderCopy
         {
             get
@@ -80,7 +85,11 @@ namespace KKAPI.Maker.UI
             inputField.onSubmit.RemoveAllListeners();
             inputField.onEndEdit.RemoveAllListeners();
 
+#if KKS
+            var resetButton = _sliderCopy.Find("btnReset").GetComponent<Button>();
+#else
             var resetButton = _sliderCopy.Find("Button").GetComponent<Button>();
+#endif
             resetButton.onClick.RemoveAllListeners();
 
             foreach (var renderer in _sliderCopy.GetComponentsInChildren<Image>())
@@ -110,8 +119,9 @@ namespace KKAPI.Maker.UI
             var slider = tr.Find("Slider").GetComponent<Slider>();
             slider.minValue = _minValue;
             slider.maxValue = _maxValue;
+            slider.wholeNumbers = WholeNumbers;
             slider.onValueChanged.AddListener(SetValue);
-
+            slider.value = _defaultValue;
             slider.GetComponent<ObservableScrollTrigger>()
                 .OnScrollAsObservable()
                 .Subscribe(
@@ -128,6 +138,9 @@ namespace KKAPI.Maker.UI
 
             var inputField = tr.Find("InputField").GetComponent<TMP_InputField>();
             if (MakerAPI.InsideMaker) Singleton<ChaCustom.CustomBase>.Instance.lstTmpInputField.Add(inputField);
+
+            InputField(_defaultValue, inputField);
+
             inputField.onEndEdit.AddListener(
                 txt =>
                 {
@@ -145,18 +158,29 @@ namespace KKAPI.Maker.UI
             slider.onValueChanged.AddListener(
                 f =>
                 {
-                    if (ValueToString != null)
-                        inputField.text = ValueToString(f);
-                    else
-                        inputField.text = Mathf.RoundToInt(f * 100).ToString();
+                    InputField(f, inputField);
                 });
 
+#if KKS
+            var resetButton = tr.Find("btnReset").GetComponent<Button>();
+#else
             var resetButton = tr.Find("Button").GetComponent<Button>();
+#endif
             resetButton.onClick.AddListener(() => slider.value = _defaultValue);
 
             BufferedValueChanged.Subscribe(f => slider.value = f);
 
             return tr.gameObject;
+        }
+
+        private void InputField(float f, TMP_InputField inputField)
+        {
+            if (ValueToString != null)
+                inputField.text = ValueToString(f);
+            else if (WholeNumbers)
+                inputField.text = f.ToString();
+            else
+                inputField.text = Mathf.RoundToInt(f * 100).ToString();
         }
     }
 }

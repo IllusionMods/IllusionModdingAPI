@@ -60,6 +60,8 @@ namespace KKAPI.Maker
             new MakerCategory("03_ClothesTop", "tglOuterShoes", 90),
 #elif EC
             new MakerCategory("03_ClothesTop", "tglShoes", 90),
+#elif KKS
+            new MakerCategory("03_ClothesTop", "tglOuterShoes", 90),
 #endif
             new MakerCategory("03_ClothesTop", "tglCopy", 100),
 
@@ -155,11 +157,13 @@ namespace KKAPI.Maker
             public static MakerCategory Gloves => GetBuiltInCategory("03_ClothesTop", "tglGloves");
             public static MakerCategory Panst => GetBuiltInCategory("03_ClothesTop", "tglPanst");
             public static MakerCategory Socks => GetBuiltInCategory("03_ClothesTop", "tglSocks");
-#if KK
+#if KK 
             public static MakerCategory InnerShoes => GetBuiltInCategory("03_ClothesTop", "tglInnerShoes");
             public static MakerCategory OuterShoes => GetBuiltInCategory("03_ClothesTop", "tglOuterShoes");
 #elif EC
             public static MakerCategory Shoes => GetBuiltInCategory("03_ClothesTop", "tglShoes");
+#elif KKS
+            public static MakerCategory OuterShoes => GetBuiltInCategory("03_ClothesTop", "tglOuterShoes");
 #endif
             public static MakerCategory Copy => GetBuiltInCategory("03_ClothesTop", "tglCopy");
         }

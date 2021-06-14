@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using ActionGame.Chara;
+using HarmonyLib;
+using UnityEngine;
 
 namespace KKAPI.MainGame
 {
@@ -52,7 +54,7 @@ namespace KKAPI.MainGame
         public static NPC GetNPC(this SaveData.Heroine heroine)
         {
             if (heroine == null) throw new ArgumentNullException(nameof(heroine));
-
+            if (heroine.charaBase is NPC npc) return npc;
             if (heroine.transform == null) return null;
             return heroine.transform.GetComponent<NPC>();
         }
@@ -121,6 +123,63 @@ namespace KKAPI.MainGame
                 results.Add(player.chaCtrl.chaFile);
 
             return results;
+        }
+
+        /// <summary>
+        /// Set the value of isCursorLock (setter is private by default).
+        /// Used to regain mouse cursor during roaming mode.
+        /// Best used together with setting <see cref="Time.timeScale"/> to 0 to pause the game.
+        /// </summary>
+        public static void SetIsCursorLock(this ActionScene actScene, bool value)
+        {
+            var lockField = Traverse.Create(actScene).Field<bool>("_isCursorLock");
+            lockField.Value = value;
+        }
+
+        /// <summary>
+        /// Get a list of free slots in class roster. New heroines can be added to these slots in saveData.heroineList.
+        /// <example>
+        /// var freeSlot = saveData.GetFreeClassSlots(1).FirstOrDefault();
+        /// freeSlot.SetCharFile(fairyCard.charFile);
+        /// freeSlot.charFileInitialized = true;
+        /// saveData.heroineList.Add(freeSlot);
+        /// </example>
+        /// </summary>
+        /// <param name="saveData"></param>
+        /// <param name="classNumber">Class to search for free slots. Starts at 0, 1 is player's class, last 'class' is not usable since it's only for NPCs.</param>
+        public static IEnumerable<SaveData.Heroine> GetFreeClassSlots(this SaveData saveData, int classNumber)
+        {
+            return Enumerable.Range(0, GetClassMaxSeatCount(saveData, classNumber))
+                .Where(index => IsValidClassSeat(saveData, classNumber, index) && GetHeroineAtSeat(saveData, classNumber, index) == null)
+                .Select(index => new SaveData.Heroine(true) { schoolClass = classNumber, schoolClassIndex = index });
+        }
+
+        /// <summary>
+        /// Get seat count in a class based on game settings.
+        /// </summary>
+        public static int GetClassMaxSeatCount(this SaveData saveData, int classNumber)
+        {
+            return classNumber == saveData.player.schoolClass || Manager.Config.AddData.OtherClassRegisterMax
+                ? 5 * 5
+                : 5;
+        }
+
+        /// <summary>
+        /// Get heroine at a specified class and seat.
+        /// </summary>
+        public static SaveData.Heroine GetHeroineAtSeat(this SaveData saveData, int classNumber, int classIndex)
+        {
+            return saveData.heroineList.Find(h => h.schoolClass == classNumber && h.schoolClassIndex == classIndex);
+        }
+
+        /// <summary>
+        /// Check if the seat can be used for heroines.
+        /// Returns true even if the seats are disabled by config, use <see cref="GetClassMaxSeatCount"/> to check for this case.
+        /// </summary>
+        public static bool IsValidClassSeat(this SaveData saveData, int classNumber, int classIndex)
+        {
+            var player = saveData.player;
+            return !(player.schoolClass == classNumber && (classIndex == player.schoolClassIndex || classIndex == player.schoolClassIndex + 1) || classIndex > 24 || classIndex < 0);
         }
     }
 }

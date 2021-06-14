@@ -24,6 +24,12 @@ namespace KKAPI.Utilities
         /// </summary>
         public const OpenSaveFileDialgueFlags MultiFileFlags = SingleFileFlags | OpenSaveFileDialgueFlags.OFN_ALLOWMULTISELECT;
 
+        /// <inheritdoc cref="ShowDialog(string,string,string,string,OpenSaveFileDialgueFlags,string,IntPtr)"/>
+        public static string[] ShowDialog(string title, string initialDir, string filter, string defaultExt, OpenSaveFileDialgueFlags flags, IntPtr owner = default)
+        {
+            return ShowDialog(title, initialDir, filter, defaultExt, flags, null, owner);
+        }
+
         /// <summary>
         /// Show windows file open dialog. Blocks the thread until user closes the dialog. Returns list of selected files, or null if user cancelled the action.
         /// </summary>
@@ -49,7 +55,8 @@ namespace KKAPI.Utilities
         /// This member can be a combination of the CommomDialgueFlags.
         /// </param>
         /// <param name="owner">Hwnd pointer of the owner window. IntPtr.Zero to use default parent</param>
-        public static string[] ShowDialog(string title, string initialDir, string filter, string defaultExt, OpenSaveFileDialgueFlags flags, IntPtr owner)
+        /// <param name="defaultFilename"> Filename that is initially entered in the filename box. </param>
+        public static string[] ShowDialog(string title, string initialDir, string filter, string defaultExt, OpenSaveFileDialgueFlags flags, string defaultFilename, IntPtr owner = default)
         {
             const int MAX_FILE_LENGTH = 2048;
 
@@ -62,12 +69,17 @@ namespace KKAPI.Utilities
             ofn.initialDir = initialDir;
             ofn.title = title;
             ofn.flags = (int)flags;
+            if (defaultExt != null) ofn.defExt = defaultExt;
 
             // Create buffer for file names
-            var fileNames = new String(new char[MAX_FILE_LENGTH]);
+            var fileNamesArr = new char[MAX_FILE_LENGTH];
+            defaultFilename?.CopyTo(0, fileNamesArr, 0, defaultFilename.Length);
+            var fileNames = new String(fileNamesArr);
             ofn.file = Marshal.StringToBSTR(fileNames);
             ofn.maxFile = fileNames.Length;
 
+            if (owner == default)
+                owner = NativeMethods.GetActiveWindow();
             ofn.dlgOwner = owner;
 
             // Save and restore working directory after GetOpenFileName changes it

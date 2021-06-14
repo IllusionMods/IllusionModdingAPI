@@ -1,4 +1,4 @@
-﻿#if KK || AI || HS2
+﻿#if KK || KKS || AI || HS2
 #define TMP
 #endif
 
@@ -40,7 +40,7 @@ namespace KKAPI.Studio.UI
 
             const string headerSourcePath = "Screen Effect/Viewport/Content/Image Depth of Field";
             const string contentSourcePath = "Screen Effect/Viewport/Content/Depth of Field";
-#if KK
+#if KK || KKS
             const string labelSourcePath = "Screen Effect/Viewport/Content/Depth of Field/TextMeshPro Draw";
             const string toggleSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Toggle Draw";
             const string sliderSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Slider Focal Size";

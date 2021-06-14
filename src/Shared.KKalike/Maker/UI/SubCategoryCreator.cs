@@ -2,6 +2,7 @@
 using ChaCustom;
 using TMPro;
 using HarmonyLib;
+using Illusion.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -115,6 +116,7 @@ namespace KKAPI.Maker.UI
             // Wait until all custom controls were added to gather all created image controls
             yield return new WaitUntil(() => MakerAPI.InsideAndLoaded);
             trTop.GetComponentInChildren<UI_RaycastCtrl>(true)?.Reset();
+            trTop.gameObject.SetActiveIfDifferent(true);
         }
     }
 }

@@ -43,6 +43,7 @@ Properties
 | `GameObject` | ControlObject | GameObject of the control. Populated once instantiated.  If there are multiple objects, returns one of them. Use `KKAPI.Maker.UI.BaseGuiEntry.ControlObjects` in that case. | 
 | `IEnumerable<GameObject>` | ControlObjects | GameObject(s) of the control. Populated once instantiated.  Contains 1 item in most cases, can contain multiple in case of accessory window controls. | 
 | `Boolean` | Exists | True if the control is currently instantiated in the scene | 
+| `String` | GroupingID | ID used when grouping controls into groups separated by separators. Groups are sorted alphabetically.  If multiple plugins use the same group, the controls are placed together.  By default each plugin has its own group. Set to null to use the "misc" group. | 
 | `Boolean` | IsDisposed | If true, the control has been disposed and can no longer be used, likely because the character maker exited.  A new control has to be created to be used again. | 
 | `BaseUnityPlugin` | Owner | The plugin that owns this custom control. | 
 | `Color` | TextColor | Text color of the control's description text (usually on the left).  Can only set this before the control is created. | 
@@ -252,6 +253,7 @@ Properties
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `ReadOnlyCollection<Toggle>` | Buttons | Objects of all of the radio buttons | 
+| `Int32` | ColumnCount | How many buttons to show in a each row. By default show all buttons in a single row.  If set to 3, 3 buttons will be shown in a row, then the next 3 buttons will be shown in a row below, and so on. | 
 
 
 Methods
@@ -294,6 +296,7 @@ Properties
 | --- | --- | --- | 
 | `Func<String, Single>` | StringToValue | Custom converter from text in the textbox to the slider value.  If not set, <code>float.Parse(txt) / 100f</code> is used. | 
 | `Func<Single, String>` | ValueToString | Custom converter from the slider value to what's displayed in the textbox.  If not set, <code>Mathf.RoundToInt(f * 100).ToString()</code> is used. | 
+| `Boolean` | WholeNumbers | Use integers instead of floats | 
 
 
 Methods

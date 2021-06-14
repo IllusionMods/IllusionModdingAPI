@@ -9,6 +9,17 @@
     <description>Modding API for PlayHome</description>
     <developmentDependency>true</developmentDependency>
     <tags>PlayHome</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.6" >
+        <dependency id="ExtensibleSaveFormat.PlayHome" version="16.3.0" />
+        <dependency id="IllusionLibs.PlayHome.Assembly-CSharp" version="2018.3.11" />
+        <dependency id="IllusionLibs.PlayHome.Assembly-CSharp-firstpass" version="2018.3.11" />
+        <dependency id="IllusionLibs.PlayHome.UnityEngine" version="5.5.5" />
+        <dependency id="IllusionLibs.PlayHome.UnityEngine.UI" version="5.5.5" />
+        <dependency id="IllusionLibs.BepInEx" version="5.4.8" />
+        <dependency id="IllusionLibs.BepInEx.Harmony" version="2.3.2" />
+      </group>
+    </dependencies>
   </metadata>
   <files>
     <file src="..\install.ps1" target="tools"/>
