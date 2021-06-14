@@ -168,7 +168,7 @@ namespace KKAPI.Maker.UI
         /// <summary>
         /// If true, Api automates showing and hiding of accessory controls
         /// </summary>
-        internal bool Automate_Visible { get; set; }
+        internal bool AutomateVisible { get; set; }
 
         /// <summary>
         /// The control is visible to the user (usually the same as it's GameObject being active).

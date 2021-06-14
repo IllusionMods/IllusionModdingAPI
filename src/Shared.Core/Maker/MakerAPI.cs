@@ -267,7 +267,7 @@ namespace KKAPI.Maker
 
             MakerInterfaceCreator.RemoveCustomControls();
 #if KK || KKS || EC
-            AccessoriesApi._control_show_state = true;
+            AccessoriesApi._ControlShowState = true;
 #endif
         }
 

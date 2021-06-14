@@ -70,7 +70,7 @@ namespace KKAPI.Maker
         public static T AddAccessoryWindowControl<T>(T control, bool automate_visible) where T : BaseGuiEntry
         {
             control.Category = _accessorySlotWindowCategory;
-            control.Automate_Visible = automate_visible;
+            control.AutomateVisible = automate_visible;
             _accessoryWindowEntries.Add(control);
             return control;
         }
@@ -518,7 +518,7 @@ namespace KKAPI.Maker
 
             foreach (var item in _accessoryWindowEntries)
             {
-                if (item.Automate_Visible)
+                if (item.AutomateVisible)
                     item.Visible.OnNext(show);
             }
             SeperatorVisibility();
