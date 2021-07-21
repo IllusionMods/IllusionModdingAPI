@@ -66,10 +66,10 @@ namespace KKAPI.Maker.UI
         {
             var sliderUi = MakerAPI.GetMakerBase().CreateInputSliderUI(subCategoryList.gameObject, _settingName, _minValue, _maxValue, true, _defaultValue, SetValue);
             BufferedValueChanged.Subscribe(sliderUi.SetValue); 
-            var text = Traverse.Create(sliderUi).Field<Text>("title").Value;
+            var text = sliderUi.title;
             text.color = TextColor;
             SetTextAutosize(text);
-            Traverse.Create(sliderUi).Field("textFormat").SetValue(TextFormat);
+            sliderUi.textFormat = TextFormat;
             return sliderUi.gameObject;
         }
     }

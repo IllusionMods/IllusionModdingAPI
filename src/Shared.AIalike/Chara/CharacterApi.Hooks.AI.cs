@@ -150,7 +150,7 @@ namespace KKAPI.Chara
             public static void CharaData_InitializePost(CharaData __instance)
             {
                 // Only run reload if the character was newly created
-                if (Traverse.Create(__instance).Property("isADVCreateChara").GetValue<bool>())
+                if (__instance.isADVCreateChara)
                     ReloadChara(__instance.chaCtrl);
             }
 #endif

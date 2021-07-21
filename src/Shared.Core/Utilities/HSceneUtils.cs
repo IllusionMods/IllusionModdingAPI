@@ -47,7 +47,11 @@ namespace KKAPI.Utilities
             if (hSprite == null) throw new ArgumentNullException(nameof(hSprite));
             return GetLeadingHeroineId(hSprite.flags);
         }
-        
+
+        // It's fine to use darkness-only enum values (sonyu3PMMF, houshi3PMMF) since they get saved as int anyways
+#pragma warning disable KKANAL01
+#pragma warning disable KKANAL03
+
         /// <summary>
         /// Is current H mode penetration?
         /// </summary>
@@ -63,6 +67,10 @@ namespace KKAPI.Utilities
         {
             return hFlag.mode == HFlag.EMode.houshi || hFlag.mode == HFlag.EMode.houshi3P || hFlag.mode == HFlag.EMode.houshi3PMMF;
         }
+
+#pragma warning restore KKANAL01
+#pragma warning restore KKANAL03
+
 #endif
     }
 }

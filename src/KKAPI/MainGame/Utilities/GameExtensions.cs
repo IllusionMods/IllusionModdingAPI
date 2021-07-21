@@ -132,8 +132,7 @@ namespace KKAPI.MainGame
         /// </summary>
         public static void SetIsCursorLock(this ActionScene actScene, bool value)
         {
-            var lockField = Traverse.Create(actScene).Field<bool>("_isCursorLock");
-            lockField.Value = value;
+            actScene._isCursorLock = value;
         }
 
         /// <summary>

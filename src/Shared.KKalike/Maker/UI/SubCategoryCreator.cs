@@ -59,9 +59,8 @@ namespace KKAPI.Maker.UI
                     // Clear state of UI_RaycastCtrl objects to prevent exceptions on missing objects we just deleted
                     foreach (var raycastCtrl in _subCategoryCopy.GetComponentsInChildren<UI_RaycastCtrl>(true))
                     {
-                        var tr = Traverse.Create(raycastCtrl);
-                        tr.Field("canvasGrp").SetValue(null);
-                        tr.Field("imgRaycastTargetOn").SetValue(null);
+                        raycastCtrl.canvasGrp = null;
+                        raycastCtrl.imgRaycastTargetOn = null;
                     }
                 }
                 return _subCategoryCopy;

@@ -486,7 +486,7 @@ namespace KKAPI.Maker
 
         public static CharacterLoadFlags GetCharacterLoadFlags()
         {
-            var toggles = Traverse.Create(Object.FindObjectOfType<CvsO_CharaLoad>()).Field("charaLoadWin").Field<Toggle[]>("tglLoadOption").Value;
+            var toggles = Object.FindObjectOfType<CvsO_CharaLoad>().charaLoadWin.tglLoadOption;
 
             if (toggles == null) return null;
 

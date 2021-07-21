@@ -121,7 +121,7 @@ namespace KKAPI.Chara
                 if (target == null) throw new ArgumentNullException(nameof(target));
 
                 // This can get called on lambdas that are not the one we need to patch, only one of them uses Stfld on ChaFile.pngData
-                var targetIndex = il.FindIndex(instruction => instruction.opcode == OpCodes.Stfld && instruction.operand == target);
+                var targetIndex = il.FindIndex(instruction => instruction.opcode == OpCodes.Stfld && instruction.operand is FieldInfo fi && fi == target);
                 if (targetIndex > 0)
                 {
                     il.InsertRange(
@@ -151,7 +151,7 @@ namespace KKAPI.Chara
             public static void CharaData_InitializePost(CharaData __instance)
             {
                 // Only run reload if the character was newly created
-                if (Traverse.Create(__instance).Property("isADVCreateChara").GetValue<bool>())
+                if (__instance.isADVCreateChara)
                     ReloadChara(__instance.chaCtrl);
             }
 
@@ -162,8 +162,7 @@ namespace KKAPI.Chara
             [HarmonyPatch(typeof(LiveCharaSelectSprite), "Start")]
             public static void LiveCharaSelectSprite_StartPostHook(LiveCharaSelectSprite __instance)
             {
-                var button = (UnityEngine.UI.Button)Traverse.Create(__instance).Field("btnIdolBack").GetValue();
-                button?.onClick.AddListener(() => __instance.StartCoroutine(DelayedReloadChara(__instance.heroine.chaCtrl)));
+                __instance.btnIdolBack?.onClick.AddListener(() => __instance.StartCoroutine(DelayedReloadChara(__instance.heroine.chaCtrl)));
             }
 
             /// <summary>

@@ -92,15 +92,12 @@ namespace KKAPI.MainGame
         /// <param name="touchPosition">Optional position at which the touch happened (essentially mouse position)</param>
         public static void Touch(this TalkScene talkScene, TouchLocation touchLocation, TouchKind touchKind, Vector3 touchPosition = default)
         {
-            var tv = Traverse.Create(talkScene);
+            var prevKind = talkScene.m_touchMode;
+            talkScene.m_touchMode = (int)touchKind;
 
-            var tmf = tv.Field<int>("m_touchMode");
-            var prevKind = tmf.Value;
-            tmf.Value = (int)touchKind;
+            talkScene.TouchFunc(touchLocation.ToString(), touchPosition);
 
-            tv.Method("TouchFunc", new[] { typeof(string), typeof(Vector3) }).GetValue(touchLocation.ToString(), touchPosition);
-
-            tmf.Value = prevKind;
+            talkScene.m_touchMode = prevKind;
         }
     }
 }
