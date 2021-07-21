@@ -11,13 +11,13 @@
     <tags>EmotionCreators</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.6" >
-        <dependency id="ExtensibleSaveFormat.EmotionCreators" version="16.3.0" />
+        <dependency id="ExtensibleSaveFormat.EmotionCreators" version="16.4.0" />
         <dependency id="IllusionLibs.EmotionCreators.Assembly-CSharp" version="2019.6.6" />
         <dependency id="IllusionLibs.EmotionCreators.IL" version="2019.6.6" />
         <dependency id="IllusionLibs.EmotionCreators.UniRx" version="2019.6.6" />
         <dependency id="IllusionLibs.EmotionCreators.UnityEngine.CoreModule" version="2017.4.24" />
-        <dependency id="IllusionLibs.BepInEx" version="5.4.8" />
-        <dependency id="IllusionLibs.BepInEx.Harmony" version="2.3.2" />
+        <dependency id="IllusionLibs.BepInEx" version="5.4.12" />
+        <dependency id="IllusionLibs.BepInEx.Harmony" version="2.5.1" />
       </group>
     </dependencies>
   </metadata>

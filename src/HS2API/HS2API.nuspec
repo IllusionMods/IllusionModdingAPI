@@ -11,14 +11,14 @@
     <tags>HoneySelect2</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.6" >
-        <dependency id="ExtensibleSaveFormat.HoneySelect2" version="16.3.0" />
+        <dependency id="ExtensibleSaveFormat.HoneySelect2" version="16.4.0" />
         <dependency id="IllusionLibs.HoneySelect2.Assembly-CSharp" version="2020.5.29" />
         <dependency id="IllusionLibs.HoneySelect2.IL" version="2020.5.29" />
         <dependency id="IllusionLibs.HoneySelect2.Sirenix.Serialization" version="2020.5.29" />
         <dependency id="IllusionLibs.HoneySelect2.UniRx" version="2020.5.29" />
         <dependency id="IllusionLibs.HoneySelect2.UnityEngine.CoreModule" version="2018.4.11" />
-        <dependency id="IllusionLibs.BepInEx" version="5.4.8" />
-        <dependency id="IllusionLibs.BepInEx.Harmony" version="2.3.2" />
+        <dependency id="IllusionLibs.BepInEx" version="5.4.12" />
+        <dependency id="IllusionLibs.BepInEx.Harmony" version="2.5.1" />
       </group>
     </dependencies>
   </metadata>
