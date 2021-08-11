@@ -247,7 +247,7 @@ namespace KKAPI.Maker
                     seperator.CreateControl(contentParent);
                     if (accessorieswindow)
                     {
-                        seperator.GroupingID = gr.ElementAt(0).GroupingID;
+                        seperator.GroupingID = gr.First().GroupingID;
                         _accessoryWindowseperator.Add(seperator);
                     }
                 }
