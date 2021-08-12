@@ -28,7 +28,7 @@ namespace KKAPI
         /// THIS VALUE WILL NOT BE READ FROM THE INSTALLED VERSION, YOU WILL READ THE VALUE FROM THIS VERSION THAT YOU COMPILE YOUR PLUGIN AGAINST!
         /// More info: https://stackoverflow.com/questions/55984/what-is-the-difference-between-const-and-readonly
         /// </summary>
-        public const string VersionConst = "1.20.3";
+        public const string VersionConst = "1.21";
 
         /// <summary>
         /// GUID of this plugin, use for checking dependancies with <see cref="BepInDependency"/>."/>
@@ -195,15 +195,6 @@ namespace KKAPI
         public static void SynchronizedInvoke(Action action)
         {
             ThreadingHelper.Instance.StartSyncInvoke(action);
-        }
-
-        //[System.Diagnostics.Conditional("DEBUG")]
-        internal static void Assert(bool success, string error)
-        {
-            if (success) return;
-            //todo uncomment? or keep commented for easier future debugging? 
-            //if (!EnableDebugLogging) return;
-            Logger.LogWarning("Assertion failed: " + error + "\nat: " + new System.Diagnostics.StackTrace(1));
         }
     }
 }
