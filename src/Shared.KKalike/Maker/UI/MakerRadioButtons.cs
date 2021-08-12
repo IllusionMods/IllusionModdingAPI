@@ -124,7 +124,7 @@ namespace KKAPI.Maker.UI
                 }
             }
 
-            UnityEngine.Debug.Assert(buttonIndex >= Buttons.Count, "Didn't loop over all radio buttons, only " + buttonIndex);
+            KoikatuAPI.Assert(buttonIndex >= Buttons.Count, "Didn't loop over all radio buttons, only " + buttonIndex);
 
             BufferedValueChanged.Subscribe(
                 i =>

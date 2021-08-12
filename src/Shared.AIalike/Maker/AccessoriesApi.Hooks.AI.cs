@@ -32,10 +32,7 @@ namespace KKAPI.Maker
             [HarmonyPatch(typeof(CvsA_Copy), "CopyAccessory")]
             public static void CopyAccessory(CvsA_Copy __instance)
             {
-                var traverse = Traverse.Create(__instance);
-                var selSrc = traverse.Field("selSrc").GetValue<int>();
-                var selDst = traverse.Field("selDst").GetValue<int>();
-                OnChangeAcs(__instance, selSrc, selDst);
+                OnChangeAcs(__instance, __instance.selSrc, __instance.selDst);
             }
         }
     }

@@ -152,7 +152,7 @@ namespace KKAPI.Utilities
         /// </summary>
         public static AssignedAnotherWeights GetAaWeightsBody(this ChaControl ctrl)
         {
-            return Traverse.Create(ctrl).Field<AssignedAnotherWeights>("aaWeightsBody").Value;
+            return ctrl.aaWeightsBody;
         }
 #endif
 

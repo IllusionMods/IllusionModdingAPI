@@ -90,7 +90,7 @@ namespace KKAPI.Maker
         /// Get the ChaControl of the character serving as a preview in character maker.
         /// Outside of character maker and early on in maker load process this returns null.
         /// </summary>
-        public static Human GetCharacterControl() => InsideMaker ? Traverse.Create(GetMakerBase()).Field<Human>("human").Value : null;
+        public static Human GetCharacterControl() => InsideMaker ? GetMakerBase().human : null;
 
 #if KK
         /// <summary>
@@ -407,7 +407,7 @@ namespace KKAPI.Maker
                 return false;
 
             //Canvas ui_canvas
-            var c = Traverse.Create(mbase).Field<Canvas>("ui_canvas").Value;
+            var c = mbase.ui_canvas;
             if (!c.enabled)
                 return false;
 

@@ -196,5 +196,14 @@ namespace KKAPI
         {
             ThreadingHelper.Instance.StartSyncInvoke(action);
         }
+
+        //[System.Diagnostics.Conditional("DEBUG")]
+        internal static void Assert(bool success, string error)
+        {
+            if (success) return;
+            //todo uncomment? or keep commented for easier future debugging? 
+            //if (!EnableDebugLogging) return;
+            Logger.LogWarning("Assertion failed: " + error + "\nat: " + new System.Diagnostics.StackTrace(1));
+        }
     }
 }

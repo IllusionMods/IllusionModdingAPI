@@ -53,8 +53,12 @@ namespace KKAPI.Chara
         /// </summary>
         public bool Started { get; private set; }
 
+        #region Ext data
+
         /// <summary>
         /// Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. 
+        /// This should be used inside the <see cref="OnReload(KKAPI.GameMode,bool)"/> event.
+        /// Consider using one of the other "Get___ExtData" and "Set___ExtData" methods instead since they are more reliable and handle copying and transferring outfits and they conform to built in maker load toggles.
         /// </summary>
         public PluginData GetExtendedData()
         {
@@ -63,6 +67,8 @@ namespace KKAPI.Chara
 
         /// <summary>
         /// Get extended data of the current character by using the ID you specified when registering this controller.
+        /// This should be used inside the <see cref="OnReload(KKAPI.GameMode,bool)"/> event.
+        /// Consider using one of the other "Get___ExtData" and "Set___ExtData" methods instead since they are more reliable and handle copying and transferring outfits and they conform to built in maker load toggles.
         /// </summary>
         /// <param name="getFromLoadedChara">If true, when in chara maker load data from character that's being loaded. 
         /// When outside maker or false, always grab current character's data.</param>
@@ -75,6 +81,8 @@ namespace KKAPI.Chara
 
         /// <summary>
         /// Save your custom data to the character card under the ID you specified when registering this controller.
+        /// This should be used inside the <see cref="OnCardBeingSaved"/> event.
+        /// Consider using one of the other "Get___ExtData" and "Set___ExtData" methods instead since they are more reliable and handle copying and transferring outfits and they conform to built in maker load toggles.
         /// </summary>
         /// <param name="data">Your custom data to be written to the character card. Can be null to remove the data.</param>
         public void SetExtendedData(PluginData data)
@@ -129,6 +137,8 @@ namespace KKAPI.Chara
 
         /// <summary>
         /// Get extended data of the specified coordinate by using the ID you specified when registering this controller.
+        /// This should be used inside the <see cref="OnCoordinateBeingLoaded(ChaFileCoordinate,bool)"/> event.
+        /// Consider using one of the other "Get___ExtData" and "Set___ExtData" methods instead since they are more reliable and handle copying and transferring outfits and they conform to built in maker load toggles.
         /// </summary>
         /// <param name="coordinate">Coordinate you want to get the data from</param>
         public PluginData GetCoordinateExtendedData(ChaFileCoordinate coordinate)
@@ -140,6 +150,8 @@ namespace KKAPI.Chara
 
         /// <summary>
         /// Set extended data to the specified coordinate by using the ID you specified when registering this controller.
+        /// This should be used inside the <see cref="OnCoordinateBeingSaved"/> event.
+        /// Consider using one of the other "Get___ExtData" and "Set___ExtData" methods instead since they are more reliable and handle copying and transferring outfits and they conform to built in maker load toggles.
         /// </summary>
         /// <param name="coordinate">Coordinate you want to set the data to</param>
         /// <param name="data">Your custom data to be saved to the coordinate card</param>
@@ -149,6 +161,10 @@ namespace KKAPI.Chara
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
             ExtendedSave.SetExtendedDataById(coordinate, ExtendedDataId, data);
         }
+
+        #endregion
+
+        #region Events
 
         /// <summary>
         /// Fired when the character information is being saved.
@@ -160,7 +176,7 @@ namespace KKAPI.Chara
 
         internal void OnCardBeingSavedInternal(GameMode gamemode)
         {
-            if(!_wasLoaded)
+            if (!_wasLoaded)
             {
                 KoikatuAPI.Logger.LogWarning("Tried to save card before it was loaded - " + ChaFileControl.charaFileName);
                 return;
@@ -291,6 +307,8 @@ namespace KKAPI.Chara
         public BehaviorSubject<ChaFileDefine.CoordinateType> CurrentCoordinate { get; private set; }
 #endif
 
+        #endregion
+
         /// <summary>
         /// Warning: When overriding make sure to call the base method at the end of your logic!
         /// </summary>
@@ -338,5 +356,170 @@ namespace KKAPI.Chara
             Started = true;
             OnReloadInternal(KoikatuAPI.GetCurrentGameMode());
         }
+
+        #region New ExtData //todo backpropagating in KK story mode, copy whole data blocks?
+
+        private ChaFileCoordinate GetCoordinate(int coordinateId)
+        {
+            KoikatuAPI.Assert(ChaControl.nowCoordinate != null, "ChaControl.nowCoordinate != null");
+#if KK || KKS
+            return (coordinateId < 0 ? ChaControl.nowCoordinate : ChaFileControl.coordinate[coordinateId]);
+#elif EC || AI || HS2
+            if (coordinateId > 0) KoikatuAPI.Logger.LogWarning("This game doesn't support multiple coordinates, nowCoordinate will be used!\n" + new System.Diagnostics.StackTrace());
+            return ChaControl.nowCoordinate;
+#endif
+        }
+
+        /// <summary>
+        /// Get extended data for specific clothes.
+        /// Do not store this data because it might change without notice, for example when clothing is copied. Always call Get at the point where you need the data, not earlier.
+        /// If you change any of the data, remember to call the corresponding Set method or the change might not be saved.
+        /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// If no extended data of this plugin was set yet, this method will return null.
+        /// In maker, you can update controls that use this data in the <see cref="MakerAPI.ReloadCustomInterface"/> event.
+        /// </summary>
+        /// <param name="coordinateId">The coordinate number to open extened data for if the game supports multiple coords (0-indexed). -1 will use the current coordinate.</param>
+        public PluginData GetClothesExtData(int coordinateId = -1)
+        {
+            var coord = GetCoordinate(coordinateId);
+            KoikatuAPI.Assert(coord != null, nameof(coord) + " != null");
+            KoikatuAPI.Assert(coord.clothes != null, "coord.clothes != null");
+            var clothes = coord.clothes;
+            clothes.TryGetExtendedDataById(ExtendedDataId, out var data);
+            return data;
+        }
+        /// <summary>
+        /// Get extended data for a specific accessory.
+        /// Do not store this data because it might change without notice, for example when clothing is copied. Always call Get at the point where you need the data, not earlier.
+        /// If you change any of the data, remember to call the corresponding Set method or the change might not be saved.
+        /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// If no extended data of this plugin was set yet, this method will return null.
+        /// In maker, you can update controls that use this data in the <see cref="MakerAPI.ReloadCustomInterface"/> event.
+        /// </summary>
+        /// <param name="accessoryPartId">The accessory part number to open extened data for (0-indexed).</param>
+        /// <param name="coordinateId">The coordinate number to open extened data for if the game supports multiple coords (0-indexed). -1 will use the current coordinate.</param>
+        public PluginData GetAccessoryExtData(int accessoryPartId, int coordinateId = -1)
+        {
+            var coord = GetCoordinate(coordinateId);
+            KoikatuAPI.Assert(coord != null, nameof(coord) + " != null");
+            KoikatuAPI.Assert(coord.accessory != null, "coord.accessory != null");
+            var accessoryPart = coord.accessory.parts[accessoryPartId];
+            accessoryPart.TryGetExtendedDataById(ExtendedDataId, out var data);
+            return data;
+        }
+        /// <summary>
+        /// Get extended data for character's body (body sliders, tattoos).
+        /// Do not store this data because it might change without notice, for example when clothing is copied. Always call Get at the point where you need the data, not earlier.
+        /// If you change any of the data, remember to call the corresponding Set method or the change might not be saved.
+        /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// If no extended data of this plugin was set yet, this method will return null.
+        /// In maker, you can update controls that use this data in the <see cref="MakerAPI.ReloadCustomInterface"/> event.
+        /// </summary>
+        public PluginData GetBodyExtData()
+        {
+            KoikatuAPI.Assert(ChaFileControl.custom != null, "ChaFileControl.custom != null");
+            KoikatuAPI.Assert(ChaFileControl.custom.body != null, "ChaFileControl.custom.body != null");
+            ChaFileControl.custom.body.TryGetExtendedDataById(ExtendedDataId, out var data);
+            return data;
+        }
+        /// <summary>
+        /// Get extended data for character's face (face sliders, eye settings).
+        /// Do not store this data because it might change without notice, for example when clothing is copied. Always call Get at the point where you need the data, not earlier.
+        /// If you change any of the data, remember to call the corresponding Set method or the change might not be saved.
+        /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// If no extended data of this plugin was set yet, this method will return null.
+        /// In maker, you can update controls that use this data in the <see cref="MakerAPI.ReloadCustomInterface"/> event.
+        /// </summary>
+        public PluginData GetFaceExtData()
+        {
+            KoikatuAPI.Assert(ChaFileControl.custom != null, "ChaFileControl.custom != null");
+            KoikatuAPI.Assert(ChaFileControl.custom.face != null, "ChaFileControl.custom.face != null");
+            ChaFileControl.custom.face.TryGetExtendedDataById(ExtendedDataId, out var data);
+            return data;
+        }
+        /// <summary>
+        /// Get extended data for character's parameters (personality, preferences, traits).
+        /// Do not store this data because it might change without notice, for example when clothing is copied. Always call Get at the point where you need the data, not earlier.
+        /// If you change any of the data, remember to call the corresponding Set method or the change might not be saved.
+        /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// If no extended data of this plugin was set yet, this method will return null.
+        /// In maker, you can update controls that use this data in the <see cref="MakerAPI.ReloadCustomInterface"/> event.
+        /// </summary>
+        public PluginData GetParameterExtData()
+        {
+            KoikatuAPI.Assert(ChaFileControl.parameter != null, "ChaFileControl.parameter != null");
+            ChaFileControl.parameter.TryGetExtendedDataById(ExtendedDataId, out var data);
+            return data;
+        }
+
+
+        /// <summary>
+        /// Set extended data for specific clothes.
+        /// Always call Set right after changing any of the data, or the change might not be saved if the data is changed for whatever reason (clothing change, reload, etc.)
+        /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// </summary>
+        /// <param name="data">Extended data to save.</param>
+        /// <param name="coordinateId">The coordinate number to open extened data for if the game supports multiple coords (0-indexed). -1 will use the current coordinate.</param>
+        public void SetClothesExtData(PluginData data, int coordinateId = -1)
+        {
+            var coord = GetCoordinate(coordinateId);
+            KoikatuAPI.Assert(coord != null, nameof(coord) + " != null");
+            KoikatuAPI.Assert(coord.clothes != null, "coord.clothes != null");
+            var clothes = coord.clothes;
+            clothes.SetExtendedDataById(ExtendedDataId, data);
+        }
+        /// <summary>
+        /// Set extended data for a specific accessory.
+        /// Always call Set right after changing any of the data, or the change might not be saved if the data is changed for whatever reason (clothing change, reload, etc.)
+        /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// </summary>
+        /// <param name="data">Extended data to save.</param>
+        /// <param name="accessoryPartId">The accessory part number to open extened data for (0-indexed).</param>
+        /// <param name="coordinateId">The coordinate number to open extened data for if the game supports multiple coords (0-indexed). -1 will use the current coordinate.</param>
+        public void SetAccessoryExtData(PluginData data, int accessoryPartId, int coordinateId = -1)
+        {
+            var coord = GetCoordinate(coordinateId);
+            KoikatuAPI.Assert(coord != null, nameof(coord) + " != null");
+            KoikatuAPI.Assert(coord.accessory != null, "coord.accessory != null");
+            var accessoryPart = coord.accessory.parts[accessoryPartId];
+            accessoryPart.SetExtendedDataById(ExtendedDataId, data);
+        }
+        /// <summary>
+        /// Set extended data for character's body (body sliders, tattoos).
+        /// Always call Set right after changing any of the data, or the change might not be saved if the data is changed for whatever reason (clothing change, reload, etc.)
+        /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// </summary>
+        /// <param name="data">Extended data to save.</param>
+        public void SetBodyExtData(PluginData data)
+        {
+            KoikatuAPI.Assert(ChaFileControl.custom != null, "ChaFileControl.custom != null");
+            KoikatuAPI.Assert(ChaFileControl.custom.body != null, "ChaFileControl.custom.body != null");
+            ChaFileControl.custom.body.SetExtendedDataById(ExtendedDataId, data);
+        }
+        /// <summary>
+        /// Set extended data for character's face (face sliders, eye settings).
+        /// Always call Set right after changing any of the data, or the change might not be saved if the data is changed for whatever reason (clothing change, reload, etc.)
+        /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// </summary>
+        /// <param name="data">Extended data to save.</param>
+        public void SetFaceExtData(PluginData data)
+        {
+            KoikatuAPI.Assert(ChaFileControl.custom != null, "ChaFileControl.custom != null");
+            KoikatuAPI.Assert(ChaFileControl.custom.face != null, "ChaFileControl.custom.face != null");
+            ChaFileControl.custom.face.SetExtendedDataById(ExtendedDataId, data);
+        }
+        /// <summary>
+        /// Set extended data for character's parameters (personality, preferences, traits).
+        /// Always call Set right after changing any of the data, or the change might not be saved if the data is changed for whatever reason (clothing change, reload, etc.)
+        /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// </summary>
+        /// <param name="data">Extended data to save.</param>
+        public void SetParameterExtData(PluginData data)
+        {
+            KoikatuAPI.Assert(ChaFileControl.parameter != null, "ChaFileControl.parameter != null");
+            ChaFileControl.parameter.SetExtendedDataById(ExtendedDataId, data);
+        }
+
+        #endregion
     }
 }

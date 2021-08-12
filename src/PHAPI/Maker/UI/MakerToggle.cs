@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using HarmonyLib;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,7 +45,7 @@ namespace KKAPI.Maker.UI
         {
             var sw = MakerAPI.GetMakerBase().CreateSwitchUI(subCategoryList.gameObject, DisplayName, Value, SetValue);
             BufferedValueChanged.Subscribe(sw.SetValue);
-            var text = Traverse.Create(sw).Field<Text>("title").Value;
+            var text = sw.title;
             text.color = TextColor;
             foreach (var txt in sw.GetComponentsInChildren<Text>(true))
                 SetTextAutosize(txt);
