@@ -64,5 +64,17 @@
             return Manager.Scene.Instance.IsFadeNow;
 #endif
         }
+
+        /// <summary>
+        /// True if a dialog box or some other overlapping menu is shown (e.g. exit dialog after pressing esc).
+        /// </summary>
+        public static bool GetIsOverlap()
+        {
+#if HS2 || KKS
+            return Manager.Scene.IsOverlap;
+#else
+            return Manager.Scene.Instance.IsOverlap;
+#endif
+        }
     }
 }
