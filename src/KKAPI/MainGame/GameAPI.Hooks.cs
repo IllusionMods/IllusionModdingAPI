@@ -12,6 +12,14 @@ namespace KKAPI.MainGame
             public static void SetupHooks(Harmony hi)
             {
                 hi.PatchAll(typeof(Hooks));
+                //Patch the VR version of these methods via reflection since they don't exist in normal assembly
+                var vrHSceneType = Type.GetType("VRHScene, Assembly-CSharp");
+                if (vrHSceneType != null)
+                {
+                    hi.Patch(AccessTools.Method("Start"), new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.StartProcPost))));
+                    hi.Patch(AccessTools.Method("EndProc"), new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.EndProcPost))));
+                    hi.Patch(AccessTools.Method("OnBack"), new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.EndProcPost))));
+                }
             }
 
             [HarmonyPostfix]
