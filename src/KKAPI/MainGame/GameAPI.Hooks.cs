@@ -38,7 +38,7 @@ namespace KKAPI.MainGame
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(HSceneProc), "Start")]
-            public static void StartProcPost(HSceneProc __instance, ref IEnumerator __result)
+            public static void StartProcPost(BaseLoader __instance, ref IEnumerator __result)
             {
                 var oldResult = __result;
                 __result = new[] { oldResult, OnHStart(__instance) }.GetEnumerator();
@@ -46,14 +46,8 @@ namespace KKAPI.MainGame
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(HSceneProc), "NewHeroineEndProc")]
-            public static void NewHeroineEndProcPost(HSceneProc __instance)
-            {
-                OnHEnd(__instance);
-            }
-
-            [HarmonyPostfix]
             [HarmonyPatch(typeof(HSceneProc), "EndProc")]
-            public static void EndProcPost(HSceneProc __instance)
+            public static void EndProcPost(BaseLoader __instance)
             {
                 OnHEnd(__instance);
             }

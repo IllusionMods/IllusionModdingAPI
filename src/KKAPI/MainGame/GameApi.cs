@@ -167,7 +167,7 @@ namespace KKAPI.MainGame
             if (insideStudio) return;
 
             var hi = new Harmony(typeof(GameAPI).FullName);
-            hi.PatchAll(typeof(Hooks));
+            Hooks.SetupHooks(hi);
             hi.PatchAll(typeof(CustomActionIcon));
             hi.PatchAll(typeof(CustomTalkSceneTouchIcon));
 
@@ -268,13 +268,16 @@ namespace KKAPI.MainGame
             }
         }
 
-        private static void OnHEnd(HSceneProc proc)
+        private static void OnHEnd(BaseLoader baseLoader)
         {
+            var proc = baseLoader as HSceneProc;
+            var flags = proc?.flags ?? GameObject.FindObjectOfType<HFlag>();
             foreach (var behaviour in _registeredHandlers)
             {
                 try
                 {
-                    behaviour.Key.OnEndH(proc, proc.flags.isFreeH);
+                    if (proc != null) behaviour.Key.OnEndH(proc, flags.isFreeH);
+                    behaviour.Key.OnEndH(baseLoader, flags, false);
                 }
                 catch (Exception e)
                 {
@@ -294,15 +297,18 @@ namespace KKAPI.MainGame
             InsideHScene = false;
         }
 
-        private static IEnumerator OnHStart(HSceneProc proc)
+        private static IEnumerator OnHStart(BaseLoader baseLoader)
         {
             InsideHScene = true;
             yield return null;
+            var proc = baseLoader as HSceneProc;
+            var flags = proc?.flags ?? GameObject.FindObjectOfType<HFlag>();
             foreach (var behaviour in _registeredHandlers)
             {
                 try
                 {
-                    behaviour.Key.OnStartH(proc, proc.flags.isFreeH);
+                    if (proc != null) behaviour.Key.OnStartH(proc, flags.isFreeH);
+                    behaviour.Key.OnStartH(baseLoader, flags, proc == null);
                 }
                 catch (Exception e)
                 {
