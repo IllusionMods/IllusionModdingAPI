@@ -23,7 +23,7 @@ namespace KKAPI.MainGame
         /// Extended save ID used by this function controller
         /// </summary>
         public string ExtendedDataId { get; internal set; }
-        
+
         /// <summary>
         /// Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. 
         /// </summary>
@@ -45,10 +45,17 @@ namespace KKAPI.MainGame
 
         /// <summary>
         /// Triggered when the H scene is ended, but before it is unloaded.
-        /// Warning: This is triggered in free H as well!
+        /// Warning: This is triggered in main game, free H, and in VR module as well!
         /// </summary>
+        /// <param name="proc">H scene controller instance. Can be either HSceneProc or VRHScene.</param>
+        /// <param name="hFlag">H scene parameters, use this over proc if possible.</param>
+        /// <param name="vr">If true, we are inside the VR module</param>
+        protected internal virtual void OnEndH(BaseLoader proc, HFlag hFlag, bool vr) { }
+
+        /// <inheritdoc cref="OnEndH(BaseLoader,HFlag,bool)"/>
         /// <param name="proc">H scene controller instance</param>
         /// <param name="freeH">If true, the h scene was started from Main menu > Extra > FreeH</param>
+        [Obsolete("Use the other overload")]
         protected internal virtual void OnEndH(HSceneProc proc, bool freeH) { }
 
         /// <summary>
@@ -69,10 +76,17 @@ namespace KKAPI.MainGame
 
         /// <summary>
         /// Triggered after an H scene is loaded.
-        /// Warning: This is triggered in free H as well!
+        /// Warning: This is triggered in main game, free H, and in VR module as well!
         /// </summary>
+        /// <param name="proc">H scene controller instance. Can be either HSceneProc or VRHScene.</param>
+        /// <param name="hFlag">H scene parameters, use this over proc if possible.</param>
+        /// <param name="vr">If true, we are inside the VR module</param>
+        protected internal virtual void OnStartH(BaseLoader proc, HFlag hFlag, bool vr) { }
+
+        /// <inheritdoc cref="OnStartH(BaseLoader,HFlag,bool)"/>
         /// <param name="proc">H scene controller instance</param>
         /// <param name="freeH">If true, the h scene was started from Main menu > Extra > FreeH</param>
+        [Obsolete("Use the other overload")]
         protected internal virtual void OnStartH(HSceneProc proc, bool freeH) { }
 
         /// <summary>

@@ -16,9 +16,9 @@ namespace KKAPI.MainGame
                 var vrHSceneType = Type.GetType("VRHScene, Assembly-CSharp");
                 if (vrHSceneType != null)
                 {
-                    hi.Patch(AccessTools.Method(vrHSceneType, "Start"), new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.StartProcPost))));
-                    hi.Patch(AccessTools.Method(vrHSceneType, "EndProc"), new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.EndProcPost))));
-                    hi.Patch(AccessTools.Method(vrHSceneType, "OnBack"), new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.EndProcPost))));
+                    hi.Patch(AccessTools.Method(vrHSceneType, "Start"), postfix: new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.StartProcPost))));
+                    hi.Patch(AccessTools.Method(vrHSceneType, "EndProc"), postfix: new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.EndProcPost))));
+                    hi.Patch(AccessTools.Method(vrHSceneType, "OnBack"), postfix: new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.EndProcPost))));
                 }
             }
 
@@ -38,7 +38,7 @@ namespace KKAPI.MainGame
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(HSceneProc), "Start")]
-            public static void StartProcPost(HSceneProc __instance, ref IEnumerator __result)
+            public static void StartProcPost(BaseLoader __instance, ref IEnumerator __result)
             {
                 var oldResult = __result;
                 __result = new[] { oldResult, OnHStart(__instance) }.GetEnumerator();
@@ -46,14 +46,8 @@ namespace KKAPI.MainGame
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(HSceneProc), "NewHeroineEndProc")]
-            public static void NewHeroineEndProcPost(HSceneProc __instance)
-            {
-                OnHEnd(__instance);
-            }
-
-            [HarmonyPostfix]
             [HarmonyPatch(typeof(HSceneProc), "EndProc")]
-            public static void EndProcPost(HSceneProc __instance)
+            public static void EndProcPost(BaseLoader __instance)
             {
                 OnHEnd(__instance);
             }
