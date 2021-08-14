@@ -16,9 +16,9 @@ namespace KKAPI.MainGame
                 var vrHSceneType = Type.GetType("VRHScene, Assembly-CSharp");
                 if (vrHSceneType != null)
                 {
-                    hi.Patch(AccessTools.Method(vrHSceneType, "Start"), new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.StartProcPost))));
-                    hi.Patch(AccessTools.Method(vrHSceneType, "EndProc"), new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.EndProcPost))));
-                    hi.Patch(AccessTools.Method(vrHSceneType, "OnBack"), new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.EndProcPost))));
+                    hi.Patch(AccessTools.Method(vrHSceneType, "Start"), postfix: new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.StartProcPost))));
+                    hi.Patch(AccessTools.Method(vrHSceneType, "EndProc"), postfix: new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.EndProcPost))));
+                    hi.Patch(AccessTools.Method(vrHSceneType, "OnBack"), postfix: new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.EndProcPost))));
                 }
             }
 
