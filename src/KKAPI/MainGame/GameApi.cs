@@ -277,7 +277,7 @@ namespace KKAPI.MainGame
                 try
                 {
                     if (proc != null) behaviour.Key.OnEndH(proc, flags.isFreeH);
-                    behaviour.Key.OnEndH(baseLoader, flags, false);
+                    behaviour.Key.OnEndH(baseLoader, flags, ReferenceEquals(proc, null));
                 }
                 catch (Exception e)
                 {
@@ -308,7 +308,7 @@ namespace KKAPI.MainGame
                 try
                 {
                     if (proc != null) behaviour.Key.OnStartH(proc, flags.isFreeH);
-                    behaviour.Key.OnStartH(baseLoader, flags, proc == null);
+                    behaviour.Key.OnStartH(baseLoader, flags, ReferenceEquals(proc, null));
                 }
                 catch (Exception e)
                 {
