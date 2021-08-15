@@ -26,10 +26,8 @@ namespace KKAPI.Maker
         private static Func<int, CvsAccessory> _getCvsAccessory;
         private static Func<int, ChaFileAccessory.PartsInfo> _getPartsInfo;
         private static Func<int> _getCvsAccessoryCount;
-        private static Func<int> _getPartsCount;
         private static Func<ChaControl, int, ChaAccessoryComponent> _getChaAccessoryCmp;
         private static Func<ChaControl, ChaAccessoryComponent, int> _getChaAccessoryCmpIndex;
-        internal static bool _ControlShowState = true;
 
         /// <summary>
         /// Returns true if the accessory tab in maker is currently selected.
@@ -239,16 +237,12 @@ namespace KKAPI.Maker
 
                 var getPartsInfoM = AccessTools.Method(_moreAccessoriesType, "GetPart");
                 _getPartsInfo = i => (ChaFileAccessory.PartsInfo)getPartsInfoM.Invoke(_moreAccessoriesInstance, new object[] { i });
-
-                var getPartsCountM = AccessTools.Method(_moreAccessoriesType, "GetPartsLength");
-                _getPartsCount = () => (int)getPartsCountM.Invoke(_moreAccessoriesInstance, null);
             }
             else
             {
                 _getChaAccessoryCmp = (control, i) => control.cusAcsCmp[i];
                 _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cusAcsCmp, component);
                 _getPartsInfo = i => MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[i];
-                _getPartsCount = () => 20;
             }
         }
 
@@ -305,7 +299,7 @@ namespace KKAPI.Maker
                 else
                 {
                     _getCvsAccessory = i => cvsAccessories[i];
-                    _getCvsAccessoryCount = () => 20;
+                    _getCvsAccessoryCount = () => 20; // MakerAPI.GetCharacterControl().GetAccessoryObjects().Length;
                 }
             }
             else
@@ -422,15 +416,14 @@ namespace KKAPI.Maker
         internal static void AutomaticControlVisibility()
         {
             var slot = SelectedMakerAccSlot;
-            if (slot < 0 || !(slot < _getPartsCount.Invoke()))//is selectedmakerslot returns -1 or makerslot doesn't exist in current coordinate return (occurs when swapping from high capacity outfit to lower);
+            if (slot < 0 || slot >= GetMakerAccessoryCount())
                 return;
 
             var partsinfo = GetPartsInfo(slot);
 
-            var result = partsinfo.type != 120;
+            var accessoryExists = partsinfo.type != 120;
 
-            MakerInterfaceCreator.AutomaticAccessoryControlVisibility(_ControlShowState, result != _ControlShowState);
-            _ControlShowState = result;
+            MakerInterfaceCreator.AutomaticAccessoryControlVisibility(accessoryExists);
         }
     }
 }

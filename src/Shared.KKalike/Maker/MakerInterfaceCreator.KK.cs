@@ -21,7 +21,7 @@ namespace KKAPI.Maker
         private static readonly List<BaseGuiEntry> _guiEntries = new List<BaseGuiEntry>();
         private static readonly List<BaseGuiEntry> _sidebarEntries = new List<BaseGuiEntry>();
         private static readonly List<BaseGuiEntry> _accessoryWindowEntries = new List<BaseGuiEntry>();
-        private static readonly List<BaseGuiEntry> _accessoryWindowseperator = new List<BaseGuiEntry>();
+        private static readonly List<BaseGuiEntry> _accessoryWindowSeperators = new List<BaseGuiEntry>();
 
         private static readonly MakerCategory _accessorySlotWindowCategory = new MakerCategory("04_AccessoryTop", "Slots");
 
@@ -60,6 +60,7 @@ namespace KKAPI.Maker
         {
             MakerLoadToggle.Setup();
             MakerCoordinateLoadToggle.Setup();
+            _accessoryControlShowState = true;
         }
 
         public static T AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
@@ -248,7 +249,7 @@ namespace KKAPI.Maker
                     if (accessorieswindow)
                     {
                         seperator.GroupingID = gr.First().GroupingID;
-                        _accessoryWindowseperator.Add(seperator);
+                        _accessoryWindowSeperators.Add(seperator);
                     }
                 }
 
@@ -520,30 +521,34 @@ namespace KKAPI.Maker
             return new CoordinateLoadFlags { Clothes = clothes.isOn, Accessories = accs.isOn };
         }
 
-        internal static void AutomaticAccessoryControlVisibility(bool show, bool different)
+        private static bool _accessoryControlShowState = true;
+        internal static void AutomaticAccessoryControlVisibility(bool showAccControls)
         {
-            MakerAPI.OnVisibilityTrigger(new AccessoryContolVisibilityArgs(show));
-
-            if (!different)
+            if (_accessoryControlShowState == showAccControls)
             {
-                SeperatorVisibility();
+                //SeperatorVisibility(); //todo necessary?
                 return;
             }
+
+            MakerAPI.OnVisibilityTrigger(new AccessoryContolVisibilityArgs(showAccControls));
 
             foreach (var item in _accessoryWindowEntries)
             {
                 if (item.AutomateVisible)
-                    item.Visible.OnNext(show);
+                    item.Visible.OnNext(showAccControls);
             }
+
             SeperatorVisibility();
+
+            _accessoryControlShowState = showAccControls;
         }
 
         private static void SeperatorVisibility()
         {
-            foreach (var gr in _accessoryWindowEntries.GroupBy(x => x.GroupingID).OrderBy(x => x.Key))
+            foreach (var gr in _accessoryWindowEntries.GroupBy(x => x.GroupingID))
             {
-                bool show = !gr.All(x => !x.Visible.Value);//if not all are false, show
-                var results = _accessoryWindowseperator.FindAll(x => x.GroupingID == gr.ElementAt(0).GroupingID);
+                var show = gr.Any(x => x.Visible.Value);
+                var results = _accessoryWindowSeperators.FindAll(x => x.GroupingID == gr.Key);
                 foreach (var item in results)
                 {
                     item.Visible.OnNext(show);
