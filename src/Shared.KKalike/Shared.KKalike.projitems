@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.KK.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.Hooks.KK.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoryControlWrapper.KK.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryContolVisibilityArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessorySlotEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryTransferEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryWindowControlValueChangedEventArgs.cs" />

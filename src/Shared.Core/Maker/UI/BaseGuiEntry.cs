@@ -1,7 +1,7 @@
-﻿using System;
+﻿using BepInEx;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BepInEx;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -164,6 +164,11 @@ namespace KKAPI.Maker.UI
         /// By default each plugin has its own group. Set to null to use the "misc" group.
         /// </summary>
         public string GroupingID { get; set; }
+
+        /// <summary>
+        /// If true, Api automates showing and hiding of accessory controls
+        /// </summary>
+        internal bool AutomateVisible { get; set; }
 
         /// <summary>
         /// The control is visible to the user (usually the same as it's GameObject being active).

@@ -1,10 +1,10 @@
-﻿using System;
+﻿using ChaCustom;
+using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ChaCustom;
 using TMPro;
-using HarmonyLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #pragma warning disable 612
@@ -26,8 +26,10 @@ namespace KKAPI.Maker
         private static Func<int, CvsAccessory> _getCvsAccessory;
         private static Func<int, ChaFileAccessory.PartsInfo> _getPartsInfo;
         private static Func<int> _getCvsAccessoryCount;
+        private static Func<int> _getPartsCount;
         private static Func<ChaControl, int, ChaAccessoryComponent> _getChaAccessoryCmp;
         private static Func<ChaControl, ChaAccessoryComponent, int> _getChaAccessoryCmpIndex;
+        internal static bool _ControlShowState = true;
 
         /// <summary>
         /// Returns true if the accessory tab in maker is currently selected.
@@ -83,7 +85,7 @@ namespace KKAPI.Maker
         public static GameObject[] GetAccessoryObjects(this ChaControl character)
         {
             if (character == null) throw new ArgumentNullException(nameof(character));
-            
+
             if (!MoreAccessoriesInstalled) return character.objAccessory;
 
             var dict = Traverse.Create(_moreAccessoriesInstance).Field("_accessoriesByChar").GetValue();
@@ -237,12 +239,16 @@ namespace KKAPI.Maker
 
                 var getPartsInfoM = AccessTools.Method(_moreAccessoriesType, "GetPart");
                 _getPartsInfo = i => (ChaFileAccessory.PartsInfo)getPartsInfoM.Invoke(_moreAccessoriesInstance, new object[] { i });
+
+                var getPartsCountM = AccessTools.Method(_moreAccessoriesType, "GetPartsLength");
+                _getPartsCount = () => (int)getPartsCountM.Invoke(_moreAccessoriesInstance, null);
             }
             else
             {
                 _getChaAccessoryCmp = (control, i) => control.cusAcsCmp[i];
                 _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cusAcsCmp, component);
                 _getPartsInfo = i => MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[i];
+                _getPartsCount = () => 20;
             }
         }
 
@@ -411,6 +417,20 @@ namespace KKAPI.Maker
             {
                 KoikatuAPI.Logger.LogError("Crash in AccessoryTransferred event: " + ex);
             }
+        }
+
+        internal static void AutomaticControlVisibility()
+        {
+            var slot = SelectedMakerAccSlot;
+            if (slot < 0 || !(slot < _getPartsCount.Invoke()))//is selectedmakerslot returns -1 or makerslot doesn't exist in current coordinate return (occurs when swapping from high capacity outfit to lower);
+                return;
+
+            var partsinfo = GetPartsInfo(slot);
+
+            var result = partsinfo.type != 120;
+
+            MakerInterfaceCreator.AutomaticAccessoryControlVisibility(_ControlShowState, result != _ControlShowState);
+            _ControlShowState = result;
         }
     }
 }
