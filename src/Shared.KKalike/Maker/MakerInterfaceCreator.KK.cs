@@ -65,7 +65,7 @@ namespace KKAPI.Maker
 
         public static T AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
         {
-            return AddAccessoryWindowControl(control, true);
+            return AddAccessoryWindowControl(control, false);
         }
 
         public static T AddAccessoryWindowControl<T>(T control, bool automate_visible) where T : BaseGuiEntry
@@ -246,7 +246,7 @@ namespace KKAPI.Maker
                 {
                     var seperator = new MakerSeparator(new MakerCategory(null, null), KoikatuAPI.Instance);
                     seperator.CreateControl(contentParent);
-                    if (accessorieswindow)
+                    if (accessorieswindow && gr.Any(x => x.AutomateVisible))//add only groups with a automated control
                     {
                         seperator.GroupingID = gr.First().GroupingID;
                         _accessoryWindowSeperators.Add(seperator);
@@ -524,13 +524,13 @@ namespace KKAPI.Maker
         private static bool _accessoryControlShowState = true;
         internal static void AutomaticAccessoryControlVisibility(bool showAccControls)
         {
+            MakerAPI.OnVisibilityTrigger(new AccessoryContolVisibilityArgs(showAccControls));// tell non-automated that there is an event and if they should set to show or hide special controls I.E: HairAccessoriescustom, dynamic bone editor 
+
             if (_accessoryControlShowState == showAccControls)
             {
                 //SeperatorVisibility(); //todo necessary?
                 return;
             }
-
-            MakerAPI.OnVisibilityTrigger(new AccessoryContolVisibilityArgs(showAccControls));
 
             foreach (var item in _accessoryWindowEntries)
             {
@@ -545,13 +545,19 @@ namespace KKAPI.Maker
 
         private static void SeperatorVisibility()
         {
+            //foreach (var seperator in _accessoryWindowSeperators)
+            //{
+            //    var show = _accessoryWindowEntries.Where(x => x.GroupingID == seperator.GroupingID).Any(x => x.Visible.Value);
+            //    seperator.Visible.OnNext(show);
+            //}
+
             foreach (var gr in _accessoryWindowEntries.GroupBy(x => x.GroupingID))
             {
                 var show = gr.Any(x => x.Visible.Value);
-                var results = _accessoryWindowSeperators.FindAll(x => x.GroupingID == gr.Key);
-                foreach (var item in results)
+                var seperator = _accessoryWindowSeperators.Find(x => x.GroupingID == gr.Key);
+                if (seperator != null)
                 {
-                    item.Visible.OnNext(show);
+                    seperator.Visible.OnNext(show);
                 }
             }
         }
