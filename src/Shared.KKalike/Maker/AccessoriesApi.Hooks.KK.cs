@@ -32,11 +32,12 @@ namespace KKAPI.Maker
                 // Only send the event if the kind actually changed
                 if (__state != GetPartsInfo((int)__instance.slotNo).id)
                     OnAccessoryKindChanged(__instance, (int)__instance.slotNo);
+                AutomaticControlVisibility();//used to tell non-automated plugins that accessory kind has changed
             }
 
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(ChaControl), nameof(ChaControl.ChangeAccessory), typeof(int), typeof(int), typeof(int), typeof(string), typeof(bool))]
-            public static void ChangeAccessoryPostfix()
+            [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryType))]
+            public static void UpdateSelectAccessoryTypePostfix()
             {
                 AutomaticControlVisibility();
             }
