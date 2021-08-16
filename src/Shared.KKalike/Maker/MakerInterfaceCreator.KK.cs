@@ -65,7 +65,7 @@ namespace KKAPI.Maker
 
         public static T AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
         {
-            return AddAccessoryWindowControl(control, true);
+            return AddAccessoryWindowControl(control, false);
         }
 
         public static T AddAccessoryWindowControl<T>(T control, bool automate_visible) where T : BaseGuiEntry
@@ -548,11 +548,8 @@ namespace KKAPI.Maker
             foreach (var gr in _accessoryWindowEntries.GroupBy(x => x.GroupingID))
             {
                 var show = gr.Any(x => x.Visible.Value);
-                var results = _accessoryWindowSeperators.FindAll(x => x.GroupingID == gr.Key);
-                foreach (var item in results)
-                {
-                    item.Visible.OnNext(show);
-                }
+                var seperator = _accessoryWindowSeperators.Find(x => x.GroupingID == gr.Key);
+                seperator.Visible.OnNext(show);
             }
         }
 
