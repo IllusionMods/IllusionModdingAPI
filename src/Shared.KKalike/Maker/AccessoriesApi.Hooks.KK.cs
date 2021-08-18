@@ -13,7 +13,6 @@ namespace KKAPI.Maker
             public static void ChangeSlotPostfix(CustomAcsSelectKind __instance, int _no)
             {
                 OnSelectedMakerSlotChanged(__instance, _no);
-                AutomaticControlVisibility();
             }
 
             [HarmonyBefore(new string[] { "com.joan6694.kkplugins.moreaccessories" })]

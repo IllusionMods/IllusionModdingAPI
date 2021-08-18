@@ -340,6 +340,8 @@ namespace KKAPI.Maker
             {
                 KoikatuAPI.Logger.LogError("Subscription to SelectedMakerSlot crashed: " + ex);
             }
+
+            AutomaticControlVisibility();
         }
 
         private static void OnMakerAccSlotAdded(object source, int newSlotIndex, Transform newSlotTransform)
