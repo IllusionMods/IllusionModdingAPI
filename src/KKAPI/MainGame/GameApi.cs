@@ -162,6 +162,21 @@ namespace KKAPI.MainGame
             return CustomTalkSceneTouchIcon.AddTouchIcon(icon, onCreated, row, order);
         }
 
+        /// <summary>
+        /// Register a new conversation button in talk scenes in roaming mode.
+        /// (the white buttons you get when you click on the buttons on the right when talking to someone, for example "Confess", "Excercise together")
+        /// Dispose the return value to remove the button (It will not be created anymore and have to be re-added. If inside a talk scene the button will be removed immediately).
+        /// </summary>
+        /// <param name="text">Text of the new button.</param>
+        /// <param name="onCreated">Action to run after the icon is created.
+        /// Use to subscribe to the onClick event and/or attach extra code to the button, e.g. by using <see cref="ObservableTriggerExtensions.UpdateAsObservable(Component)"/> and similar methods.</param>
+        /// <param name="targetMenu">Which submenu to put your button under (from the 3 buttons on right, only top and bottom buttons can be used here).</param>
+        public static IDisposable AddTalkButton(string text, Action<Button> onCreated, TalkSceneActionKind targetMenu)
+        {
+            if (StudioAPI.InsideStudio) return Disposable.Empty;
+            return TalkSceneCustomButtons.AddTalkButton(text, onCreated, targetMenu);
+        }
+
         internal static void Init(bool insideStudio)
         {
             if (insideStudio) return;
@@ -170,6 +185,7 @@ namespace KKAPI.MainGame
             Hooks.SetupHooks(hi);
             hi.PatchAll(typeof(CustomActionIcon));
             hi.PatchAll(typeof(CustomTalkSceneTouchIcon));
+            hi.PatchAll(typeof(TalkSceneCustomButtons));
 
             _functionControllerContainer = new GameObject("GameCustomFunctionController Zoo");
             _functionControllerContainer.transform.SetParent(Chainloader.ManagerObject.transform, false);
@@ -216,6 +232,15 @@ namespace KKAPI.MainGame
 
             if (KoikatuAPI.EnableDebugLogging)
                 RegisterExtraBehaviour<TestGameFunctionController>(null);
+
+#if DEBUG
+            AddTalkButton("talk button1", button => button.onClick.AddListener(() => KoikatuAPI.Logger.LogMessage("Hello world talk")), TalkSceneActionKind.Talk);
+            AddTalkButton("event button1", button => button.onClick.AddListener(() => KoikatuAPI.Logger.LogMessage("Hello world event1")), TalkSceneActionKind.Event);
+            AddTalkButton("event button2", button => button.onClick.AddListener(() => KoikatuAPI.Logger.LogMessage("Hello world event2")), TalkSceneActionKind.Event);
+            AddTalkButton("event button3", button => button.onClick.AddListener(() => KoikatuAPI.Logger.LogMessage("Hello world event3")), TalkSceneActionKind.Event);
+            IDisposable disp = null;
+            disp = AddTalkButton("commit sudoku", button => button.onClick.AddListener(disp.Dispose), TalkSceneActionKind.Talk);
+#endif
         }
 
         private static void OnGameBeingLoaded(string path, string fileName)

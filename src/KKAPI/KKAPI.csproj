@@ -79,6 +79,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainGame\ActionIcons\CustomActionIcon.cs" />
+    <Compile Include="MainGame\TalkScene\TalkSceneActionKind.cs" />
+    <Compile Include="MainGame\TalkScene\TalkSceneCustomButtons.cs" />
     <Compile Include="MainGame\TouchIcons\CustomTalkSceneTouchIcon.cs" />
     <Compile Include="MainGame\Utilities\EventUtils.cs" />
     <Compile Include="MainGame\Utilities\TalkSceneUtils.cs" />
@@ -109,6 +111,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\KoikatuCompatibilityAnalyzer.1.0.1\analyzers\dotnet\cs\KoikatuCompatibilityAnalyzer.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
   <Import Project="..\Shared.KKalike\Shared.KKalike.projitems" Label="Shared" />
   <Import Project="..\Shared.CharaStudio\Shared.CharaStudio.projitems" Label="Shared" />
