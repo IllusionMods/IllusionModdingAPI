@@ -61,7 +61,20 @@ namespace KKAPI.Maker
             MakerInterfaceCreator.AddAccessoryWindowControl(control);
             return control;
         }
-
+#if KK || KKS || EC //todo AI and HS2
+        /// <summary>
+        /// Add a control to the accessory selection and settings window.
+        /// For editable controls that depend on the selected accessory use <see cref="AddEditableAccessoryWindowControl{T,TVal}"/>.
+        /// To have API control visibility automatically set automate_visible to true.
+        /// </summary>
+        public static T AddAccessoryWindowControl<T>(T control, bool automate_visible) where T : BaseGuiEntry
+        {
+            if (control == null) throw new ArgumentNullException(nameof(control));
+            control.ThrowIfDisposed(nameof(control));
+            MakerInterfaceCreator.AddAccessoryWindowControl(control, automate_visible);
+            return control;
+        }
+#endif
         /// <summary>
         /// Add a control to the accessory selection and settings window. The control is wrapped to properly respond to changes in selected accessory slot (has unique values for each slot).
         /// </summary>
@@ -73,6 +86,19 @@ namespace KKAPI.Maker
             return new AccessoryControlWrapper<T, TVal>(control);
         }
 
+#if KK || KKS || EC //todo AI and HS2
+        /// <summary>
+        /// Add a control to the accessory selection and settings window. The control is wrapped to properly respond to changes in selected accessory slot (has unique values for each slot).
+        /// To have API control visibility automatically set automate_visible to true.
+        /// </summary>
+        public static AccessoryControlWrapper<T, TVal> AddEditableAccessoryWindowControl<T, TVal>(T control, bool automate_visible) where T : BaseEditableGuiEntry<TVal>
+        {
+            if (control == null) throw new ArgumentNullException(nameof(control));
+            control.ThrowIfDisposed(nameof(control));
+            MakerInterfaceCreator.AddAccessoryWindowControl(control, automate_visible);
+            return new AccessoryControlWrapper<T, TVal>(control);
+        }
+#endif
         /// <summary>
         /// 0 is male, 1 is female
         /// </summary>
@@ -329,7 +355,7 @@ namespace KKAPI.Maker
             AccessoriesApi.AutomaticControlVisibility();
 #endif
         }
-        
+
 #if KK || KKS || EC
         /// <summary>
         /// Fired when the visbility state of accessory controls, added by <see cref="AddAccessoryWindowControl{T}"/>, should change state if not managed automatically by the api.

@@ -26,6 +26,7 @@ namespace KKAPI.Maker
         private static Func<int, CvsAccessory> _getCvsAccessory;
         private static Func<int, ChaFileAccessory.PartsInfo> _getPartsInfo;
         private static Func<int> _getCvsAccessoryCount;
+        private static Func<int> _getPartsCount;
         private static Func<ChaControl, int, ChaAccessoryComponent> _getChaAccessoryCmp;
         private static Func<ChaControl, ChaAccessoryComponent, int> _getChaAccessoryCmpIndex;
 
@@ -237,12 +238,21 @@ namespace KKAPI.Maker
 
                 var getPartsInfoM = AccessTools.Method(_moreAccessoriesType, "GetPart");
                 _getPartsInfo = i => (ChaFileAccessory.PartsInfo)getPartsInfoM.Invoke(_moreAccessoriesInstance, new object[] { i });
+
+                var getPartsCountM = AccessTools.Method(_moreAccessoriesType, "GetPartsLength");
+                _getPartsCount = () =>
+                {
+                    if (MakerAPI.InsideAndLoaded)
+                        return (int)getPartsCountM.Invoke(_moreAccessoriesInstance, null);
+                    return 20;
+                };
             }
             else
             {
                 _getChaAccessoryCmp = (control, i) => control.cusAcsCmp[i];
                 _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cusAcsCmp, component);
                 _getPartsInfo = i => MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[i];
+                _getPartsCount = () => 20;
             }
         }
 
@@ -330,6 +340,8 @@ namespace KKAPI.Maker
             {
                 KoikatuAPI.Logger.LogError("Subscription to SelectedMakerSlot crashed: " + ex);
             }
+
+            AutomaticControlVisibility();
         }
 
         private static void OnMakerAccSlotAdded(object source, int newSlotIndex, Transform newSlotTransform)
@@ -416,9 +428,8 @@ namespace KKAPI.Maker
         internal static void AutomaticControlVisibility()
         {
             var slot = SelectedMakerAccSlot;
-            if (slot < 0 || slot >= GetMakerAccessoryCount())
+            if (slot < 0 || slot >= _getPartsCount.Invoke())
                 return;
-
             var partsinfo = GetPartsInfo(slot);
 
             var accessoryExists = partsinfo.type != 120;
