@@ -83,7 +83,7 @@
     <Compile Include="MainGame\TalkScene\TalkSceneCustomButtons.cs" />
     <Compile Include="MainGame\TouchIcons\CustomTalkSceneTouchIcon.cs" />
     <Compile Include="MainGame\Utilities\EventUtils.cs" />
-    <Compile Include="MainGame\Utilities\TalkSceneUtils.cs" />
+    <Compile Include="MainGame\TalkScene\TalkSceneUtils.cs" />
     <Compile Include="Maker\AccessoryCopyEventArgs.cs" />
     <Compile Include="MainGame\GameApi.cs" />
     <Compile Include="MainGame\GameAPI.Hooks.cs" />
@@ -105,7 +105,7 @@
     <None Include="MainGame\ActionIcons\Action_Icon_On_Template.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MainGame\TouchIcons\Touch_Icon_Deselected_Template.png.png" />
+    <None Include="MainGame\TouchIcons\Touch_Icon_Deselected_Template.png" />
     <None Include="MainGame\TouchIcons\Touch_Icon_Selected_Template.png" />
   </ItemGroup>
   <ItemGroup>
