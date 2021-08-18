@@ -38,6 +38,35 @@ namespace KKAPI.Maker.UI
                 cgItem = new[] { canvasGroup }
             };
 
+            if (window.Find("imgWinBack") == null)
+            {
+                var settingsWindow = GameObject.Find("CharaCustom/CustomControl/CanvasSub/SettingWindow").GetComponent<CvsSettingWindow>();
+
+                var origWinBack = GameObject.Find("CharaCustom/CustomControl/CanvasSub/SettingWindow/WinHair/imgWinBack");
+                var origDragRect = GameObject.Find("CharaCustom/CustomControl/CanvasSub/SettingWindow/WinClothes/DefaultWin/DragRect");
+
+                var copyWinBack = Object.Instantiate(origWinBack, winContents.transform);
+                copyWinBack.transform.SetSiblingIndex(0);
+                copyWinBack.AddComponent<LayoutElement>().ignoreLayout = true;
+
+                var winBackRectTransform = copyWinBack.GetComponent<RectTransform>();
+                winBackRectTransform.offsetMin = new Vector2(0, 300);
+                winBackRectTransform.offsetMax = new Vector2(0, 0);
+
+                var copyDragRect = Object.Instantiate(origDragRect, winContents.transform);
+                copyDragRect.transform.SetSiblingIndex(1);
+                copyDragRect.AddComponent<LayoutElement>().ignoreLayout = true;
+                
+                var closeButton = copyWinBack.GetComponentInChildren<UI_ButtonEx>();
+                closeButton.onClick = new Button.ButtonClickedEvent();
+                closeButton.onClick.AddListener(delegate
+                {
+                    settingsWindow.cgbaseWindow.alpha = 0f;
+                    settingsWindow.cgbaseWindow.interactable = false;
+                    settingsWindow.cgbaseWindow.blocksRaycasts = false;
+                });
+            }
+            
             /* todo fix for missing window background. Very messy, messes up recttransform values, try to find a way that doesn't change the structure.
             // Deal with some categories having a different window back image per subcategory
             if (window.Find("imgWinBack") == null)
