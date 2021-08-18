@@ -56,9 +56,12 @@ namespace KKAPI.Maker
         /// </summary>
         public static T AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
         {
-            return AddAccessoryWindowControl<T>(control, false);
+            if (control == null) throw new ArgumentNullException(nameof(control));
+            control.ThrowIfDisposed(nameof(control));
+            MakerInterfaceCreator.AddAccessoryWindowControl(control);
+            return control;
         }
-
+#if KK || KKS || EC //todo AI and HS2
         /// <summary>
         /// Add a control to the accessory selection and settings window.
         /// For editable controls that depend on the selected accessory use <see cref="AddEditableAccessoryWindowControl{T,TVal}"/>.
@@ -71,15 +74,19 @@ namespace KKAPI.Maker
             MakerInterfaceCreator.AddAccessoryWindowControl(control, automate_visible);
             return control;
         }
-
+#endif
         /// <summary>
         /// Add a control to the accessory selection and settings window. The control is wrapped to properly respond to changes in selected accessory slot (has unique values for each slot).
         /// </summary>
         public static AccessoryControlWrapper<T, TVal> AddEditableAccessoryWindowControl<T, TVal>(T control) where T : BaseEditableGuiEntry<TVal>
         {
-            return AddEditableAccessoryWindowControl<T, TVal>(control, false);
+            if (control == null) throw new ArgumentNullException(nameof(control));
+            control.ThrowIfDisposed(nameof(control));
+            MakerInterfaceCreator.AddAccessoryWindowControl(control);
+            return new AccessoryControlWrapper<T, TVal>(control);
         }
 
+#if KK || KKS || EC //todo AI and HS2
         /// <summary>
         /// Add a control to the accessory selection and settings window. The control is wrapped to properly respond to changes in selected accessory slot (has unique values for each slot).
         /// To have API control visibility automatically set automate_visible to true.
@@ -91,7 +98,7 @@ namespace KKAPI.Maker
             MakerInterfaceCreator.AddAccessoryWindowControl(control, automate_visible);
             return new AccessoryControlWrapper<T, TVal>(control);
         }
-
+#endif
         /// <summary>
         /// 0 is male, 1 is female
         /// </summary>
