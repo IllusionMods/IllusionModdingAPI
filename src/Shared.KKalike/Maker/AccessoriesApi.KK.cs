@@ -30,6 +30,9 @@ namespace KKAPI.Maker
         private static Func<ChaControl, int, ChaAccessoryComponent> _getChaAccessoryCmp;
         private static Func<ChaControl, ChaAccessoryComponent, int> _getChaAccessoryCmpIndex;
 
+        private static object AccessoryByChar;//Cache as it seems to be practically readonly static
+        private static MethodInfo AccessoryByCharTryget;
+
         /// <summary>
         /// Returns true if the accessory tab in maker is currently selected.
         /// If you want to know if the user can actually see the tab on the screen check <see cref="MakerAPI.IsInterfaceVisible"/>.
@@ -71,11 +74,243 @@ namespace KKAPI.Maker
         /// </summary>
         public static event EventHandler<AccessoryCopyEventArgs> AccessoriesCopied;
 #endif
-
         /// <summary>
         /// Fires after user copies an accessory within a single coordinate by using the Transfer window.
         /// </summary>
         public static event EventHandler<AccessoryTransferEventArgs> AccessoryTransferred;
+
+        private static object CharAdditionalData(ChaControl character)
+        {
+            object CharAdditional = null;
+            if (!MoreAccessoriesInstalled) return CharAdditional;
+
+            if (MakerAPI.InsideAndLoaded)//can be null at start _getPartsCount has same issue
+            {
+                return Traverse.Create(_moreAccessoriesInstance).Field("_charaMakerData").GetValue(); //dedicated CharAdditionalData
+            }
+
+            var parameters = new object[] { character.chaFile, null };
+            AccessoryByCharTryget.Invoke(AccessoryByChar, parameters);
+            return parameters[1];
+        }
+
+        private static List<ListInfoBase> GetAccessoryListInfoBase(this ChaControl character)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+
+            var list = new List<ListInfoBase>();
+
+            foreach (var gameObject in character.objAccessory)
+            {
+                if (gameObject == null)
+                {
+                    list.Add(null);
+                    continue;
+                }
+                ListInfoComponent component = gameObject.GetComponent<ListInfoComponent>();
+                list.Add(component.data);
+            }
+
+            if (!MoreAccessoriesInstalled) return list;
+
+            var charadditionaldata = CharAdditionalData(character);
+
+            if (charadditionaldata == null) return list;
+
+            var data = Traverse.Create(charadditionaldata).Field<ICollection<ListInfoBase>>("infoAccessory").Value;
+
+            list.AddRange(data);
+
+            return list;
+        }
+
+        private static List<GameObject[]> GetAccessoryobjAcsMove(this ChaControl character)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+
+            var list = new List<GameObject[]>();
+
+            var array = character.objAcsMove;
+            for (int i = 0; i < 20; i++)
+            {
+                list.Add(new[] { array[i, 0], array[i, 1] });
+            }
+
+            if (!MoreAccessoriesInstalled) return list;
+
+            var charadditionaldata = CharAdditionalData(character);
+
+            if (charadditionaldata == null) return list;
+
+            var data = Traverse.Create(charadditionaldata).Field<ICollection<GameObject[]>>("objAcsMove").Value;
+
+            list.AddRange(data);
+
+            return list;
+        }
+
+        private static List<ChaAccessoryComponent> GetAccessorycusAcsCmp(this ChaControl character)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+
+            var list = new List<ChaAccessoryComponent>();
+
+            list.AddRange(character.cusAcsCmp);
+
+            if (!MoreAccessoriesInstalled) return list;
+
+            var charadditionaldata = CharAdditionalData(character);
+
+            if (charadditionaldata == null) return list;
+
+            var data = Traverse.Create(charadditionaldata).Field<ICollection<ChaAccessoryComponent>>("cusAcsCmp").Value;
+
+            list.AddRange(data);
+
+            return list;
+        }
+
+        private static List<bool> GetShowAccessory(this ChaControl character)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+
+            var list = new List<bool>();
+
+            list.AddRange(character.fileStatus.showAccessory);
+
+            if (!MoreAccessoriesInstalled) return list;
+
+            var charadditionaldata = CharAdditionalData(character);
+
+            if (charadditionaldata == null) return list;
+
+            var data = Traverse.Create(charadditionaldata).Field<ICollection<bool>>("showAccessories").Value;
+
+            list.AddRange(data);
+
+            return list;
+        }
+
+        private static Dictionary<int, List<ChaFileAccessory.PartsInfo>> GetAllAccessories(this ChaControl character)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+
+            var dict = new Dictionary<int, List<ChaFileAccessory.PartsInfo>>();
+
+            int outfitnum = 0;
+
+#if KK || KKS
+            foreach (var item in character.chaFile.coordinate)
+            {
+                var list = dict[outfitnum] = new List<ChaFileAccessory.PartsInfo>();
+                list.AddRange(item.accessory.parts);
+                outfitnum++;
+            }
+#elif EC
+            var list = dict[outfitnum] = new List<ChaFileAccessory.PartsInfo>();
+            list.AddRange(character.nowCoordinate.accessory.parts);
+
+#endif
+            if (!MoreAccessoriesInstalled) return dict;
+
+            var charadditionaldata = CharAdditionalData(character);
+
+            if (charadditionaldata == null) return dict;
+
+            var data = Traverse.Create(charadditionaldata).Field<Dictionary<int, List<ChaFileAccessory.PartsInfo>>>("rawAccessoriesInfos").Value;
+
+            outfitnum = 0;
+#if KK || KKS
+            foreach (var item in character.chaFile.coordinate)
+            {
+                if (dict.TryGetValue(outfitnum, out var list) && data.TryGetValue(outfitnum, out var list2))
+                    list.AddRange(list2);
+                outfitnum++;
+            }
+#elif EC
+            if (data.TryGetValue(outfitnum, out var list2))
+                list.AddRange(list2);
+#endif
+            return dict;
+        }
+
+        private static List<ChaFileAccessory.PartsInfo> GetNowAccessories(this ChaControl character)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+
+            var list = new List<ChaFileAccessory.PartsInfo>();
+
+            list.AddRange(character.nowCoordinate.accessory.parts);
+
+            if (!MoreAccessoriesInstalled) return list;
+
+            var charadditionaldata = CharAdditionalData(character);
+
+            if (charadditionaldata == null) return list;
+
+            var data = Traverse.Create(charadditionaldata).Field<ICollection<ChaFileAccessory.PartsInfo>>("nowAccessories").Value;
+
+            if (data == null) return list;
+
+            list.AddRange(data);
+
+            return list;
+        }
+
+        private static int GetNowAccessoriesCount(this ChaControl character)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+
+            return character.GetNowAccessories().Count;
+        }
+
+#if KK || KKS
+        private static List<ChaFileAccessory.PartsInfo> GetCoordinateAccessories(this ChaControl character, int coordinateindex)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+
+            if (character.chaFile.coordinate.Length >= coordinateindex || coordinateindex < 0) throw new IndexOutOfRangeException($"{nameof(character)} only has coordinate length {character.chaFile.coordinate.Length}, tried index {coordinateindex}");
+
+            var list = new List<ChaFileAccessory.PartsInfo>();
+
+            list.AddRange(character.chaFile.coordinate[coordinateindex].accessory.parts);
+
+            if (!MoreAccessoriesInstalled) return list;
+
+            var charadditionaldata = CharAdditionalData(character);
+
+            if (charadditionaldata == null) return list;
+
+            var data = Traverse.Create(charadditionaldata).Field<Dictionary<int, List<ChaFileAccessory.PartsInfo>>>("rawAccessoriesInfos").Value;
+
+            if (data == null) return list;
+
+            if (data.TryGetValue(coordinateindex, out var list2))
+                list.AddRange(list2);
+
+            return list;
+        }
+
+        private static int GetCoordinateAccessoryCount(this ChaControl character, int coordinateindex)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+
+            return character.GetCoordinateAccessories(coordinateindex).Count;
+        }
+
+        private static int[] GetAllAccessoriesCount(this ChaControl character)
+        {
+            if (character == null) throw new ArgumentNullException(nameof(character));
+
+            var dict = character.GetAllAccessories();
+            var array = new int[dict.Count];
+            for (int i = 0; i < dict.Count; i++)
+            {
+                array[i] = dict[i].Count;
+            }
+            return array;
+        }
+#endif
 
         /// <summary>
         /// Get a list of all accessory objects for this character.
@@ -87,11 +322,9 @@ namespace KKAPI.Maker
 
             if (!MoreAccessoriesInstalled) return character.objAccessory;
 
-            var dict = Traverse.Create(_moreAccessoriesInstance).Field("_accessoriesByChar").GetValue();
-            var m = dict.GetType().GetMethod("TryGetValue", AccessTools.allDeclared) ?? throw new ArgumentException("TryGetValue not found");
-            var parameters = new object[] { character.chaFile, null };
-            m.Invoke(dict, parameters);
-            var objs = Traverse.Create(parameters[1]).Field<ICollection<GameObject>>("objAccessory").Value;
+            var charadditionaldata = CharAdditionalData(character);
+
+            var objs = Traverse.Create(charadditionaldata).Field<ICollection<GameObject>>("objAccessory").Value;
             return character.objAccessory.Concat(objs).ToArray();
         }
 
@@ -230,6 +463,9 @@ namespace KKAPI.Maker
 
             if (MoreAccessoriesInstalled)
             {
+                AccessoryByChar = Traverse.Create(_moreAccessoriesInstance).Field("_accessoriesByChar").GetValue();
+                AccessoryByCharTryget = AccessoryByChar.GetType().GetMethod("TryGetValue", AccessTools.allDeclared) ?? throw new ArgumentException("TryGetValue not found");
+
                 var getAccCmpM = AccessTools.Method(_moreAccessoriesType, "GetChaAccessoryComponent");
                 _getChaAccessoryCmp = (control, componentIndex) => (ChaAccessoryComponent)getAccCmpM.Invoke(_moreAccessoriesInstance, new object[] { control, componentIndex });
 
