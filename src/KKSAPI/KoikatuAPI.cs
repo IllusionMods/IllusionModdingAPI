@@ -56,7 +56,7 @@ namespace KKAPI
         /// </summary>
         public static Version GetGameVersion()
         {
-            return Game.Version;
+            return GameSystem.GameVersion;
         }
 
         /// <summary>
