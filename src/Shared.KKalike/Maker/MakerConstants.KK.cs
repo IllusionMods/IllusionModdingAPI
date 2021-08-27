@@ -68,9 +68,14 @@ namespace KKAPI.Maker
             new MakerCategory("05_ParameterTop", "tglCharactor", 10),
             new MakerCategory("05_ParameterTop", "tglCharactorEx", 20),
             new MakerCategory("05_ParameterTop", "tglH", 30),
+#if !KKS
             new MakerCategory("05_ParameterTop", "tglQA", 40),
+#endif
             new MakerCategory("05_ParameterTop", "tglAttribute", 50),
-            new MakerCategory("05_ParameterTop", "tglADK", 60)
+            new MakerCategory("05_ParameterTop", "tglADK", 60),
+#if KKS
+            new MakerCategory("05_ParameterTop", "tglInterest", 70),
+#endif
         };
 
         private static Dictionary<string, MakerCategory> _categoryLookup;
