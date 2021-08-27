@@ -7,6 +7,9 @@ using System.Reflection.Emit;
 using ChaCustom;
 using HarmonyLib;
 using Illusion.Game;
+using Mono.Cecil;
+using MonoMod.Cil;
+using MonoMod.Utils;
 using Object = UnityEngine.Object;
 
 namespace KKAPI.Maker
@@ -14,9 +17,6 @@ namespace KKAPI.Maker
     /// <summary>
     /// API for modifying the process of saving cards in maker.
     /// </summary>
-#if KKS //todo
-    [Obsolete("Not implemented in KKS, need to hook into btnsave lambda in CustomControl")]
-#endif
     public static class MakerCardSave
     {
         private static readonly Harmony _harmony;
@@ -55,6 +55,25 @@ namespace KKAPI.Maker
             var btnSaveField = AccessTools.Field(typeof(CustomControl), "btnSave") ?? throw new MissingFieldException("could not find btnSave");
             var patchMethod = AccessTools.Method(typeof(MakerCardSave), nameof(CardSavePatch)) ?? throw new MissingMethodException("could not find CardSavePatch");
 
+#if KKS
+            var cm = new CodeMatcher(instructions);
+            var asyncGeneratedField = (FieldInfo)cm.MatchForward(false, new CodeMatch(OpCodes.Stfld)).Instruction.operand;
+            var movenext = asyncGeneratedField.DeclaringType.GetMethod("MoveNext", AccessTools.all);
+            if (movenext == null) throw new ArgumentNullException(nameof(movenext));
+
+            var ctx = new ILContext(new DynamicMethodDefinition(movenext).Definition);
+            var il = new ILCursor(ctx);
+            il.GotoNext(instruction => instruction.MatchLdfld(btnSaveField));
+            MethodReference targetMethodReference = null;
+            il.GotoNext(instruction => instruction.MatchLdftn(out targetMethodReference));
+            if (targetMethodReference == null) throw new ArgumentNullException(nameof(targetMethodReference));
+
+            var targetMethod = targetMethodReference.ResolveReflection();
+            KoikatuAPI.Logger.LogDebug("Save method found for patching MakerCardSave - " + targetMethod.Name);
+            _harmony.Patch(targetMethod, new HarmonyMethod(patchMethod));
+
+            return instructions;
+#else
             var codes = instructions.ToList();
             bool buttonFound = false, success = false;
 
@@ -79,8 +98,9 @@ namespace KKAPI.Maker
             }
 
             if (!success) KoikatuAPI.Logger.LogWarning("Could not find save method for patching MakerCardSave");
-
+            
             return codes;
+#endif
         }
 
         private static bool CardSavePatch(CustomControl __instance)
@@ -98,10 +118,12 @@ namespace KKAPI.Maker
                 var folder = UserData.Path + (isMale ? "chara/male/" : "chara/female/");
 
                 var fileName = __instance.saveNew ?
-#if KK || KKS
+#if KK
                     $"Koikatu_{(isMale ? "M" : "F")}_{DateTime.Now:yyyyMMddHHmmssfff}"
 #elif EC
                     $"Emocre_{(isMale ? "M" : "F")}_{DateTime.Now:yyyyMMddHHmmssfff}"
+#elif KKS
+                    $"KoikatsuSun_{(isMale ? "M" : "F")}_{DateTime.Now:yyyyMMddHHmmssfff}"
 #endif
                     : __instance.saveFileName;
 
