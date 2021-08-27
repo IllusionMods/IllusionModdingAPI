@@ -7,9 +7,11 @@ using System.Reflection.Emit;
 using ChaCustom;
 using HarmonyLib;
 using Illusion.Game;
+#if KKS
 using Mono.Cecil;
 using MonoMod.Cil;
 using MonoMod.Utils;
+#endif
 using Object = UnityEngine.Object;
 
 namespace KKAPI.Maker
