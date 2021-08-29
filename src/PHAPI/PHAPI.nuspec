@@ -12,12 +12,11 @@
     <dependencies>
       <group targetFramework=".NETFramework4.6" >
         <dependency id="ExtensibleSaveFormat.PlayHome" version="16.4.0" />
-        <dependency id="IllusionLibs.PlayHome.Assembly-CSharp" version="2018.3.11" />
-        <dependency id="IllusionLibs.PlayHome.Assembly-CSharp-firstpass" version="2018.3.11" />
+        <dependency id="IllusionLibs.PlayHome.Assembly-CSharp" version="2018.3.11.4" />
+        <dependency id="IllusionLibs.PlayHome.Assembly-CSharp-firstpass" version="2018.3.11.4" />
         <dependency id="IllusionLibs.PlayHome.UnityEngine" version="5.5.5" />
         <dependency id="IllusionLibs.PlayHome.UnityEngine.UI" version="5.5.5" />
-        <dependency id="IllusionLibs.BepInEx" version="5.4.12" />
-        <dependency id="IllusionLibs.BepInEx.Harmony" version="2.5.1" />
+        <dependency id="IllusionLibs.BepInEx" version="5.4.15" />
       </group>
     </dependencies>
   </metadata>

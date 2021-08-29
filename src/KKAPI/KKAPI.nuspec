@@ -12,12 +12,11 @@
     <dependencies>
       <group targetFramework=".NETFramework4.6" >
         <dependency id="ExtensibleSaveFormat.Koikatu" version="16.4.0" />
-        <dependency id="IllusionLibs.Koikatu.Assembly-CSharp" version="2019.4.27" />
-        <dependency id="IllusionLibs.Koikatu.Assembly-CSharp-firstpass" version="2019.4.27" />
+        <dependency id="IllusionLibs.Koikatu.Assembly-CSharp" version="2019.4.27.4" />
+        <dependency id="IllusionLibs.Koikatu.Assembly-CSharp-firstpass" version="2019.4.27.4" />
         <dependency id="IllusionLibs.Koikatu.UnityEngine" version="5.6.2" />
         <dependency id="IllusionLibs.Koikatu.UnityEngine.UI" version="5.6.2" />
-        <dependency id="IllusionLibs.BepInEx" version="5.4.12" />
-        <dependency id="IllusionLibs.BepInEx.Harmony" version="2.5.1" />
+        <dependency id="IllusionLibs.BepInEx" version="5.4.15" />
         <dependency id="KoikatuCompatibilityAnalyzer" version="1.0.1" />
       </group>
     </dependencies>
