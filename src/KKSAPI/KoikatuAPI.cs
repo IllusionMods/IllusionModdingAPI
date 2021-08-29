@@ -31,7 +31,7 @@ namespace KKAPI
             MakerAPI.Init(insideStudio);
             StudioAPI.Init(insideStudio);
             CharacterApi.Init();
-            //todo GameAPI.Init(insideStudio);
+            GameAPI.Init(insideStudio);
         }
 
         private void Start()

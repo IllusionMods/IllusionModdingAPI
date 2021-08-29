@@ -237,6 +237,16 @@ namespace KKAPI.Chara
             }
         }
 
+       // issue with stopallcoroutines
+       // todo hook startcoroutine and check if active, if not then show stack trace
+       ///// <summary>
+       ///// Hides base StartCoroutine and runs it on the plugin instance
+       ///// </summary>
+       //public new Coroutine StartCoroutine(IEnumerator routine)
+       //{
+       //    return KKAPI.KoikatuAPI.Instance.StartCoroutine(routine);
+       //}
+
         /// <summary>
         /// Fired just before current coordinate is saved to a coordinate card. Use <see cref="SetCoordinateExtendedData"/> to save data to it. 
         /// You might need to wait for the next frame with <see cref="MonoBehaviour.StartCoroutine(IEnumerator)"/> before handling this.
