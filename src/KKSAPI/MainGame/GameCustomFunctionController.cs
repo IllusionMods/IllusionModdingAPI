@@ -27,26 +27,20 @@ namespace KKAPI.MainGame
         /// <summary>
         /// Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. 
         /// </summary>
-        [Obsolete("Not implemented yet")]
         public PluginData GetExtendedData()
         {
-            throw new NotImplementedException("Not implemented yet");
-            //todo
-            //if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
-            //return ExtendedSave.GetExtendedDataById(Manager.Game.saveData, ExtendedDataId);
+            if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId)); 
+            return ExtendedSave.GetExtendedDataById(Manager.Game.saveData, ExtendedDataId);
         }
 
         /// <summary>
         /// Save your custom data to the character card under the ID you specified when registering this controller.
         /// </summary>
         /// <param name="data">Your custom data to be written to the character card. Can be null to remove the data.</param>
-        [Obsolete("Not implemented yet")]
         public void SetExtendedData(PluginData data)
         {
-            throw new NotImplementedException("Not implemented yet");
-            //todo
-            //if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
-            //ExtendedSave.SetExtendedDataById(Manager.Game.instance.saveData, ExtendedDataId, data);
+            if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
+            ExtendedSave.SetExtendedDataById(Manager.Game.saveData, ExtendedDataId, data);
         }
 
         /// <summary>
