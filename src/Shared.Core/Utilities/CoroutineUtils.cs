@@ -1,5 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.Reflection;
+using HarmonyLib;
+using Mono.Cecil;
+using MonoMod.Cil;
+using MonoMod.Utils;
 using UnityEngine;
 
 namespace KKAPI.Utilities
@@ -177,6 +182,45 @@ namespace KKAPI.Utilities
                 }
                 yield return coroutine.Current;
             }
+        }
+
+        /// <summary>
+        /// Find the compiler-generated MoveNext method that contains the coroutine code. It can be used to apply transpliers to coroutines.
+        /// Note: When writing transpliers for coroutines you might want to turn off the "Decompiler\DecoDecompile enumerators" setting in DnSpy so that you can see the real code.
+        /// </summary>
+        public static MethodInfo GetMoveNext(MethodBase targetMethod)
+        {
+            var ctx = new ILContext(new DynamicMethodDefinition(targetMethod).Definition);
+            var il = new ILCursor(ctx);
+            MethodReference enumeratorCtor = null;
+            il.GotoNext(instruction => instruction.MatchNewobj(out enumeratorCtor));
+            if (enumeratorCtor == null) throw new ArgumentNullException(nameof(enumeratorCtor));
+            if (enumeratorCtor.Name != ".ctor")
+                throw new ArgumentException($"Unexpected method name {enumeratorCtor.Name}, should be .ctor", nameof(enumeratorCtor));
+
+            var enumeratorType = enumeratorCtor.DeclaringType.ResolveReflection();
+            var movenext = enumeratorType.GetMethod("MoveNext", AccessTools.all);
+            if (movenext == null) throw new ArgumentNullException(nameof(movenext));
+            return movenext;
+        }
+
+        /// <summary>
+        /// Use to patch coroutines/yielding methods.
+        /// This will method automatically find the compiler-generated MoveNext method that contains the coroutine code and apply patches on that. The method you patch must return an IEnumerator.
+        /// Warning: Postfix patches will not work as expected, they might be fired after every iteration. Prefix is practically the same as prefixing the entry method. It's best to only use transpliers with this method.
+        /// Note: When writing transpliers for coroutines you might want to turn off the "Decompiler\DecoDecompile enumerators" setting in DnSpy so that you can see the real code.
+        /// </summary>
+        /// <inheritdoc cref="Harmony.Patch(MethodBase,HarmonyMethod,HarmonyMethod,HarmonyMethod,HarmonyMethod,HarmonyMethod)"/>
+        public static MethodInfo PatchMoveNext(this Harmony harmonyInstance,
+            MethodBase original,
+            HarmonyMethod prefix = null,
+            HarmonyMethod postfix = null,
+            HarmonyMethod transpiler = null,
+            HarmonyMethod finalizer = null,
+            HarmonyMethod ilmanipulator = null)
+        {
+            var moveNext = GetMoveNext(original);
+            return harmonyInstance.Patch(moveNext, prefix, postfix, transpiler, finalizer, ilmanipulator);
         }
 
         /// <summary>

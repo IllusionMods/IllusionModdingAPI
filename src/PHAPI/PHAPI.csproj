@@ -53,6 +53,30 @@
       <HintPath>..\packages\IllusionLibs.BepInEx.5.4.15\lib\net35\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.BepInEx.Mono.Cecil.0.10.4.1\lib\net35\Mono.Cecil.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.BepInEx.Mono.Cecil.0.10.4.1\lib\net35\Mono.Cecil.Mdb.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.BepInEx.Mono.Cecil.0.10.4.1\lib\net35\Mono.Cecil.Pdb.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.BepInEx.Mono.Cecil.0.10.4.1\lib\net35\Mono.Cecil.Rocks.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MonoMod.RuntimeDetour, Version=21.8.5.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.BepInEx.MonoMod.21.8.5.1\lib\net35\MonoMod.RuntimeDetour.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MonoMod.Utils, Version=21.8.5.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.BepInEx.MonoMod.21.8.5.1\lib\net35\MonoMod.Utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PH_ExtensibleSaveFormat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ExtensibleSaveFormat.PlayHome.16.4.0\lib\net35\PH_ExtensibleSaveFormat.dll</HintPath>
       <Private>False</Private>
@@ -148,6 +172,7 @@
     <Error Condition="!Exists('..\packages\IllusionLibs.PlayHome.UnityEngine.UI.5.5.5.4\build\IllusionLibs.PlayHome.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.PlayHome.UnityEngine.UI.5.5.5.4\build\IllusionLibs.PlayHome.UnityEngine.UI.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.4.16.0\build\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.4.16.0\build\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\build\IllusionLibs.BepInEx.Harmony.targets'))" />
+    <Error Condition="!Exists('..\packages\IllusionLibs.BepInEx.MonoMod.21.8.5.1\build\IllusionLibs.BepInEx.MonoMod.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.BepInEx.MonoMod.21.8.5.1\build\IllusionLibs.BepInEx.MonoMod.targets'))" />
   </Target>
   <Import Project="..\packages\IllusionLibs.PlayHome.Assembly-CSharp.2018.3.11.4\build\IllusionLibs.PlayHome.Assembly-CSharp.targets" Condition="Exists('..\packages\IllusionLibs.PlayHome.Assembly-CSharp.2018.3.11.4\build\IllusionLibs.PlayHome.Assembly-CSharp.targets')" />
   <Import Project="..\packages\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.2018.3.11.4\build\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.targets" Condition="Exists('..\packages\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.2018.3.11.4\build\IllusionLibs.PlayHome.Assembly-CSharp-firstpass.targets')" />
@@ -155,4 +180,5 @@
   <Import Project="..\packages\IllusionLibs.PlayHome.UnityEngine.UI.5.5.5.4\build\IllusionLibs.PlayHome.UnityEngine.UI.targets" Condition="Exists('..\packages\IllusionLibs.PlayHome.UnityEngine.UI.5.5.5.4\build\IllusionLibs.PlayHome.UnityEngine.UI.targets')" />
   <Import Project="..\packages\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.4.16.0\build\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.targets" Condition="Exists('..\packages\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.4.16.0\build\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.targets')" />
   <Import Project="..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\build\IllusionLibs.BepInEx.Harmony.targets')" />
+  <Import Project="..\packages\IllusionLibs.BepInEx.MonoMod.21.8.5.1\build\IllusionLibs.BepInEx.MonoMod.targets" Condition="Exists('..\packages\IllusionLibs.BepInEx.MonoMod.21.8.5.1\build\IllusionLibs.BepInEx.MonoMod.targets')" />
 </Project>
