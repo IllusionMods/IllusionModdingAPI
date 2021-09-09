@@ -63,6 +63,13 @@ namespace KKAPI.Maker
             {
                 OnChangeAcs(__instance, __instance.selSrc, __instance.selDst);
             }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(CustomAcsChangeSlot), nameof(CustomAcsChangeSlot.Start))]
+            private static void CustomAcsChangeSlotPostfix(CustomAcsChangeSlot __instance)
+            {
+                CustomAcs = __instance;
+            }
         }
     }
 }
