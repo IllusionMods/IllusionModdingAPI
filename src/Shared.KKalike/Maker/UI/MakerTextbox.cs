@@ -135,6 +135,9 @@ namespace KKAPI.Maker.UI
 
             BufferedValueChanged.Subscribe(text => inputField.text = text);
 
+            var layout = tr.GetComponent<LayoutElement>();
+            layout.flexibleWidth = 1;
+
             return tr.gameObject;
         }
     }

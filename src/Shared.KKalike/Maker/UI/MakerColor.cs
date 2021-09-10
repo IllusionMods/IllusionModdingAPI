@@ -1,9 +1,9 @@
-﻿using System;
-using BepInEx;
+﻿using BepInEx;
 using ChaCustom;
+using HarmonyLib;
+using System;
 using TMPro;
 using UniRx;
-using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -130,6 +130,9 @@ namespace KKAPI.Maker.UI
 
             var boxRt = tr.Find("backrect").GetComponent<RectTransform>();
             _colorBoxWidth.Subscribe(width => boxRt.offsetMin = new Vector2(width * -1, boxRt.offsetMin.y));
+
+            var layout = tr.GetComponent<LayoutElement>();
+            layout.flexibleWidth = 1;
 
             return tr.gameObject;
         }

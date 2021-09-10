@@ -90,6 +90,9 @@ namespace KKAPI.Maker.UI
             text.text = DisplayName;
             text.color = TextColor;
 
+            var layout = tr.GetComponent<LayoutElement>();
+            layout.flexibleWidth = 1;
+
             return tr.gameObject;
         }
     }

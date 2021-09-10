@@ -1,7 +1,7 @@
-﻿using System;
+﻿using BepInEx;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using BepInEx;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -135,6 +135,9 @@ namespace KKAPI.Maker.UI
                         tgl.isOn = index == i;
                     }
                 });
+
+            var layout = tr.GetComponent<LayoutElement>();
+            layout.flexibleWidth = 1;
 
             return tr.gameObject;
         }
