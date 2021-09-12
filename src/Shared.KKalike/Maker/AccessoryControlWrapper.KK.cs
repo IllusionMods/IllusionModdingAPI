@@ -1,6 +1,6 @@
-﻿using System;
+﻿using KKAPI.Maker.UI;
+using System;
 using System.Collections.Generic;
-using KKAPI.Maker.UI;
 using UniRx;
 
 namespace KKAPI.Maker
@@ -108,6 +108,8 @@ namespace KKAPI.Maker
         public void SetValue(int accessoryIndex, TVal value, bool fireEvents)
         {
             CheckDisposedThrow();
+            if (accessoryIndex < 0)
+                return;
             CheckIndexRangeThrow(accessoryIndex);
 
             _values[accessoryIndex] = value;
