@@ -140,7 +140,7 @@ namespace KKAPI.Maker
         [Obsolete]
         public static ChaAccessoryComponent GetAccessory(this ChaControl character, int accessoryIndex)
         {
-            if (accessoryIndex >= character.cusAcsCmp.Length)
+            if (accessoryIndex < 0 || accessoryIndex >= character.cusAcsCmp.Length)
             {
                 return null;
             }
