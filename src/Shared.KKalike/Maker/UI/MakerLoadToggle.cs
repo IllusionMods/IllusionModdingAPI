@@ -91,7 +91,8 @@ namespace KKAPI.Maker.UI
 
         private static IEnumerator FixLayout(RectTransform rt)
         {
-            yield return new WaitUntil(() => rt.gameObject.activeInHierarchy);
+            yield return new WaitUntil(() => !rt || rt.gameObject.activeInHierarchy);
+            if (!rt) { yield break; }
             yield return null;
 #if KKS
             // Need to fix text positioning in KKS
@@ -166,7 +167,7 @@ namespace KKAPI.Maker.UI
                 if (child.name.StartsWith("tglHeader"))
                 {
                     // Fix for Koikatsu Party, the toggles are now grouped
-                    foreach (Transform tglItem in child.Cast<Transform>().ToList())
+                    foreach (var tglItem in child.Cast<Transform>().ToList())
                     {
                         tglItem.SetParent(root.transform, false);
                         baseToggles.Add(tglItem.GetComponent<RectTransform>());
