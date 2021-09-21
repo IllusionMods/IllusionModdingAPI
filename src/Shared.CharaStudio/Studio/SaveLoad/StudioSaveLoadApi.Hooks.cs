@@ -178,16 +178,19 @@ namespace KKAPI.Studio.SaveLoad
 #endif
             private static void OCI_OnVisible(ObjectCtrlInfo __instance, bool _visible) => OnObjectVisibilityToggled(__instance, _visible);
 
-            [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), "SelectSingle")]
+            [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.SelectSingle))]
             private static void TreeNodeCtrl_SelectSingle(TreeNodeObject _node)
             {
+#if KKS // This can method be called from the new TreeNodeCtrl.SelectMultiple overload in KKS. This avoids firing both select multiple and select single events.
+                if (_selectingMultipleTreeNodes) return;
+#endif
                 ObjectCtrlInfo ctrlInfo = global::Studio.Studio.GetCtrlInfo(_node);
                 if (ctrlInfo != null)
                     OnObjectsSelected(new List<ObjectCtrlInfo> { ctrlInfo });
             }
 
 #if !PH
-            [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), "SelectMultiple")]
+            [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.SelectMultiple), typeof(TreeNodeObject), typeof(TreeNodeObject))]
             private static void TreeNodeCtrl_SelectMultiple()
             {
                 List<ObjectCtrlInfo> selectedObjects = new List<ObjectCtrlInfo>();
@@ -197,7 +200,22 @@ namespace KKAPI.Studio.SaveLoad
             }
 #endif
 
-            [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), "SetSelectNode")]
+#if KKS
+            private static bool _selectingMultipleTreeNodes;
+            [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.SelectMultiple), typeof(TreeNodeObject[]))]
+            private static void TreeNodeCtrl_SelectMultiple2Prefix()
+            {
+                _selectingMultipleTreeNodes = true;
+            }
+            [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.SelectMultiple), typeof(TreeNodeObject[]))]
+            private static void TreeNodeCtrl_SelectMultiple2Postfix()
+            {
+                TreeNodeCtrl_SelectMultiple();
+                _selectingMultipleTreeNodes = false;
+            }
+#endif
+
+            [HarmonyPostfix, HarmonyPatch(typeof(TreeNodeCtrl), nameof(TreeNodeCtrl.SetSelectNode))]
             private static void TreeNodeCtrl_SetSelectNode()
             {
                 if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))

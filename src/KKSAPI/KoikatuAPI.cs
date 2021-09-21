@@ -22,6 +22,11 @@ namespace KKAPI
         /// This is for the jp release. In almost all cases should be used together with the steam version.
         /// </summary>
         public const string GameProcessName = "KoikatsuSunshine";
+        /// <summary>
+        /// The VR module process name for use with <see cref="BepInProcess"/> attributes.
+        /// This is for the jp release. In almost all cases should be used together with the steam version.
+        /// </summary>
+        public const string VRProcessName = "KoikatsuSunshine_VR";
 
         private void Awake()
         {

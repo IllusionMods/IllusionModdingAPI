@@ -23,7 +23,7 @@ namespace KKAPI.Studio.UI
         /// </summary>
         /// <param name="categoryName">Name of the category</param>
         /// <param name="subItems">Controls under this category</param>
-        [Obsolete("Manually creating categories is no longer supported")]
+        [Obsolete("Manually creating categories is no longer supported", true)]
         public CurrentStateCategory(string categoryName, IEnumerable<CurrentStateCategorySubItemBase> subItems)
         {
             CategoryName = categoryName;
@@ -63,6 +63,8 @@ namespace KKAPI.Studio.UI
             {
 #if AI || HS2
                 _originalText = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Cos/TextMeshPro Title");
+#elif KKS
+                _originalText = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Cos/Text (TMP)");
 #else
                 _originalText = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Cos/Text");
 #endif
@@ -72,7 +74,7 @@ namespace KKAPI.Studio.UI
             cat.AddComponent<LayoutElement>();
             cat.name = CategoryName + "_Header_SAPI";
 
-#if AI || HS2
+#if AI || HS2 || KKS
             var t = cat.GetComponent<TMPro.TextMeshProUGUI>();
             t.fontSize = 15;
             t.fontSizeMax = 15;

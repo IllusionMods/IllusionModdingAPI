@@ -20,9 +20,9 @@ namespace KKAPI.Studio.UI
     {
         private readonly string[] _items;
         private static GameObject _originalObject;
-#if AI || HS2 || KKS //todo KKS needs a check whenever studio comes out
+#if AI || HS2
         private const string ObjectSourcePath = "StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Color Grading/Lookup Texture";
-#elif KK
+#elif KK || KKS
         private const string ObjectSourcePath = "StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/02_Kinematic/05_Etc/Eyes Draw";
 #elif PH
         private const string ObjectSourcePath = "StudioScene/Canvas Main Menu/04_System/01_Screen Effect/Screen Effect/Viewport/Content/Atmosphere";

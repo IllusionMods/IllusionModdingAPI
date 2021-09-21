@@ -11,11 +11,11 @@
     <tags>Koikatu Sunshine</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.6" >
-        <dependency id="ExtensibleSaveFormat.KoikatsuSunshine" version="16.7.0" />
-        <dependency id="IllusionLibs.KoikatsuSunshine.Assembly-CSharp" version="2021.8.27.2" />
-        <dependency id="IllusionLibs.KoikatsuSunshine.Assembly-CSharp-firstpass" version="2021.8.27.2" />
-        <dependency id="IllusionLibs.KoikatsuSunshine.UniRx" version="2021.8.27.2" />
-        <dependency id="IllusionLibs.KoikatsuSunshine.UniTask" version="2021.8.27.2" />
+        <dependency id="ExtensibleSaveFormat.KoikatsuSunshine" version="16.8.0" />
+        <dependency id="IllusionLibs.KoikatsuSunshine.Assembly-CSharp" version="2021.9.17.0" />
+        <dependency id="IllusionLibs.KoikatsuSunshine.Assembly-CSharp-firstpass" version="2021.9.17.0" />
+        <dependency id="IllusionLibs.KoikatsuSunshine.UniRx" version="2021.9.17.0" />
+        <dependency id="IllusionLibs.KoikatsuSunshine.UniTask" version="2021.9.17.0" />
         <dependency id="IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule" version="2019.4.9.0" />
         <dependency id="IllusionLibs.KoikatsuSunshine.UnityEngine.InputLegacyModule" version="2019.4.9.0" />
         <dependency id="IllusionLibs.BepInEx" version="5.4.15" />
