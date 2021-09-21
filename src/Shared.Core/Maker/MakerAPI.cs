@@ -104,7 +104,16 @@ namespace KKAPI.Maker
         /// </summary>
         public static int GetMakerSex()
 #if KK || KKS || EC
-            => GetMakerBase().modeSex;
+
+
+        {
+            var res = (int)Hooks._modeSex;
+#if DEBUG
+            if(GetMakerBase().modeSex != res)
+                KoikatuAPI.Logger.LogMessage($"Difference in modesex hooks={res} base={GetMakerBase().modeSex}");
+#endif
+            return res;
+        }
 #elif AI || HS2
             => CharaCustom.CharaCustom.modeSex;
 #endif

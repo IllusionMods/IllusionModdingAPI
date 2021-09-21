@@ -76,9 +76,11 @@ namespace KKAPI.Maker
 
             [HarmonyPrefix]
             [HarmonyPatch(typeof(CustomScene), "Start")]
-            public static void CustomScene_Start()
+            public static void CustomScene_Start(CustomScene __instance)
             {
                 InsideMaker = Singleton<CustomBase>.Instance != null;
+
+                _modeSex = __instance.modeNew ? __instance.modeSex : __instance.chaFileCtrl.parameter.sex;
             }
 
             [HarmonyPrefix]
@@ -88,6 +90,7 @@ namespace KKAPI.Maker
                 OnMakerExiting();
                 InsideMaker = false;
                 InternalLastLoadedChaFile = null;
+                _modeSex = -1;
             }
 
             [HarmonyPrefix, HarmonyPatch(typeof(CustomCharaFile), "Initialize")]
@@ -112,6 +115,7 @@ namespace KKAPI.Maker
             }
 
             public static ChaFile InternalLastLoadedChaFile;
+            public static int _modeSex;
 
             [HarmonyPostfix]
 #if KKS
