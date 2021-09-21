@@ -1,9 +1,9 @@
 ﻿using ChaCustom;
 using HarmonyLib;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using BepInEx.Logging;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -131,7 +131,7 @@ namespace KKAPI.Maker
             if (accessoryRootObject == null) throw new ArgumentNullException(nameof(accessoryRootObject));
             var accessoryComponent = accessoryRootObject.GetComponent<ChaAccessoryComponent>();
             if (accessoryComponent == null) return -1;
-            return character.cusAcsCmp.ToList().IndexOf(accessoryComponent);
+            return Array.IndexOf(character.cusAcsCmp, accessoryComponent);
         }
 
         /// <summary>
@@ -140,10 +140,7 @@ namespace KKAPI.Maker
         [Obsolete]
         public static ChaAccessoryComponent GetAccessory(this ChaControl character, int accessoryIndex)
         {
-            if (accessoryIndex < 0 || accessoryIndex >= character.cusAcsCmp.Length)
-            {
-                return null;
-            }
+            if (accessoryIndex < 0 || accessoryIndex >= character.cusAcsCmp.Length) return null;
             return character.cusAcsCmp[accessoryIndex];
         }
 
@@ -154,7 +151,7 @@ namespace KKAPI.Maker
         public static int GetAccessoryIndex(this ChaAccessoryComponent accessoryComponent)
         {
             var chaControl = GetOwningChaControl(accessoryComponent);
-            return chaControl.cusAcsCmp.ToList().IndexOf(accessoryComponent);
+            return Array.IndexOf(chaControl.cusAcsCmp, accessoryComponent);
         }
 
         /// <summary>
@@ -190,10 +187,7 @@ namespace KKAPI.Maker
             var control = CustomBase.instance.chaCtrl;
             if (control == null) throw new InvalidOperationException("Chara Maker Not Ready");
             var parts = control.nowCoordinate.accessory.parts;
-            if (parts.Length <= index)
-            {
-                return new ChaFileAccessory.PartsInfo();
-            }
+            if (parts.Length <= index) return new ChaFileAccessory.PartsInfo();
             return parts[index];
         }
 
@@ -231,24 +225,28 @@ namespace KKAPI.Maker
         {
             try
             {
-                _moreAccessoriesType = Type.GetType("MoreAccessoriesKOI.MoreAccessories, MoreAccessories, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
+                _moreAccessoriesType = Type.GetType("MoreAccessoriesKOI.MoreAccessories, MoreAccessories, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", true);
 
                 if (_moreAccessoriesType != null)
                 {
                     _moreAccessoriesInstance = Object.FindObjectOfType(_moreAccessoriesType);
 
-                    var slotAddEvent = _moreAccessoriesType.GetEvent("onCharaMakerSlotAdded", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                    if (slotAddEvent != null)
+                    var version = ((BepInEx.BaseUnityPlugin)_moreAccessoriesInstance).Info.Metadata.Version;
+                    var minVersion = new Version(2, 0, 6);
+                    if (version >= minVersion)
                     {
-                        slotAddEvent.AddEventHandler(
-                            _moreAccessoriesInstance,
-                            new Action<int, Transform>((i, transform) => OnMakerAccSlotAdded(_moreAccessoriesInstance, i, transform)));
+                        var slotAddEvent = _moreAccessoriesType.GetEvent("onCharaMakerSlotAdded", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                        if (slotAddEvent != null)
+                        {
+                            slotAddEvent.AddEventHandler(
+                                _moreAccessoriesInstance,
+                                new Action<int, Transform>((i, transform) => OnMakerAccSlotAdded(_moreAccessoriesInstance, i, transform)));
+                            return;
+                        }
                     }
-                    else
-                    {
-                        _moreAccessoriesType = null;
-                        KoikatuAPI.Logger.LogWarning("WARNING: Your MoreAccesories is outdated! Some features won't work correctly until you update to the latest version.");
-                    }
+
+                    _moreAccessoriesType = null;
+                    KoikatuAPI.Logger.Log(LogLevel.Message | LogLevel.Warning, $"WARNING: MoreAccesories is outdated! Some features won't work until you update to v{minVersion} or later (Current verion: v{version}).");
                 }
             }
             catch (Exception e)
