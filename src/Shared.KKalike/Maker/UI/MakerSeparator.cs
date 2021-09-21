@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace KKAPI.Maker.UI
 {
@@ -39,6 +40,8 @@ namespace KKAPI.Maker.UI
         private static void MakeCopy()
         {
             _sourceSeparator = GetExistingControl("CustomScene/CustomRoot/FrontUIGroup/CustomUIGroup/CvsMenuTree/00_FaceTop/tglAll", "Separate").transform;
+            var layout = _sourceSeparator.GetComponent<LayoutElement>();
+            layout.flexibleWidth = 1;
         }
 
         /// <summary>

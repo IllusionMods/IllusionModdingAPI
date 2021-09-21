@@ -12,7 +12,8 @@ namespace KKAPI.Maker
             [HarmonyPatch(typeof(CustomAcsSelectKind), nameof(CustomAcsSelectKind.ChangeSlot))]
             public static void ChangeSlotPostfix(CustomAcsSelectKind __instance, int _no)
             {
-                OnSelectedMakerSlotChanged(__instance, _no);
+                if (CustomAcs != null)
+                    OnSelectedMakerSlotChanged(__instance, _no);
             }
 
             [HarmonyBefore(new string[] { "com.joan6694.kkplugins.moreaccessories" })]
@@ -62,6 +63,14 @@ namespace KKAPI.Maker
             public static void ChangeCopyAcsPostfix(CvsAccessoryChange __instance)
             {
                 OnChangeAcs(__instance, __instance.selSrc, __instance.selDst);
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPriority(Priority.First)]
+            [HarmonyPatch(typeof(CustomAcsChangeSlot), nameof(CustomAcsChangeSlot.Start))]
+            private static void CustomAcsChangeSlotPostfix(CustomAcsChangeSlot __instance)
+            {
+                CustomAcs = __instance;
             }
         }
     }

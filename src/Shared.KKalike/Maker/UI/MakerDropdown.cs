@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using BepInEx;
+﻿using BepInEx;
+using System.Linq;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -100,6 +100,9 @@ namespace KKAPI.Maker.UI
                 dropdown.RefreshShownValue();
                 SetValue(dropdown.value);
             }
+
+            var layout = tr.GetComponent<LayoutElement>();
+            layout.flexibleWidth = 1;
 
             return tr.gameObject;
         }

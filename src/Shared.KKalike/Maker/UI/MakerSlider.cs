@@ -170,6 +170,9 @@ namespace KKAPI.Maker.UI
 
             BufferedValueChanged.Subscribe(f => slider.value = f);
 
+            var layout = tr.GetComponent<LayoutElement>();
+            layout.flexibleWidth = 1;
+
             return tr.gameObject;
         }
 

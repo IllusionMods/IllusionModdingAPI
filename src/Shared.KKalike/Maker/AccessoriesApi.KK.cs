@@ -22,13 +22,7 @@ namespace KKAPI.Maker
         private static Type _moreAccessoriesType;
 
         private static CanvasGroup _accessorySlotCanvasGroup;
-
-        private static Func<int, CvsAccessory> _getCvsAccessory;
-        private static Func<int, ChaFileAccessory.PartsInfo> _getPartsInfo;
-        private static Func<int> _getCvsAccessoryCount;
-        private static Func<int> _getPartsCount;
-        private static Func<ChaControl, int, ChaAccessoryComponent> _getChaAccessoryCmp;
-        private static Func<ChaControl, ChaAccessoryComponent, int> _getChaAccessoryCmpIndex;
+        internal static CustomAcsChangeSlot CustomAcs { get; private set; }
 
         /// <summary>
         /// Returns true if the accessory tab in maker is currently selected.
@@ -85,14 +79,7 @@ namespace KKAPI.Maker
         {
             if (character == null) throw new ArgumentNullException(nameof(character));
 
-            if (!MoreAccessoriesInstalled) return character.objAccessory;
-
-            var dict = Traverse.Create(_moreAccessoriesInstance).Field("_accessoriesByChar").GetValue();
-            var m = dict.GetType().GetMethod("TryGetValue", AccessTools.allDeclared) ?? throw new ArgumentException("TryGetValue not found");
-            var parameters = new object[] { character.chaFile, null };
-            m.Invoke(dict, parameters);
-            var objs = Traverse.Create(parameters[1]).Field<ICollection<GameObject>>("objAccessory").Value;
-            return character.objAccessory.Concat(objs).ToArray();
+            return character.objAccessory;
         }
 
         /// <summary>
@@ -144,7 +131,7 @@ namespace KKAPI.Maker
             if (accessoryRootObject == null) throw new ArgumentNullException(nameof(accessoryRootObject));
             var accessoryComponent = accessoryRootObject.GetComponent<ChaAccessoryComponent>();
             if (accessoryComponent == null) return -1;
-            return _getChaAccessoryCmpIndex(character, accessoryComponent);
+            return character.cusAcsCmp.ToList().IndexOf(accessoryComponent);
         }
 
         /// <summary>
@@ -153,7 +140,11 @@ namespace KKAPI.Maker
         [Obsolete]
         public static ChaAccessoryComponent GetAccessory(this ChaControl character, int accessoryIndex)
         {
-            return _getChaAccessoryCmp(character, accessoryIndex);
+            if (accessoryIndex < 0 || accessoryIndex >= character.cusAcsCmp.Length)
+            {
+                return null;
+            }
+            return character.cusAcsCmp[accessoryIndex];
         }
 
         /// <summary>
@@ -163,7 +154,7 @@ namespace KKAPI.Maker
         public static int GetAccessoryIndex(this ChaAccessoryComponent accessoryComponent)
         {
             var chaControl = GetOwningChaControl(accessoryComponent);
-            return _getChaAccessoryCmpIndex(chaControl, accessoryComponent);
+            return chaControl.cusAcsCmp.ToList().IndexOf(accessoryComponent);
         }
 
         /// <summary>
@@ -173,8 +164,8 @@ namespace KKAPI.Maker
         [Obsolete]
         public static CvsAccessory GetCvsAccessory(int index)
         {
-            if (_getCvsAccessory == null) throw new InvalidOperationException("Can only call GetCvsAccessory when inside Chara Maker");
-            return _getCvsAccessory(index);
+            if (CustomAcs == null) throw new InvalidOperationException("Can only call GetCvsAccessory when inside Chara Maker");
+            return CustomAcs.cvsAccessory[index];
         }
 
         /*/// <summary>
@@ -195,8 +186,15 @@ namespace KKAPI.Maker
         [Obsolete]
         public static ChaFileAccessory.PartsInfo GetPartsInfo(int index)
         {
-            if (_getPartsInfo == null) throw new InvalidOperationException("Can only call GetPartsInfo when inside Chara Maker");
-            return _getPartsInfo(index);
+            if (!CustomBase.IsInstance()) throw new InvalidOperationException("Can only call GetPartsInfo when inside Chara Maker");
+            var control = CustomBase.instance.chaCtrl;
+            if (control == null) throw new InvalidOperationException("Chara Maker Not Ready");
+            var parts = control.nowCoordinate.accessory.parts;
+            if (parts.Length <= index)
+            {
+                return new ChaFileAccessory.PartsInfo();
+            }
+            return parts[index];
         }
 
         /// <summary>
@@ -206,8 +204,8 @@ namespace KKAPI.Maker
         [Obsolete]
         public static int GetCvsAccessoryCount()
         {
-            if (_getCvsAccessoryCount == null) return 0;
-            return _getCvsAccessoryCount.Invoke();
+            if (CustomAcs == null) return 0;
+            return CustomAcs.cvsAccessory.Length;
         }
 
         /// <summary>
@@ -227,33 +225,6 @@ namespace KKAPI.Maker
 
             MakerAPI.InsideMakerChanged += MakerAPI_InsideMakerChanged;
             MakerAPI.MakerFinishedLoading += (sender, args) => OnSelectedMakerSlotChanged(sender, 0);
-
-            if (MoreAccessoriesInstalled)
-            {
-                var getAccCmpM = AccessTools.Method(_moreAccessoriesType, "GetChaAccessoryComponent");
-                _getChaAccessoryCmp = (control, componentIndex) => (ChaAccessoryComponent)getAccCmpM.Invoke(_moreAccessoriesInstance, new object[] { control, componentIndex });
-
-                var getAccCmpIndexM = AccessTools.Method(_moreAccessoriesType, "GetChaAccessoryComponentIndex");
-                _getChaAccessoryCmpIndex = (control, component) => (int)getAccCmpIndexM.Invoke(_moreAccessoriesInstance, new object[] { control, component });
-
-                var getPartsInfoM = AccessTools.Method(_moreAccessoriesType, "GetPart");
-                _getPartsInfo = i => (ChaFileAccessory.PartsInfo)getPartsInfoM.Invoke(_moreAccessoriesInstance, new object[] { i });
-
-                var getPartsCountM = AccessTools.Method(_moreAccessoriesType, "GetPartsLength");
-                _getPartsCount = () =>
-                {
-                    if (MakerAPI.InsideAndLoaded)
-                        return (int)getPartsCountM.Invoke(_moreAccessoriesInstance, null);
-                    return 20;
-                };
-            }
-            else
-            {
-                _getChaAccessoryCmp = (control, i) => control.cusAcsCmp[i];
-                _getChaAccessoryCmpIndex = (control, component) => Array.IndexOf(control.cusAcsCmp, component);
-                _getPartsInfo = i => MakerAPI.GetCharacterControl().nowCoordinate.accessory.parts[i];
-                _getPartsCount = () => 20;
-            }
         }
 
         private static void DetectMoreAccessories()
@@ -292,33 +263,12 @@ namespace KKAPI.Maker
         {
             if (MakerAPI.InsideMaker)
             {
-                var cvsAccessoryField = AccessTools.Field(typeof(CustomAcsParentWindow), "cvsAccessory");
-                var cvsAccessories = (CvsAccessory[])cvsAccessoryField.GetValue(Object.FindObjectOfType<CustomAcsParentWindow>());
-
                 var changeSlot = Object.FindObjectOfType<CustomAcsChangeSlot>();
                 _accessorySlotCanvasGroup = changeSlot.GetComponent<CanvasGroup>();
-
-                if (MoreAccessoriesInstalled)
-                {
-                    var getCvsM = AccessTools.Method(_moreAccessoriesType, "GetCvsAccessory");
-                    _getCvsAccessory = i => (CvsAccessory)getCvsM.Invoke(_moreAccessoriesInstance, new object[] { i });
-
-                    var cvsCountM = AccessTools.Method(_moreAccessoriesType, "GetCvsAccessoryCount");
-                    _getCvsAccessoryCount = () => (int)cvsCountM.Invoke(_moreAccessoriesInstance, null);
-                }
-                else
-                {
-                    _getCvsAccessory = i => cvsAccessories[i];
-                    _getCvsAccessoryCount = () => 20; // MakerAPI.GetCharacterControl().GetAccessoryObjects().Length;
-                }
             }
             else
             {
                 _accessorySlotCanvasGroup = null;
-
-                _getCvsAccessory = null;
-                _getCvsAccessoryCount = null;
-
                 SelectedMakerAccSlot = -1;
             }
         }
@@ -428,7 +378,7 @@ namespace KKAPI.Maker
         internal static void AutomaticControlVisibility()
         {
             var slot = SelectedMakerAccSlot;
-            if (slot < 0 || slot >= _getPartsCount.Invoke())
+            if (slot < 0)
                 return;
             var partsinfo = GetPartsInfo(slot);
 

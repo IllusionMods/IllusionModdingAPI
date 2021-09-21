@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace KKAPI.Maker.UI
 {
@@ -85,6 +86,9 @@ namespace KKAPI.Maker.UI
             _instance = tr.GetComponentInChildren<TextMeshProUGUI>();
             _instance.text = Text;
             _instance.color = TextColor;
+
+            var layout = tr.GetComponent<LayoutElement>();
+            layout.flexibleWidth = 1;
 
             return tr.gameObject;
         }
