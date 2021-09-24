@@ -55,7 +55,7 @@ namespace KKAPI.Utilities
                 if (origAssembly != containingAssembly)
                 {
                     resourceNames = containingAssembly.GetManifestResourceNames().Where(str => str.EndsWith(resourceFileName)).Take(2).ToList();
-                    if (resourceNames.Count == 0) throw new IOException($"Could not find resource with name {resourceNames} inside assembly {containingAssembly} or {origAssembly} - make sure the name and assembly are correct. Two assemblies were checked likely because your method has been harmony patched");
+                    if (resourceNames.Count == 0) throw new IOException($"Could not find resource with name {resourceFileName} inside assembly {containingAssembly} or {origAssembly} - make sure the name and assembly are correct. Two assemblies were checked likely because your method has been harmony patched");
                 }
             }
 

@@ -23,6 +23,7 @@ namespace KKAPI.Studio.UI
         /// A 32x32 icon used for the button.
         /// You can find a template here
         /// https://github.com/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
+        /// For best performance and smallest size save your thumbnail as 8bit grayscale png (or indexed if you need colors) with no alpha channel.
         /// </param>
         /// <param name="initialValue">Initial state of the toggle.</param>
         /// <param name="onValueChanged">
