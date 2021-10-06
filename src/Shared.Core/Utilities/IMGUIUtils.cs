@@ -24,7 +24,7 @@ namespace KKAPI.Utilities
             if (SolidBoxTex == null)
             {
                 var windowBackground = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-#if KK || KKS || EC // Take the color correction filter into account (not applied in studio)
+#if KK || KKS // Take the color correction filter into account (not applied in studio)
                 windowBackground.SetPixel(0, 0, Studio.StudioAPI.InsideStudio ? new Color(0.4f, 0.4f, 0.4f) : new Color(0.84f, 0.84f, 0.84f));
 #else
                 windowBackground.SetPixel(0, 0, new Color(0.4f, 0.4f, 0.4f));
