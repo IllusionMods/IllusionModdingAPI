@@ -25,6 +25,10 @@ namespace KKAPI.Chara
 
                 var target2 = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.ReloadAsync) && info.GetParameters().Length >= 5);
                 i.Patch(target2, null, new HarmonyMethod(typeof(Hooks), nameof(ReloadAsyncPostHook)));
+#if KKS
+                var target2a = typeof(ChaControl).GetMethods().Single(info => info.Name == nameof(ChaControl.ReloadNoAsync) && info.GetParameters().Length >= 4);
+                i.Patch(target2a, null, new HarmonyMethod(typeof(Hooks), nameof(ReloadNoAsyncPostHook)));
+#endif
 
                 var target3 = typeof(ChaFile).GetMethods().Single(info => info.Name == nameof(ChaFile.CopyAll));
                 i.Patch(target3, null, new HarmonyMethod(typeof(Hooks), nameof(ChaFile_CopyChaFileHook)));
@@ -194,6 +198,17 @@ namespace KKAPI.Chara
 
                 var original = __result;
                 __result = new[] { original, DelayedReloadChara(__instance) }.GetEnumerator();
+            }
+
+            public static void ReloadNoAsyncPostHook(bool noChangeClothes, bool noChangeHead, bool noChangeHair, bool noChangeBody, ChaControl __instance)
+            {
+                KoikatuAPI.Logger.LogInfo($"Reloading: {__instance.chaFile.parameter.fullname} {IsCurrentlyReloading(__instance)}");
+
+                if (noChangeClothes || noChangeHead || noChangeHair || noChangeBody) return;
+                if (IsCurrentlyReloading(__instance)) return;
+
+                ReloadChara(__instance);
+
             }
 
             /// <summary>
