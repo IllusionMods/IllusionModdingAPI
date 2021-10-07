@@ -2,6 +2,7 @@
 using HarmonyLib;
 using Illusion.Extensions;
 using System.Collections;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -91,7 +92,9 @@ namespace KKAPI.Maker.UI
             tgl.group = mainCategory.transform.GetComponent<ToggleGroup>();
 
             var cgroup = trTop.GetComponent<CanvasGroup>();
-            mainCategory.items = mainCategory.items.AddToArray(new UI_ToggleGroupCtrl.ItemInfo { tglItem = tgl, cgItem = cgroup });
+            // There's an item with null contents in body tab that makes UI code crash when switching tabs when custom page is selected
+            // it looks useless so remove it
+            mainCategory.items = mainCategory.items.Where(x => x.tglItem != null).AddItem(new UI_ToggleGroupCtrl.ItemInfo { tglItem = tgl, cgItem = cgroup }).ToArray();
 
             KoikatuAPI.Instance.StartCoroutine(FinishInit(trTop));
 
