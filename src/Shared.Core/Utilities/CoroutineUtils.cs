@@ -185,22 +185,40 @@ namespace KKAPI.Utilities
         }
 
         /// <summary>
-        /// Find the compiler-generated MoveNext method that contains the coroutine code. It can be used to apply transpliers to coroutines.
-        /// Note: When writing transpliers for coroutines you might want to turn off the "Decompiler\DecoDecompile enumerators" setting in DnSpy so that you can see the real code.
+        /// Find the compiler-generated MoveNext method that contains the Coroutine/UniTask code. It can be used to apply transpliers to Coroutines and UniTasks.
+        /// Note: When writing transpliers for coroutines you might want to turn off the "Decompiler\Decompile enumerators" setting in DnSpy so that you can see the real code.
+        /// UniTasks are considered "async/await" so you need to turn off the "Decompile async methods" setting instead.
         /// </summary>
         public static MethodInfo GetMoveNext(MethodBase targetMethod)
         {
             var ctx = new ILContext(new DynamicMethodDefinition(targetMethod).Definition);
             var il = new ILCursor(ctx);
-            MethodReference enumeratorCtor = null;
-            il.GotoNext(instruction => instruction.MatchNewobj(out enumeratorCtor));
-            if (enumeratorCtor == null) throw new ArgumentNullException(nameof(enumeratorCtor));
-            if (enumeratorCtor.Name != ".ctor")
-                throw new ArgumentException($"Unexpected method name {enumeratorCtor.Name}, should be .ctor", nameof(enumeratorCtor));
 
-            var enumeratorType = enumeratorCtor.DeclaringType.ResolveReflection();
+            Type enumeratorType;
+#if !PH && !KK
+            if (il.Method.ReturnType.Name == "UniTask")
+            {
+                enumeratorType = il.Body.Variables[0].VariableType.ResolveReflection();
+                if (!enumeratorType.Name.Contains(targetMethod.Name))
+                    throw new ArgumentException($"Unexpected type name {enumeratorType.Name}, should contain {targetMethod.Name}");
+            }
+            else
+#endif
+            {
+                MethodReference enumeratorCtor = null;
+                il.GotoNext(instruction => instruction.MatchNewobj(out enumeratorCtor));
+                if (enumeratorCtor == null) throw new ArgumentNullException(nameof(enumeratorCtor));
+                if (enumeratorCtor.Name != ".ctor")
+                    throw new ArgumentException($"Unexpected method name {enumeratorCtor.Name}, should be .ctor", nameof(enumeratorCtor));
+
+                enumeratorType = enumeratorCtor.DeclaringType.ResolveReflection();
+            }
+
             var movenext = enumeratorType.GetMethod("MoveNext", AccessTools.all);
             if (movenext == null) throw new ArgumentNullException(nameof(movenext));
+            
+            KoikatuAPI.Logger.LogDebug($"GetMoveNext found [{movenext.FullDescription()}] for [{targetMethod.FullDescription()}]");
+            
             return movenext;
         }
 
