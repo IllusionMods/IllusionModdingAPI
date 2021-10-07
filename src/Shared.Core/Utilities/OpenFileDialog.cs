@@ -17,7 +17,7 @@ namespace KKAPI.Utilities
         /// <summary>
         /// Arguments used for opening a single file
         /// </summary>
-        public const OpenSaveFileDialgueFlags SingleFileFlags = OpenSaveFileDialgueFlags.OFN_FILEMUSTEXIST | OpenSaveFileDialgueFlags.OFN_LONGNAMES | OpenSaveFileDialgueFlags.OFN_EXPLORER;
+        public const OpenSaveFileDialgueFlags SingleFileFlags = OpenSaveFileDialgueFlags.OFN_FILEMUSTEXIST | OpenSaveFileDialgueFlags.OFN_LONGNAMES | OpenSaveFileDialgueFlags.OFN_EXPLORER | OpenSaveFileDialgueFlags.OFN_NOCHANGEDIR;
 
         /// <summary>
         /// Arguments used for opening multiple files
@@ -82,10 +82,29 @@ namespace KKAPI.Utilities
                 owner = NativeMethods.GetActiveWindow();
             ofn.dlgOwner = owner;
 
-            // Save and restore working directory after GetOpenFileName changes it
+            // Pause the game when the dialog is opened (it takes the focus). More efficient and less possible side effects.
+            var currentRunInBackground = UnityEngine.Application.runInBackground;
+            UnityEngine.Application.runInBackground = false;
+
+            // Save and restore working directory since GetOpenFileName changes it for no good reason
             var currentWorkingDirectory = Environment.CurrentDirectory;
+            var run = true;
+            BepInEx.ThreadingHelper.Instance.StartAsyncInvoke(() =>
+            {
+                // Brute force seems to be the only viable way to prevent the current directory from getting changed
+                // Needed for compat with code running on different threads (including main unity thread) that uses relative paths
+                // This produces a ton of garbage and loads up one core, but `runInBackground = false` makes it much less of a problem
+                // Yes, this is horrible, if you know of a better way then do share
+                while (run) Environment.CurrentDirectory = currentWorkingDirectory;
+                return null;
+            });
+
             var success = NativeMethods.GetOpenFileName(ofn);
+
+            run = false;
             Environment.CurrentDirectory = currentWorkingDirectory;
+            UnityEngine.Application.runInBackground = currentRunInBackground;
+
             if (success)
             {
                 var selectedFilesList = new List<string>();
