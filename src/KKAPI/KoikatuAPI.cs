@@ -91,5 +91,14 @@ namespace KKAPI
         {
             return typeof(ChaControl).GetProperty("exType", AccessTools.all) != null;
         }
+
+        private static readonly bool _isVr = Application.productName == VRProcessName || Application.productName == VRProcessNameSteam;
+        /// <summary>
+        /// Check if this is the official VR module. Main game VR mods are ignored (returns false).
+        /// </summary>
+        public static bool IsVR()
+        {
+            return _isVr;
+        }
     }
 }

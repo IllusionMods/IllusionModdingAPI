@@ -86,5 +86,14 @@ namespace KKAPI
         //{
         //    return GameSystem.Instance.cultureNames.Length > 1;
         //}
+
+        private static readonly bool _isVr = Application.productName == VRProcessName;
+        /// <summary>
+        /// Check if this is the official VR module. Main game VR mods are ignored (returns false).
+        /// </summary>
+        public static bool IsVR()
+        {
+            return _isVr;
+        }
     }
 }
