@@ -56,6 +56,24 @@ namespace KKAPI.MainGame
         public static event EventHandler<GameSaveLoadEventArgs> GameSave;
 
         /// <summary>
+        /// Triggered when the current day changes in story mode.
+        /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
+        /// </summary>
+        public static event EventHandler<DayChangeEventArgs> DayChange;
+        
+        /// <summary>
+        /// Triggered when the current time of the day changes in story mode.
+        /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
+        /// </summary>
+        public static event EventHandler<PeriodChangeEventArgs> PeriodChange;
+        
+        /// <summary>
+        /// Triggered when a new game is started in story mode.
+        /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
+        /// </summary>
+        public static event EventHandler NewGame;
+
+        /// <summary>
         /// True if any sort of H scene is currently loaded.
         /// </summary>
         public static bool InsideHScene { get; private set; }
@@ -364,6 +382,15 @@ namespace KKAPI.MainGame
                     KoikatuAPI.Logger.LogError(e);
                 }
             }
+
+            try
+            {
+                DayChange?.Invoke(KoikatuAPI.Instance, new DayChangeEventArgs(day));
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError(e);
+            }
         }
 
         private static void OnPeriodChange(Cycle.Type period)
@@ -378,6 +405,15 @@ namespace KKAPI.MainGame
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
+            }
+
+            try
+            {
+                PeriodChange?.Invoke(KoikatuAPI.Instance, new PeriodChangeEventArgs(period));
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError(e);
             }
         }
 
@@ -394,6 +430,35 @@ namespace KKAPI.MainGame
                     KoikatuAPI.Logger.LogError(e);
                 }
             }
+
+            try
+            {
+                NewGame?.Invoke(KoikatuAPI.Instance, EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError(e);
+            }
+        }
+
+        public class DayChangeEventArgs : EventArgs
+        {
+            public DayChangeEventArgs(Cycle.Week newDay)
+            {
+                NewDay = newDay;
+            }
+
+            public Cycle.Week NewDay { get; }
+        }
+
+        public class PeriodChangeEventArgs : EventArgs
+        {
+            public PeriodChangeEventArgs(Cycle.Type period)
+            {
+                NewPeriod = period;
+            }
+
+            public Cycle.Type NewPeriod { get; }
         }
     }
 }
