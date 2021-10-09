@@ -8,6 +8,7 @@ using BepInEx.Bootstrap;
 using HarmonyLib;
 using Illusion.Component;
 using KKAPI.Studio;
+using KKAPI.Utilities;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -484,6 +485,43 @@ namespace KKAPI.MainGame
 #elif KKS
             return ActionControl.initialized ? ActionControl.instance.actionScene?.AdvScene : null;
 #endif
+        }
+
+        /// <summary>
+        /// Gets the TalkScene instance if it's initialized, null otherwise
+        /// </summary>
+        public static TalkScene GetTalkScene()
+        {
+            return GameObject.FindObjectOfType<TalkScene>();
+        }
+
+        /// <summary>
+        /// Find heroine that is currently in focus (in a talk or adv scene, leading girl in H scene).
+        /// null if not found.
+        /// </summary>
+        public static SaveData.Heroine GetCurrentHeroine()
+        {
+            var advScene = GetADVScene();
+            if (advScene != null)
+            {
+                if (advScene.Scenario != null && advScene.Scenario.currentHeroine != null)
+                    return advScene.Scenario.currentHeroine;
+                if (advScene.nowScene is TalkScene s && s.targetHeroine != null)
+                    return s.targetHeroine;
+            }
+
+            var hFlag = GameObject.FindObjectOfType<HFlag>();
+            if (hFlag != null)
+                return hFlag.GetLeadingHeroine();
+            
+            var talkScene = GetTalkScene();
+            if (talkScene != null)
+            {
+                var result = talkScene.targetHeroine;
+                if (result != null) return result;
+            }
+
+            return null;
         }
     }
 }

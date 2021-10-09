@@ -8,6 +8,8 @@ using BepInEx.Bootstrap;
 using HarmonyLib;
 using Illusion.Component;
 using KKAPI.Studio;
+using KKAPI.Utilities;
+using Manager;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -61,13 +63,13 @@ namespace KKAPI.MainGame
         /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
         /// </summary>
         public static event EventHandler<DayChangeEventArgs> DayChange;
-        
+
         /// <summary>
         /// Triggered when the current time of the day changes in story mode.
         /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
         /// </summary>
         public static event EventHandler<PeriodChangeEventArgs> PeriodChange;
-        
+
         /// <summary>
         /// Triggered when a new game is started in story mode.
         /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
@@ -454,7 +456,7 @@ namespace KKAPI.MainGame
 
             public Cycle.Type NewPeriod { get; }
         }
-        
+
         /// <summary>
         /// Gets the ActionControl instance if it's initialized, null otherwise
         /// </summary>
@@ -466,7 +468,7 @@ namespace KKAPI.MainGame
             return ActionControl.initialized ? ActionControl.instance : null;
 #endif
         }
-        
+
         /// <summary>
         /// Gets the ADVScene instance if it's initialized, null otherwise
         /// </summary>
@@ -477,6 +479,43 @@ namespace KKAPI.MainGame
 #elif KKS
             return ActionControl.initialized ? ActionControl.instance.actionScene?.AdvScene : null;
 #endif
+        }
+
+        /// <summary>
+        /// Gets the TalkScene instance if it's initialized, null otherwise
+        /// </summary>
+        public static TalkScene GetTalkScene()
+        {
+            return TalkScene.initialized ? TalkScene.instance : null;
+        }
+
+        /// <summary>
+        /// Find heroine that is currently in focus (in a talk or adv scene, leading girl in H scene).
+        /// null if not found.
+        /// </summary>
+        public static SaveData.Heroine GetCurrentHeroine()
+        {
+            var advScene = GetADVScene();
+            if (advScene != null)
+            {
+                if (advScene.Scenario != null && advScene.Scenario.currentHeroine != null)
+                    return advScene.Scenario.currentHeroine;
+                if (advScene.nowScene is TalkScene s && s.targetHeroine != null)
+                    return s.targetHeroine;
+            }
+
+            var hFlag = GameObject.FindObjectOfType<HFlag>();
+            if (hFlag != null)
+                return hFlag.GetLeadingHeroine();
+            
+            var talkScene = GetTalkScene();
+            if (talkScene != null)
+            {
+                var result = talkScene.targetHeroine;
+                if (result != null) return result;
+            }
+
+            return null;
         }
     }
 }
