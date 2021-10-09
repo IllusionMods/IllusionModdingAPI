@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ActionGame;
+using ADV;
 using BepInEx.Bootstrap;
 using HarmonyLib;
 using Illusion.Component;
@@ -459,6 +460,30 @@ namespace KKAPI.MainGame
             }
 
             public Cycle.Type NewPeriod { get; }
+        }
+
+        /// <summary>
+        /// Gets the ActionControl instance if it's initialized, null otherwise
+        /// </summary>
+        public static ActionControl GetActionControl()
+        {
+#if KK
+            return Manager.Game.IsInstance() ? Manager.Game.Instance.actScene?.actCtrl : null;
+#elif KKS
+            return ActionControl.initialized ? ActionControl.instance : null;
+#endif
+        }
+        
+        /// <summary>
+        /// Gets the ADVScene instance if it's initialized, null otherwise
+        /// </summary>
+        public static ADVScene GetADVScene()
+        {
+#if KK
+            return Manager.Game.IsInstance() ? Manager.Game.Instance.actScene?.advScene : null;
+#elif KKS
+            return ActionControl.initialized ? ActionControl.instance.actionScene?.AdvScene : null;
+#endif
         }
     }
 }
