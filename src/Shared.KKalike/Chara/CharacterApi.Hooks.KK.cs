@@ -202,13 +202,10 @@ namespace KKAPI.Chara
 
             public static void ReloadNoAsyncPostHook(bool noChangeClothes, bool noChangeHead, bool noChangeHair, bool noChangeBody, ChaControl __instance)
             {
-                KoikatuAPI.Logger.LogInfo($"Reloading: {__instance.chaFile.parameter.fullname} {IsCurrentlyReloading(__instance)}");
-
                 if (noChangeClothes || noChangeHead || noChangeHair || noChangeBody) return;
                 if (IsCurrentlyReloading(__instance)) return;
 
                 ReloadChara(__instance);
-
             }
 
             /// <summary>
