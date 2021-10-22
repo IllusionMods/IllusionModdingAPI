@@ -515,6 +515,14 @@ namespace KKAPI.MainGame
                 if (result != null) return result;
             }
 
+            // In event
+            if (Manager.Character.dictEntryChara?.Count > 0)
+            {
+                // Main event char is usually (not always) the first one.
+                // Also will pull the currently visible character, like the teacher or the mom.
+                return Manager.Character.dictEntryChara[0]?.GetHeroine();
+            }
+
             return null;
         }
     }
