@@ -478,7 +478,7 @@ namespace KKAPI.Maker
                 return false;
 
             // Check if the loading screen is currently visible
-            if (GetIsNowLoadingFade())
+            if (SceneApi.GetIsNowLoadingFade())
                 return false;
 
 #if KK || KKS || EC
@@ -489,29 +489,11 @@ namespace KKAPI.Maker
 
             // Check if settings screen, game exit message box or similar are on top of the maker UI
             // In KK class maker the AddSceneName is set to CustomScene, but in normal maker it's empty
-            var addScene = GetAddSceneName();
-            if (!string.IsNullOrEmpty(addScene) && addScene != "CustomScene")
+            var addScene = SceneApi.GetAddSceneName();
+            if (!string.IsNullOrEmpty(addScene) && addScene != "CustomScene" || SceneApi.GetIsOverlap())
                 return false;
 
             return true;
-        }
-
-        private static string GetAddSceneName()
-        {
-#if HS2 || KKS
-            return Manager.Scene.AddSceneName;
-#else
-            return Manager.Scene.Instance.AddSceneName;
-#endif
-        }
-
-        private static bool GetIsNowLoadingFade()
-        {
-#if HS2 || KKS
-            return Manager.Scene.IsNowLoadingFade;
-#else
-            return Manager.Scene.Instance.IsNowLoadingFade;
-#endif
         }
     }
 }
