@@ -493,7 +493,17 @@ namespace KKAPI.Maker
             if (!string.IsNullOrEmpty(addScene) && addScene != "CustomScene" || SceneApi.GetIsOverlap())
                 return false;
 
+#if KK || KKS || EC
+            // Exit maker / save character dialog boxes
+            if (!ccwGo)
+                ccwGo = GameObject.FindObjectOfType<CustomCheckWindow>()?.gameObject;
+            if (ccwGo && ccwGo.activeSelf)
+                return false;
+#endif
+
             return true;
         }
+
+        private static GameObject ccwGo;
     }
 }
