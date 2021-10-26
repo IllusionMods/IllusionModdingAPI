@@ -496,8 +496,8 @@ namespace KKAPI.Maker
 #if KK || KKS || EC
             // Exit maker / save character dialog boxes
             if (!ccwGo)
-                ccwGo = GameObject.FindObjectOfType<CustomCheckWindow>()?.gameObject;
-            if (ccwGo && ccwGo.activeSelf)
+                ccwGo = GameObject.FindObjectOfType<CustomChangeSystemMenu>()?.checkWindow.gameObject;
+            else if (ccwGo.activeSelf)
                 return false;
 #endif
 
