@@ -1,10 +1,9 @@
-﻿using ChaCustom;
+﻿using BepInEx.Logging;
+using ChaCustom;
 using HarmonyLib;
 using System;
 using System.Linq;
 using System.Reflection;
-using BepInEx.Logging;
-using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #pragma warning disable 612
@@ -332,13 +331,17 @@ namespace KKAPI.Maker
             if (AccessoriesCopied == null && !KoikatuAPI.EnableDebugLogging) return;
             try
             {
-                var selected = instance.GetComponentsInChildren<UnityEngine.UI.Toggle>()
-                    .Where(x => x.isOn)
-                    .Select(x => x.transform.parent.name)
-                    .Select(n => int.Parse(n.Substring("kind".Length)))
-                    .ToList();
+                var toggles = instance.tglKind;
+                var selected = new System.Collections.Generic.List<int>();
+                for (var i = 0; i < toggles.Length; i++)
+                {
+                    if (toggles[i].isOn)
+                    {
+                        selected.Add(i);
+                    }
+                }
 
-                var dropdowns = Traverse.Create(instance).Field("ddCoordeType").GetValue<TMP_Dropdown[]>();
+                var dropdowns = instance.ddCoordeType;
 
                 var args = new AccessoryCopyEventArgs(selected, (ChaFileDefine.CoordinateType)dropdowns[1].value, (ChaFileDefine.CoordinateType)dropdowns[0].value);
 
