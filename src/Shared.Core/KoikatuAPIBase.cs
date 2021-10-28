@@ -1,10 +1,15 @@
-﻿using System;
+﻿#if AI||HS2||KKS
+#define QUITTING_EVENT_AVAILABLE
+#endif
+
+using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using HarmonyLib;
 using KKAPI.Utilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -50,6 +55,20 @@ namespace KKAPI
 
         internal static KoikatuAPI Instance { get; private set; }
         internal static new ManualLogSource Logger { get; private set; }
+
+        /// <summary>
+        /// Can be used to detect if application is currently quitting.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if application is quitting; otherwise, <c>false</c>.
+        /// </value>
+        public static bool IsQuitting { get; internal set; }
+
+        /// <summary>
+        /// Occurs when application is quitting. Plugins can use this to do things like stop outstanding coroutines to
+        /// prevent shutdown delays.
+        /// </summary>
+        public event EventHandler Quitting;
 
         /// <summary>
         /// Needs to be called at the start of Awake
@@ -120,6 +139,12 @@ namespace KKAPI
                     }
                 });
             }
+
+#if QUITTING_EVENT_AVAILABLE
+            UnityEngine.Application.quitting += () => OnQuitting(EventArgs.Empty);
+#else
+            Harmony.CreateAndPatchAll(typeof(SharedHooks), $"{GetType().FullName}.{nameof(SharedHooks)}");
+#endif
         }
 
         /// <summary>
@@ -205,5 +230,32 @@ namespace KKAPI
             //if (!EnableDebugLogging) return;
             Logger.LogWarning("Assertion failed: " + error + "\nat: " + new System.Diagnostics.StackTrace(1));
         }
+
+        internal void OnQuitting(EventArgs e)
+        {
+            IsQuitting = true;
+            Quitting?.Invoke(this, e);
+        }
+
+
+#if !QUITTING_EVENT_AVAILABLE
+        private static class SharedHooks
+        {
+
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(Manager.Scene), nameof(Manager.Scene.GameExit))]
+            private static void GameExitPrefix()
+            {
+                try
+                {
+                    Instance.OnQuitting(EventArgs.Empty);
+                }
+                catch (Exception err)
+                {
+                    Logger.LogError($"Unexpected error during game exit: {err.Message}\n at {err.StackTrace}");
+                }
+            }
+        }
+#endif
     }
 }

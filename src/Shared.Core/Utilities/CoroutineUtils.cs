@@ -245,5 +245,106 @@ namespace KKAPI.Utilities
         /// Cached WaitForEndOfFrame. Use instead of creating a new instance every time to reduce garbage production.
         /// </summary>
         public static readonly WaitForEndOfFrame WaitForEndOfFrame = new WaitForEndOfFrame();
+
+        /// <summary>
+        /// Suspends the coroutine execution for the duration of the given yield instruction, or until game is quitting.
+        /// </summary>
+        public abstract class ShutdownSafeYieldInstruction : CustomYieldInstruction
+        {
+            private readonly CustomYieldInstruction _innerYieldInstruction;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ShutdownSafeYieldInstruction"/> class.
+            /// </summary>
+            /// <param name="yieldInstruction">The yield instruction to wait for.</param>
+            protected ShutdownSafeYieldInstruction(CustomYieldInstruction yieldInstruction)
+            {
+                _innerYieldInstruction = yieldInstruction;
+            }
+
+            /// <inheritdoc />
+            public override bool keepWaiting => !KoikatuAPI.IsQuitting && _innerYieldInstruction.keepWaiting;
+        }
+
+        /// <summary>
+        /// Suspends the coroutine execution for the given amount of seconds using scaled time, or until game is quitting.
+        /// Should check <see cref="KoikatuAPI.IsQuitting"/> after using.
+        /// </summary>
+        /// <seealso cref="WaitForSeconds"/>
+        public class ShutdownSafeWaitForSeconds : IEnumerator
+        {
+            private readonly float _seconds;
+            private float _endTime = -1f;
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ShutdownSafeWaitForSeconds"/> class.
+            /// </summary>
+            /// <param name="seconds">The given amount of seconds that the yield instruction will wait for.</param>
+            public ShutdownSafeWaitForSeconds(float seconds)
+            {
+                _seconds = seconds;
+            }
+
+            /// <inheritdoc />
+            public bool MoveNext()
+            {
+                if (KoikatuAPI.IsQuitting) return false;
+                if (_endTime < 0f) _endTime = Time.time + _seconds;
+                if (Time.time < _endTime) return true;
+                // reset once timeout reached so it can be used again like WaitForSeconds
+                Reset();
+                return false;
+            }
+
+            /// <inheritdoc />
+            public void Reset()
+            {
+                _endTime = -1f;
+            }
+
+            /// <inheritdoc />
+            public object Current => null;
+        }
+
+        /// <summary>
+        /// Suspends the coroutine execution for the given amount of seconds using unscaled time, or until game is quitting.
+        /// Should check <see cref="KoikatuAPI.IsQuitting"/> after using.
+        /// </summary>
+        /// <seealso cref="WaitForSecondsRealtime"/>
+        public class ShutdownSafeWaitForSecondsRealtime : ShutdownSafeYieldInstruction
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ShutdownSafeWaitForSecondsRealtime"/> class.
+            /// </summary>
+            /// <param name="time">The given amount of seconds that the yield instruction will wait for.</param>
+            public ShutdownSafeWaitForSecondsRealtime(float time) : base(new WaitForSecondsRealtime(time)) { }
+        }
+
+        /// <summary>
+        /// Suspends the coroutine execution until the supplied delegate evaluates to <c>false</c> or the game is quitting.
+        /// Should check <see cref="KoikatuAPI.IsQuitting"/> after using.
+        /// </summary>
+        /// <seealso cref="WaitWhile"/>
+        public class ShutdownSafeWaitWhile : ShutdownSafeYieldInstruction
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ShutdownSafeWaitWhile"/> class.
+            /// </summary>
+            /// <param name="predicate">The predicate to evaluate.</param>
+            public ShutdownSafeWaitWhile(Func<bool> predicate) : base(new WaitWhile(predicate)) { }
+        }
+
+        /// <summary>
+        /// Suspends the coroutine execution until the supplied delegate evaluates to <c>true</c> or the game is quitting.
+        /// Should check <see cref="KoikatuAPI.IsQuitting"/> after using.
+        /// </summary>
+        /// <seealso cref="WaitUntil"/>
+        public class ShutdownSafeWaitUntil : ShutdownSafeYieldInstruction
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ShutdownSafeWaitUntil"/> class.
+            /// </summary>
+            /// <param name="predicate">The predicate to evaluate.</param>
+            public ShutdownSafeWaitUntil(Func<bool> predicate) : base(new WaitUntil(predicate)) { }
+        }
     }
 }
