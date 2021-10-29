@@ -234,7 +234,7 @@ namespace KKAPI
 
         internal void OnQuitting(EventArgs e)
         {
-            if (EnableDebugLogging) Logger.LogWarning("KoikatuAPI - OnQuitting");
+            Logger.LogDebug("The game is quitting!");
             IsQuitting = true;
             Quitting?.Invoke(this, e);
         }
