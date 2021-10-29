@@ -250,7 +250,7 @@ namespace KKAPI.Utilities
         /// Create a coroutine that is the same as the supplied coroutine, but will stop early if <see cref="KoikatuAPI.IsQuitting"/> is <c>true</c>.
         /// If the coroutine returns another coroutine, the <see cref="KoikatuAPI.IsQuitting"/> check only runs on the topmost one. Use <see cref="FlattenCo" /> if that's an issue.
         /// </summary>
-        public static IEnumerator StopOnQuit(this IEnumerator enumerator)
+        public static IEnumerator StopCoOnQuit(this IEnumerator enumerator)
         {
             while (!KoikatuAPI.IsQuitting && enumerator.MoveNext())
             {
