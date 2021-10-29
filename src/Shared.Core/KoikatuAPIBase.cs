@@ -1,4 +1,4 @@
-﻿#if AI||HS2||KKS
+#if !PH && !KK && !EC
 #define QUITTING_EVENT_AVAILABLE
 #endif
 
