@@ -37,6 +37,8 @@ namespace KKAPI
             StudioAPI.Init(insideStudio);
             CharacterApi.Init();
             GameAPI.Init(insideStudio);
+
+            GlobalHooks.Init();
         }
 
         private void Start()
@@ -81,6 +83,26 @@ namespace KKAPI
         public static bool IsVR()
         {
             return _isVr;
+        }
+
+        private static class GlobalHooks
+        {
+            public static void Init()
+            {
+                Harmony.CreateAndPatchAll(typeof(GlobalHooks));
+            }
+
+            /// <summary>
+            /// UniTasks can fail silently if an exception is thrown and it bubbles all the way up to a unity event method that was made async.
+            /// This enusres that the exception is logged. Only warning because it might be manually caught or it might not be in an unity event, in both cases not causing a silent crash.
+            /// </summary>
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(Cysharp.Threading.Tasks.ExceptionHolder), nameof(Cysharp.Threading.Tasks.ExceptionHolder.GetException))]
+            private static void LogUnitaskException(System.Runtime.ExceptionServices.ExceptionDispatchInfo __result)
+            {
+                if (__result != null)
+                    UnityEngine.Debug.LogWarning("Exception has been thrown inside a UniTask, it might crash the task!\n" + __result.SourceException);
+            }
         }
     }
 }
