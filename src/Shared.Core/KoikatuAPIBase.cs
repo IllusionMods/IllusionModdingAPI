@@ -69,7 +69,7 @@ namespace KKAPI
         /// Plugins can use this to do things like write config files and caches, or stop outstanding coroutines to prevent shutdown delays.
         /// Note: This event might not fire if the game isn't closed cleanly (hard crashes, killed process, closing the console window, etc.).
         /// </summary>
-        public event EventHandler Quitting;
+        public static event EventHandler Quitting;
 
         /// <summary>
         /// Needs to be called at the start of Awake
