@@ -196,7 +196,7 @@ namespace KKAPI.Utilities
 
             Type enumeratorType;
 #if !PH && !KK
-            if (il.Method.ReturnType.Name == "UniTask")
+            if (il.Method.ReturnType.Name.StartsWith("UniTask"))
             {
                 enumeratorType = il.Body.Variables[0].VariableType.ResolveReflection();
                 if (!enumeratorType.Name.Contains(targetMethod.Name))
