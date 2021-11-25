@@ -101,7 +101,14 @@ namespace KKAPI
             private static void LogUnitaskException(System.Runtime.ExceptionServices.ExceptionDispatchInfo __result)
             {
                 if (__result != null)
-                    UnityEngine.Debug.LogWarning("Exception has been thrown inside a UniTask, it might crash the task!\n" + __result.SourceException);
+                    UnityEngine.Debug.LogWarning("Exception has been thrown inside a UniTask, it might crash the task if not caught! (ExceptionHolder.GetException)\n" + __result.SourceException);
+            }
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder), nameof(Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.SetException))]
+            private static void LogUnitaskException(Exception exception)
+            {
+                if (exception != null && !(exception is OperationCanceledException))
+                    UnityEngine.Debug.LogWarning("Exception has been thrown inside a UniTask, it might crash the task if not caught! (AsyncUniTaskMethodBuilder.SetException)\n" + exception);
             }
         }
     }
