@@ -223,10 +223,10 @@ namespace KKAPI.Utilities
         }
 
         /// <summary>
-        /// Use to patch coroutines/yielding methods.
-        /// This will method automatically find the compiler-generated MoveNext method that contains the coroutine code and apply patches on that. The method you patch must return an IEnumerator.
+        /// Used to patch coroutines/IEnumerator methods and async UniTask methods.
+        /// This will method automatically find the compiler-generated MoveNext method that contains the coroutine code and apply patches on that. The method you patch must return an IEnumerator or an UniTask.
         /// Warning: Postfix patches will not work as expected, they might be fired after every iteration. Prefix is practically the same as prefixing the entry method. It's best to only use transpliers with this method.
-        /// Note: When writing transpliers for coroutines you might want to turn off the "Decompiler\DecoDecompile enumerators" setting in DnSpy so that you can see the real code.
+        /// Note: When writing transpliers you might want to turn off the "Decompiler\Decompile enumerators/async" settings in DnSpy so that you can see the real code.
         /// </summary>
         /// <inheritdoc cref="Harmony.Patch(MethodBase,HarmonyMethod,HarmonyMethod,HarmonyMethod,HarmonyMethod,HarmonyMethod)"/>
         public static MethodInfo PatchMoveNext(this Harmony harmonyInstance,
