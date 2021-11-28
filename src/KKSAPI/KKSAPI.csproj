@@ -180,6 +180,7 @@
   <ItemGroup>
     <Compile Include="KoikatuAPI.cs" />
     <Compile Include="MainGame\ActionIcons\CustomActionIcon.cs" />
+    <Compile Include="MainGame\StoreApi.cs" />
     <Compile Include="MainGame\Events\GameSaveLoadEventArgs.cs" />
     <Compile Include="MainGame\GameApi.cs" />
     <Compile Include="MainGame\GameAPI.Hooks.cs" />
