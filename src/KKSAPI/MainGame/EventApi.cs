@@ -27,6 +27,69 @@ namespace KKAPI.MainGame
     public static class EventApi
     {
         /// <summary>
+        /// Use as Text owner to get the neutral white text used to describe the situation
+        /// </summary>
+        public const string Narrator = "";
+
+        /// <summary>
+        /// Returns empty on default character. Not sure what's the intended use, could be used to set text to player's color while not having player name appear
+        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
+        /// </summary>
+        public const string Player = "[P]";
+
+        /// <summary>
+        /// Returns empty on default character. Avoid using, better to use PlayerFullName
+        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
+        /// </summary>
+        public const string PlayerSurname = "[P姓]";
+
+        /// <summary>
+        /// Should be used when indicating who is speaking
+        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
+        /// </summary>
+        public const string PlayerName = "[P名]";
+
+        /// <summary>
+        /// Name + Surname. Returns same as PlayerName on default character since he has no surname
+        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
+        /// </summary>
+        public const string PlayerFullName = "[P名前]";
+
+        /// <summary>
+        /// Nickname. Doesn't seem to work, not set with Program.SetParam?
+        /// </summary>
+        public const string PlayerNickname = "[Pあだ名]";
+
+        /// <summary>
+        /// Avoid using, not sure what's the use
+        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
+        /// </summary>
+        public const string Heroine = "[H]";
+
+        /// <summary>
+        /// Some characters might not have a surname, safer to use HeroineFullName
+        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
+        /// </summary>
+        public const string HeroineSurname = "[H姓]";
+
+        /// <summary>
+        /// Should be used when indicating who is speaking
+        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
+        /// </summary>
+        public const string HeroineName = "[H名]";
+
+        /// <summary>
+        /// Name + Surname
+        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
+        /// </summary>
+        public const string HeroineFullName = "[H名前]";
+
+        /// <summary>
+        /// Nickname. Doesn't seem to work, not set with Program.SetParam?
+        /// </summary>
+        public const string HeroineNickname = "[Hあだ名]";
+
+        /// <summary>
         /// Get current save data of the player
         /// </summary>
         public static SaveData.Player GetPlayerData()
@@ -37,7 +100,7 @@ namespace KKAPI.MainGame
         /// <summary>
         /// Helper for creating a new event command list. Sets up player variables automatically.
         /// </summary>
-        /// <param name="waitForSceneFade">Stop processing inputs until any Scene.Fade finishes (<see cref="Command.SceneFadeRegulate"/>, <see cref="Command.SceneFade"/>).</param>
+        /// <param name="waitForSceneFade">Stop processing inputs until any Scene.Fade finishes (<see cref="Command.SceneFadeRegulate"/>, <see cref="Command.SceneFade"/>). If true, game might lock up in some cases.</param>
         /// <param name="setPlayerParam">Automatically add any vars of the player to the start of the list (Program.SetParam). You still need to add any Heroine params either through code or by selecting the character with the <see cref="Command.CharaChange"/> command.</param>
         public static List<Program.Transfer> CreateNewEvent(bool waitForSceneFade = false, bool setPlayerParam = true)
         {
@@ -51,59 +114,6 @@ namespace KKAPI.MainGame
 
             return list;
         }
-
-        /// <summary>
-        /// Use as Text owner to get the neutral white text used to describe the situation
-        /// </summary>
-        public const string Narrator = "";
-        /// <summary>
-        /// Returns empty on default character. Not sure what's the intended use, could be used to set text to player's color while not having player name appear
-        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
-        /// </summary>
-        public const string Player = "[P]";
-        /// <summary>
-        /// Returns empty on default character. Avoid using, better to use PlayerFullName
-        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
-        /// </summary>
-        public const string PlayerSurname = "[P姓]";
-        /// <summary>
-        /// Should be used when indicating who is speaking
-        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
-        /// </summary>
-        public const string PlayerName = "[P名]";
-        /// <summary>
-        /// Name + Surname. Returns same as PlayerName on default character since he has no surname
-        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
-        /// </summary>
-        public const string PlayerFullName = "[P名前]";
-        /// <summary>
-        /// Nickname. Doesn't seem to work, not set with Program.SetParam?
-        /// </summary>
-        public const string PlayerNickname = "[Pあだ名]";
-        /// <summary>
-        /// Avoid using, not sure what's the use
-        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
-        /// </summary>
-        public const string Heroine = "[H]";
-        /// <summary>
-        /// Some characters might not have a surname, safer to use HeroineFullName
-        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
-        /// </summary>
-        public const string HeroineSurname = "[H姓]";
-        /// <summary>
-        /// Should be used when indicating who is speaking
-        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
-        /// </summary>
-        public const string HeroineName = "[H名]";
-        /// <summary>
-        /// Name + Surname
-        /// Need to do Program.SetParam and/or Command.CharaChange on player/heroine for this to work
-        /// </summary>
-        public const string HeroineFullName = "[H名前]";
-        /// <summary>
-        /// Nickname. Doesn't seem to work, not set with Program.SetParam?
-        /// </summary>
-        public const string HeroineNickname = "[Hあだ名]";
 
         /// <summary>
         /// Start a new ADV event inside of a TalkScene (same as stock game events when talking).
@@ -149,7 +159,7 @@ namespace KKAPI.MainGame
 
             if (talkScene.transVoice != null)
             {
-                Manager.Voice.Stop(talkScene.transVoice);
+                Voice.Stop(talkScene.transVoice);
                 talkScene.transVoice = null;
             }
 
@@ -220,7 +230,7 @@ namespace KKAPI.MainGame
                 }
                 if (list.All(x => x.param.Command != Command.SceneFade && x.param.Args.FirstOrDefault()?.ToLower() != "out"))
                 {
-                    list.Insert(1, Program.Transfer.Create(false, Command.SceneFade, new string[] { "out" }));
+                    list.Insert(1, Program.Transfer.Create(false, Command.SceneFade, "out"));
                     UnityEngine.Debug.LogWarning("No 'SceneFade out' command in the transfer list! Adding 'SceneFade out' at start to prevent lockup. Add 'SceneFade out' after you are done with initializing the scene and before first text to fix this.");
                 }
                 if (list.All(x => x.param.Command != Command.SceneFade && x.param.Args.FirstOrDefault()?.ToLower() != "in"))
@@ -230,10 +240,10 @@ namespace KKAPI.MainGame
 
                 // Fade out of the gameplay into a loading screen
                 //Scene.sceneFadeCanvas.SetColor(Color.black);
-                yield return Scene.sceneFadeCanvas.StartFadeAysnc(FadeCanvas.Fade.In, false).ToCoroutine(UnityEngine.Debug.LogException);
+                yield return Scene.sceneFadeCanvas.StartFadeAysnc(FadeCanvas.Fade.In).ToCoroutine(UnityEngine.Debug.LogException);
             }
 
-            list.Insert(1, Program.Transfer.Create(true, Command.CameraSetFov, new string[] { Program.BASE_FOV }));
+            list.Insert(1, Program.Transfer.Create(true, Command.CameraSetFov, Program.BASE_FOV));
 
             // Disable all characters to make sure nothing weird happens while the scene runs
             actScene.Player.SetActive(false);
@@ -259,7 +269,7 @@ namespace KKAPI.MainGame
             }, token, extraData).ToCoroutine(UnityEngine.Debug.LogException);
 
             // Wait until the scene is done
-            yield return UniTask.WaitUntil(() => isOpenADV, PlayerLoopTiming.Update, token).ToCoroutine(UnityEngine.Debug.LogException); ;
+            yield return UniTask.WaitUntil(() => isOpenADV, PlayerLoopTiming.Update, token).ToCoroutine(UnityEngine.Debug.LogException);
             yield return Program.Wait(string.Empty, token).ToCoroutine(UnityEngine.Debug.LogException);
 
             // Reenable all characters
@@ -276,7 +286,7 @@ namespace KKAPI.MainGame
             if (actScene.fixChara != null) actScene.fixChara.SetActive(actScene.fixChara.mapNo == actScene.Map.no);
 
             // Fade back to gameplay, assuming the script faded to loading screen, does nothing otherwise
-            yield return Scene.sceneFadeCanvas.StartFadeAysnc(FadeCanvas.Fade.Out, false).ToCoroutine(UnityEngine.Debug.LogException);
+            yield return Scene.sceneFadeCanvas.StartFadeAysnc(FadeCanvas.Fade.Out).ToCoroutine(UnityEngine.Debug.LogException);
             Scene.sceneFadeCanvas.DefaultColor();
             yield return Illusion.Game.Utils.Sound.GetFadePlayerWhileNull(prevBGM, prevVolume).ToCoroutine(UnityEngine.Debug.LogException);
 
