@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>ModdingAPI</RootNamespace>
     <AssemblyName>KKSAPI</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>

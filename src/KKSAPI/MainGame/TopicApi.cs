@@ -50,37 +50,38 @@ namespace KKAPI.MainGame
         {
             /// <summary>
             /// Used for topics related to playing and lazing around.
-            /// Can randomly drop if the rarity is 3 or lower.
             /// Can be traded for in the topic exchange shop.
+            /// ??? Can randomly drop if the rarity is <see cref="TopicRarity.Rarity3"/> or lower. (is it a predefined drop table?)
             /// Shown with an icon of beach sunbed and umbrella.
             /// </summary>
             Leisure = 0,
             /// <summary>
             /// Used for topics related to nature.
-            /// Can randomly drop if the rarity is 3 or lower.
             /// Can be traded for in the topic exchange shop.
+            /// ??? Can randomly drop if the rarity is <see cref="TopicRarity.Rarity3"/> or lower. (is it a predefined drop table?)
             /// Shown with an icon of a flower.
             /// </summary>
             Nature = 1,
             /// <summary>
             /// Used for topics related to the sea and sea creatures.
-            /// Can randomly drop if the rarity is 3 or lower.
             /// Can be traded for in the topic exchange shop.
+            /// ??? Can randomly drop if the rarity is <see cref="TopicRarity.Rarity3"/> or lower. (is it a predefined drop table?)
             /// Shown with an icon of a shell.
             /// </summary>
             Sealife = 2,
             /// <summary>
             /// Used for topics related to the occult and traditions.
-            /// Can randomly drop if the rarity is 3 or lower.
             /// Can be traded for in the topic exchange shop.
+            /// ??? Can randomly drop if the rarity is <see cref="TopicRarity.Rarity3"/> or lower. (is it a predefined drop table?)
             /// Shown with an icon of a weird painted face.
             /// </summary>
             Occult = 3,
             /// <summary>
             /// Used for topics related to love and eros.
             /// Topics with this category will not appear when talking with NPCs (island girl), with virgins, or if the R18 patch is not installed.
-            /// Can randomly drop if the rarity is 3 or lower.
-            /// Can NOT be traded for in the topic exchange shop. In base game these topics are only obtainable through special means. You can use <see cref="TopicApi.AddTopicToInventory"/> to add them.
+            /// ??? Can randomly drop if the rarity is <see cref="TopicRarity.Rarity3"/> or lower. (is it a predefined drop table?)
+            /// Can NOT be traded for in the topic exchange shop.
+            /// If the rarity is <see cref="TopicRarity.Rarity3"/> or <see cref="TopicRarity.Rarity4"/>, it can be randomly bought in night shop with the "Ask for a random topic" item.
             /// Shown with an icon of hearts.
             /// </summary>
             Love = 4,
@@ -98,19 +99,19 @@ namespace KKAPI.MainGame
             /// <summary>
             /// Can drop on the map.
             /// </summary>
-            Rarity2,
+            Rarity2 = 1,
             /// <summary>
             /// Can only drop if player has the "good topic drops" prayer effect.
             /// </summary>
-            Rarity3,
+            Rarity3 = 2,
             /// <summary>
             /// Can't drop. It needs to be added through code or obtained through the topic merge shop.
             /// </summary>
-            Rarity4,
+            Rarity4 = 3,
             /// <summary>
             /// Can't drop. It needs to be added through code or obtained through the topic merge shop.
             /// </summary>
-            Rarity5,
+            Rarity5 = 4,
         }
 
         private static readonly Dictionary<int, CustomTopicInfo> _customTopics = new Dictionary<int, CustomTopicInfo>();
@@ -118,7 +119,7 @@ namespace KKAPI.MainGame
         /// <summary>
         /// Add a custom topic to the game.
         /// Custom topics can not be asked about by heroines when using the "listen" option, and selecting a custom topic as an answer will always result in failing the prompt. You can only use custom topics when talking to the heroine (speech bubble icon).
-        /// If you want your topic to not be obtainable outside of giving it to the player through code, you need to set rarity to <see cref="TopicRarity.Rarity4"/> or higher, and category to <see cref="TopicCategory.Love"/>.
+        /// If you want your topic to not be obtainable outside of giving it to the player through code, you need to set rarity to <see cref="TopicRarity.Rarity4"/> or higher (unless the category is <see cref="TopicCategory.Love"/>, then it has to be <see cref="TopicRarity.Rarity5"/>. (??? drop tables would make it safe as long as it's not buyable)
         /// </summary>
         /// <param name="topicNo">Unique ID of the topic.
         /// This ID is used in the save file to keep track of owned and used topics, so it has to always be the same between game starts (i.e. use a hardcoded number and never change it).

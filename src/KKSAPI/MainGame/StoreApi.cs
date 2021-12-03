@@ -32,11 +32,11 @@ namespace KKAPI.MainGame
             /// <summary>
             /// Used for special items that usually don't restock after day ends (they might permanently unlock actions on the map or other features).
             /// </summary>
-            Yellow = 0,
+            Yellow = 1,
             /// <summary>
             /// Used for lewd items that may be permanent unlocks (e.g. new touch options), or single use and restock after day ends (e.g. pills).
             /// </summary>
-            Pink = 0,
+            Pink = 2,
         }
 
         /// <summary>
@@ -206,16 +206,36 @@ namespace KKAPI.MainGame
         /// This value can be manually changed with <see cref="SetItemAmountBought"/>.
         /// This can be used as an inventory, just be careful to avoid ID conflicts with real existing items.
         /// If the item is set to restock every day it will get its count reset to 0 at the start of a new day when you click the "Go out" button in your room.
+        /// You can use <see cref="GetShopItemEffect(int)"/> to check which restockable items were bought on the previous day.
         /// </summary>
         public static int GetItemAmountBought(int itemId)
         {
             if (StudioAPI.InsideStudio) return 0;
 
-            if (Game.Player != null &&
-                Game.Player.buyNumTable != null &&
-                Game.Player.buyNumTable.TryGetValue(itemId, out var num))
-                return num;
+            if (Game.Player != null)
+            {
+                if (Game.Player.buyNumTable != null &&
+                    Game.Player.buyNumTable.TryGetValue(itemId, out var buyNum))
+                    return buyNum;
+            }
+            return 0;
+        }
 
+        /// <summary>
+        /// Check how many store items with this ID were bought on this save file on the previous day.
+        /// Only works with items set as resetsDaily=true (restock every day).
+        /// Updates when player clicks "Go out" at the start of day. Immediately after buying (before new day start) you can use <see cref="GetItemAmountBought(int)"/> instead.
+        /// </summary>
+        public static int GetShopItemEffect(int itemId)
+        {
+            if (StudioAPI.InsideStudio) return 0;
+
+            if (Game.Player != null)
+            {
+                if (Game.saveData?.shopItemEffect != null &&
+                    Game.saveData.shopItemEffect.TryGetValue(itemId, out var effNum))
+                    return effNum;
+            }
             return 0;
         }
 

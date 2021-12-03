@@ -6,6 +6,7 @@ using System.Threading;
 using ADV;
 using Cysharp.Threading.Tasks;
 using Manager;
+using Sound;
 using UnityEngine;
 
 namespace KKAPI.MainGame
@@ -131,14 +132,13 @@ namespace KKAPI.MainGame
                 throw new ArgumentNullException(nameof(talkScene), "Has to be ran inside of a TalkScene");
             if (talkScene.targetHeroine == null)
                 throw new ArgumentNullException(nameof(talkScene.targetHeroine), "Heroine in TalkScene is null somehow?");
+            
+            var token = talkScene.cancellation.Token;
+            token.ThrowIfCancellationRequested();
 
             var list = commands.ToList();
-
             // Auto load all parameters of the TalkScene heroine
             list.Insert(0, Program.Transfer.Create(true, Command.CharaChange, "-2", "true"));
-
-            // todo handle this properly? Used when going back to title screen from F1 menu and possibly other places. Possibly not a problem since we run as a coroutine?
-            var token = CancellationToken.None;
 
             talkScene.canvas.enabled = false;
             talkScene.raycast.enabled = false;
@@ -214,11 +214,7 @@ namespace KKAPI.MainGame
 
             var prevBGM = string.Empty;
             var prevVolume = 1f;
-            yield return Illusion.Game.Utils.Sound.GetBGMandVolume(x =>
-            {
-                prevBGM = x.Item1;
-                prevVolume = x.Item2;
-            }).ToCoroutine(UnityEngine.Debug.LogException);
+            yield return TuplelessGetBgmAndVolume((x, y) => { prevBGM = x; prevVolume = y; });
 
             if (fadeIn)
             {
@@ -327,11 +323,7 @@ namespace KKAPI.MainGame
 
             var prevBGM = string.Empty;
             var prevVolume = 1f;
-            yield return Illusion.Game.Utils.Sound.GetBGMandVolume(x =>
-            {
-                prevBGM = x.Item1;
-                prevVolume = x.Item2;
-            }).ToCoroutine(UnityEngine.Debug.LogException);
+            yield return TuplelessGetBgmAndVolume((x, y) => { prevBGM = x; prevVolume = y; });
 
             ActionScene instance = SingletonInitializer<ActionScene>.instance;
             Transform transform = Camera.main.transform;
@@ -368,6 +360,68 @@ namespace KKAPI.MainGame
 
             // Reenable player controls
             actScene.Player.isActionNow = false;
+        }
+
+        // Needed because original method has a ValueTuple in the signature and .Net 4.6 mscorlib is missing it,
+        // but we can't go up to 4.7.2 where it exists because all plugins referencing this one would need to go up to that version as well
+        private static IEnumerator TuplelessGetBgmAndVolume(Action<string, float> callback)
+        {
+            var currentBgm = Illusion.Game.Utils.Sound.GetBGM();
+            if (currentBgm != null)
+            {
+                var src = currentBgm.GetComponent<AudioSource>();
+                var fp = src.GetComponent<FadePlayer>();
+                yield return new WaitWhile(() => fp != null && !(fp.nowState is FadePlayer.Playing));
+                callback(currentBgm.bundle, src.volume);
+            }
+            else
+            {
+                callback(string.Empty, 1f);
+            }
+        }
+
+        /// <summary>
+        /// Reads value of a variable from the ADV VAR dictionary.
+        /// </summary>
+        /// <typeparam name="T">Type of the value.</typeparam>
+        /// <param name="advvars">The VAR dictionary.</param>
+        /// <param name="varName">Name of the variable to get.</param>
+        /// <param name="value">Value of the variable if it exists and is of a type equal to or convertible to <typeparamref name="T"/>. If the variable isn't defined or is null, a default value is returned.</param>
+        /// <returns>True if the value exists and its value could be read, false otherwise.</returns>
+        public static bool TryGetVarValue<T>(this Dictionary<string, ValData> advvars, string varName, out T value) where T : IConvertible
+        {
+            if (advvars == null) throw new ArgumentNullException(nameof(advvars));
+            if (varName == null) throw new ArgumentNullException(nameof(varName));
+
+            if (advvars.TryGetValue(varName, out var var))
+            {
+                // If type matches, great, otherwise try converting to it (e.g. byte -> int32)
+                if (var.o is null)
+                {
+                    value = default;
+                    return true;
+                }
+                else if (var.o is T casted)
+                {
+                    value = casted;
+                    return true;
+                }
+                else
+                {
+                    try
+                    {
+                        value = (T)Convert.ChangeType(var.o, typeof(T));
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        UnityEngine.Debug.Log($"Could not convert VAR name={varName} from type={var.o.GetType().Name} to type={typeof(T).Name} - {ex.Message}");
+                    }
+                }
+            }
+
+            value = default;
+            return false;
         }
     }
 }
