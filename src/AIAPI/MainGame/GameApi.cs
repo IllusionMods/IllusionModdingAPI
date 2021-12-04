@@ -47,6 +47,11 @@ namespace KKAPI.MainGame
         public static bool InsideHScene { get; private set; }
 
         /// <summary>
+        /// True if the game is in process of being saved.
+        /// </summary>
+        public static bool GameBeingSaved { get; private set; }
+
+        /// <summary>
         /// Get all registered behaviours for the game.
         /// </summary>
         public static IEnumerable<GameCustomFunctionController> GetBehaviours()

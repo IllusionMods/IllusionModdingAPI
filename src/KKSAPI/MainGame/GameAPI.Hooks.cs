@@ -34,7 +34,15 @@ namespace KKAPI.MainGame
             [HarmonyPatch(typeof(SaveData.WorldData), nameof(SaveData.WorldData.Save), new[] { typeof(string), typeof(string) })]
             public static void SaveHook(string path, string fileName)
             {
+                GameBeingSaved = true;
                 OnGameBeingSaved(path, fileName);
+            }
+
+            [HarmonyFinalizer]
+            [HarmonyPatch(typeof(SaveData.WorldData), nameof(SaveData.WorldData.Save), new[] { typeof(string), typeof(string) })]
+            public static void SaveHookPost()
+            {
+                GameBeingSaved = false;
             }
 
             [HarmonyPostfix]
