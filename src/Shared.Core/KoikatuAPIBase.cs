@@ -47,7 +47,11 @@ namespace KKAPI
         [System.ComponentModel.Browsable(false)]
         public static bool EnableDebugLogging
         {
+#if DEBUG
+            get => true;
+#else
             get => EnableDebugLoggingSetting.Value;
+#endif
             set => EnableDebugLoggingSetting.Value = value;
         }
 
@@ -230,6 +234,9 @@ namespace KKAPI
             //todo uncomment? or keep commented for easier future debugging? 
             //if (!EnableDebugLogging) return;
             Logger.LogWarning("Assertion failed: " + error + "\nat: " + new System.Diagnostics.StackTrace(1));
+#if DEBUG
+            System.Diagnostics.Debugger.Break();
+#endif
         }
 
         internal void OnQuitting(EventArgs e)

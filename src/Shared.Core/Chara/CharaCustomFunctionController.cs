@@ -90,48 +90,48 @@ namespace KKAPI.Chara
             if (ExtendedDataId == null) throw new ArgumentException(nameof(ExtendedDataId));
             ExtendedSave.SetExtendedDataById(ChaFileControl, ExtendedDataId, data);
 
-#if KK //todo || KKS 
-            // Needed for propagating changes back to the original charFile since they don't get copied back.
-            var heroine = ChaControl.GetHeroine();
-            if (heroine != null)
+#if KK || KKS
+            if (KoikatuAPI.GetCurrentGameMode() == GameMode.MainGame)
             {
-                ExtendedSave.SetExtendedDataById(heroine.charFile, ExtendedDataId, data);
-
-                if (ChaControl != heroine.chaCtrl)
+                // In main game store ext data for the character inside of the main chaFile object (the one that gets saved to game saves).
+                // This allows saving ext data inside talk scenes and H scenes without losing it after exiting to main map.
+                var heroine = ChaControl.GetHeroine();
+                if (heroine != null)
                 {
-                    ExtendedSave.SetExtendedDataById(heroine.chaCtrl.chaFile, ExtendedDataId, data);
+                    ExtendedSave.SetExtendedDataById(heroine.charFile, ExtendedDataId, data);
 
-                    // Update other instance to reflect the new ext data
-                    var other = heroine.chaCtrl.GetComponent(GetType()) as CharaCustomFunctionController;
-                    if (other != null) other.OnReloadInternal(KoikatuAPI.GetCurrentGameMode());
+                    if (ChaControl != heroine.chaCtrl)
+                    {
+                        ExtendedSave.SetExtendedDataById(heroine.chaCtrl.chaFile, ExtendedDataId, data);
+                        // Update other instance to reflect the new ext data
+                        CharacterApi.Hooks.SetDirty(heroine, true);
+
+                    }
+
+                    var npc = heroine.GetNPC();
+                    if (npc != null && npc.chaCtrl != null && npc.chaCtrl != ChaControl && npc.chaCtrl != heroine.chaCtrl)
+                    {
+                        ExtendedSave.SetExtendedDataById(npc.chaCtrl.chaFile, ExtendedDataId, data);
+                        // Update other instance to reflect the new ext data
+                        CharacterApi.Hooks.SetDirty(heroine, true);
+                    }
                 }
-
-                var npc = heroine.GetNPC();
-                if (npc != null && npc.chaCtrl != null && npc.chaCtrl != ChaControl)
+                else
                 {
-                    ExtendedSave.SetExtendedDataById(npc.chaCtrl.chaFile, ExtendedDataId, data);
+                    var player = ChaControl.GetPlayer();
+                    if (player != null)
+                    {
+                        ExtendedSave.SetExtendedDataById(player.charFile, ExtendedDataId, data);
 
-                    // Update other instance to reflect the new ext data
-                    var other = npc.chaCtrl.GetComponent(GetType()) as CharaCustomFunctionController;
-                    if (other != null) other.OnReloadInternal(KoikatuAPI.GetCurrentGameMode());
+                        if (ChaControl != player.chaCtrl)
+                        {
+                            ExtendedSave.SetExtendedDataById(player.chaCtrl.chaFile, ExtendedDataId, data);
+                            // Update other instance to reflect the new ext data
+                            CharacterApi.Hooks.SetDirty(player, true);
+                        }
+                    }
                 }
             }
-
-            var player = ChaControl.GetPlayer();
-            if (player != null)
-            {
-                ExtendedSave.SetExtendedDataById(player.charFile, ExtendedDataId, data);
-
-                if (ChaControl != player.chaCtrl)
-                {
-                    ExtendedSave.SetExtendedDataById(player.chaCtrl.chaFile, ExtendedDataId, data);
-
-                    // Update other instance to reflect the new ext data
-                    var other = player.chaCtrl.GetComponent(GetType()) as CharaCustomFunctionController;
-                    if (other != null) other.OnReloadInternal(KoikatuAPI.GetCurrentGameMode());
-                }
-            }
-
 #endif
         }
 
@@ -174,6 +174,7 @@ namespace KKAPI.Chara
         /// </summary>
         protected abstract void OnCardBeingSaved(GameMode currentGameMode);
 
+        internal void OnCardBeingSavedInternal() => OnCardBeingSavedInternal(KoikatuAPI.GetCurrentGameMode());
         internal void OnCardBeingSavedInternal(GameMode gamemode)
         {
             if (!_wasLoaded)
@@ -220,8 +221,13 @@ namespace KKAPI.Chara
         /// <param name="currentGameMode">Game mode we are currently in</param>
         protected virtual void OnReload(GameMode currentGameMode) { }
 
+        internal void OnReloadInternal() => OnReloadInternal(KoikatuAPI.GetCurrentGameMode());
         internal void OnReloadInternal(GameMode currentGameMode)
         {
+#if KK || KKS
+            if (currentGameMode == GameMode.MainGame)
+                CharacterApi.Hooks.SetDirty(ChaControl.GetHeroine(), false);
+#endif
             try
             {
                 if (!ControllerRegistration.MaintainState)
@@ -237,15 +243,15 @@ namespace KKAPI.Chara
             }
         }
 
-       // issue with stopallcoroutines
-       // todo hook startcoroutine and check if active, if not then show stack trace
-       ///// <summary>
-       ///// Hides base StartCoroutine and runs it on the plugin instance
-       ///// </summary>
-       //public new Coroutine StartCoroutine(IEnumerator routine)
-       //{
-       //    return KKAPI.KoikatuAPI.Instance.StartCoroutine(routine);
-       //}
+        // issue with stopallcoroutines
+        // todo hook startcoroutine and check if active, if not then show stack trace
+        ///// <summary>
+        ///// Hides base StartCoroutine and runs it on the plugin instance
+        ///// </summary>
+        //public new Coroutine StartCoroutine(IEnumerator routine)
+        //{
+        //    return KKAPI.KoikatuAPI.Instance.StartCoroutine(routine);
+        //}
 
         /// <summary>
         /// Fired just before current coordinate is saved to a coordinate card. Use <see cref="SetCoordinateExtendedData"/> to save data to it. 
@@ -367,10 +373,11 @@ namespace KKAPI.Chara
             OnReloadInternal(KoikatuAPI.GetCurrentGameMode());
         }
 
-        #region New ExtData //todo backpropagating in KK story mode, copy whole data blocks?
+        #region New ExtData
 
         private ChaFileCoordinate GetCoordinate(int coordinateId)
         {
+            // Get coord from the current ChaControl since it can be temporarily changed and would mess up ext data of clothes inside heroine.chaCtrl if we saved there
             KoikatuAPI.Assert(ChaControl.nowCoordinate != null, "ChaControl.nowCoordinate != null");
 #if KK || KKS
             return (coordinateId < 0 ? ChaControl.nowCoordinate : ChaFileControl.coordinate[coordinateId]);
@@ -378,6 +385,33 @@ namespace KKAPI.Chara
             if (coordinateId > 0) KoikatuAPI.Logger.LogWarning("This game doesn't support multiple coordinates, nowCoordinate will be used!\n" + new System.Diagnostics.StackTrace());
             return ChaControl.nowCoordinate;
 #endif
+        }
+
+        private ChaFile GetExtDataTargetChaFile(bool setDirty)
+        {
+#if KK || KKS
+            // In main game store ext data for the character inside of the main chaFile object (the one that gets saved to game saves) instead of its copies.
+            // This allows saving ext data inside talk scenes and H scenes without losing it after exiting to main map.
+            if (KoikatuAPI.GetCurrentGameMode() == GameMode.MainGame)
+            {
+                var heroine = ChaControl.GetHeroine();
+                if (heroine != null)
+                {
+                    if (setDirty)
+                        CharacterApi.Hooks.SetDirty(heroine, true);
+                    return heroine.charFile;
+                }
+
+                var player = ChaControl.GetPlayer();
+                if (player != null)
+                {
+                    if (setDirty)
+                        CharacterApi.Hooks.SetDirty(player, true);
+                    return player.charFile;
+                }
+            }
+#endif
+            return ChaFileControl;
         }
 
         /// <summary>
@@ -427,9 +461,10 @@ namespace KKAPI.Chara
         /// </summary>
         public PluginData GetBodyExtData()
         {
-            KoikatuAPI.Assert(ChaFileControl.custom != null, "ChaFileControl.custom != null");
-            KoikatuAPI.Assert(ChaFileControl.custom.body != null, "ChaFileControl.custom.body != null");
-            ChaFileControl.custom.body.TryGetExtendedDataById(ExtendedDataId, out var data);
+            var chafile = GetExtDataTargetChaFile(false);
+            KoikatuAPI.Assert(chafile.custom != null, "chafile.custom != null");
+            KoikatuAPI.Assert(chafile.custom.body != null, "chafile.custom.body != null");
+            chafile.custom.body.TryGetExtendedDataById(ExtendedDataId, out var data);
             return data;
         }
         /// <summary>
@@ -442,9 +477,10 @@ namespace KKAPI.Chara
         /// </summary>
         public PluginData GetFaceExtData()
         {
-            KoikatuAPI.Assert(ChaFileControl.custom != null, "ChaFileControl.custom != null");
-            KoikatuAPI.Assert(ChaFileControl.custom.face != null, "ChaFileControl.custom.face != null");
-            ChaFileControl.custom.face.TryGetExtendedDataById(ExtendedDataId, out var data);
+            var chafile = GetExtDataTargetChaFile(false);
+            KoikatuAPI.Assert(chafile.custom != null, "chafile.custom != null");
+            KoikatuAPI.Assert(chafile.custom.face != null, "chafile.custom.face != null");
+            chafile.custom.face.TryGetExtendedDataById(ExtendedDataId, out var data);
             return data;
         }
         /// <summary>
@@ -457,8 +493,9 @@ namespace KKAPI.Chara
         /// </summary>
         public PluginData GetParameterExtData()
         {
-            KoikatuAPI.Assert(ChaFileControl.parameter != null, "ChaFileControl.parameter != null");
-            ChaFileControl.parameter.TryGetExtendedDataById(ExtendedDataId, out var data);
+            var chafile = GetExtDataTargetChaFile(false);
+            KoikatuAPI.Assert(chafile.parameter != null, "chafile.parameter != null");
+            chafile.parameter.TryGetExtendedDataById(ExtendedDataId, out var data);
             return data;
         }
 
@@ -502,9 +539,13 @@ namespace KKAPI.Chara
         /// <param name="data">Extended data to save.</param>
         public void SetBodyExtData(PluginData data)
         {
-            KoikatuAPI.Assert(ChaFileControl.custom != null, "ChaFileControl.custom != null");
-            KoikatuAPI.Assert(ChaFileControl.custom.body != null, "ChaFileControl.custom.body != null");
-            ChaFileControl.custom.body.SetExtendedDataById(ExtendedDataId, data);
+            var chafile = GetExtDataTargetChaFile(true);
+            KoikatuAPI.Assert(chafile.custom != null, "chafile.custom != null");
+            KoikatuAPI.Assert(chafile.custom.body != null, "chafile.custom.body != null");
+            chafile.custom.body.SetExtendedDataById(ExtendedDataId, data);
+            // Save both to the main chafile and to the current instance in case it gets saved by something
+            if (chafile != ChaFileControl)
+                ChaFileControl.custom.body.SetExtendedDataById(ExtendedDataId, data);
         }
         /// <summary>
         /// Set extended data for character's face (face sliders, eye settings).
@@ -514,9 +555,13 @@ namespace KKAPI.Chara
         /// <param name="data">Extended data to save.</param>
         public void SetFaceExtData(PluginData data)
         {
-            KoikatuAPI.Assert(ChaFileControl.custom != null, "ChaFileControl.custom != null");
-            KoikatuAPI.Assert(ChaFileControl.custom.face != null, "ChaFileControl.custom.face != null");
-            ChaFileControl.custom.face.SetExtendedDataById(ExtendedDataId, data);
+            var chafile = GetExtDataTargetChaFile(true);
+            KoikatuAPI.Assert(chafile.custom != null, "chafile.custom != null");
+            KoikatuAPI.Assert(chafile.custom.face != null, "chafile.custom.face != null");
+            chafile.custom.face.SetExtendedDataById(ExtendedDataId, data);
+            // Save both to the main chafile and to the current instance in case it gets saved by something
+            if (chafile != ChaFileControl)
+                ChaFileControl.custom.face.SetExtendedDataById(ExtendedDataId, data);
         }
         /// <summary>
         /// Set extended data for character's parameters (personality, preferences, traits).
@@ -526,8 +571,12 @@ namespace KKAPI.Chara
         /// <param name="data">Extended data to save.</param>
         public void SetParameterExtData(PluginData data)
         {
-            KoikatuAPI.Assert(ChaFileControl.parameter != null, "ChaFileControl.parameter != null");
-            ChaFileControl.parameter.SetExtendedDataById(ExtendedDataId, data);
+            var chafile = GetExtDataTargetChaFile(true);
+            KoikatuAPI.Assert(chafile.parameter != null, "chafile.parameter != null");
+            chafile.parameter.SetExtendedDataById(ExtendedDataId, data);
+            // Save both to the main chafile and to the current instance in case it gets saved by something
+            if (chafile != ChaFileControl)
+                ChaFileControl.parameter.SetExtendedDataById(ExtendedDataId, data);
         }
 
         #endregion

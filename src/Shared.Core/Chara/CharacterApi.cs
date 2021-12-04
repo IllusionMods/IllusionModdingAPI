@@ -216,7 +216,7 @@ namespace KKAPI.Chara
             };
 
             if (KoikatuAPI.EnableDebugLogging)
-                RegisterExtraBehaviour<TestCharaCustomFunctionController>(null);
+                RegisterExtraBehaviour<TestCharaCustomFunctionController>(nameof(TestCharaCustomFunctionController));
         }
 
         private static void CreateOrAddBehaviours(ChaControl target)

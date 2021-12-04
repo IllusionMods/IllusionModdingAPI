@@ -13,7 +13,7 @@ namespace KKAPI.Chara
 {
     public static partial class CharacterApi
     {
-        private static class Hooks
+        internal static class Hooks
         {
             public static void InitHooks()
             {
@@ -33,7 +33,7 @@ namespace KKAPI.Chara
                 var target3 = typeof(ChaFile).GetMethods().Single(info => info.Name == nameof(ChaFile.CopyAll));
                 i.Patch(target3, null, new HarmonyMethod(typeof(Hooks), nameof(ChaFile_CopyChaFileHook)));
 
-#if KK //todo || KKS
+#if KK // Not needed in KKS
                 // Find the ADV character Start lambda to hook for extended data copying. The inner type names change between versions so try them all.
                 var transpiler = new HarmonyMethod(typeof(Hooks), nameof(FixEventSceneLambdaTpl));
                 var lambdaOuter = AccessTools.Inner(typeof(FixEventSceneEx), "<Start>c__AnonStorey1");
@@ -227,6 +227,39 @@ namespace KKAPI.Chara
             {
                 ClothesFileControlLoading = false;
             }
+
+#if KK || KKS
+            private static readonly HashSet<SaveData.CharaData> _dirtyCharas = new HashSet<SaveData.CharaData>();
+            /// <summary>
+            /// Mark character to reload next time their assigned ChaControl changes, so that any changes in function 
+            /// controller on previous chara can get propagated to controller on new chara
+            /// todo limit this better to avoid unnecessary reloads? might not be an issue
+            /// </summary>
+            internal static bool SetDirty(SaveData.CharaData chara, bool dirty)
+            {
+                if (dirty && KKAPI.MainGame.GameAPI.GameBeingSaved) return false;
+                return dirty ? _dirtyCharas.Add(chara) : _dirtyCharas.Remove(chara);
+            }
+
+            // Entering/leaving talk / H and other scenes that spawn their own copy of the character all set chaCtrl.
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(SaveData.CharaData), nameof(SaveData.CharaData.chaCtrl), MethodType.Setter)]
+            private static void OnChaCtrlChangePre(ChaControl value, SaveData.CharaData __instance, out bool __state)
+            {
+                __state = value != __instance.chaCtrl;
+            }
+            [HarmonyFinalizer]
+            [HarmonyPatch(typeof(SaveData.CharaData), nameof(SaveData.CharaData.chaCtrl), MethodType.Setter)]
+            private static void OnChaCtrlChangePre(ChaControl value, SaveData.CharaData __instance, bool __state)
+            {
+                // Only reload if the chactrl actually changes. Reload in postfix just in case any plugin expects CharaData.chaCtrl to already be set
+                if (__state)
+                {
+                    if (_dirtyCharas.Remove(__instance))
+                        CharacterApi.ReloadChara(value);
+                }
+            }
+#endif
         }
     }
 }
