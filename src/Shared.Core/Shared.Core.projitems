@@ -33,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\HSceneUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\IgnoreCaseEqualityComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\IMGUIUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\InterfaceMaker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\MemoryInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObservableExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
@@ -45,5 +46,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TranslationHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\WindowsStringComparer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-box-light.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-box.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-window-light.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-window.png" />
   </ItemGroup>
 </Project>
