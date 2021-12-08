@@ -266,6 +266,7 @@ namespace KKAPI.MainGame
                 var h = new Harmony(nameof(StoreApi) + "_Hooks");
                 h.PatchMoveNext(AccessTools.Method(typeof(ShopView), nameof(ShopView.Start)), transpiler: new HarmonyMethod(typeof(StoreHooks), nameof(ShopInitTpl)));
                 h.PatchMoveNext(AccessTools.Method(typeof(ShopView), nameof(ShopView.Buy)), transpiler: new HarmonyMethod(typeof(StoreHooks), nameof(OnBuyTpl)));
+                h.Patch(AccessTools.Method(typeof(ShopView), nameof(ShopView.Conditions)), prefix: new HarmonyMethod(typeof(StoreHooks), nameof(ConditionCheckPrefix)));
             }
 
             public static IEnumerable<CodeInstruction> ShopInitTpl(IEnumerable<CodeInstruction> instructions)
@@ -327,6 +328,18 @@ namespace KKAPI.MainGame
                         UnityEngine.Debug.LogException(ex);
                     }
                 }
+            }
+
+            private static bool ConditionCheckPrefix(ref int __result, ShopView __instance, ShopInfo.Param param)
+            {
+                // If not a custom item and not set to be non-restockable, use stock game code
+                if (param.ID < MinimumItemId || param.InitType != -1) return true;
+
+                // If custom item is set as restockable then base game code will only allow 1 of this item
+                // to be bought and then set it as sold out, so we need to patch around that here
+                __instance.player.buyNumTable.TryGetValue(param.ID, out var bought);
+                __result = param.Num - bought;
+                return false;
             }
         }
     }
