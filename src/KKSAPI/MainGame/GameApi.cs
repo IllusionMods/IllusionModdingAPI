@@ -143,25 +143,26 @@ namespace KKAPI.MainGame
         }
 
         /// <summary>
-        /// Register a new action icon in roaming mode (like the icons for training/studying, club report screen, peeping).
+        /// Register a new action icon / action point in roaming mode (like the icons for training/studying, club report screen, peeping).
         /// Dispose the return value to remove the icon.
-        /// Icon templates can be found here https://github.com/IllusionMods/IllusionModdingAPI/tree/master/src/KKAPI/MainGame/ActionIcons
+        /// Icon templates can be found here https://github.com/IllusionMods/IllusionModdingAPI/tree/master/src/KKSAPI/MainGame/ActionIcons
         /// </summary>
         /// <param name="mapNo">Identification number of the map the icon should be spawned on</param>
         /// <param name="position">Position of the icon. All default icons are spawned at y=0, but different heights work fine to a degree.
         /// You can figure out the position by walking to it and getting the player position with RUE.</param>
-        /// <param name="iconOn">Icon shown when player is in range to click it (excited state).</param>
-        /// <param name="iconOff">Icon shown when player is out of range.</param>
+        /// <param name="icon">Icon shown at the top of the action point. It should be pure white, use the <paramref name="color"/> parameter to change the color instead.</param>
+        /// <param name="color">Color of the action point.</param>
+        /// <param name="popupText">Text shown at the bottom of the screen when player is close to the action point.</param>
         /// <param name="onOpen">Action triggered when player clicks the icon (If you want to open your own menu, use <see cref="GameExtensions.SetIsCursorLock"/>
         /// to enable mouse cursor and hide the action icon to prevent it from being clicked again.).</param>
         /// <param name="onCreated">Optional action to run after the icon is created.
         /// Use to attach extra code to the icon, e.g. by using <see cref="ObservableTriggerExtensions.UpdateAsObservable(Component)"/> and similar methods.</param>
         /// <param name="delayed">Should the icon be spawned every time the map is entered</param>
         /// <param name="immediate">Should the icon be spawned immediately if the player is on the correct map</param>
-        public static IDisposable AddActionIcon(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated = null, bool delayed = true, bool immediate = false)
+        public static IDisposable AddActionIcon(int mapNo, Vector3 position, Texture icon, Color color, string popupText, Action onOpen, Action<TriggerEnterExitEvent> onCreated = null, bool delayed = true, bool immediate = false)
         {
             if (StudioAPI.InsideStudio) return Disposable.Empty;
-            return CustomActionIcon.AddActionIcon(mapNo, position, iconOn, iconOff, onOpen, onCreated, delayed, immediate);
+            return CustomActionIcon.AddActionIcon(mapNo, position, icon, color, popupText, onOpen, onCreated, delayed, immediate);
         }
 
         /// <summary>

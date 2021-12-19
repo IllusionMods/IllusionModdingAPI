@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ActionGame;
 using ActionGame.Chara;
 using HarmonyLib;
 using Illusion.Component;
+using Illusion.Game;
 using Manager;
 using UniRx;
 using UniRx.Triggers;
@@ -16,7 +18,9 @@ namespace KKAPI.MainGame
     {
         private sealed class ActionIconEntry
         {
-            public readonly Sprite IconOff, IconOn;
+            public readonly Texture Icon;
+            public readonly Color Color;
+            public readonly string PopupText;
             public readonly int MapNo;
             public readonly Vector3 Position;
             public readonly Action OnOpen;
@@ -24,12 +28,13 @@ namespace KKAPI.MainGame
 
             public Object Instance;
 
-            public ActionIconEntry(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated)
+            public ActionIconEntry(int mapNo, Vector3 position, Texture icon, Color color, string popupText, Action onOpen, Action<TriggerEnterExitEvent> onCreated)
             {
-                IconOff = iconOff;
                 OnOpen = onOpen;
                 OnCreated = onCreated;
-                IconOn = iconOn;
+                Icon = icon;
+                Color = color;
+                PopupText = popupText;
                 MapNo = mapNo;
                 Position = position;
             }
@@ -42,16 +47,15 @@ namespace KKAPI.MainGame
 
         private static readonly List<ActionIconEntry> _entries = new List<ActionIconEntry>();
 
-        public static IDisposable AddActionIcon(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated = null, bool delayed = true, bool immediate = false)
+        public static IDisposable AddActionIcon(int mapNo, Vector3 position, Texture icon, Color color, string popupText, Action onOpen, Action<TriggerEnterExitEvent> onCreated = null, bool delayed = true, bool immediate = false)
         {
-            if (iconOn == null) throw new ArgumentNullException(nameof(iconOn));
-            if (iconOff == null) throw new ArgumentNullException(nameof(iconOff));
+            if (icon == null) throw new ArgumentNullException(nameof(icon));
+            if (popupText == null) throw new ArgumentNullException(nameof(popupText));
             if (onOpen == null) throw new ArgumentNullException(nameof(onOpen));
 
-            Object.DontDestroyOnLoad(iconOn);
-            Object.DontDestroyOnLoad(iconOff);
+            Object.DontDestroyOnLoad(icon);
 
-            var entry = new ActionIconEntry(mapNo, position, iconOn, iconOff, onOpen, onCreated);
+            var entry = new ActionIconEntry(mapNo, position, icon, color, popupText, onOpen, onCreated);
 
             if (delayed)
                 _entries.Add(entry);
@@ -67,7 +71,7 @@ namespace KKAPI.MainGame
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(ActionMap), "Reserve")]
+        [HarmonyPatch(typeof(ActionMap), nameof(ActionMap.Reserve))]
         private static void OnMapChangedHook(ActionMap __instance)
         {
             if (__instance.mapRoot == null || __instance.isMapLoading) return;
@@ -76,7 +80,7 @@ namespace KKAPI.MainGame
 
             foreach (var iconEntry in _entries)
             {
-                if (iconEntry.MapNo == __instance.no)
+                if (iconEntry.MapNo == __instance.no && iconEntry.Instance == null)
                 {
                     try
                     {
@@ -103,46 +107,69 @@ namespace KKAPI.MainGame
 
             var pap = inst.GetComponentInChildren<PlayerActionPoint>();
             var iconRootObject = pap.gameObject;
+            pap.gameObject.name = inst.name;
             var iconRootTransform = pap.transform;
+
+            var rendererIcon = pap.renderers.Reverse().First(x =>
+            {
+                var tex = x.material.mainTexture;
+                return tex.width == 256 && tex.height == 256;
+            });
+            var animator = pap.animator;
+
+            pap.gameObject.layer = LayerMask.NameToLayer("Action/ActionPoint");
+
+            foreach (Transform child in pap.transform.parent)
+            {
+                if (child != pap.transform)
+                    Object.Destroy(child.gameObject);
+            }
             Object.DestroyImmediate(pap, false);
 
             iconRootTransform.position = iconEntry.Position;
 
+            // Set color to pink
+            var pointColor = iconEntry.Color;
+            foreach (var rend in iconRootTransform.GetComponentsInChildren<MeshRenderer>())
+                rend.material.color = pointColor;
+#pragma warning disable 618
+            foreach (var rend in iconRootTransform.GetComponentsInChildren<ParticleSystem>())
+                rend.startColor = pointColor;
+#pragma warning restore 618
+
+            // Hook up event/anim logic
             var evt = iconRootObject.AddComponent<TriggerEnterExitEvent>();
-            var animator = iconRootObject.GetComponentInChildren<Animator>();
-            var rendererIcon = iconRootObject.GetComponentInChildren<SpriteRenderer>();
-            rendererIcon.sprite = iconEntry.IconOff;
-            rendererIcon.flipX = true; // Needed to fix images being flipped
+            rendererIcon.material.mainTexture = iconEntry.Icon;
             var playerInRange = false;
             evt.onTriggerEnter += c =>
             {
                 if (!c.CompareTag("Player")) return;
                 playerInRange = true;
-                animator.Play("icon_action");
-                rendererIcon.sprite = iconEntry.IconOn;
+                animator.Play(PAP.Assist.Animation.SpinState);
+                Utils.Sound.Play(Manager.Sound.Type.GameSE2D, Utils.Sound.SEClipTable[0x38], 0f);
                 c.GetComponent<Player>().actionPointList.Add(evt);
+                ActionScene.instance.actionChangeUI.Set(ActionChangeUI.ActionType.Shop);
+                ActionScene.instance.actionChangeUI._text.text = iconEntry.PopupText;
             };
             evt.onTriggerExit += c =>
             {
                 if (!c.CompareTag("Player")) return;
                 playerInRange = false;
-                animator.Play("icon_stop");
-                rendererIcon.sprite = iconEntry.IconOff;
+                animator.Play(PAP.Assist.Animation.IdleState);
                 c.GetComponent<Player>().actionPointList.Remove(evt);
+                ActionScene.instance.actionChangeUI.Remove(ActionChangeUI.ActionType.Shop);
             };
 
-            var actionScene = ActionScene.instance;
-            var player = actionScene.Player;
             evt.UpdateAsObservable()
                 .Subscribe(_ =>
                 {
                     // Hide in H scenes and other places
-                    var isVisible = !Game.IsRegulate(true) && !actionScene.isEventNow;
+                    var isVisible = !Game.IsRegulate(true);
                     if (rendererIcon.enabled != isVisible)
                         rendererIcon.enabled = isVisible;
 
                     // Check if player clicked this point
-                    if (isVisible && playerInRange && ActionInput.isAction && !player.isActionNow)
+                    if (isVisible && playerInRange && ActionInput.isAction && !ActionScene.instance.Player.isActionNow)
                         iconEntry.OnOpen();
                 })
                 .AddTo(evt);

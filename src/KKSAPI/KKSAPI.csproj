@@ -156,6 +156,10 @@
       <HintPath>..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.InputLegacyModule.2019.4.9\lib\net46\UnityEngine.InputLegacyModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.ParticleSystemModule.2019.4.9\lib\net46\UnityEngine.ParticleSystemModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.PhysicsModule.2019.4.9\lib\net46\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>False</Private>
@@ -199,6 +203,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="MainGame\ActionIcons\Action_Icon_Template.png" />
+  </ItemGroup>
   <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
   <Import Project="..\Shared.KKalike\Shared.KKalike.projitems" Label="Shared" />
   <Import Project="..\Shared.CharaStudio\Shared.CharaStudio.projitems" Label="Shared" />
@@ -225,6 +232,7 @@
     <Error Condition="!Exists('..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniRx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniRx.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.KoikatsuSunshine.UniTask.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.KoikatsuSunshine.UniTask.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniTask.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets'))" />
+    <Error Condition="!Exists('..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.ParticleSystemModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.ParticleSystemModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.ParticleSystemModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.ParticleSystemModule.targets'))" />
   </Target>
   <Import Project="..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.targets" Condition="Exists('..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.CoreModule.targets')" />
   <Import Project="..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.targets" Condition="Exists('..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.UI.targets')" />
@@ -247,4 +255,5 @@
   <Import Project="..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniRx.targets" Condition="Exists('..\packages\IllusionLibs.KoikatsuSunshine.UniRx.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniRx.targets')" />
   <Import Project="..\packages\IllusionLibs.KoikatsuSunshine.UniTask.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniTask.targets" Condition="Exists('..\packages\IllusionLibs.KoikatsuSunshine.UniTask.2021.9.17\build\IllusionLibs.KoikatsuSunshine.UniTask.targets')" />
   <Import Project="..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets" Condition="Exists('..\packages\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.2021.9.17\build\IllusionLibs.KoikatsuSunshine.Assembly-CSharp.targets')" />
+  <Import Project="..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.ParticleSystemModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.ParticleSystemModule.targets" Condition="Exists('..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.ParticleSystemModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.ParticleSystemModule.targets')" />
 </Project>
