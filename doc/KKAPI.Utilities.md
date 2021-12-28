@@ -53,8 +53,11 @@ Static Methods
 | `IEnumerator` | CreateCoroutine(`Action[]` actions) | Create a coroutine that calls each of the action delegates on consecutive frames.  One action is called per frame. First action is called right away. There is no frame skip after the last action. | 
 | `IEnumerator` | CreateCoroutine(`YieldInstruction` yieldInstruction, `Action[]` actions) | Create a coroutine that calls each of the action delegates on consecutive frames.  One action is called per frame. First action is called right away. There is no frame skip after the last action. | 
 | `IEnumerator` | FlattenCo(this `IEnumerator` coroutine) | Flatten the coroutine to yield all values directly. Any coroutines yield returned by this coroutine will have their values directly returned by this new coroutine (this is recursive).  For example if another coroutine is yielded by this coroutine, the yielded coroutine will not be returned and instead the values that it yields will be returned.  If a yielded coroutine yields yet another coroutine, that second coroutine's values will be returned directly from the flattened coroutine. | 
+| `MethodInfo` | GetMoveNext(`MethodBase` targetMethod) | Find the compiler-generated MoveNext method that contains the Coroutine/UniTask code. It can be used to apply transpliers to Coroutines and UniTasks.  Note: When writing transpliers for coroutines you might want to turn off the "Decompiler\Decompile enumerators" setting in DnSpy so that you can see the real code.  UniTasks are considered "async/await" so you need to turn off the "Decompile async methods" setting instead. | 
+| `MethodInfo` | PatchMoveNext(this `Harmony` harmonyInstance, `MethodBase` original, `HarmonyMethod` prefix = null, `HarmonyMethod` postfix = null, `HarmonyMethod` transpiler = null, `HarmonyMethod` finalizer = null, `HarmonyMethod` ilmanipulator = null) | Used to patch coroutines/IEnumerator methods and async UniTask methods.  This will method automatically find the compiler-generated MoveNext method that contains the coroutine code and apply patches on that. The method you patch must return an IEnumerator or an UniTask.  Warning: Postfix patches will not work as expected, they might be fired after every iteration. Prefix is practically the same as prefixing the entry method. It's best to only use transpliers with this method.  Note: When writing transpliers you might want to turn off the "Decompiler\Decompile enumerators/async" settings in DnSpy so that you can see the real code. | 
 | `IEnumerator` | PreventFromCrashing(this `IEnumerator` coroutine) | Prevent a coroutine from getting stopped by exceptions. Exceptions are caught and logged.  Code after the exception is thrown doesn't run up until the next yield. The coroutine continues after the yield then. | 
 | `void` | RunImmediately(this `IEnumerator` coroutine) | Fully executes the coroutine synchronously (immediately run all of its code till completion). | 
+| `IEnumerator` | StopCoOnQuit(this `IEnumerator` enumerator) | Create a coroutine that is the same as the supplied coroutine, but will stop early if `KKAPI.KoikatuAPI.IsQuitting` is <c>true</c>.  If the coroutine returns another coroutine, the `KKAPI.KoikatuAPI.IsQuitting` check only runs on the topmost one. Use `KKAPI.Utilities.CoroutineUtils.FlattenCo(System.Collections.IEnumerator)` if that's an issue. | 
 | `IEnumerator` | StripYields(this `IEnumerator` coroutine, `Boolean` onlyStripNulls = True, `Boolean` flatten = True) | Remove yields from the coroutine, making its code run immediately. | 
 
 
@@ -101,8 +104,8 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Heroine` | GetLeadingHeroine(this `HFlag` hFlag) | Get the heroine that is currently in leading position in the h scene.  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
-| `Heroine` | GetLeadingHeroine(this `HSprite` hSprite) | Get the heroine that is currently in leading position in the h scene.  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
+| `???` | GetLeadingHeroine(this ???) | Get the heroine that is currently in leading position in the h scene.  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
+| `???` | GetLeadingHeroine(this ???) | Get the heroine that is currently in leading position in the h scene.  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
 | `Int32` | GetLeadingHeroineId(this `HFlag` hFlag) | Get ID of the heroine that is currently in leading position in the h scene. 0 is the main heroine, 1 is the "tag along".  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
 | `Int32` | GetLeadingHeroineId(this `HSprite` hSprite) | Get ID of the heroine that is currently in leading position in the h scene. 0 is the main heroine, 1 is the "tag along".  In 3P returns the heroine the cum options affect. Outside of 3P it gets the single heroine. | 
 | `Boolean` | IsHoushi(this `HFlag` hFlag) | Is current h mode service? | 
@@ -116,6 +119,13 @@ Utility methods for working with IMGUI / OnGui.
 public static class KKAPI.Utilities.IMGUIUtils
 
 ```
+
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `GUISkin` | SolidBackgroundGuiSkin | A custom GUISkin with a solid background, sharper edges and less padding.  The skin background color is adjusted to the game (if its color filter affects imgui layer).  Warning: Only use inside OnGUI or things might break. | 
+
 
 Static Methods
 
@@ -159,26 +169,9 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `IObservable<Unit>` | OnGUIAsObservable(this `Component` component) | Get an observable that triggers on every OnGUI call on this gameObject | 
-| `IObservable<Unit>` | OnGUIAsObservable(this `Transform` transform) | Get an observable that triggers on every OnGUI call on this gameObject | 
-| `IObservable<Unit>` | OnGUIAsObservable(this `GameObject` gameObject) | Get an observable that triggers on every OnGUI call on this gameObject | 
-
-
-## `ObservableOnGUITrigger`
-
-Trigger component that implements `KKAPI.Utilities.ObservableExtensions.OnGUIAsObservable(UnityEngine.Component)`
-```csharp
-public class KKAPI.Utilities.ObservableOnGUITrigger
-    : ObservableTriggerBase
-
-```
-
-Methods
-
-| Type | Name | Summary | 
-| --- | --- | --- | 
-| `IObservable<Unit>` | OnGUIAsObservable() | Get observable that triggers every time this component's OnGUI is called | 
-| `void` | RaiseOnCompletedOnDestroy() |  | 
+| `???` | OnGUIAsObservable(this ???) | Get an observable that triggers on every OnGUI call on this gameObject | 
+| `???` | OnGUIAsObservable(this ???) | Get an observable that triggers on every OnGUI call on this gameObject | 
+| `???` | OnGUIAsObservable(this ???) | Get an observable that triggers on every OnGUI call on this gameObject | 
 
 
 ## `OpenFileDialog`
@@ -201,7 +194,7 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `void` | Show(`Action<String[]>` onAccept, `String` title, `String` initialDir, `String` filter, `String` defaultExt, `OpenSaveFileDialgueFlags` flags = OFN_FILEMUSTEXIST, OFN_EXPLORER, OFN_LONGNAMES) | Show windows file open dialog. Doesn't pause the game. | 
+| `void` | Show(`Action<String[]>` onAccept, `String` title, `String` initialDir, `String` filter, `String` defaultExt, `OpenSaveFileDialgueFlags` flags = OFN_NOCHANGEDIR, OFN_FILEMUSTEXIST, OFN_EXPLORER, OFN_LONGNAMES) | Show windows file open dialog. Doesn't pause the game. | 
 | `String[]` | ShowDialog(`String` title, `String` initialDir, `String` filter, `String` defaultExt, `OpenSaveFileDialgueFlags` flags, `IntPtr` owner = null) |  | 
 | `String[]` | ShowDialog(`String` title, `String` initialDir, `String` filter, `String` defaultExt, `OpenSaveFileDialgueFlags` flags, `String` defaultFilename, `IntPtr` owner = null) |  | 
 
@@ -306,6 +299,31 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `String` | PascalCaseToSentenceCase(this `String` str) | Convert PascalCase to Sentence case. | 
+
+
+## `TimelineCompatibility`
+
+API for adding Timeline support to other plugins. Support is done by registering interpolable models that appear in the interpolables list in Timeline.
+```csharp
+public static class KKAPI.Utilities.TimelineCompatibility
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `void` | AddCharaFunctionInterpolable(`String` owner, `String` id, `String` name, `InterpolableCharaDelegate<TValue, TController>` interpolateBefore, `InterpolableCharaDelegate<TValue, TController>` interpolateAfter, `Func<OCIChar, TController, TValue>` getValue, `Func<TController, XmlNode, TValue>` readValueFromXml = null, `Action<TController, XmlTextWriter, TValue>` writeValueToXml = null, `Func<OCIChar, TController, TValue, TValue, Boolean>` checkIntegrity = null, `Boolean` useOciInHash = True, `Func<String, OCIChar, TController, String>` getFinalName = null, `Func<OCIChar, TController, Boolean>` shouldShow = null) | Adds an interpolableModel that targets CharaCustomFunctionControllers on characters to the available interpolables list. This interpolable can then be instantiated by the user by adding a keyframe. | 
+| `void` | AddInterpolableModelDynamic(`String` owner, `String` id, `String` name, `InterpolableDelegate<TValue, TParameter>` interpolateBefore, `InterpolableDelegate<TValue, TParameter>` interpolateAfter, `Func<ObjectCtrlInfo, Boolean>` isCompatibleWithTarget, `Func<ObjectCtrlInfo, TParameter, TValue>` getValue, `Func<TParameter, XmlNode, TValue>` readValueFromXml = null, `Action<TParameter, XmlTextWriter, TValue>` writeValueToXml = null, `Func<ObjectCtrlInfo, TParameter>` getParameter = null, `Func<ObjectCtrlInfo, XmlNode, TParameter>` readParameterFromXml = null, `Action<ObjectCtrlInfo, XmlTextWriter, TParameter>` writeParameterToXml = null, `Func<ObjectCtrlInfo, TParameter, TValue, TValue, Boolean>` checkIntegrity = null, `Boolean` useOciInHash = True, `Func<String, ObjectCtrlInfo, TParameter, String>` getFinalName = null, `Func<ObjectCtrlInfo, TParameter, Boolean>` shouldShow = null) | Adds an interpolableModel with a dynamic parameter to the available interpolables list. This interpolable can then be instantiated by the user by adding a keyframe.  The dynamic parameter means that every time user creates this interpolable, you can provide a different parameter - this allows having multiple instances of this interpolable for a single studio object. The instances are differentiated by the parameter, which must be unique and have a unique hash code (if the parameters have identical hashes they are treated as the same thing).  Examples where this is useful: editing individual character bone positions/scales, changing color of individual accessories.  If you want to make a global interpolable you can use AddInterpolableModelStatic instead.  Try to keep the callbacks as light and self-contained as possible since they can be called on every frame during playback or UI usage (except the xml callbacks). If you need to find some object to later use in the callbacks, consider using it as the parameter (that way it will only be computed once and you can use it later for free, just make sure the parameter is always the same since if you have different parameters will create separate instances). | 
+| `void` | AddInterpolableModelDynamic(`String` owner, `String` id, `String` name, `InterpolableDelegate` interpolateBefore, `InterpolableDelegate` interpolateAfter, `Func<ObjectCtrlInfo, Boolean>` isCompatibleWithTarget, `Func<ObjectCtrlInfo, Object, Object>` getValue, `Func<Object, XmlNode, Object>` readValueFromXml, `Action<Object, XmlTextWriter, Object>` writeValueToXml, `Func<ObjectCtrlInfo, Object>` getParameter, `Func<ObjectCtrlInfo, XmlNode, Object>` readParameterFromXml = null, `Action<ObjectCtrlInfo, XmlTextWriter, Object>` writeParameterToXml = null, `Func<ObjectCtrlInfo, Object, Object, Object, Boolean>` checkIntegrity = null, `Boolean` useOciInHash = True, `Func<String, ObjectCtrlInfo, Object, String>` getFinalName = null, `Func<ObjectCtrlInfo, Object, Boolean>` shouldShow = null) | Adds an interpolableModel with a dynamic parameter to the available interpolables list. This interpolable can then be instantiated by the user by adding a keyframe.  The dynamic parameter means that every time user creates this interpolable, you can provide a different parameter - this allows having multiple instances of this interpolable for a single studio object. The instances are differentiated by the parameter, which must be unique and have a unique hash code (if the parameters have identical hashes they are treated as the same thing).  Examples where this is useful: editing individual character bone positions/scales, changing color of individual accessories.  If you want to make a global interpolable you can use AddInterpolableModelStatic instead.  Try to keep the callbacks as light and self-contained as possible since they can be called on every frame during playback or UI usage (except the xml callbacks). If you need to find some object to later use in the callbacks, consider using it as the parameter (that way it will only be computed once and you can use it later for free, just make sure the parameter is always the same since if you have different parameters will create separate instances). | 
+| `void` | AddInterpolableModelStatic(`String` owner, `String` id, `TParameter` parameter, `String` name, `InterpolableDelegate<TValue, TParameter>` interpolateBefore, `InterpolableDelegate<TValue, TParameter>` interpolateAfter, `Func<ObjectCtrlInfo, Boolean>` isCompatibleWithTarget, `Func<ObjectCtrlInfo, TParameter, TValue>` getValue, `Func<TParameter, XmlNode, TValue>` readValueFromXml = null, `Action<TParameter, XmlTextWriter, TValue>` writeValueToXml = null, `Func<ObjectCtrlInfo, XmlNode, TParameter>` readParameterFromXml = null, `Action<ObjectCtrlInfo, XmlTextWriter, TParameter>` writeParameterToXml = null, `Func<ObjectCtrlInfo, TParameter, TValue, TValue, Boolean>` checkIntegrity = null, `Boolean` useOciInHash = True, `Func<String, ObjectCtrlInfo, TParameter, String>` getFinalName = null, `Func<ObjectCtrlInfo, TParameter, Boolean>` shouldShow = null) | Adds an interpolableModel to the available interpolables list. This interpolable can then be instantiated by the user by adding a keyframe.  User can create a single instance of this interpolable for each studio object (or single instance globally if `` is <c>false</c>). If you want to have multiple instances of this interpolable for a single studio object use AddInterpolableModelDynamic instead.  Try to keep the callbacks as light and self-contained as possible since they can be called on every frame during playback or UI usage (except the xml callbacks). | 
+| `void` | AddInterpolableModelStatic(`String` owner, `String` id, `Object` parameter, `String` name, `InterpolableDelegate` interpolateBefore, `InterpolableDelegate` interpolateAfter, `Func<ObjectCtrlInfo, Boolean>` isCompatibleWithTarget, `Func<ObjectCtrlInfo, Object, Object>` getValue, `Func<Object, XmlNode, Object>` readValueFromXml, `Action<Object, XmlTextWriter, Object>` writeValueToXml, `Func<ObjectCtrlInfo, XmlNode, Object>` readParameterFromXml = null, `Action<ObjectCtrlInfo, XmlTextWriter, Object>` writeParameterToXml = null, `Func<ObjectCtrlInfo, Object, Object, Object, Boolean>` checkIntegrity = null, `Boolean` useOciInHash = True, `Func<String, ObjectCtrlInfo, Object, String>` getFinalName = null, `Func<ObjectCtrlInfo, Object, Boolean>` shouldShow = null) | Adds an interpolableModel to the available interpolables list. This interpolable can then be instantiated by the user by adding a keyframe.  User can create a single instance of this interpolable for each studio object (or single instance globally if `` is <c>false</c>). If you want to have multiple instances of this interpolable for a single studio object use AddInterpolableModelDynamic instead.  Try to keep the callbacks as light and self-contained as possible since they can be called on every frame during playback or UI usage (except the xml callbacks). | 
+| `Single` | GetDuration() | Gets the total duration in seconds. | 
+| `Boolean` | GetIsPlaying() | Check if timeline is currently playing. | 
+| `Single` | GetPlaybackTime() | Gets current playback location in seconds. | 
+| `Boolean` | IsTimelineAvailable() | Check if Timeline is loaded and available to be used. If false, other methods in this class will throw.  This must be called after all plugins finish loadeding (in Start/Main instead of constructors/Awake).  It always returns false outside of studio. | 
+| `void` | Play() | Play/Pause timeline playback (toggles between the two). | 
+| `void` | RefreshInterpolablesList() | Refreshes the list of displayed interpolables. This function is quite heavy as it must go through each InterpolableModel and check if it's compatible with the current target.  It is called automatically by Timeline when selecting another Workspace object or GuideObject.  This triggers visibility checks of all interpolables and can be used to force update all instances of your interpolables if something important changes and Timeline doesn't notice it. | 
 
 
 ## `TranslationHelper`

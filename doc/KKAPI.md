@@ -44,6 +44,7 @@ Static Properties
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `Boolean` | EnableDebugLogging | Enables display of additional log messages when certain events are triggered within KKAPI.  Useful for plugin devs to understand when controller messages are fired. | 
+| `Boolean` | IsQuitting | Can be used to detect if application is currently quitting. | 
 
 
 Static Methods
@@ -52,6 +53,35 @@ Static Methods
 | --- | --- | --- | 
 | `GameMode` | GetCurrentGameMode() | Get current game mode. | 
 | `Version` | GetGameVersion() | Get current version of the game. | 
+| `Boolean` | IsDarkness() | Check if the game is running the Darkness version  <remarks>It's best to not rely on this and instead make the same code works either way (if possible).</remarks> | 
 | `Boolean` | IsSteamRelease() | Check if the game is the Steam release instead of the original Japanese release.  <remarks>It's best to not rely on this and instead make the same code work in both versions (if possible).</remarks> | 
+| `Boolean` | IsVR() | Check if this is the official VR module. Main game VR mods are ignored (returns false). | 
+
+
+Static Events
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `EventHandler` | Quitting | Occurs when application is quitting.  Plugins can use this to do things like write config files and caches, or stop outstanding coroutines to prevent shutdown delays.  Note: This event might not fire if the game isn't closed cleanly (hard crashes, killed process, closing the console window, etc.). | 
+
+
+## `SceneApi`
+
+Game-agnostic version of Manager.Scene. It allows using the same code in all games without any #if directives.
+```csharp
+public static class KKAPI.SceneApi
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `String` | GetAddSceneName() | Get name of the currently loaded overlay scene (eg. exit game box, config, confirmation dialogs). | 
+| `Boolean` | GetIsFadeNow() | True if screen is currently fading in or out. | 
+| `Boolean` | GetIsNowLoading() | True if loading screen is being displayed. | 
+| `Boolean` | GetIsNowLoadingFade() | True if loading screen is being displayed, or if screen is currently fading in or out. | 
+| `Boolean` | GetIsOverlap() | True if a dialog box or some other overlapping menu is shown (e.g. exit dialog after pressing esc). | 
+| `String` | GetLoadSceneName() | Get name of the currently loaded game scene (eg. maker, h, adv). | 
 
 

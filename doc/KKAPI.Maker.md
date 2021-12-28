@@ -38,6 +38,22 @@ Static Events
 | `EventHandler<AccessorySlotEventArgs>` | SelectedMakerAccSlotChanged | Fires whenever the index of the currently selected accessory slot under Accessories group in Chara Maker is changed.  This happens when user click on another slot. | 
 
 
+## `AccessoryContolVisibilityArgs`
+
+Event args for events that are related to accessory control visibility.
+```csharp
+public class KKAPI.Maker.AccessoryContolVisibilityArgs
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | Show | Visibility state of accessory control | 
+
+
 ## `AccessoryControlWrapper<T, TVal>`
 
 A wrapper for custom controls used in accessory window (added by using `KKAPI.Maker.MakerAPI.AddAccessoryWindowControl``1(``0)`).  It abstracts away switching between accessory slots and provides a simple list of values for each accessory.
@@ -233,8 +249,10 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `T` | AddAccessoryWindowControl(`T` control) | Add a control to the accessory selection and settings window.  For editable controls that depend on the selected accessory use `KKAPI.Maker.MakerAPI.AddEditableAccessoryWindowControl``2(``0)`. | 
+| `T` | AddAccessoryWindowControl(`T` control, `Boolean` automate_visible) | Add a control to the accessory selection and settings window.  For editable controls that depend on the selected accessory use `KKAPI.Maker.MakerAPI.AddEditableAccessoryWindowControl``2(``0)`. | 
 | `T` | AddControl(`T` control) | Add custom controls. If you want to use custom sub categories, register them by calling AddSubCategory. | 
 | `AccessoryControlWrapper<T, TVal>` | AddEditableAccessoryWindowControl(`T` control) | Add a control to the accessory selection and settings window. The control is wrapped to properly respond to changes in selected accessory slot (has unique values for each slot). | 
+| `AccessoryControlWrapper<T, TVal>` | AddEditableAccessoryWindowControl(`T` control, `Boolean` automate_visible) | Add a control to the accessory selection and settings window. The control is wrapped to properly respond to changes in selected accessory slot (has unique values for each slot). | 
 | `T` | AddSidebarControl(`T` control) | Add a control to the right sidebar in chara maker (the "Control Panel" where you set eye blinking, mouth expressions etc.) | 
 | `ChaControl` | GetCharacterControl() | Get the ChaControl of the character serving as a preview in character maker.  Outside of character maker and early on in maker load process this returns null. | 
 | `CharacterLoadFlags` | GetCharacterLoadFlags() | Get values of the default partial load checkboxes present at the bottom of the  character load window (load face, body, hair, parameters, clothes).  Returns null if the values could not be collected (safe to assume it's the same as being enabled). | 
@@ -250,6 +268,7 @@ Static Events
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `EventHandler<AccessoryContolVisibilityArgs>` | AccessoryContolVisibility | Fired when the visbility state of accessory controls, added by `KKAPI.Maker.MakerAPI.AddAccessoryWindowControl``1(``0)`, should change state if not managed automatically by the api. | 
 | `EventHandler` | InsideMakerChanged | Firen whenever `KKAPI.Maker.MakerAPI.InsideMaker` changes. This is the earliest event fired when user starts the character maker. | 
 | `EventHandler<RegisterCustomControlsEvent>` | MakerBaseLoaded | Maker is fully loaded. Use to load mods that rely on something that is loaded late, else use MakerStartedLoading.  This is the last chance to add custom controls!  Warning: All custom subcategories and custom controls are cleared on maker exit and need to be re-added on next maker  start. | 
 | `EventHandler` | MakerExiting | Fired after the user exits the maker. Use this to clean up any references and resources.  You want to return to the state you were in before maker was loaded. | 

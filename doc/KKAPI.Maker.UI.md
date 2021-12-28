@@ -11,9 +11,7 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `IObservable<TValue>` | BufferedValueChanged | Use to get value changes for controls. Fired by external value set and by SetNewValue. | 
 | `TValue` | Value | Buttons 1, 2, 3 are values 0, 1, 2 | 
-| `IObservable<TValue>` | ValueChanged | Fired every time the value is changed, and once when the control is created.  Buttons 1, 2, 3 are values 0, 1, 2 | 
 
 
 Methods
@@ -47,7 +45,6 @@ Properties
 | `Boolean` | IsDisposed | If true, the control has been disposed and can no longer be used, likely because the character maker exited.  A new control has to be created to be used again. | 
 | `BaseUnityPlugin` | Owner | The plugin that owns this custom control. | 
 | `Color` | TextColor | Text color of the control's description text (usually on the left).  Can only set this before the control is created. | 
-| `BehaviorSubject<Boolean>` | Visible | The control is visible to the user (usually the same as it's GameObject being active). | 
 
 
 Methods

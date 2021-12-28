@@ -4,6 +4,7 @@
 
 - [`GameMode`](KKAPI.md#gamemode)
 - [`KoikatuAPI`](KKAPI.md#koikatuapi)
+- [`SceneApi`](KKAPI.md#sceneapi)
 
 ## [KKAPI.Chara](KKAPI.Chara.md)
 
@@ -21,11 +22,13 @@
 - [`GameExtensions`](KKAPI.MainGame.md#gameextensions)
 - [`GameSaveLoadEventArgs`](KKAPI.MainGame.md#gamesaveloadeventargs)
 - [`IgnoreCaseEqualityComparer`](KKAPI.MainGame.md#ignorecaseequalitycomparer)
+- [`TalkSceneActionKind`](KKAPI.MainGame.md#talksceneactionkind)
 - [`TalkSceneUtils`](KKAPI.MainGame.md#talksceneutils)
 
 ## [KKAPI.Maker](KKAPI.Maker.md)
 
 - [`AccessoriesApi`](KKAPI.Maker.md#accessoriesapi)
+- [`AccessoryContolVisibilityArgs`](KKAPI.Maker.md#accessorycontolvisibilityargs)
 - [`AccessoryControlWrapper<T, TVal>`](KKAPI.Maker.md#accessorycontrolwrappert-tval)
 - [`AccessoryCopyEventArgs`](KKAPI.Maker.md#accessorycopyeventargs)
 - [`AccessorySlotEventArgs`](KKAPI.Maker.md#accessorysloteventargs)
@@ -105,13 +108,13 @@
 - [`IMGUIUtils`](KKAPI.Utilities.md#imguiutils)
 - [`MemoryInfo`](KKAPI.Utilities.md#memoryinfo)
 - [`ObservableExtensions`](KKAPI.Utilities.md#observableextensions)
-- [`ObservableOnGUITrigger`](KKAPI.Utilities.md#observableonguitrigger)
 - [`OpenFileDialog`](KKAPI.Utilities.md#openfiledialog)
 - [`ReadOnlyDictionary<TKey, TValue>`](KKAPI.Utilities.md#readonlydictionarytkey-tvalue)
 - [`RecycleBinUtil`](KKAPI.Utilities.md#recyclebinutil)
 - [`ResourceUtils`](KKAPI.Utilities.md#resourceutils)
 - [`TextureUtils`](KKAPI.Utilities.md#textureutils)
 - [`TextUtils`](KKAPI.Utilities.md#textutils)
+- [`TimelineCompatibility`](KKAPI.Utilities.md#timelinecompatibility)
 - [`TranslationHelper`](KKAPI.Utilities.md#translationhelper)
 - [`WindowsStringComparer`](KKAPI.Utilities.md#windowsstringcomparer)
 
