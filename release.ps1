@@ -8,6 +8,17 @@ else {
 
 $copy = $dir + "\copy\BepInEx\plugins" 
 
+if ((Get-ChildItem -Path $dir -Filter *.dll).Length -gt 0)
+{
+    
+    $pluginDir = $dir
+}
+else
+{
+    $pluginDir = $dir + "\BepInEx\plugins" 
+}
+Write-Information -MessageData ("Using " + $pluginDir + " as plugin directory")
+
 New-Item -ItemType Directory -Force -Path ($dir + "\out\")
 
 # Create releases ---------
@@ -27,7 +38,7 @@ function CreateZip ($pluginFile)
     Compress-Archive -Path ($copy + "\..\") -Force -CompressionLevel "Optimal" -DestinationPath ($dir + "\out\" + $pluginFile.BaseName + "_" + "v" + $ver + ".zip")
 }
 
-foreach ($pluginFile in Get-ChildItem -Path $dir -Filter *.dll) 
+foreach ($pluginFile in Get-ChildItem -Path $pluginDir -Filter *.dll) 
 {
     try
     {
