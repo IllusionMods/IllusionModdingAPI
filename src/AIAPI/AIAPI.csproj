@@ -87,6 +87,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
     <Reference Include="UniRx, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IllusionLibs.AIGirl.UniRx.2020.5.29.4\lib\net46\UniRx.dll</HintPath>
       <Private>False</Private>
