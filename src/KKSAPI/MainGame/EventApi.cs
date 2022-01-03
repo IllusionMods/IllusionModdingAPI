@@ -224,12 +224,12 @@ namespace KKAPI.MainGame
                     list.Insert(0, Program.Transfer.Create(true, Command.SceneFadeRegulate, "false"));
                     UnityEngine.Debug.LogWarning("No 'SceneFadeRegulate false' command at the start of the transfer list when fadeIn=true! Adding SceneFadeRegulate at start to prevent lockup. Add 'SceneFadeRegulate false' at the start of list to fix this.");
                 }
-                if (list.All(x => x.param.Command != Command.SceneFade && x.param.Args.FirstOrDefault()?.ToLower() != "out"))
+                if (list.All(x => !(x.param.Command == Command.SceneFade && x.param.Args.FirstOrDefault()?.ToLower() == "out")))
                 {
-                    list.Insert(1, Program.Transfer.Create(false, Command.SceneFade, "out"));
-                    UnityEngine.Debug.LogWarning("No 'SceneFade out' command in the transfer list! Adding 'SceneFade out' at start to prevent lockup. Add 'SceneFade out' after you are done with initializing the scene and before first text to fix this.");
+                    list.Insert(1, Program.Transfer.Create(true, Command.SceneFade, "out"));
+                    UnityEngine.Debug.LogWarning("No 'SceneFade out' command in the transfer list! Adding 'SceneFade out' at start to prevent lockup. Add 'SceneFade out' after you are done with initializing the scene and before first text to fix this. Make sure it's set to multi=true and that there are no multi=false items before it or the game will lock up.");
                 }
-                if (list.All(x => x.param.Command != Command.SceneFade && x.param.Args.FirstOrDefault()?.ToLower() != "in"))
+                if (list.All(x => !(x.param.Command == Command.SceneFade && x.param.Args.FirstOrDefault()?.ToLower() == "in")))
                 {
                     UnityEngine.Debug.LogWarning("No 'SceneFade in' command in the transfer list! The scene won't fade out back to gameplay, instead it will instantly jump at the end until you add a 'SceneFade in' command before the Close command. Warning: Make sure that 'SceneFadeRegulate false' command has been ran before you run SceneFade or it will lock up.");
                 }
