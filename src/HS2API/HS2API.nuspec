@@ -9,17 +9,6 @@
     <description>Modding API for HoneySelect2</description>
     <developmentDependency>true</developmentDependency>
     <tags>HoneySelect2</tags>
-    <dependencies>
-      <group targetFramework=".NETFramework4.6" >
-        <dependency id="ExtensibleSaveFormat.HoneySelect2" version="16.4.0" />
-        <dependency id="IllusionLibs.HoneySelect2.Assembly-CSharp" version="2020.5.29.4" />
-        <dependency id="IllusionLibs.HoneySelect2.IL" version="2020.5.29.4" />
-        <dependency id="IllusionLibs.HoneySelect2.Sirenix.Serialization" version="2020.5.29.4" />
-        <dependency id="IllusionLibs.HoneySelect2.UniRx" version="2020.5.29.4" />
-        <dependency id="IllusionLibs.HoneySelect2.UnityEngine.CoreModule" version="2018.4.11" />
-        <dependency id="IllusionLibs.BepInEx" version="5.4.15" />
-      </group>
-    </dependencies>
   </metadata>
   <files>
     <file src="..\install.ps1" target="tools"/>
