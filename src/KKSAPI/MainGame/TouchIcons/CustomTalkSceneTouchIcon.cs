@@ -82,6 +82,7 @@ namespace KKAPI.MainGame
                     btn.onClick.ActuallyRemoveAllListeners();
 
                     btn.image.sprite = entry.Icon;
+                    btn.transition = Selectable.Transition.ColorTint;
 
                     entry.Instance = copy;
                     entry.OnCreated(btn);
