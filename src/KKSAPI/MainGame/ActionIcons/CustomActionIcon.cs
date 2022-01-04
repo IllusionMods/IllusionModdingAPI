@@ -117,6 +117,10 @@ namespace KKAPI.MainGame
             });
             var animator = pap.animator;
 
+            var renderers = pap.renderers;//iconRootTransform.GetComponentsInChildren<MeshRenderer>();
+            var particles = pap.particleSystems;//iconRootTransform.GetComponentsInChildren<ParticleSystem>();
+            KoikatuAPI.Assert(particles.Length == 3, "SpawnActionPoint particles.Length == 3 failed");
+
             pap.gameObject.layer = LayerMask.NameToLayer("Action/ActionPoint");
 
             foreach (Transform child in pap.transform.parent)
@@ -130,12 +134,17 @@ namespace KKAPI.MainGame
 
             // Set color to pink
             var pointColor = iconEntry.Color;
-            foreach (var rend in iconRootTransform.GetComponentsInChildren<MeshRenderer>())
+            foreach (var rend in renderers)
                 rend.material.color = pointColor;
 #pragma warning disable 618
-            foreach (var rend in iconRootTransform.GetComponentsInChildren<ParticleSystem>())
+            foreach (var rend in particles)
                 rend.startColor = pointColor;
 #pragma warning restore 618
+
+            // Initial animation state
+            particles[0].Play();
+            particles[1].Stop();
+            particles[2].Stop();
 
             // Hook up event/anim logic
             var evt = iconRootObject.AddComponent<TriggerEnterExitEvent>();
@@ -150,6 +159,9 @@ namespace KKAPI.MainGame
                 c.GetComponent<Player>().actionPointList.Add(evt);
                 ActionScene.instance.actionChangeUI.Set(ActionChangeUI.ActionType.Shop);
                 ActionScene.instance.actionChangeUI._text.text = iconEntry.PopupText;
+                particles[0].Stop();
+                particles[1].Play();
+                particles[2].Play();
             };
             evt.onTriggerExit += c =>
             {
@@ -158,15 +170,41 @@ namespace KKAPI.MainGame
                 animator.Play(PAP.Assist.Animation.IdleState);
                 c.GetComponent<Player>().actionPointList.Remove(evt);
                 ActionScene.instance.actionChangeUI.Remove(ActionChangeUI.ActionType.Shop);
+                particles[0].Play();
+                particles[1].Stop();
+                particles[2].Stop();
             };
 
             evt.UpdateAsObservable()
                 .Subscribe(_ =>
                 {
                     // Hide in H scenes and other places
-                    var isVisible = !Game.IsRegulate(true);
-                    if (rendererIcon.enabled != isVisible)
-                        rendererIcon.enabled = isVisible;
+                    var isVisible = !Game.IsRegulate(true) && ActionScene.initialized;
+
+                    if (isVisible)
+                    {
+                        var asi = ActionScene.instance;
+                        isVisible = asi.regulate == 0 && (asi.AdvScene == null || !asi.AdvScene.gameObject.activeSelf) && !TalkScene.isPaly;
+                    }
+
+                    if (renderers[0].enabled != isVisible)
+                    {
+                        foreach (var renderer in renderers)
+                            renderer.enabled = isVisible;
+
+                        if (!isVisible)
+                        {
+                            particles[0].Stop();
+                            particles[1].Stop();
+                            particles[2].Stop();
+                        }
+                        else
+                        {
+                            particles[0].Play();
+                            particles[1].Stop();
+                            particles[2].Stop();
+                        }
+                    }
 
                     // Check if player clicked this point
                     if (isVisible && playerInRange && ActionInput.isAction && !ActionScene.instance.Player.isActionNow)
