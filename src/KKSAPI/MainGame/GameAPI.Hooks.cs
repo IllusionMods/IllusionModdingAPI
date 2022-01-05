@@ -23,11 +23,15 @@ namespace KKAPI.MainGame
                 }
             }
 
+            // Need to patch at this late point because GameCustomFunctionController.GetExtendedData uses Manager.Game.Instance.saveData to get ext data
+            // info, and this method is where Manager.Game.Instance.saveData is set. If any methods inside WorldData are hooked instead, the controller
+            // will pull ext data from the previously loaded WorldData because the new WorldData didn't get set to this property yet.
+            // This is not a problem in KK because in KK there is only one SaveData instance, and the Save/Load methods are instance methods not static methods.
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(SaveData.WorldData), nameof(SaveData.WorldData.Load), new[] { typeof(string), typeof(string) })] //todo change to use get/setbytes methods instead?
-            public static void LoadHook(string path, string fileName)
+            [HarmonyPatch(typeof(Manager.Game), nameof(Manager.Game.Load), new[] { typeof(string) })]
+            public static void LoadHook(string fileName)
             {
-                OnGameBeingLoaded(path, fileName);
+                OnGameBeingLoaded(SaveData.WorldData.Path + "/", fileName);
             }
 
             [HarmonyPrefix]
