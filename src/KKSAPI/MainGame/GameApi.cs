@@ -486,6 +486,18 @@ namespace KKAPI.MainGame
             return ActionControl.initialized ? ActionControl.instance.actionScene?.AdvScene : null;
 #endif
         }
+        
+        /// <summary>
+        /// Gets the ActionScene instance if it's initialized, null otherwise
+        /// </summary>
+        public static ActionScene GetActionScene()
+        {
+#if KK
+            return Manager.Game.IsInstance() ? Manager.Game.Instance.actScene : null;
+#elif KKS
+            return ActionControl.initialized ? ActionControl.instance.actionScene : null;
+#endif
+        }
 
         /// <summary>
         /// Gets the TalkScene instance if it's initialized, null otherwise
