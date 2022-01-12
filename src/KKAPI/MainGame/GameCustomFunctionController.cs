@@ -50,9 +50,13 @@ namespace KKAPI.MainGame
         /// <param name="proc">H scene controller instance. Can be either HSceneProc or VRHScene.</param>
         /// <param name="hFlag">H scene parameters, use this over proc if possible.</param>
         /// <param name="vr">If true, we are inside the VR module</param>
+        protected internal virtual void OnEndH(MonoBehaviour proc, HFlag hFlag, bool vr) { }
+        
+        /// <inheritdoc cref="OnEndH(MonoBehaviour,HFlag,bool)"/>
+        [Obsolete("Use the other overload")]
         protected internal virtual void OnEndH(BaseLoader proc, HFlag hFlag, bool vr) { }
 
-        /// <inheritdoc cref="OnEndH(BaseLoader,HFlag,bool)"/>
+        /// <inheritdoc cref="OnEndH(MonoBehaviour,HFlag,bool)"/>
         /// <param name="proc">H scene controller instance</param>
         /// <param name="freeH">If true, the h scene was started from Main menu > Extra > FreeH</param>
         [Obsolete("Use the other overload")]
@@ -81,9 +85,13 @@ namespace KKAPI.MainGame
         /// <param name="proc">H scene controller instance. Can be either HSceneProc or VRHScene.</param>
         /// <param name="hFlag">H scene parameters, use this over proc if possible.</param>
         /// <param name="vr">If true, we are inside the VR module</param>
+        protected internal virtual void OnStartH(MonoBehaviour proc, HFlag hFlag, bool vr) { }
+
+        /// <inheritdoc cref="OnStartH(MonoBehaviour,HFlag,bool)"/>
+        [Obsolete("Use the other overload")]
         protected internal virtual void OnStartH(BaseLoader proc, HFlag hFlag, bool vr) { }
 
-        /// <inheritdoc cref="OnStartH(BaseLoader,HFlag,bool)"/>
+        /// <inheritdoc cref="OnStartH(MonoBehaviour,HFlag,bool)"/>
         /// <param name="proc">H scene controller instance</param>
         /// <param name="freeH">If true, the h scene was started from Main menu > Extra > FreeH</param>
         [Obsolete("Use the other overload")]

@@ -62,13 +62,13 @@ namespace KKAPI.MainGame
         /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
         /// </summary>
         public static event EventHandler<DayChangeEventArgs> DayChange;
-        
+
         /// <summary>
         /// Triggered when the current time of the day changes in story mode.
         /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
         /// </summary>
         public static event EventHandler<PeriodChangeEventArgs> PeriodChange;
-        
+
         /// <summary>
         /// Triggered when a new game is started in story mode.
         /// Runs immediately after all <see cref="GameCustomFunctionController"/> objects trigger their events.
@@ -292,7 +292,7 @@ namespace KKAPI.MainGame
                 KoikatuAPI.Logger.LogError(e);
             }
         }
-        
+
         private static void OnGameBeingSaved(string path, string fileName)
         {
             var args = new GameSaveLoadEventArgs(path, fileName);
@@ -326,8 +326,12 @@ namespace KKAPI.MainGame
             {
                 try
                 {
+#pragma warning disable 618
                     if (proc != null) behaviour.Key.OnEndH(proc, flags.isFreeH);
-                    behaviour.Key.OnEndH(baseLoader, flags, ReferenceEquals(proc, null));
+                    var isVr = ReferenceEquals(proc, null);
+                    behaviour.Key.OnEndH((BaseLoader)baseLoader, flags, isVr);
+                    behaviour.Key.OnEndH((MonoBehaviour)baseLoader, flags, isVr);
+#pragma warning restore 618
                 }
                 catch (Exception e)
                 {
@@ -357,8 +361,12 @@ namespace KKAPI.MainGame
             {
                 try
                 {
+#pragma warning disable 618
                     if (proc != null) behaviour.Key.OnStartH(proc, flags.isFreeH);
-                    behaviour.Key.OnStartH(baseLoader, flags, ReferenceEquals(proc, null));
+                    var isVr = ReferenceEquals(proc, null);
+                    behaviour.Key.OnStartH((BaseLoader)baseLoader, flags, isVr);
+                    behaviour.Key.OnStartH((MonoBehaviour)baseLoader, flags, isVr);
+#pragma warning restore 618
                 }
                 catch (Exception e)
                 {
@@ -479,7 +487,7 @@ namespace KKAPI.MainGame
             return ActionControl.initialized ? ActionControl.instance : null;
 #endif
         }
-        
+
         /// <summary>
         /// Gets the ADVScene instance if it's initialized, null otherwise
         /// </summary>
@@ -491,7 +499,7 @@ namespace KKAPI.MainGame
             return ActionControl.initialized ? ActionControl.instance.actionScene?.AdvScene : null;
 #endif
         }
-        
+
         /// <summary>
         /// Gets the ActionScene instance if it's initialized, null otherwise
         /// </summary>
@@ -530,7 +538,7 @@ namespace KKAPI.MainGame
             var hFlag = GameObject.FindObjectOfType<HFlag>();
             if (hFlag != null)
                 return hFlag.GetLeadingHeroine();
-            
+
             var talkScene = GetTalkScene();
             if (talkScene != null)
             {
