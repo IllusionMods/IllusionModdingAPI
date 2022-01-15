@@ -36,9 +36,10 @@ namespace KKAPI.Utilities
         /// </summary>
         public static void ActuallyRemoveAllListeners(this UnityEventBase evt)
         {
-            evt.RemoveAllListeners();
-            for (var i = 0; i < evt.GetPersistentEventCount(); i++)
-                evt.SetPersistentListenerState(i, UnityEventCallState.Off);
+            evt.m_Calls.Clear();
+            evt.m_Calls.ClearPersistent();
+            evt.m_PersistentCalls.Clear();
+            evt.m_CallsDirty = false;
         }
 
         /// <summary>
@@ -178,7 +179,7 @@ namespace KKAPI.Utilities
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Set value of a property through reflection
         /// </summary>
@@ -213,7 +214,7 @@ namespace KKAPI.Utilities
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Set value of a field through reflection
         /// </summary>
