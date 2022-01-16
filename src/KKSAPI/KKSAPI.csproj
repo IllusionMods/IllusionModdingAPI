@@ -184,6 +184,7 @@
   <ItemGroup>
     <Compile Include="KoikatuAPI.cs" />
     <Compile Include="MainGame\ActionIcons\CustomActionIcon.cs" />
+    <Compile Include="MainGame\CustomTrespassingHsceneButtons.cs" />
     <Compile Include="MainGame\TopicApi.cs" />
     <Compile Include="MainGame\StoreApi.cs" />
     <Compile Include="MainGame\Events\GameSaveLoadEventArgs.cs" />
