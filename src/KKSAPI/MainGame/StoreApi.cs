@@ -252,6 +252,21 @@ namespace KKAPI.MainGame
             buyNumTable[itemId] = amount;
         }
 
+        /// <summary>
+        /// Decrease amount of owned/bought shop items with this id.
+        /// The amount is decreased by the <paramref name="amountDecrease"/> parameter (the amount never goes below 0).
+        /// The final amount is returned (after being decreased and clamped). The amount can also be read later with <see cref="GetItemAmountBought"/>.
+        /// This be used as an inventory, just be careful to avoid ID conflicts with real existing items.
+        /// </summary>
+        public static int DecreaseItemAmountBought(int itemId, int amountDecrease = 1)
+        {
+            if (StudioAPI.InsideStudio) return 0;
+
+            var newValue = Mathf.Max(0, GetItemAmountBought(itemId) - amountDecrease);
+            SetItemAmountBought(itemId, newValue);
+            return newValue;
+        }
+
         private static class StoreHooks
         {
             private static bool _storehooked;
