@@ -57,6 +57,7 @@ Static Methods
 | `IDisposable` | AddTalkButton(`String` text, `Action<Button>` onCreated, `TalkSceneActionKind` targetMenu) | Register a new conversation button in talk scenes in roaming mode.  (the white buttons you get when you click on the buttons on the right when talking to someone, for example "Confess", "Excercise together")  Dispose the return value to remove the button (It will not be created anymore and have to be re-added. If inside a talk scene the button will be removed immediately). | 
 | `IDisposable` | AddTouchIcon(`Sprite` icon, `Action<Button>` onCreated, `Int32` row = 1, `Int32` order = 0) | Register a new touch icon in talk scenes in roaming mode (like the touch and look buttons on top right when talking to a character).  Dispose the return value to remove the icon.  Icon templates can be found here https://github.com/IllusionMods/IllusionModdingAPI/tree/master/src/KKAPI/MainGame/TouchIcons  By default this functions as a simple button. If you want to turn this into a toggle you have to manually switch button.image.sprite as needed. | 
 | `ActionControl` | GetActionControl() | Gets the ActionControl instance if it's initialized, null otherwise | 
+| `ActionScene` | GetActionScene() | Gets the ActionScene instance if it's initialized, null otherwise | 
 | `ADVScene` | GetADVScene() | Gets the ADVScene instance if it's initialized, null otherwise | 
 | `IEnumerable<GameCustomFunctionController>` | GetBehaviours() | Get all registered behaviours for the game. | 
 | `???` | GetCurrentHeroine(???) | Find heroine that is currently in focus (in a talk or adv scene, leading girl in H scene).  null if not found. | 
@@ -102,13 +103,13 @@ Methods
 | --- | --- | --- | 
 | `PluginData` | GetExtendedData() | Get extended data based on supplied ExtendedDataId. When in chara maker loads data from character that's being loaded. | 
 | `void` | OnDayChange(`Week` day) | Triggered when the current day changes in story mode. | 
-| `???` | OnEndH(???) | Triggered when the H scene is ended, but before it is unloaded.  Warning: This is triggered in main game, free H, and in VR module as well! | 
+| `void` | OnEndH(`MonoBehaviour` proc, `HFlag` hFlag, `Boolean` vr) | Triggered when the H scene is ended, but before it is unloaded.  Warning: This is triggered in main game, free H, and in VR module as well! | 
 | `void` | OnEnterNightMenu() | Triggered when the night menu is entered at the end of the day (screen where you can save and load the game).  You can use `KKAPI.MainGame.GameCustomFunctionController.GetCycle` to see what day it is as well as other game state. | 
 | `void` | OnGameLoad(`GameSaveLoadEventArgs` args) | Triggered right after game state was loaded from a file. Some things might still be uninitialized. | 
 | `void` | OnGameSave(`GameSaveLoadEventArgs` args) | Triggered right before game state is saved to a file. | 
 | `void` | OnNewGame() | Triggered when a new game is started in story mode. | 
 | `void` | OnPeriodChange(`Type` period) | Triggered when the current time of the day changes in story mode. | 
-| `???` | OnStartH(???) | Triggered after an H scene is loaded.  Warning: This is triggered in main game, free H, and in VR module as well! | 
+| `void` | OnStartH(`MonoBehaviour` proc, `HFlag` hFlag, `Boolean` vr) | Triggered after an H scene is loaded.  Warning: This is triggered in main game, free H, and in VR module as well! | 
 | `void` | SetExtendedData(`PluginData` data) | Save your custom data to the character card under the ID you specified when registering this controller. | 
 
 
