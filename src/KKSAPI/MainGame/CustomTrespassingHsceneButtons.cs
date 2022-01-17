@@ -18,6 +18,7 @@ namespace KKAPI.MainGame
 {
     /// <summary>
     /// Used to add custom buttons to the H Scene "trespassing" menu (red button below position selections on the right, originally used when having H near another girl so you can start 3P).
+    /// Warning: Works both in main game and FreeH by default! If you don't want your button to appear in FreeH then check for <code>!hSprite.flags.isFreeH</code> in your spawnConditionCheck.
     /// </summary>
     public static class CustomTrespassingHsceneButtons
     {
@@ -90,14 +91,13 @@ namespace KKAPI.MainGame
                 }
                 catch (Exception ex)
                 {
-                    //todo use logger
-                    Console.WriteLine($"Failed to spawn CustomTrespassingButton text={trespassingButton.ButtonText.Replace('\r', ' ').Replace('\n', ' ')}\n{ex}");
+                    KoikatuAPI.Logger.LogWarning($"Failed to spawn CustomTrespassingButton text={trespassingButton.ButtonText.Replace('\r', ' ').Replace('\n', ' ')}\n{ex}");
                 }
             }
 
             if (spawnedButtons > 0)
             {
-                Console.WriteLine($"Created {spawnedButtons} CustomTrespassingButtons ({existingButtons} existing)");
+                KoikatuAPI.Logger.LogInfo($"Created {spawnedButtons} CustomTrespassingButtons ({existingButtons} already existed)");
             }
 
             return spawnedButtons;
@@ -107,7 +107,7 @@ namespace KKAPI.MainGame
         {
             if (buttonData.SpawnConditionCheck != null && !buttonData.SpawnConditionCheck(hSprite)) return false;
 
-            Console.WriteLine($"spawn id={id} name=" + buttonData.ButtonText);
+            //Console.WriteLine($"spawn id={id} name=" + buttonData.ButtonText);
 
             var defaultBtn = hSprite.menuActionSub.GetObject(7);
 
@@ -163,10 +163,13 @@ namespace KKAPI.MainGame
         private static class Hooks
         {
             private static bool? _defaultBtnShown;
+            private static bool _applied = false;
 
             public static void ApplyHooks()
             {
+                if (_applied) return;
                 Harmony.CreateAndPatchAll(typeof(Hooks), typeof(Hooks).FullName);
+                _applied = true;
             }
 
             [HarmonyPostfix]
@@ -206,8 +209,7 @@ namespace KKAPI.MainGame
                 // Not initialized / no custom buttons
                 if (_defaultBtnShown == null) return;
 
-                Console.WriteLine(
-                    $"_kind={_kind} _defaultBtnShown={(_defaultBtnShown != null ? _defaultBtnShown.Value.ToString() : "NULL")} active={__instance.autoDisableTrespassingHelp.gameObject.activeSelf}");
+                //Console.WriteLine($"_kind={_kind} _defaultBtnShown={(_defaultBtnShown != null ? _defaultBtnShown.Value.ToString() : "NULL")} active={__instance.autoDisableTrespassingHelp.gameObject.activeSelf}");
 
                 if (_kind == 3)
                 {
