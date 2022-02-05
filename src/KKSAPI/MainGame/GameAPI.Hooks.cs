@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using ActionGame;
+using Cysharp.Threading.Tasks;
 using HarmonyLib;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace KKAPI.MainGame
                 var vrHSceneType = Type.GetType("VRHScene, Assembly-CSharp");
                 if (vrHSceneType != null)
                 {
-                    hi.Patch(AccessTools.Method(vrHSceneType, "Start"), postfix: new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.StartProcPost))));
+                    hi.Patch(AccessTools.Method(vrHSceneType, "Start"), postfix: new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.StartProcPostVR))));
                     hi.Patch(AccessTools.Method(vrHSceneType, "EndProc"), postfix: new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.EndProcPost))));
                     hi.Patch(AccessTools.Method(vrHSceneType, "OnBack"), postfix: new HarmonyMethod(AccessTools.Method(typeof(Hooks), nameof(Hooks.EndProcPost))));
                 }
@@ -50,16 +51,22 @@ namespace KKAPI.MainGame
             }
 
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(HSceneProc), "Start")]
+            [HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.Start))]
             public static void StartProcPost(MonoBehaviour __instance, ref IEnumerator __result)
             {
                 var oldResult = __result;
                 __result = new[] { oldResult, OnHStart(__instance) }.GetEnumerator();
             }
+            
+            public static void StartProcPostVR(MonoBehaviour __instance, ref UniTask __result)
+            {
+                var oldResult = __result;
+                __result = oldResult.ContinueWith(() => OnHStart(__instance));
+            }
 
             [HarmonyPostfix]
-            [HarmonyPatch(typeof(HSceneProc), "NewHeroineEndProc")]
-            [HarmonyPatch(typeof(HSceneProc), "EndProc")]
+            [HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.NewHeroineEndProc))]
+            [HarmonyPatch(typeof(HSceneProc), nameof(HSceneProc.EndProc))]
             public static void EndProcPost(MonoBehaviour __instance)
             {
                 OnHEnd(__instance);
