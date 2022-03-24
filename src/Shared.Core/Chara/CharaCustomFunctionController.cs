@@ -504,6 +504,7 @@ namespace KKAPI.Chara
         /// Set extended data for specific clothes.
         /// Always call Set right after changing any of the data, or the change might not be saved if the data is changed for whatever reason (clothing change, reload, etc.)
         /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// Warning: This should NOT be used inside the <see cref="OnCardBeingSaved"/> or <see cref="OnCoordinateBeingSaved"/> events (it's too late at that point). Set the data immediately when it's changed.
         /// </summary>
         /// <param name="data">Extended data to save.</param>
         /// <param name="coordinateId">The coordinate number to open extened data for if the game supports multiple coords (0-indexed). -1 will use the current coordinate.</param>
@@ -519,6 +520,7 @@ namespace KKAPI.Chara
         /// Set extended data for a specific accessory.
         /// Always call Set right after changing any of the data, or the change might not be saved if the data is changed for whatever reason (clothing change, reload, etc.)
         /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// Warning: This should NOT be used inside the <see cref="OnCardBeingSaved"/> or <see cref="OnCoordinateBeingSaved"/> events (it's too late at that point). Set the data immediately when it's changed.
         /// </summary>
         /// <param name="data">Extended data to save.</param>
         /// <param name="accessoryPartId">The accessory part number to open extened data for (0-indexed).</param>
@@ -535,6 +537,7 @@ namespace KKAPI.Chara
         /// Set extended data for character's body (body sliders, tattoos).
         /// Always call Set right after changing any of the data, or the change might not be saved if the data is changed for whatever reason (clothing change, reload, etc.)
         /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// Warning: This should NOT be used inside the <see cref="OnCardBeingSaved"/> or <see cref="OnCoordinateBeingSaved"/> events (it's too late at that point). Set the data immediately when it's changed.
         /// </summary>
         /// <param name="data">Extended data to save.</param>
         public void SetBodyExtData(PluginData data)
@@ -551,6 +554,7 @@ namespace KKAPI.Chara
         /// Set extended data for character's face (face sliders, eye settings).
         /// Always call Set right after changing any of the data, or the change might not be saved if the data is changed for whatever reason (clothing change, reload, etc.)
         /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// Warning: This should NOT be used inside the <see cref="OnCardBeingSaved"/> or <see cref="OnCoordinateBeingSaved"/> events (it's too late at that point). Set the data immediately when it's changed.
         /// </summary>
         /// <param name="data">Extended data to save.</param>
         public void SetFaceExtData(PluginData data)
@@ -567,6 +571,7 @@ namespace KKAPI.Chara
         /// Set extended data for character's parameters (personality, preferences, traits).
         /// Always call Set right after changing any of the data, or the change might not be saved if the data is changed for whatever reason (clothing change, reload, etc.)
         /// This data is saved alongside game data, which means it is automatically copied and moved as necessary.
+        /// Warning: This should NOT be used inside the <see cref="OnCardBeingSaved"/> or <see cref="OnCoordinateBeingSaved"/> events (it's too late at that point). Set the data immediately when it's changed.
         /// </summary>
         /// <param name="data">Extended data to save.</param>
         public void SetParameterExtData(PluginData data)
