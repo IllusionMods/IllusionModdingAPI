@@ -61,7 +61,7 @@ namespace KKAPI.MainGame
             public static void StartProcPostVR(MonoBehaviour __instance, ref UniTask __result)
             {
                 var oldResult = __result;
-                __result = oldResult.ContinueWith(() => OnHStart(__instance));
+                __result = oldResult.ContinueWith(() => __instance.StartCoroutine(OnHStart(__instance)));
             }
 
             [HarmonyPostfix]
