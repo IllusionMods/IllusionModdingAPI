@@ -376,6 +376,9 @@ namespace KKAPI.Maker
             }
         }
 
+        /// <summary>
+        /// Used to tell non-automated plugins that accessory kind has changed
+        /// </summary>
         internal static void AutomaticControlVisibility()
         {
             var slot = SelectedMakerAccSlot;

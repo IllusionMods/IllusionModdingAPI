@@ -19,26 +19,40 @@ namespace KKAPI.Maker
             [HarmonyBefore(new string[] { "com.joan6694.kkplugins.moreaccessories" })]
             [HarmonyPrefix]
             [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryKind))]
-            public static void UpdateSelectAccessoryKindPrefix(CvsAccessory __instance, ref int __state)
+            public static void UpdateSelectAccessoryKindPrefix(CvsAccessory __instance, int index, ref bool __state)
             {
-                // Used to see if the kind actually changed
-                __state = GetPartsInfo((int)__instance.slotNo).id;
+                // Check if the kind actually changed
+                __state = __instance.accessory.parts[__instance.nSlotNo].id != index;
             }
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryKind))]
-            public static void UpdateSelectAccessoryKindPostfix(CvsAccessory __instance, ref int __state)
+            public static void UpdateSelectAccessoryKindPostfix(CvsAccessory __instance, ref bool __state)
             {
                 // Only send the event if the kind actually changed
-                if (__state != GetPartsInfo((int)__instance.slotNo).id)
+                if (__state)
                     OnAccessoryKindChanged(__instance, (int)__instance.slotNo);
-                AutomaticControlVisibility();//used to tell non-automated plugins that accessory kind has changed
+
+                AutomaticControlVisibility();
+            }
+
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryType))]
+            public static void UpdateSelectAccessoryTypePrefix(CvsAccessory __instance, int index, ref bool __state)
+            {
+                // Check if the type actually changed
+                __state = __instance.accessory.parts[__instance.nSlotNo].type - 120 != index;
             }
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(CvsAccessory), nameof(CvsAccessory.UpdateSelectAccessoryType))]
-            public static void UpdateSelectAccessoryTypePostfix()
+            public static void UpdateSelectAccessoryTypePostfix(CvsAccessory __instance, ref bool __state)
             {
+                // Only send the event if the type actually changed
+                // Always fire the event when kind changes since item ID could stay the same but the item won't be the same
+                if (__state)
+                    OnAccessoryKindChanged(__instance, (int)__instance.slotNo);
+
                 AutomaticControlVisibility();
             }
 
