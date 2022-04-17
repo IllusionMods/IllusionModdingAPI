@@ -5,6 +5,7 @@
 - [`GameMode`](KKAPI.md#gamemode)
 - [`KoikatuAPI`](KKAPI.md#koikatuapi)
 - [`SceneApi`](KKAPI.md#sceneapi)
+- [`UniversalRefObjKey`](KKAPI.md#universalrefobjkey)
 
 ## [KKAPI.Chara](KKAPI.Chara.md)
 

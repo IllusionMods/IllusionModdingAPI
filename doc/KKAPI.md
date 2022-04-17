@@ -85,3 +85,150 @@ Static Methods
 | `String` | GetLoadSceneName() | Get name of the currently loaded game scene (eg. maker, h, adv). | 
 
 
+## `UniversalRefObjKey`
+
+ChaReference.RefObjKey alternative that's safe to use in all versions of KK.  Why: Everything below CORRECT_HAND_R changed its int value in darkness vs other versions of the game, so if you  compile with darkness dll you will unexpectedly get a different enum value in games without darkness.  This isn't necessary in KKS, but it does work in case your code targets both KK and KKS.  Only values present in all game versions are provided (the lowest common denominator being KK without Dankness).
+```csharp
+public static class KKAPI.UniversalRefObjKey
+
+```
+
+Static Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `RefObjKey` | a_n_ana |  | 
+| `RefObjKey` | a_n_ankle_L |  | 
+| `RefObjKey` | a_n_ankle_R |  | 
+| `RefObjKey` | a_n_arm_L |  | 
+| `RefObjKey` | a_n_arm_R |  | 
+| `RefObjKey` | a_n_back |  | 
+| `RefObjKey` | a_n_back_L |  | 
+| `RefObjKey` | a_n_back_R |  | 
+| `RefObjKey` | a_n_bust |  | 
+| `RefObjKey` | a_n_bust_f |  | 
+| `RefObjKey` | a_n_dan |  | 
+| `RefObjKey` | a_n_earrings_L |  | 
+| `RefObjKey` | a_n_earrings_R |  | 
+| `RefObjKey` | a_n_elbo_L |  | 
+| `RefObjKey` | a_n_elbo_R |  | 
+| `RefObjKey` | a_n_hair_pin |  | 
+| `RefObjKey` | a_n_hair_pin_R |  | 
+| `RefObjKey` | a_n_hair_pony |  | 
+| `RefObjKey` | a_n_hair_twin_L |  | 
+| `RefObjKey` | a_n_hair_twin_R |  | 
+| `RefObjKey` | a_n_hand_L |  | 
+| `RefObjKey` | a_n_hand_R |  | 
+| `RefObjKey` | a_n_head |  | 
+| `RefObjKey` | a_n_headflont |  | 
+| `RefObjKey` | a_n_headside |  | 
+| `RefObjKey` | a_n_headtop |  | 
+| `RefObjKey` | a_n_heel_L |  | 
+| `RefObjKey` | a_n_heel_R |  | 
+| `RefObjKey` | a_n_ind_L |  | 
+| `RefObjKey` | a_n_ind_R |  | 
+| `RefObjKey` | a_n_knee_L |  | 
+| `RefObjKey` | a_n_knee_R |  | 
+| `RefObjKey` | a_n_kokan |  | 
+| `RefObjKey` | a_n_leg_L |  | 
+| `RefObjKey` | a_n_leg_R |  | 
+| `RefObjKey` | a_n_megane |  | 
+| `RefObjKey` | a_n_mid_L |  | 
+| `RefObjKey` | a_n_mid_R |  | 
+| `RefObjKey` | a_n_mouth |  | 
+| `RefObjKey` | a_n_neck |  | 
+| `RefObjKey` | a_n_nip_L |  | 
+| `RefObjKey` | a_n_nip_R |  | 
+| `RefObjKey` | a_n_nose |  | 
+| `RefObjKey` | a_n_ring_L |  | 
+| `RefObjKey` | a_n_ring_R |  | 
+| `RefObjKey` | a_n_shoulder_L |  | 
+| `RefObjKey` | a_n_shoulder_R |  | 
+| `RefObjKey` | a_n_waist |  | 
+| `RefObjKey` | a_n_waist_b |  | 
+| `RefObjKey` | a_n_waist_f |  | 
+| `RefObjKey` | a_n_waist_L |  | 
+| `RefObjKey` | a_n_waist_R |  | 
+| `RefObjKey` | a_n_wrist_L |  | 
+| `RefObjKey` | a_n_wrist_R |  | 
+| `RefObjKey` | A_ROOTBONE |  | 
+| `RefObjKey` | BUSTUP_TARGET |  | 
+| `RefObjKey` | CORRECT_ARM_L |  | 
+| `RefObjKey` | CORRECT_ARM_R |  | 
+| `RefObjKey` | CORRECT_HAND_L |  | 
+| `RefObjKey` | CORRECT_HAND_R |  | 
+| `RefObjKey` | DB_SKIRT_BOT |  | 
+| `RefObjKey` | DB_SKIRT_TOP |  | 
+| `RefObjKey` | DB_SKIRT_TOPA |  | 
+| `RefObjKey` | DB_SKIRT_TOPB |  | 
+| `RefObjKey` | F_ADJUSTWIDTHSCALE |  | 
+| `RefObjKey` | HairParent |  | 
+| `RefObjKey` | HeadParent |  | 
+| `RefObjKey` | k_f_handL_00 |  | 
+| `RefObjKey` | k_f_handR_00 |  | 
+| `RefObjKey` | k_f_shoulderL_00 |  | 
+| `RefObjKey` | k_f_shoulderR_00 |  | 
+| `RefObjKey` | N_EyeBase |  | 
+| `RefObjKey` | N_FaceSpecial |  | 
+| `RefObjKey` | N_Gag00 |  | 
+| `RefObjKey` | N_Gag01 |  | 
+| `RefObjKey` | N_Gag02 |  | 
+| `RefObjKey` | N_Hitomi |  | 
+| `RefObjKey` | NECK_LOOK_TARGET |  | 
+| `RefObjKey` | ObjBody |  | 
+| `RefObjKey` | ObjBraDef |  | 
+| `RefObjKey` | ObjBraNuge |  | 
+| `RefObjKey` | ObjDoubleTooth |  | 
+| `RefObjKey` | ObjEyebrow |  | 
+| `RefObjKey` | ObjEyeL |  | 
+| `RefObjKey` | ObjEyeline |  | 
+| `RefObjKey` | ObjEyelineLow |  | 
+| `RefObjKey` | ObjEyeR |  | 
+| `RefObjKey` | ObjEyeWL |  | 
+| `RefObjKey` | ObjEyeWR |  | 
+| `RefObjKey` | ObjFace |  | 
+| `RefObjKey` | ObjInnerDef |  | 
+| `RefObjKey` | ObjInnerNuge |  | 
+| `RefObjKey` | ObjNip |  | 
+| `RefObjKey` | ObjNoseline |  | 
+| `RefObjKey` | S_ANA |  | 
+| `RefObjKey` | S_CBOT_B_DEF |  | 
+| `RefObjKey` | S_CBOT_B_NUGE |  | 
+| `RefObjKey` | S_CBOT_T_DEF |  | 
+| `RefObjKey` | S_CBOT_T_NUGE |  | 
+| `RefObjKey` | S_CTOP_B_DEF |  | 
+| `RefObjKey` | S_CTOP_B_NUGE |  | 
+| `RefObjKey` | S_CTOP_T_DEF |  | 
+| `RefObjKey` | S_CTOP_T_NUGE |  | 
+| `RefObjKey` | S_GOMU |  | 
+| `RefObjKey` | S_MNPA |  | 
+| `RefObjKey` | S_MNPB |  | 
+| `RefObjKey` | S_MOZ_ALL |  | 
+| `RefObjKey` | S_PANST_DEF |  | 
+| `RefObjKey` | S_PANST_NUGE |  | 
+| `RefObjKey` | S_SimpleBody |  | 
+| `RefObjKey` | S_SimpleTongue |  | 
+| `RefObjKey` | S_SimpleTop |  | 
+| `RefObjKey` | S_Son |  | 
+| `RefObjKey` | S_TEARS_01 |  | 
+| `RefObjKey` | S_TEARS_02 |  | 
+| `RefObjKey` | S_TEARS_03 |  | 
+| `RefObjKey` | S_TongueB |  | 
+| `RefObjKey` | S_TongueF |  | 
+| `RefObjKey` | S_TPARTS_00_DEF |  | 
+| `RefObjKey` | S_TPARTS_00_NUGE |  | 
+| `RefObjKey` | S_TPARTS_01_DEF |  | 
+| `RefObjKey` | S_TPARTS_01_NUGE |  | 
+| `RefObjKey` | S_TPARTS_02_DEF |  | 
+| `RefObjKey` | S_TPARTS_02_NUGE |  | 
+| `RefObjKey` | S_UWB_B_DEF |  | 
+| `RefObjKey` | S_UWB_B_NUGE |  | 
+| `RefObjKey` | S_UWB_B_NUGE2 |  | 
+| `RefObjKey` | S_UWB_T_DEF |  | 
+| `RefObjKey` | S_UWB_T_NUGE |  | 
+| `RefObjKey` | S_UWT_B_DEF |  | 
+| `RefObjKey` | S_UWT_B_NUGE |  | 
+| `RefObjKey` | S_UWT_T_DEF |  | 
+| `RefObjKey` | S_UWT_T_NUGE |  | 
+
+
