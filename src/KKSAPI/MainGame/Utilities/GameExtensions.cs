@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ActionGame;
 using ActionGame.Chara;
 using HarmonyLib;
-using SaveData;
 using UnityEngine;
 
 namespace KKAPI.MainGame
@@ -138,6 +138,7 @@ namespace KKAPI.MainGame
 
         /// <summary>
         /// Get a list of free slots in class roster. New heroines can be added to these slots in saveData.heroineList.
+        /// Warning: When inside the character roster, ClassRoomSelectScene.instance._classRoomList.charaList has to be used instead!
         /// <example>
         /// var freeSlot = saveData.GetFreeClassSlots(1).FirstOrDefault();
         /// freeSlot.SetCharFile(fairyCard.charFile);
@@ -150,14 +151,14 @@ namespace KKAPI.MainGame
         public static IEnumerable<SaveData.Heroine> GetFreeClassSlots(this SaveData.WorldData saveData, int classNumber)
         {
             return Enumerable.Range(0, GetClassMaxSeatCount(saveData, classNumber))
-                .Where(index => IsValidClassSeat(saveData, classNumber, index) && GetHeroineAtSeat(saveData, classNumber, index) == null)
+                .Where(index => GetHeroineAtSeat(saveData, classNumber, index) == null)
                 .Select(index => new SaveData.Heroine(true) { schoolClass = classNumber, schoolClassIndex = index });
         }
 
         /// <summary>
         /// Get seat count in a class based on game settings.
         /// </summary>
-        public static int GetClassMaxSeatCount(this WorldData saveData, int classNumber)
+        public static int GetClassMaxSeatCount(this SaveData.WorldData saveData, int classNumber)
         {
             if (!saveData.isLiveNumMax)
             {
@@ -180,17 +181,11 @@ namespace KKAPI.MainGame
         /// </summary>
         public static SaveData.Heroine GetHeroineAtSeat(this SaveData.WorldData saveData, int classNumber, int classIndex)
         {
-            return saveData.heroineList.Find(h => h.schoolClass == classNumber && h.schoolClassIndex == classIndex);
-        }
+            var heroineList = ClassRoomSelectScene.initialized ?
+                ClassRoomSelectScene.instance._classRoomList.charaList.OfType<SaveData.Heroine>().ToList() :
+                saveData.heroineList;
 
-        /// <summary>
-        /// Check if the seat can be used for heroines.
-        /// Returns true even if the seats are disabled by config, use <see cref="GetClassMaxSeatCount"/> to check for this case.
-        /// </summary>
-        public static bool IsValidClassSeat(this WorldData saveData, int classNumber, int classIndex)
-        {
-            var player = saveData.player;
-            return !(player.schoolClass == classNumber && (classIndex == player.schoolClassIndex || classIndex == player.schoolClassIndex + 1) || classIndex > 24 || classIndex < 0);
+            return heroineList.Find(h => h.schoolClass == classNumber && h.schoolClassIndex == classIndex);
         }
     }
 }
