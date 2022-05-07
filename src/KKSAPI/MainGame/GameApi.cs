@@ -513,18 +513,18 @@ namespace KKAPI.MainGame
         /// </summary>
         public static SaveData.Heroine GetCurrentHeroine()
         {
-            var advScene = GetADVScene();
-            if (advScene != null)
-            {
-                if (advScene.Scenario != null && advScene.Scenario.currentHeroine != null)
-                    return advScene.Scenario.currentHeroine;
-                if (advScene.nowScene is TalkScene s && s.targetHeroine != null)
-                    return s.targetHeroine;
-            }
-
             var hFlag = GameObject.FindObjectOfType<HFlag>();
             if (hFlag != null)
                 return hFlag.GetLeadingHeroine();
+
+            var advScene = GetADVScene();
+            if (advScene != null)
+            {
+                if (advScene.nowScene is TalkScene s && s.targetHeroine != null)
+                    return s.targetHeroine;
+                if (advScene.Scenario != null && advScene.Scenario.currentHeroine != null)
+                    return advScene.Scenario.currentHeroine;
+            }
 
             var talkScene = GetTalkScene();
             if (talkScene != null)
