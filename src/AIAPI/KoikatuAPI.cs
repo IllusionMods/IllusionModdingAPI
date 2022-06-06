@@ -65,6 +65,7 @@ namespace KKAPI
         /// </summary>
         public static bool IsSteamRelease()
         {
+            // The jp version only has Japanese listed
             return GameSystem.Instance.cultureNames.Length > 1;
         }
     }

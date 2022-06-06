@@ -78,14 +78,15 @@ namespace KKAPI
             return _gameVersion;
         }
 
-        ///// <summary>
-        ///// Check if the game is the Steam release instead of the original Japanese release.
-        ///// <remarks>It's best to not rely on this and instead make the same code work in both versions (if possible).</remarks>
-        ///// </summary>
-        //public static bool IsSteamRelease()
-        //{
-        //    return GameSystem.Instance.cultureNames.Length > 1;
-        //}
+        /// <summary>
+        /// Check if the game is the Steam release instead of the original Japanese release.
+        /// <remarks>It's best to not rely on this and instead make the same code work in both versions (if possible).</remarks>
+        /// </summary>
+        public static bool IsSteamRelease()
+        {
+            //return GameSystem.Instance.cultureNames.Length > 1; // this is no longer working in HS2 since jp version has all of the cultures listed despite not actually supporting them
+            return typeof(AIChara.ChaFileDefine).GetMethod("GetOriginalValueFromSteam", new[] { typeof(float), typeof(int) }) != null;
+        }
 
         private static readonly bool _isVr = Application.productName == VRProcessName;
         /// <summary>
