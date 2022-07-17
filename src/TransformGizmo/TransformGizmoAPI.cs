@@ -42,5 +42,10 @@ namespace TransformGizmoAPI
                 if (main) Instance = main.gameObject.GetComponent<TransformGizmo>() ?? main.gameObject.AddComponent<TransformGizmo>();
             }
         }
+
+        void OnDestroy()
+        {
+            Destroy(Instance);
+        }
     }
 }
