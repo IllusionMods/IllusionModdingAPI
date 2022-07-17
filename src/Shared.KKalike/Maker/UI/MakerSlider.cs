@@ -20,7 +20,11 @@ namespace KKAPI.Maker.UI
 
         private readonly float _maxValue;
         private readonly float _minValue;
-        private readonly float _defaultValue;
+
+        /// <summary>
+        /// Value used when user presses the Reset button.
+        /// </summary>
+        public float DefaultValue { get; set; }
 
         /// <summary>
         /// Create a new custom control. Create and register it in <see cref="MakerAPI.RegisterCustomSubCategories"/>.
@@ -37,7 +41,7 @@ namespace KKAPI.Maker.UI
 
             _minValue = minValue;
             _maxValue = maxValue;
-            _defaultValue = defaultValue;
+            DefaultValue = defaultValue;
         }
 
         /// <summary>
@@ -121,7 +125,7 @@ namespace KKAPI.Maker.UI
             slider.maxValue = _maxValue;
             slider.wholeNumbers = WholeNumbers;
             slider.onValueChanged.AddListener(SetValue);
-            slider.value = _defaultValue;
+            slider.value = DefaultValue;
             slider.GetComponent<ObservableScrollTrigger>()
                 .OnScrollAsObservable()
                 .Subscribe(
@@ -139,7 +143,7 @@ namespace KKAPI.Maker.UI
             var inputField = tr.Find("InputField").GetComponent<TMP_InputField>();
             if (MakerAPI.InsideMaker) Singleton<ChaCustom.CustomBase>.Instance.lstTmpInputField.Add(inputField);
 
-            InputField(_defaultValue, inputField);
+            InputField(DefaultValue, inputField);
 
             inputField.onEndEdit.AddListener(
                 txt =>
@@ -166,7 +170,7 @@ namespace KKAPI.Maker.UI
 #else
             var resetButton = tr.Find("Button").GetComponent<Button>();
 #endif
-            resetButton.onClick.AddListener(() => slider.value = _defaultValue);
+            resetButton.onClick.AddListener(() => slider.value = DefaultValue);
 
             BufferedValueChanged.Subscribe(f => slider.value = f);
 

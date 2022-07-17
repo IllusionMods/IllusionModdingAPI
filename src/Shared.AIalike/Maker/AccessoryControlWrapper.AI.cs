@@ -6,17 +6,17 @@ using UniRx;
 namespace KKAPI.Maker
 {
     /// <summary>
-    /// A wrapper for custom controls used in accessory window (added by using <see cref="MakerAPI.AddAccessoryWindowControl{T}"/>).
+    /// A wrapper for custom controls used in accessory window (added by using <see cref="MakerAPI.AddAccessoryWindowControl{T}(T)"/>).
     /// It abstracts away switching between accessory slots and provides a simple list of values for each accessory.
     /// </summary>
-    /// <typeparam name="T">Type of the control to be wrapped. The control has to be added by using <see cref="MakerAPI.AddAccessoryWindowControl{T}"/> or results will be undefined.</typeparam>
+    /// <typeparam name="T">Type of the control to be wrapped. The control has to be added by using <see cref="MakerAPI.AddAccessoryWindowControl{T}(T)"/> or results will be undefined.</typeparam>
     /// <typeparam name="TVal">Type of the control's value.</typeparam>
     public class AccessoryControlWrapper<T, TVal> where T : BaseEditableGuiEntry<TVal>
     {
         /// <summary>
         /// Create a new wrapper.
         /// </summary>
-        /// <param name="control">Control to be wrapped. The control has to be added by using <see cref="MakerAPI.AddAccessoryWindowControl{T}"/> or results will be undefined.</param>
+        /// <param name="control">Control to be wrapped. The control has to be added by using <see cref="MakerAPI.AddAccessoryWindowControl{T}(T)"/> or results will be undefined.</param>
         public AccessoryControlWrapper(T control)
         {
             if (control == null) throw new ArgumentNullException(nameof(control));
