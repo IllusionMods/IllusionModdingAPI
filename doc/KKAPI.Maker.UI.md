@@ -291,6 +291,7 @@ Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `Single` | DefaultValue | Value used when user presses the Reset button. | 
 | `Func<String, Single>` | StringToValue | Custom converter from text in the textbox to the slider value.  If not set, <code>float.Parse(txt) / 100f</code> is used. | 
 | `Func<Single, String>` | ValueToString | Custom converter from the slider value to what's displayed in the textbox.  If not set, <code>Mathf.RoundToInt(f * 100).ToString()</code> is used. | 
 | `Boolean` | WholeNumbers | Use integers instead of floats | 
@@ -350,6 +351,7 @@ Properties
 | --- | --- | --- | 
 | `Int32` | CharacterLimit | Maximum number of characters, about 22 are visible at once. | 
 | `ContentType` | ContentType | Type of content filtering to do on the input. | 
+| `String` | DefaultValue | Value used when user presses the Reset button. | 
 
 
 Methods
