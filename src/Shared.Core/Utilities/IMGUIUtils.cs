@@ -254,5 +254,53 @@ namespace KKAPI.Utilities
         }
 
         #endregion
+        
+        private static GUIStyle _tooltipStyle;
+        private static GUIContent _tooltipContent;
+        private static Texture2D _tooltipBackground;
+        /// <summary>
+        /// Display a tooltip for any GUIContent with the tootlip property set in a given window.
+        /// To use, place this at the end of your Window method: IMGUIUtils.DrawTooltip(_windowRect);
+        /// </summary>
+        /// <param name="area">Area where the tooltip can appear</param>
+        /// <param name="tooltipWidth">Maximum width of the tooltip, can't be larger than area's width</param>
+        public static void DrawTooltip(Rect area, int tooltipWidth = 400)
+        {
+            if (!string.IsNullOrEmpty(GUI.tooltip))
+            {
+                if (_tooltipBackground == null)
+                {
+                    _tooltipBackground = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+                    _tooltipBackground.SetPixel(0, 0, Color.black);
+                    _tooltipBackground.Apply();
+
+                    _tooltipStyle = new GUIStyle
+                    {
+                        normal = new GUIStyleState { textColor = Color.white, background = _tooltipBackground },
+                        wordWrap = true,
+                        alignment = TextAnchor.MiddleCenter
+                    };
+                    _tooltipContent = new GUIContent();
+                }
+
+                _tooltipContent.text = GUI.tooltip;
+
+                if (tooltipWidth > area.width) tooltipWidth = (int)area.width;
+
+                var height = _tooltipStyle.CalcHeight(_tooltipContent, tooltipWidth) + 10;
+
+                var currentEvent = Event.current;
+
+                var x = currentEvent.mousePosition.x + tooltipWidth > area.width
+                    ? area.width - tooltipWidth
+                    : currentEvent.mousePosition.x;
+
+                var y = currentEvent.mousePosition.y + 25 + height > area.height
+                    ? currentEvent.mousePosition.y - height
+                    : currentEvent.mousePosition.y + 25;
+
+                GUI.Box(new Rect(x, y, tooltipWidth, height), GUI.tooltip, _tooltipStyle);
+            }
+        }
     }
 }
