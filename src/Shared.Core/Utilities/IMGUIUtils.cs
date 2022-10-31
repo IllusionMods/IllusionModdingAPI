@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace KKAPI.Utilities
@@ -254,7 +255,7 @@ namespace KKAPI.Utilities
         }
 
         #endregion
-        
+
         private static GUIStyle _tooltipStyle;
         private static GUIContent _tooltipContent;
         private static Texture2D _tooltipBackground;
@@ -263,7 +264,7 @@ namespace KKAPI.Utilities
         /// To use, place this at the end of your Window method: IMGUIUtils.DrawTooltip(_windowRect);
         /// </summary>
         /// <param name="area">Area where the tooltip can appear</param>
-        /// <param name="tooltipWidth">Maximum width of the tooltip, can't be larger than area's width</param>
+        /// <param name="tooltipWidth">Minimum width of the tooltip, can't be larger than area's width</param>
         public static void DrawTooltip(Rect area, int tooltipWidth = 400)
         {
             if (!string.IsNullOrEmpty(GUI.tooltip))
@@ -283,11 +284,27 @@ namespace KKAPI.Utilities
                     _tooltipContent = new GUIContent();
                 }
 
+                var lines = GUI.tooltip.Split('\n');
+                var longestLine = lines.OrderByDescending(l => l.Length).First();
+
+                _tooltipContent.text = longestLine;
+                _tooltipStyle.CalcMinMaxWidth(_tooltipContent, out var minWidth, out var maxWidth);
+
+                var areaWidth = (int)area.width;
+                if (maxWidth > areaWidth) maxWidth = areaWidth;
+                if (tooltipWidth > areaWidth) tooltipWidth = areaWidth;
+
                 _tooltipContent.text = GUI.tooltip;
-
-                if (tooltipWidth > area.width) tooltipWidth = (int)area.width;
-
                 var height = _tooltipStyle.CalcHeight(_tooltipContent, tooltipWidth) + 10;
+
+                var heightP = height / area.height;
+                //var widthP = maxWidth / areaWidth;
+                var squareWidth = areaWidth * (heightP + 0.05f);
+                if (squareWidth > tooltipWidth)
+                {
+                    tooltipWidth = Mathf.Min((int)maxWidth, (int)squareWidth);
+                    height = _tooltipStyle.CalcHeight(_tooltipContent, tooltipWidth) + 10;
+                }
 
                 var currentEvent = Event.current;
 
@@ -296,7 +313,7 @@ namespace KKAPI.Utilities
                     : currentEvent.mousePosition.x;
 
                 var y = currentEvent.mousePosition.y + 25 + height > area.height
-                    ? currentEvent.mousePosition.y - height
+                    ? currentEvent.mousePosition.y - height - 15
                     : currentEvent.mousePosition.y + 25;
 
                 GUI.Box(new Rect(x, y, tooltipWidth, height), GUI.tooltip, _tooltipStyle);
