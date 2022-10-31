@@ -143,6 +143,43 @@ Static Methods
 | `void` | EatInputInRect(`Rect` eatRect) | Block input from going through to the game/canvases if the mouse cursor is within the specified Rect.  Use after a GUI.Window call or the window will not be able to get the inputs either.  <example>  GUILayout.Window(362, screenRect, TreeWindow, "Select character folder");  Utils.EatInputInRect(screenRect);  </example> | 
 
 
+## `ImguiWindow<T>`
+
+Base class for IMGUI windows that are implemented as full MonoBehaviours.  Instantiate to add the window, only one instance should ever exist.  Turn drawing the window on and off by setting the enable property (off by default).
+```csharp
+public abstract class KKAPI.Utilities.ImguiWindow<T>
+    : MonoBehaviour
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Vector2` | MinimumSize | Minimum size of the window. | 
+| `String` | Title | Title of the window. | 
+| `Int32` | WindowId | ID of the window, set to a random number by default. | 
+| `Rect` | WindowRect | Position and size of the window. | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `void` | DrawContents() | Draw contents of the IMGUI window (this is inside of the GUILayout.Window func).  Use GUILayout instead of GUI, and expect the window size to change during runtime. | 
+| `Rect` | GetDefaultWindowRect(`Rect` screenRect) | Should return the initial desired size of the window, adjusted to fit inside the screen space. | 
+| `void` | OnEnable() | Make sure to call base.OnEnable when overriding! | 
+| `void` | OnGUI() | Make sure to call base.OnGUI when overriding! | 
+| `void` | ResetWindowRect() | Reset the window rect (position and size) to its default value. | 
+
+
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `T` | Instance | Instance of the window. Null if none were created yet. | 
+
+
 ## `MemoryInfo`
 
 Provides information about system memory status

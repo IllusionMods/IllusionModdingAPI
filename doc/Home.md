@@ -107,6 +107,7 @@
 - [`Extensions`](KKAPI.Utilities.md#extensions)
 - [`HSceneUtils`](KKAPI.Utilities.md#hsceneutils)
 - [`IMGUIUtils`](KKAPI.Utilities.md#imguiutils)
+- [`ImguiWindow<T>`](KKAPI.Utilities.md#imguiwindowt)
 - [`MemoryInfo`](KKAPI.Utilities.md#memoryinfo)
 - [`ObservableExtensions`](KKAPI.Utilities.md#observableextensions)
 - [`OpenFileDialog`](KKAPI.Utilities.md#openfiledialog)
