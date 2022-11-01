@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\BaseGuiEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\ISidebarControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SceneApi.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\ImguiComboBox.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\ImguiWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimelineCompatibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ConfigurationManagerAttributes.cs" />
