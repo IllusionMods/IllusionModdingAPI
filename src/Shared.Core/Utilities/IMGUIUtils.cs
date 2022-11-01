@@ -11,9 +11,7 @@ namespace KKAPI.Utilities
         #region Custom skins
 
         internal static bool ColorFilterAffectsImgui =>
-#if KK
-            Studio.StudioAPI.InsideStudio; // todo shouldn't this just be true?
-#elif EC
+#if KK || EC
             true;
 #else
             false;
@@ -41,7 +39,7 @@ namespace KKAPI.Utilities
             if (SolidBoxTex == null)
             {
                 var windowBackground = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-                windowBackground.SetPixel(0, 0, ColorFilterAffectsImgui ? new Color(0.4f, 0.4f, 0.4f) : new Color(0.84f, 0.84f, 0.84f));
+                windowBackground.SetPixel(0, 0, ColorFilterAffectsImgui ? new Color(0.84f, 0.84f, 0.84f) : new Color(0.4f, 0.4f, 0.4f));
                 windowBackground.Apply();
                 SolidBoxTex = windowBackground;
                 GameObject.DontDestroyOnLoad(windowBackground);
