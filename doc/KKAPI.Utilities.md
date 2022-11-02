@@ -112,6 +112,23 @@ Static Methods
 | `Boolean` | IsSonyu(this `HFlag` hFlag) | Is current H mode penetration? | 
 
 
+## `ImguiComboBox`
+
+Dropdown control for use in GUILayout areas and windows. Keep the instance and call Show on it to draw it inside OnGUI.  Remember to call `DrawDropdownIfOpen` at the very end of the OnGUI area/window to actually display the dropdown list if it's open.  Only one dropdown list can be open globally. If a new dropdown is opened, all others are closed without changing the selected index.
+```csharp
+public class KKAPI.Utilities.ImguiComboBox
+
+```
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | DrawDropdownIfOpen() | Draws the dropdown list on top of all other window controls if it is open.  This should always be called at the very end of area/window that `Show` was called in.  Returns true if the dropdown list was opened and subsequently drawn. | 
+| `Int32` | Show(`Int32` selectedIndex, `GUIContent[]` listContent, `Int32` windowYmax = 2147483647, `GUIStyle` listStyle = null) | Show a button that when clicked opens a dropdown list. Returns new index if user selected a different option, or the old index.  Warning: The list itself is not drawn here, you have to call DrawDropdownIfOpen at the end of your GUILayout area/window. | 
+| `void` | Show(`GUIContent` selectedContent, `Func<GUIContent[]>` getListContent, `Action<Int32>` onIndexChanged, `Int32` windowYmax = 2147483647, `GUIStyle` listStyle = null) | Show a button that when clicked opens a dropdown list. Returns new index if user selected a different option, or the old index.  Warning: The list itself is not drawn here, you have to call DrawDropdownIfOpen at the end of your GUILayout area/window. | 
+
+
 ## `IMGUIUtils`
 
 Utility methods for working with IMGUI / OnGui.
