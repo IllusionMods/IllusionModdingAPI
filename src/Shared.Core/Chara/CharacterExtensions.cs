@@ -2,6 +2,7 @@
 using System.Linq;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
+using KKAPI.Utilities;
 using UniRx;
 using UnityEngine;
 #if AI || HS2
@@ -20,7 +21,33 @@ namespace KKAPI.Chara
         /// </summary>
         public static ChaControl GetChaControl(this ChaFile chaFile)
         {
-            return CharacterApi.ChaControls.FirstOrDefault(x => x.chaFile == chaFile);
+            if (chaFile == null) return null;
+
+            var cachedResult = CharacterApi.ChaControls.FirstOrDefault(control => control.chaFile == chaFile);
+            if (cachedResult != null) return cachedResult;
+#if KK
+            if (Manager.Game.instance == null) return null;
+            return Manager.Game.instance.Player?.charFile == chaFile ?
+                Manager.Game.instance.Player.chaCtrl :
+                Manager.Game.instance.HeroineList.FirstOrDefault(h => h.charFile == chaFile)?.chaCtrl;
+#elif KKS
+            return Manager.Game.Player?.charFile == chaFile ?
+                Manager.Game.Player.chaCtrl : 
+                Manager.Game.HeroineList.FirstOrDefault(h => h.charFile == chaFile)?.chaCtrl;
+#elif EC
+            return null;
+#elif AI
+            if (Manager.Map.instance == null) return null;
+            return Manager.Map.instance.Player?.ChaControl?.chaFile == chaFile ?
+                Manager.Map.instance.Player.ChaControl :
+                Manager.Map.instance.AgentTable.FirstOrDefault(h => h.Value.ChaControl.chaFile == chaFile).Value?.ChaControl;
+#elif HS2
+            if (Manager.Game.instance == null) return null;
+            return Manager.Game.instance.player?.chaFile == chaFile ?
+                Manager.Game.instance.player.chaCtrl :
+                Manager.Game.instance.heroineList.FirstOrDefault(h => h.chaFile == chaFile)?.chaCtrl;
+#endif
+        }
         }
 
         #region Binding
