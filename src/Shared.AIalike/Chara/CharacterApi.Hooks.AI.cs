@@ -30,7 +30,7 @@ namespace KKAPI.Chara
 
             public static void ChaControl_InitializePostHook(ChaControl __instance)
             {
-                KoikatuAPI.Logger.LogDebug($"Character card load: {GetLogName(__instance)} {(MakerAPI.CharaListIsLoading ? "inside CharaList" : string.Empty)}");
+                KoikatuAPI.Logger.LogDebug($"Character card load: {GetLogName(__instance?.chaFile)} {(MakerAPI.CharaListIsLoading ? "inside CharaList" : string.Empty)}");
 
                 ChaControls.Add(__instance);
 

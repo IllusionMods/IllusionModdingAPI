@@ -45,7 +45,7 @@ namespace KKAPI.Chara
             if (id == null)
             {
                 id = $"{No++} - {SceneApi.GetLoadSceneName()} - {SceneApi.GetAddSceneName()}";
-                Console.WriteLine($"New ID assigned - {id}  |  Chara - {ChaControl.name} | {ChaFileControl.parameter.fullname}");
+                Console.WriteLine($"New ID assigned - {id}  |  Chara - {ChaControl.name} | {ChaFileControl.GetFancyCharacterName()}");
                 SetParameterExtData(new PluginData() { data = new Dictionary<string, object> { { "id", id } } });
                 SetBodyExtData(new PluginData() { data = new Dictionary<string, object> { { "id", id } } });
                 SetFaceExtData(new PluginData() { data = new Dictionary<string, object> { { "id", id } } });

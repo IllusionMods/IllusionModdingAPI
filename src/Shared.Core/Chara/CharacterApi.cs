@@ -256,7 +256,7 @@ namespace KKAPI.Chara
                             changed = currentCoordinate != controllerSubject.Value;
                             if (changed && KoikatuAPI.EnableDebugLogging)
                                 KoikatuAPI.Logger.LogMessage(
-                                    $"Changed coord of character {target.fileParam.fullname} to {currentCoordinate}");
+                                    $"Changed coord of character {target.chaFile.GetFancyCharacterName()} to {currentCoordinate}");
                         }
 
                         if (changed) controllerSubject.OnNext(currentCoordinate);
@@ -271,7 +271,7 @@ namespace KKAPI.Chara
 
         private static void OnCardBeingSaved(ChaFile chaFile)
         {
-            KoikatuAPI.Logger.LogDebug("Character save: " + chaFile.parameter.fullname);
+            KoikatuAPI.Logger.LogDebug("Character save: " + GetLogName(chaFile));
 
             var gamemode = KoikatuAPI.GetCurrentGameMode();
 
@@ -285,8 +285,10 @@ namespace KKAPI.Chara
 #endif
 
             var chaControl = gamemode == GameMode.Maker ? MakerAPI.GetCharacterControl() : chaFile.GetChaControl();
-                MakerAPI.GetCharacterControl() :
-                ChaControls.FirstOrDefault(control => control.chaFile == chaFile);
+            if (chaControl == null)
+            {
+                KoikatuAPI.Logger.LogWarning("Could not find chaControl responsible for this chaFile! Triggering the save event on all chaControls!");
+            }
 
             foreach (var behaviour in GetBehaviours(chaControl))
                 behaviour.OnCardBeingSavedInternal(gamemode);
@@ -304,7 +306,7 @@ namespace KKAPI.Chara
             else
                 _currentlyReloading.Add(chaControl);
 
-            KoikatuAPI.Logger.LogDebug("Character load/reload: " + GetLogName(chaControl));
+            KoikatuAPI.Logger.LogDebug("Character load/reload: " + GetLogName(chaControl?.chaFile));
 
             // Always send events to controllers before subscribers of CharacterReloaded
             var gamemode = KoikatuAPI.GetCurrentGameMode();
@@ -394,10 +396,9 @@ namespace KKAPI.Chara
                 MakerAPI.OnReloadInterface(args);
         }
 
-        private static string GetLogName(ChaInfo chaInfo)
+        private static string GetLogName(ChaFile chaFile)
         {
-            if (chaInfo == null) return "NULL";
-            return chaInfo.chaFile?.charaFileName ?? chaInfo.fileParam?.fullname ?? "Unknown";
+            return chaFile == null ? "NULL / ALL CHARACTERS" : $"{chaFile.GetFancyCharacterName()} from {(string.IsNullOrEmpty(chaFile.charaFileName) ? "Unknown" : chaFile.charaFileName)}";
         }
 
         /// <summary>
