@@ -48,6 +48,28 @@ namespace KKAPI.Chara
                 Manager.Game.instance.heroineList.FirstOrDefault(h => h.chaFile == chaFile)?.chaCtrl;
 #endif
         }
+
+        /// <summary>
+        /// Get cleaned up full name of this character, including its translation if available.
+        /// </summary>
+        /// <param name="chaFile">Character to get the name of.</param>
+        /// <param name="describeIfEmpty">If the chaFile is null or the name is empty, a string describing this is returned. If set to false, an empty string is returned instead.</param>
+        public static string GetFancyCharacterName(this ChaFile chaFile, bool describeIfEmpty = true)
+        {
+            if (chaFile?.parameter?.fullname == null) return describeIfEmpty ? "[NULL]" : string.Empty;
+
+            var origName = chaFile.parameter.fullname.Trim();
+            if (origName.Length == 0) return describeIfEmpty ? "[NO NAME]" : string.Empty;
+
+            TranslationHelper.TryTranslate(origName, out var tl);
+            if (tl != null)
+            {
+                tl = tl.Trim();
+                if (tl.Length > 0 && origName != tl)
+                    return $"{tl} ({origName})";
+            }
+
+            return origName;
         }
 
         #region Binding
