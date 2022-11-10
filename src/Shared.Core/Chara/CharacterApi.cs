@@ -284,7 +284,7 @@ namespace KKAPI.Chara
             }
 #endif
 
-            var chaControl = gamemode == GameMode.Maker ?
+            var chaControl = gamemode == GameMode.Maker ? MakerAPI.GetCharacterControl() : chaFile.GetChaControl();
                 MakerAPI.GetCharacterControl() :
                 ChaControls.FirstOrDefault(control => control.chaFile == chaFile);
 
