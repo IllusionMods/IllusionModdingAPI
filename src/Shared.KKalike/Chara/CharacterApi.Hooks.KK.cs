@@ -174,19 +174,32 @@ namespace KKAPI.Chara
             /// Force reload when going to next day in school
             /// It's needed because after 1st day since loading the characters are reset but not reloaded, and can cause issues
             /// </summary>
-            [HarmonyPrefix]
 #if KKS
+            [HarmonyPrefix]
             // For some reason both of these methods are copies of each other and are called from the same place (one or the other)
-            // todo this needs a check when full KKS game comes out
             [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.NPCLoadAll), new Type[0])]
             [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.NPCLoadAll), typeof(bool))]
+            public static void ActionScene_NPCLoadAllPreHook()
+            {
+                Manager.Game.HeroineList.Where(x => x?.chaCtrl != null).Do(x => OnCardBeingSaved(x.chaCtrl, GameMode.MainGame));
+            }
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.NPCLoadAll), new Type[0])]
+            [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.NPCLoadAll), typeof(bool))]
+            public static void ActionScene_NPCLoadAllPostHook(ActionScene __instance, Cysharp.Threading.Tasks.UniTask __result)
+            {
+                //todo this might only be necessary on the bool overload because only this one replaces the chaFile
+                __instance.StartCoroutine(__result.WaitForFinishCo().AppendCo(() => Manager.Game.HeroineList.Where(x => x?.chaCtrl).Do(x => ReloadChara(x.chaCtrl))));
+            }
 #else
+            [HarmonyPrefix]
             [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.NPCLoadAll))]
-#endif
             public static void ActionScene_NPCLoadAllPreHook(ActionScene __instance)
             {
                 __instance.StartCoroutine(DelayedReloadChara(null));
             }
+#endif
+
 #endif
 
             /// <summary>

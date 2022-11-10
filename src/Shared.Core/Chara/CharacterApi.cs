@@ -271,8 +271,6 @@ namespace KKAPI.Chara
 
         private static void OnCardBeingSaved(ChaFile chaFile)
         {
-            KoikatuAPI.Logger.LogDebug("Character save: " + GetLogName(chaFile));
-
             var gamemode = KoikatuAPI.GetCurrentGameMode();
 
 #if HS2
@@ -287,8 +285,22 @@ namespace KKAPI.Chara
             var chaControl = gamemode == GameMode.Maker ? MakerAPI.GetCharacterControl() : chaFile.GetChaControl();
             if (chaControl == null)
             {
+#if KKS // todo probably should handle this in other games as well
+                if (MainGame.GameAPI.GameBeingSaved)
+                {
+                    KoikatuAPI.Logger.LogWarning("Could not find chaControl responsible for this chaFile! The save event will NOT be triggered for " + GetLogName(chaFile));
+                    return;
+                }
+#endif
                 KoikatuAPI.Logger.LogWarning("Could not find chaControl responsible for this chaFile! Triggering the save event on all chaControls!");
             }
+
+            OnCardBeingSaved(chaControl, gamemode);
+        }
+
+        private static void OnCardBeingSaved(ChaControl chaControl, GameMode gamemode)
+        {
+            KoikatuAPI.Logger.LogDebug("Character save: " + GetLogName(chaControl?.chaFile));
 
             foreach (var behaviour in GetBehaviours(chaControl))
                 behaviour.OnCardBeingSavedInternal(gamemode);
