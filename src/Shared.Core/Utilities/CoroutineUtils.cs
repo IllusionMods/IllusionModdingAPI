@@ -257,5 +257,21 @@ namespace KKAPI.Utilities
                 yield return enumerator.Current;
             }
         }
+
+#if KKS
+        /// <summary>
+        /// Create a coroutine that waits until the task completes.
+        /// Use AppendCo to run code after the task has finished.
+        /// </summary>
+        public static IEnumerator WaitForFinishCo(this Cysharp.Threading.Tasks.UniTask uniTask)
+        {
+            var source = uniTask.source;
+            if (source == null) yield break;
+            while (source.UnsafeGetStatus() > Cysharp.Threading.Tasks.UniTaskStatus.Pending)
+            {
+                yield return null;
+            }
+        }
+#endif
     }
 }
