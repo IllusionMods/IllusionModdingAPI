@@ -350,10 +350,10 @@ namespace KKAPI.Chara
 
         private static void OnCoordinateBeingSaved(ChaControl character, ChaFileCoordinate coordinateFile)
         {
-#if EC || AI
-            KoikatuAPI.Logger.LogDebug($"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"");
-#elif KK
-            KoikatuAPI.Logger.LogDebug($"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+#if KK || KKS
+            KoikatuAPI.Logger.LogDebug($"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character?.chaFile)}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+#else
+            KoikatuAPI.Logger.LogDebug($"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character?.chaFile)}\"");
 #endif
 
             foreach (var controller in GetBehaviours(character))
@@ -371,10 +371,10 @@ namespace KKAPI.Chara
 
         private static void OnCoordinateBeingLoaded(ChaControl character, ChaFileCoordinate coordinateFile)
         {
-#if EC || AI
-            KoikatuAPI.Logger.LogDebug($"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\"");
-#elif KK
-            KoikatuAPI.Logger.LogDebug($"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character)}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+#if KK || KKS
+            KoikatuAPI.Logger.LogDebug($"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character?.chaFile)}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+#else
+            KoikatuAPI.Logger.LogDebug($"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character?.chaFile)}\"");
 #endif
 
             foreach (var controller in GetBehaviours(character))
