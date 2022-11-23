@@ -5,6 +5,7 @@ using KKAPI.Maker;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -46,6 +47,27 @@ namespace KKAPI.Chara
                     if (lambdaMethod != null)
                         i.Patch(lambdaMethod, null, null, transpiler);
                 }
+#endif
+                i.Patch(original: AccessTools.FirstMethod(typeof(ChaFile), info => info.Name == nameof(ChaFile.LoadFile) && info.GetParameters().FirstOrDefault()?.ParameterType == typeof(BinaryReader)),
+                        prefix: new HarmonyMethod(typeof(Hooks), nameof(Hooks.ChaFileLoadHook)) { wrapTryCatch = true });
+            }
+
+            private static void ChaFileLoadHook(ChaFile __instance, BinaryReader br)
+            {
+                // Keep track of what filenames cards get loaded from
+                // Doesn't handle studio scenes and files loaded from memory but it doesn't matter here
+                if (br.BaseStream is FileStream fs)
+                {
+                    // .Name should already be the full path, but it usually has a bunch of ../ in it, GetFullPath will clean it up
+                    var fullPath = Path.GetFullPath(fs.Name);
+                    CharacterExtensions.ChaFileFullPathLookup[__instance] = fullPath;
+#if DEBUG
+                    KoikatuAPI.Logger.LogDebug($"FullName for {__instance} is {fullPath}");
+#endif
+                }
+#if DEBUG
+                else
+                    KoikatuAPI.Logger.LogWarning($"Failed to get FullName for {__instance}, BaseStream is {br.BaseStream} in {new System.Diagnostics.StackTrace()}");
 #endif
             }
 

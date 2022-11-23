@@ -6,6 +6,7 @@ using KKAPI.Maker;
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace KKAPI.Chara
@@ -26,6 +27,28 @@ namespace KKAPI.Chara
 
                 var target3 = typeof(ChaFile).GetMethods().Single(info => info.Name == nameof(ChaFile.CopyAll));
                 i.Patch(target3, null, new HarmonyMethod(typeof(Hooks), nameof(ChaFile_CopyChaFileHook)));
+
+                i.Patch(original: AccessTools.FirstMethod(typeof(ChaFile), info => info.Name == nameof(ChaFile.LoadFile) && info.GetParameters().FirstOrDefault()?.ParameterType == typeof(BinaryReader)),
+                        prefix: new HarmonyMethod(typeof(Hooks), nameof(Hooks.ChaFileLoadHook)) { wrapTryCatch = true }); //todo ai hs2
+            }
+
+            private static void ChaFileLoadHook(ChaFile __instance, BinaryReader br)
+            {
+                // Keep track of what filenames cards get loaded from
+                // Doesn't handle studio scenes and files loaded from memory but it doesn't matter here
+                if (br.BaseStream is FileStream fs)
+                {
+                    // .Name should already be the full path, but it usually has a bunch of ../ in it, GetFullPath will clean it up
+                    var fullPath = Path.GetFullPath(fs.Name);
+                    CharacterExtensions.ChaFileFullPathLookup[__instance] = fullPath;
+#if DEBUG
+                    KoikatuAPI.Logger.LogDebug($"FullName for {__instance} is {fullPath}");
+#endif
+                }
+#if DEBUG
+                else
+                    KoikatuAPI.Logger.LogWarning($"Failed to get FullName for {__instance}, BaseStream is {br.BaseStream} in {new System.Diagnostics.StackTrace()}");
+#endif
             }
 
             public static void ChaControl_InitializePostHook(ChaControl __instance)

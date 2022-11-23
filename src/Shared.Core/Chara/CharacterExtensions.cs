@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
@@ -155,5 +156,18 @@ namespace KKAPI.Chara
         }
 
         #endregion
+
+        internal static readonly Dictionary<ChaFile, string> ChaFileFullPathLookup = new Dictionary<ChaFile, string>(); //todo add extension
+
+        /// <summary>
+        /// Gets full path to the file where this ChaFile was loaded from. Usually this means the character card,
+        /// but can also point to a studio scene or a game save file if the character was contained inside them.
+        /// If the ChaFile was loaded from memory or copied, this will most likely return null. Might not work in maker in some games (todo).
+        /// </summary>
+        public static string GetSourceFilePath(this ChaFile chaFile)
+        {
+            ChaFileFullPathLookup.TryGetValue(chaFile, out var fullPath);
+            return fullPath;
+        }
     }
 }
