@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace KKAPI.Utilities
@@ -10,9 +11,7 @@ namespace KKAPI.Utilities
         #region Custom skins
 
         internal static bool ColorFilterAffectsImgui =>
-#if KK
-            Studio.StudioAPI.InsideStudio; // todo shouldn't this just be true?
-#elif EC
+#if KK || EC
             true;
 #else
             false;
@@ -40,7 +39,7 @@ namespace KKAPI.Utilities
             if (SolidBoxTex == null)
             {
                 var windowBackground = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-                windowBackground.SetPixel(0, 0, ColorFilterAffectsImgui ? new Color(0.4f, 0.4f, 0.4f) : new Color(0.84f, 0.84f, 0.84f));
+                windowBackground.SetPixel(0, 0, ColorFilterAffectsImgui ? new Color(0.84f, 0.84f, 0.84f) : new Color(0.4f, 0.4f, 0.4f));
                 windowBackground.Apply();
                 SolidBoxTex = windowBackground;
                 GameObject.DontDestroyOnLoad(windowBackground);
@@ -254,5 +253,69 @@ namespace KKAPI.Utilities
         }
 
         #endregion
+
+        private static GUIStyle _tooltipStyle;
+        private static GUIContent _tooltipContent;
+        private static Texture2D _tooltipBackground;
+        /// <summary>
+        /// Display a tooltip for any GUIContent with the tootlip property set in a given window.
+        /// To use, place this at the end of your Window method: IMGUIUtils.DrawTooltip(_windowRect);
+        /// </summary>
+        /// <param name="area">Area where the tooltip can appear</param>
+        /// <param name="tooltipWidth">Minimum width of the tooltip, can't be larger than area's width</param>
+        public static void DrawTooltip(Rect area, int tooltipWidth = 400)
+        {
+            if (!string.IsNullOrEmpty(GUI.tooltip))
+            {
+                if (_tooltipBackground == null)
+                {
+                    _tooltipBackground = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+                    _tooltipBackground.SetPixel(0, 0, Color.black);
+                    _tooltipBackground.Apply();
+
+                    _tooltipStyle = new GUIStyle
+                    {
+                        normal = new GUIStyleState { textColor = Color.white, background = _tooltipBackground },
+                        wordWrap = true,
+                        alignment = TextAnchor.MiddleCenter
+                    };
+                    _tooltipContent = new GUIContent();
+                }
+
+                var lines = GUI.tooltip.Split('\n');
+                var longestLine = lines.OrderByDescending(l => l.Length).First();
+
+                _tooltipContent.text = longestLine;
+                _tooltipStyle.CalcMinMaxWidth(_tooltipContent, out var minWidth, out var maxWidth);
+
+                var areaWidth = (int)area.width;
+                if (maxWidth > areaWidth) maxWidth = areaWidth;
+                if (tooltipWidth > areaWidth) tooltipWidth = areaWidth;
+
+                _tooltipContent.text = GUI.tooltip;
+                var height = _tooltipStyle.CalcHeight(_tooltipContent, tooltipWidth) + 10;
+
+                var heightP = height / area.height;
+                //var widthP = maxWidth / areaWidth;
+                var squareWidth = areaWidth * (heightP + 0.05f);
+                if (squareWidth > tooltipWidth)
+                {
+                    tooltipWidth = Mathf.Min((int)maxWidth, (int)squareWidth);
+                    height = _tooltipStyle.CalcHeight(_tooltipContent, tooltipWidth) + 10;
+                }
+
+                var currentEvent = Event.current;
+
+                var x = currentEvent.mousePosition.x + tooltipWidth > area.width
+                    ? area.width - tooltipWidth
+                    : currentEvent.mousePosition.x;
+
+                var y = currentEvent.mousePosition.y + 25 + height > area.height
+                    ? currentEvent.mousePosition.y - height - 15
+                    : currentEvent.mousePosition.y + 25;
+
+                GUI.Box(new Rect(x, y, tooltipWidth, height), GUI.tooltip, _tooltipStyle);
+            }
+        }
     }
 }

@@ -112,6 +112,23 @@ Static Methods
 | `Boolean` | IsSonyu(this `HFlag` hFlag) | Is current H mode penetration? | 
 
 
+## `ImguiComboBox`
+
+Dropdown control for use in GUILayout areas and windows. Keep the instance and call Show on it to draw it inside OnGUI.  Remember to call `DrawDropdownIfOpen` at the very end of the OnGUI area/window to actually display the dropdown list if it's open.  Only one dropdown list can be open globally. If a new dropdown is opened, all others are closed without changing the selected index.
+```csharp
+public class KKAPI.Utilities.ImguiComboBox
+
+```
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | DrawDropdownIfOpen() | Draws the dropdown list on top of all other window controls if it is open.  This should always be called at the very end of area/window that `Show` was called in.  Returns true if the dropdown list was opened and subsequently drawn. | 
+| `Int32` | Show(`Int32` selectedIndex, `GUIContent[]` listContent, `Int32` windowYmax = 2147483647, `GUIStyle` listStyle = null) | Show a button that when clicked opens a dropdown list. Returns new index if user selected a different option, or the old index.  Warning: The list itself is not drawn here, you have to call DrawDropdownIfOpen at the end of your GUILayout area/window. | 
+| `void` | Show(`GUIContent` selectedContent, `Func<GUIContent[]>` getListContent, `Action<Int32>` onIndexChanged, `Int32` windowYmax = 2147483647, `GUIStyle` listStyle = null) | Show a button that when clicked opens a dropdown list. Returns new index if user selected a different option, or the old index.  Warning: The list itself is not drawn here, you have to call DrawDropdownIfOpen at the end of your GUILayout area/window. | 
+
+
 ## `IMGUIUtils`
 
 Utility methods for working with IMGUI / OnGui.
@@ -139,7 +156,45 @@ Static Methods
 | `Boolean` | DrawLayoutButtonWithShadow(`GUIContent` content, `GUIStyle` style, `Single` shadowAlpha, `Vector2` direction, `GUILayoutOption[]` options) |  | 
 | `void` | DrawLayoutLabelWithShadow(`GUIContent` content, `GUIStyle` style, `Color` txtColor, `Color` shadowColor, `Vector2` direction, `GUILayoutOption[]` options) |  | 
 | `void` | DrawSolidBox(`Rect` boxRect) | Draw a gray non-transparent GUI.Box at the specified rect. Use before a GUI.Window or other controls to get rid of  the default transparency and make the GUI easier to read.  <example>  IMGUIUtils.DrawSolidBox(screenRect);  GUILayout.Window(362, screenRect, TreeWindow, "Select character folder");  </example> | 
+| `void` | DrawTooltip(`Rect` area, `Int32` tooltipWidth = 400) | Display a tooltip for any GUIContent with the tootlip property set in a given window.  To use, place this at the end of your Window method: IMGUIUtils.DrawTooltip(_windowRect); | 
 | `void` | EatInputInRect(`Rect` eatRect) | Block input from going through to the game/canvases if the mouse cursor is within the specified Rect.  Use after a GUI.Window call or the window will not be able to get the inputs either.  <example>  GUILayout.Window(362, screenRect, TreeWindow, "Select character folder");  Utils.EatInputInRect(screenRect);  </example> | 
+
+
+## `ImguiWindow<T>`
+
+Base class for IMGUI windows that are implemented as full MonoBehaviours.  Instantiate to add the window, only one instance should ever exist.  Turn drawing the window on and off by setting the enable property (off by default).
+```csharp
+public abstract class KKAPI.Utilities.ImguiWindow<T>
+    : MonoBehaviour
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Vector2` | MinimumSize | Minimum size of the window. | 
+| `String` | Title | Title of the window. | 
+| `Int32` | WindowId | ID of the window, set to a random number by default. | 
+| `Rect` | WindowRect | Position and size of the window. | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `void` | DrawContents() | Draw contents of the IMGUI window (this is inside of the GUILayout.Window func).  Use GUILayout instead of GUI, and expect the window size to change during runtime. | 
+| `Rect` | GetDefaultWindowRect(`Rect` screenRect) | Should return the initial desired size of the window, adjusted to fit inside the screen space. | 
+| `void` | OnEnable() | Make sure to call base.OnEnable when overriding! | 
+| `void` | OnGUI() | Make sure to call base.OnGUI when overriding! | 
+| `void` | ResetWindowRect() | Reset the window rect (position and size) to its default value. | 
+
+
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `T` | Instance | Instance of the window. Null if none were created yet. | 
 
 
 ## `MemoryInfo`

@@ -17,7 +17,11 @@ namespace KKAPI.Maker.UI
         private static Transform _textboxCopy;
 
         private readonly string _settingName;
-        private readonly string _defaultValue;
+
+        /// <summary>
+        /// Value used when user presses the Reset button.
+        /// </summary>
+        public string DefaultValue { get; set; }
 
         /// <summary>
         /// Type of content filtering to do on the input.
@@ -40,7 +44,7 @@ namespace KKAPI.Maker.UI
         {
             _settingName = settingName;
 
-            _defaultValue = defaultValue;
+            DefaultValue = defaultValue;
         }
 
         private static Transform TextboxCopy
@@ -126,7 +130,7 @@ namespace KKAPI.Maker.UI
             if (MakerAPI.InsideMaker) Singleton<CharaCustom.CustomBase>.Instance.lstInputField.Add(inputField);
 
             var resetButton = tr.Find("Button").GetComponent<Button>();
-            resetButton.onClick.AddListener(() => SetValue(_defaultValue));
+            resetButton.onClick.AddListener(() => SetValue(DefaultValue));
 
             BufferedValueChanged.Subscribe(text => inputField.text = text);
 

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
+using KKAPI.Utilities;
 using UniRx;
 using UnityEngine;
 #if AI || HS2
@@ -20,7 +22,55 @@ namespace KKAPI.Chara
         /// </summary>
         public static ChaControl GetChaControl(this ChaFile chaFile)
         {
-            return CharacterApi.ChaControls.FirstOrDefault(x => x.chaFile == chaFile);
+            if (chaFile == null) return null;
+
+            var cachedResult = CharacterApi.ChaControls.FirstOrDefault(control => control.chaFile == chaFile);
+            if (cachedResult != null) return cachedResult;
+#if KK
+            if (Manager.Game.instance == null) return null;
+            return Manager.Game.instance.Player?.charFile == chaFile ?
+                Manager.Game.instance.Player.chaCtrl :
+                Manager.Game.instance.HeroineList.FirstOrDefault(h => h.charFile == chaFile)?.chaCtrl;
+#elif KKS
+            return Manager.Game.Player?.charFile == chaFile ?
+                Manager.Game.Player.chaCtrl : 
+                Manager.Game.HeroineList.FirstOrDefault(h => h.charFile == chaFile)?.chaCtrl;
+#elif EC
+            return null;
+#elif AI
+            if (Manager.Map.instance == null) return null;
+            return Manager.Map.instance.Player?.ChaControl?.chaFile == chaFile ?
+                Manager.Map.instance.Player.ChaControl :
+                Manager.Map.instance.AgentTable.FirstOrDefault(h => h.Value.ChaControl.chaFile == chaFile).Value?.ChaControl;
+#elif HS2
+            if (Manager.Game.instance == null) return null;
+            return Manager.Game.instance.player?.chaFile == chaFile ?
+                Manager.Game.instance.player.chaCtrl :
+                Manager.Game.instance.heroineList.FirstOrDefault(h => h.chaFile == chaFile)?.chaCtrl;
+#endif
+        }
+
+        /// <summary>
+        /// Get cleaned up full name of this character, including its translation if available.
+        /// </summary>
+        /// <param name="chaFile">Character to get the name of.</param>
+        /// <param name="describeIfEmpty">If the chaFile is null or the name is empty, a string describing this is returned. If set to false, an empty string is returned instead.</param>
+        public static string GetFancyCharacterName(this ChaFile chaFile, bool describeIfEmpty = true)
+        {
+            if (chaFile?.parameter?.fullname == null) return describeIfEmpty ? "[NULL]" : string.Empty;
+
+            var origName = chaFile.parameter.fullname.Trim();
+            if (origName.Length == 0) return describeIfEmpty ? "[NO NAME]" : string.Empty;
+
+            TranslationHelper.TryTranslate(origName, out var tl);
+            if (tl != null)
+            {
+                tl = tl.Trim();
+                if (tl.Length > 0 && origName != tl)
+                    return $"{tl} ({origName})";
+            }
+
+            return origName;
         }
 
         #region Binding
@@ -106,5 +156,18 @@ namespace KKAPI.Chara
         }
 
         #endregion
+
+        internal static readonly Dictionary<ChaFile, string> ChaFileFullPathLookup = new Dictionary<ChaFile, string>(); //todo add extension
+
+        /// <summary>
+        /// Gets full path to the file where this ChaFile was loaded from. Usually this means the character card,
+        /// but can also point to a studio scene or a game save file if the character was contained inside them.
+        /// If the ChaFile was loaded from memory or copied, this will most likely return null. Might not work in maker in some games (todo).
+        /// </summary>
+        public static string GetSourceFilePath(this ChaFile chaFile)
+        {
+            ChaFileFullPathLookup.TryGetValue(chaFile, out var fullPath);
+            return fullPath;
+        }
     }
 }

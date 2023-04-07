@@ -179,7 +179,7 @@ namespace KKAPI.Chara
         {
             if (!_wasLoaded)
             {
-                KoikatuAPI.Logger.LogWarning("Tried to save card before it was loaded - " + ChaFileControl.charaFileName);
+                KoikatuAPI.Logger.LogWarning("Tried to save card before it was loaded - " + ChaFileControl.GetFancyCharacterName());
                 return;
             }
 
