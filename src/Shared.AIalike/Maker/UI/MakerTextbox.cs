@@ -79,6 +79,7 @@ namespace KKAPI.Maker.UI
             var inputField = inputFieldObj.GetComponent<InputField>();
             inputField.onValueChanged.ActuallyRemoveAllListeners();
             inputField.onEndEdit.ActuallyRemoveAllListeners();
+            inputField.m_TextComponent.resizeTextForBestFit = true;
 
             var resetButton = _textboxCopy.Find("Button").GetComponent<Button>();
             resetButton.onClick.ActuallyRemoveAllListeners();
