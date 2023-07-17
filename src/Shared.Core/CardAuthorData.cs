@@ -17,6 +17,7 @@ namespace KKAPI
     [BepInPlugin(GUID, "Card Author Data", KoikatuAPI.VersionConst)]
     [BepInDependency(KoikatuAPI.GUID)]
     [Browsable(false)]
+    [JetBrains.Annotations.UsedImplicitly]
     internal class CardAuthorData : BaseUnityPlugin
     {
         private const string DefaultNickname = "Anonymous";
@@ -54,6 +55,7 @@ namespace KKAPI
 
         private static string FilenameModifier(string currentCardName)
         {
+            var nameBackup = currentCardName;
             try
             {
                 if (currentCardName.EndsWith(".png")) currentCardName = currentCardName.Substring(0, currentCardName.Length - 4);
@@ -75,7 +77,7 @@ namespace KKAPI
             catch (Exception ex)
             {
                 _logger.LogError(ex);
-                return currentCardName;
+                return nameBackup;
             }
         }
 
@@ -93,9 +95,17 @@ namespace KKAPI
 
         private void MakerAPI_RegisterCustomSubCategories(object sender, RegisterSubCategoriesEvent e)
         {
-            _authorText = e.AddControl(new MakerText(GetAuthorsText(), MakerConstants.Parameter.Character, this));
+#if AI || HS2
+            // AI maker needs a separate category, using an existing cagetory makes a UI mess
+            var makerCategory = new MakerCategory(MakerConstants.Parameter.CategoryName, "Card author data");
+            e.AddSubCategory(makerCategory);
+#else
+            var makerCategory = MakerConstants.Parameter.Character;
+#endif
 
-            var tb = e.AddControl(new MakerTextbox(MakerConstants.Parameter.Character, "Your nickname", DefaultNickname, this));
+            _authorText = e.AddControl(new MakerText("Not loaded yet...", makerCategory, this));
+
+            var tb = e.AddControl(new MakerTextbox(makerCategory, "Your nickname", DefaultNickname, this));
             tb.Value = CurrentNickname;
             tb.ValueChanged.Subscribe(
                 s =>
@@ -104,7 +114,7 @@ namespace KKAPI
                     else _nickname.Value = s;
                 });
 
-            e.AddControl(new MakerText("Your nickname will be saved to the card and used in the card's filename. This setting is global.", MakerConstants.Parameter.Character, this) { TextColor = MakerText.ExplanationGray });
+            e.AddControl(new MakerText("Your nickname will be saved to the card and used in the card's filename. This setting is global.", makerCategory, this) { TextColor = MakerText.ExplanationGray });
         }
 
         private void MakerApiOnReloadCustomInterface(object sender, EventArgs eventArgs)

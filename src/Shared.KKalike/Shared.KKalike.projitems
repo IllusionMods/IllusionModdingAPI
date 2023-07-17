@@ -9,7 +9,6 @@
     <Import_RootNamespace>Shared.KKalike</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)CardAuthorData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.Hooks.KK.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UniversalRefObjKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.KK.cs" />
