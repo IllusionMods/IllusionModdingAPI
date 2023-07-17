@@ -13,6 +13,7 @@ Fields
 | `Nullable<Boolean>` | Browsable | Show this setting in the settings screen at all? If false, don't show. | 
 | `String` | Category | Category the setting is under. Null to be directly under the plugin. | 
 | `Action<ConfigEntryBase>` | CustomDrawer | Custom setting editor (OnGUI code that replaces the default editor provided by ConfigurationManager).  See below for a deeper explanation. Using a custom drawer will cause many of the other fields to do nothing. | 
+| `CustomHotkeyDrawerFunc` | CustomHotkeyDrawer | Custom setting editor that allows polling keyboard input with the Input (or UnityInput) class.  Use either CustomDrawer or CustomHotkeyDrawer, using both at the same time leads to undefined behaviour. | 
 | `Object` | DefaultValue | If set, a "Default" button will be shown next to the setting to allow resetting to default. | 
 | `String` | Description | Optional description shown when hovering over the setting.  Not recommended, provide the description when creating the setting instead. | 
 | `String` | DispName | Name of the setting. | 

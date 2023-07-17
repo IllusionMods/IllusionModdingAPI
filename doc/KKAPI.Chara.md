@@ -52,7 +52,7 @@ Static Methods
 | `void` | BindToFunctionController(this `BaseEditableGuiEntry<TValue>` guiEntry, `GetValueForInterface<TController, TValue>` getValue, `SetValueToController<TController, TValue>` setValue) | Synchronize this maker control to the state of your custom `KKAPI.Chara.CharaCustomFunctionController`.  When the control's value changes the change is sent to the controller, and when the character is reloaded  the change is automatically pulled from the controller into the control. | 
 | `ChaControl` | GetChaControl(this `ChaFile` chaFile) | Get ChaControl that is using this ChaFile if any exist. | 
 | `String` | GetFancyCharacterName(this `ChaFile` chaFile, `Boolean` describeIfEmpty = True) | Get cleaned up full name of this character, including its translation if available. | 
-| `String` | GetSourceFilePath(this `ChaFile` chaFile) | Gets full path to the file where this ChaFile was loaded from. Usually this means the character card,  but can also point to a studio scene or a game save file if the character was contained inside them.  If the ChaFile was loaded from memory or copied, this will most likely return null. | 
+| `String` | GetSourceFilePath(this `ChaFile` chaFile) | Gets full path to the file where this ChaFile was loaded from. Usually this means the character card,  but can also point to a studio scene or a game save file if the character was contained inside them.  If the ChaFile was loaded from memory or copied, this will most likely return null. Might not work in maker in some games (todo). | 
 
 
 ## `CharaCustomFunctionController`
