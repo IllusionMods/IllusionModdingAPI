@@ -37,11 +37,9 @@ namespace KKAPI.Studio
             if (obj == null) throw new ArgumentNullException(nameof(obj));
             if (Studio == null) throw new InvalidOperationException("Studio is not initialized yet!");
 
-            foreach (var info in Studio.dicObjectCtrl)
-            {
-                if (info.Value == obj)
-                    return info.Key;
-            }
+            if (Studio.dicObjectCtrl.TryGetValue(obj.objectInfo.dicKey, out var oci) && oci == obj)
+                return obj.objectInfo.dicKey;
+
             return -1;
         }
 
@@ -53,12 +51,10 @@ namespace KKAPI.Studio
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
             if (Studio == null) throw new InvalidOperationException("Studio is not initialized yet!");
+            
+            if (Studio.dicObjectCtrl.TryGetValue(obj.dicKey, out var oci) && oci.objectInfo == obj)
+                return obj.dicKey;
 
-            foreach (var info in Studio.dicObjectCtrl)
-            {
-                if (info.Value.objectInfo == obj)
-                    return info.Key;
-            }
             return -1;
         }
 
