@@ -63,8 +63,8 @@ namespace KKAPI.Utilities
             catch (Exception ex)
             {
                 // Ignore mismatch exceptions caused by virtual lists, there will be an unity error shown anyways
-                if (!ex.Message.Contains("GUILayout")) ;
-                //Logger.Log(LogLevel.Error, $"[{Title}] GUI crash: {ex}");
+                if (!ex.Message.Contains("GUILayout"))
+                    KoikatuAPI.Logger.LogError($"[{Title ?? GetType().FullName}] GUI crash: {ex}");
             }
 
             WindowRect = IMGUIUtils.DragResizeEatWindow(id, WindowRect);
