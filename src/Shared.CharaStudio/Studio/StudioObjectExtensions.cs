@@ -77,11 +77,13 @@ namespace KKAPI.Studio
         public static ObjectCtrlInfo GetOCI(this TreeNodeObject treeNodeObject)
         {
             bool rebuilt = false;
-            if (!dicTreeNodeOCI.TryGetValue(treeNodeObject, out ObjectCtrlInfo oci)) {
+            if (!dicTreeNodeOCI.TryGetValue(treeNodeObject, out ObjectCtrlInfo oci))
+            {
                 RebuildDictionary();
                 if (!dicTreeNodeOCI.TryGetValue(treeNodeObject, out oci)) return null;
             }
-            if (oci.treeNodeObject != treeNodeObject) {
+            if (oci.treeNodeObject != treeNodeObject)
+            {
                 if (!rebuilt) RebuildDictionary();
                 else return null;
                 if (!dicTreeNodeOCI.TryGetValue(treeNodeObject, out oci)) return null;
@@ -89,7 +91,8 @@ namespace KKAPI.Studio
             }
             return oci;
 
-            void RebuildDictionary() {
+            void RebuildDictionary()
+            {
                 rebuilt = true;
                 dicTreeNodeOCI.Clear();
                 foreach (var kvp in Studio.dicObjectCtrl)
