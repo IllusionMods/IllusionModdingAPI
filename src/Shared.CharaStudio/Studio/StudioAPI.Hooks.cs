@@ -48,9 +48,17 @@ namespace KKAPI.Studio
             [HarmonyPatch(typeof(global::Studio.Studio), nameof(Studio.AddInfo), new System.Type[] { typeof(ObjectInfo), typeof(ObjectCtrlInfo) })]
             public static void AddInfo(ObjectInfo _info, ObjectCtrlInfo _ctrlInfo)
             {
-                if (Singleton<global::Studio.Studio>.IsInstance() && _info != null && _ctrlInfo != null)
-                    if (!StudioObjectExtensions.dicTreeNodeOCI.ContainsKey(_ctrlInfo.treeNodeObject))
-                        StudioObjectExtensions.dicTreeNodeOCI.Add(_ctrlInfo.treeNodeObject, _ctrlInfo);
+                IEnumerator DelayedUpdateTrigger()
+                {
+                    // Need to wait for the selected character to change or we risk overwriting current character with new character's data
+                    yield return CoroutineUtils.WaitForEndOfFrame;
+
+                    if (Singleton<global::Studio.Studio>.IsInstance() && _info != null && _ctrlInfo != null)
+                        if (!StudioObjectExtensions.dicTreeNodeOCI.ContainsKey(_ctrlInfo.treeNodeObject))
+                            StudioObjectExtensions.dicTreeNodeOCI.Add(_ctrlInfo.treeNodeObject, _ctrlInfo);
+                }
+                
+                KoikatuAPI.Instance.StartCoroutine(DelayedUpdateTrigger());
             }
         }
     }
