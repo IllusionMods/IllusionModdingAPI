@@ -76,6 +76,7 @@ namespace KKAPI.Studio
         /// </summary>
         public static ObjectCtrlInfo GetOCI(this TreeNodeObject treeNodeObject)
         {
+            if (treeNodeObject == null) throw new ArgumentNullException("TreeNodeObject reference was null!");
             bool rebuilt = false;
             if (!dicTreeNodeOCI.TryGetValue(treeNodeObject, out ObjectCtrlInfo oci))
             {
@@ -87,7 +88,7 @@ namespace KKAPI.Studio
                 if (!rebuilt) RebuildDictionary();
                 else return null;
                 if (!dicTreeNodeOCI.TryGetValue(treeNodeObject, out oci)) return null;
-                if (oci.treeNodeObject != treeNodeObject) return null;
+                if (oci.treeNodeObject != treeNodeObject) throw new ArgumentException("TreeNodeObject reference is unreliable! No corresponding OCI found.");
             }
             return oci;
 
