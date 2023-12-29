@@ -14,8 +14,6 @@ namespace KKAPI.Studio
     /// </summary>
     public static class StudioObjectExtensions
     {
-        internal static Dictionary<TreeNodeObject, ObjectCtrlInfo> dicTreeNodeOCI = new Dictionary<TreeNodeObject, ObjectCtrlInfo>();
-
         private static global::Studio.Studio Studio => global::Studio.Studio.Instance;
 
         /// <summary>
@@ -69,36 +67,6 @@ namespace KKAPI.Studio
             var infos = global::Studio.Studio.Instance.dicInfo;
             var charas = infos.Values.OfType<OCIChar>();
             return charas.FirstOrDefault(x => x.charInfo == chaControl);
-        }
-
-        /// <summary>
-        /// Get the ObjectControlInfo corresponding to the TreeNodeObject.
-        /// </summary>
-        public static ObjectCtrlInfo GetOCI(this TreeNodeObject treeNodeObject)
-        {
-            if (treeNodeObject == null) throw new ArgumentNullException("TreeNodeObject reference was null!");
-            bool rebuilt = false;
-            if (!dicTreeNodeOCI.TryGetValue(treeNodeObject, out ObjectCtrlInfo oci))
-            {
-                RebuildDictionary();
-                if (!dicTreeNodeOCI.TryGetValue(treeNodeObject, out oci)) return null;
-            }
-            if (oci.treeNodeObject != treeNodeObject)
-            {
-                if (!rebuilt) RebuildDictionary();
-                else return null;
-                if (!dicTreeNodeOCI.TryGetValue(treeNodeObject, out oci)) return null;
-                if (oci.treeNodeObject != treeNodeObject) throw new ArgumentException("TreeNodeObject reference is unreliable! No corresponding OCI found.");
-            }
-            return oci;
-
-            void RebuildDictionary()
-            {
-                rebuilt = true;
-                dicTreeNodeOCI.Clear();
-                foreach (var kvp in Studio.dicObjectCtrl)
-                    dicTreeNodeOCI.Add(kvp.Value.treeNodeObject, kvp.Value);
-            }
         }
 
         /// <summary>
