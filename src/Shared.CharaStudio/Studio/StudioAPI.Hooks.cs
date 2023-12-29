@@ -9,8 +9,6 @@ namespace KKAPI.Studio
     {
         private static class Hooks
         {
-            private static global::Studio.Studio Studio => global::Studio.Studio.Instance;
-
             public static void SetupHooks()
             {
                 Harmony.CreateAndPatchAll(typeof(Hooks));
@@ -33,24 +31,6 @@ namespace KKAPI.Studio
                 }
 
                 KoikatuAPI.Instance.StartCoroutine(DelayedUpdateTrigger());
-            }
-
-            [HarmonyPrefix]
-            [HarmonyPatch(typeof(global::Studio.Studio), nameof(Studio.DeleteInfo), new System.Type[] { typeof(ObjectInfo), typeof(bool) })]
-            public static void DeleteInfo(ObjectInfo _info, bool _delKey = true)
-            {
-                if (!_delKey || !Studio.dicObjectCtrl.TryGetValue(_info.dicKey, out ObjectCtrlInfo oci)) return;
-                if (StudioObjectExtensions.dicTreeNodeOCI.ContainsKey(oci.treeNodeObject))
-                    StudioObjectExtensions.dicTreeNodeOCI.Remove(oci.treeNodeObject);
-            }
-
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(global::Studio.Studio), nameof(Studio.AddInfo), new System.Type[] { typeof(ObjectInfo), typeof(ObjectCtrlInfo) })]
-            public static void AddInfo(ObjectInfo _info, ObjectCtrlInfo _ctrlInfo)
-            {
-                if (Singleton<global::Studio.Studio>.IsInstance() && _info != null && _ctrlInfo != null)
-                    if (!StudioObjectExtensions.dicTreeNodeOCI.ContainsKey(_ctrlInfo.treeNodeObject))
-                        StudioObjectExtensions.dicTreeNodeOCI.Add(_ctrlInfo.treeNodeObject, _ctrlInfo);
             }
         }
     }
