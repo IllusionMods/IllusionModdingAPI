@@ -138,6 +138,13 @@ public static class KKAPI.Utilities.IMGUIUtils
 
 ```
 
+Static Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `GUILayoutOption[]` | EmptyLayoutOptions | Empty GUILayoutOption array. You can use this instead of nothing to avoid allocations.  For example: <code>GUILayout.Label("Hello world!", IMGUIUtils.EmptyLayoutOptions);</code>  At that point you might also want to use GUIContent (created once and stored) instead of string. | 
+
+
 Static Properties
 
 | Type | Name | Summary | 
@@ -336,6 +343,7 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `Texture2D` | GetVisibleTexture(this `Sprite` spr) | Gets texture as it is shown by this sprite. If it's not packed then returns the original texture.  If it's packed then this tries to crop out the part that the sprite is supposed to show and return only that. | 
 | `Texture2D` | LoadTexture(this `Byte[]` texBytes, `TextureFormat` format = ARGB32, `Boolean` mipMaps = False) | Create texture from an image stored in a byte array, for example a png file read from disk. | 
 | `Texture2D` | ResizeTexture(this `Texture2D` pSource, `ImageFilterMode` pFilterMode, `Single` pScale) | Create a resized copy of this texture.  http://blog.collectivemass.com/2014/03/resizing-textures-in-unity/ | 
 | `Sprite` | ToSprite(this `Texture2D` texture) | Create a sprite based on this texture. | 
