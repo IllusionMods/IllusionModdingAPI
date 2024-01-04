@@ -317,5 +317,12 @@ namespace KKAPI.Utilities
                 GUI.Box(new Rect(x, y, tooltipWidth, height), GUI.tooltip, _tooltipStyle);
             }
         }
+
+        /// <summary>
+        /// Empty GUILayoutOption array. You can use this instead of nothing to avoid allocations.
+        /// For example: <code>GUILayout.Label("Hello world!", IMGUIUtils.EmptyLayoutOptions);</code>
+        /// At that point you might also want to use GUIContent (created once and stored) instead of string.
+        /// </summary>
+        public static GUILayoutOption[] EmptyLayoutOptions = new GUILayoutOption[0];
     }
 }
