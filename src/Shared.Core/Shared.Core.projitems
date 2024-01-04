@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CardAuthorData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CardAuthorDataWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.ControllerRegistration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterExtensions.cs" />

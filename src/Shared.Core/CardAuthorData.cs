@@ -19,7 +19,7 @@ namespace KKAPI
     [BepInDependency(KoikatuAPI.GUID)]
     [Browsable(false)]
     [JetBrains.Annotations.UsedImplicitly]
-    internal class CardAuthorData : BaseUnityPlugin
+    internal partial class CardAuthorData : BaseUnityPlugin
     {
         private const string DefaultNickname = "Anonymous";
         private const string GUID = "marco.authordata";
@@ -98,7 +98,13 @@ namespace KKAPI
 
             // Ensure that the original author is always visible at the first position
             var originalAuthor = authors[0];
-            if (collapsedAuthors[collapsedAuthors.Count - 1] != originalAuthor)
+            if (collapsedAuthors.Count > 6)
+            {
+                collapsedAuthors.RemoveRange(5, collapsedAuthors.Count - 5);
+                collapsedAuthors.Add("...");
+                collapsedAuthors.Add(originalAuthor);
+            }
+            else if (collapsedAuthors[collapsedAuthors.Count - 1] != originalAuthor)
             {
                 collapsedAuthors.Add(originalAuthor);
             }
@@ -124,6 +130,8 @@ namespace KKAPI
 #endif
 
             _authorText = e.AddControl(new MakerText("Not loaded yet...", makerCategory, this));
+
+            e.AddControl(new MakerButton("Open full author history", makerCategory, this)).OnClick.AddListener(CardAuthorDataWindow.ToggleShowWindow);
 
             var tb = e.AddControl(new MakerTextbox(makerCategory, "Your nickname", DefaultNickname, this));
             tb.Value = CurrentNickname;
