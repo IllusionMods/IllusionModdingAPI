@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using ExtensibleSaveFormat;
+using HarmonyLib;
 using KKAPI.Chara;
 using KKAPI.Maker;
 using KKAPI.Maker.UI;
@@ -83,9 +84,28 @@ namespace KKAPI
 
         private static string GetAuthorsText()
         {
-            var authors = string.Join(" > ", MakerAPI.GetCharacterControl().GetComponent<CardAuthorDataController>().Authors.ToArray());
-            var text = "Author history: " + (authors.Length == 0 ? "[Empty]" : authors);
-            return text;
+            var authors = MakerAPI.GetCharacterControl().GetComponent<CardAuthorDataController>().Authors.ToArray();
+            if (authors.Length == 0) return "Author history: [Empty]";
+
+            var collapsedAuthors = new List<string>(authors.Length);
+
+            // Collapse authors with the same name, keeping their order (most recent edits first)
+            foreach (var authorName in authors.Reverse())
+            {
+                if (!collapsedAuthors.Contains(authorName))
+                    collapsedAuthors.Add(authorName);
+            }
+
+            // Ensure that the original author is always visible at the first position
+            var originalAuthor = authors[0];
+            if (collapsedAuthors[collapsedAuthors.Count - 1] != originalAuthor)
+            {
+                collapsedAuthors.Add(originalAuthor);
+            }
+
+            collapsedAuthors.Reverse();
+
+            return "Author history: " + string.Join(" > ", collapsedAuthors.ToArray());
         }
 
         private void MakerAPI_MakerExiting(object sender, EventArgs e)
