@@ -30,6 +30,9 @@ namespace KKAPI.Utilities
         /// </summary>
         protected virtual void OnGUI()
         {
+            var skin = GUI.skin;
+            GUI.skin = IMGUIUtils.SolidBackgroundGuiSkin;
+
             WindowRect = GUILayout.Window(WindowId, WindowRect, DrawContentsInt, Title);
             if (WindowRect.width < MinimumSize.x)
             {
@@ -44,6 +47,8 @@ namespace KKAPI.Utilities
                 rect.height = MinimumSize.y;
                 WindowRect = rect;
             }
+
+            GUI.skin = skin;
         }
 
         private void DrawContentsInt(int id)
