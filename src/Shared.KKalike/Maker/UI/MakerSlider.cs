@@ -47,14 +47,23 @@ namespace KKAPI.Maker.UI
         /// <summary>
         /// Custom converter from text in the textbox to the slider value.
         /// If not set, <code>float.Parse(txt) / 100f</code> is used.
+        /// You may need to also change <see cref="ValueToString"/> and <see cref="MouseScrollValueChange"/> if you set this.
         /// </summary>
         public Func<string, float> StringToValue { get; set; }
 
         /// <summary>
         /// Custom converter from the slider value to what's displayed in the textbox.
         /// If not set, <code>Mathf.RoundToInt(f * 100).ToString()</code> is used.
+        /// You may need to also change <see cref="StringToValue"/> and <see cref="MouseScrollValueChange"/> if you set this.
         /// </summary>
         public Func<float, string> ValueToString { get; set; }
+
+        /// <summary>
+        /// Override for the default mouse scroll behaviour. It should return a value that should be added to the slider value (will be clamped, can be negative).
+        /// The Vector2 parameter is the mouse scroll delta. Most mice only use the Y scroll value. Delta can be negative and larger than 1.
+        /// If not set, the slider value will be changed based on the slider range (1% of log10 of the max value per vertical mouse wheel tick).
+        /// </summary>
+        public Func<Vector2, float> MouseScrollValueChange { get; set; }
 
         /// <summary>
         /// Use integers instead of floats
@@ -131,13 +140,24 @@ namespace KKAPI.Maker.UI
                 .Subscribe(
                     data =>
                     {
-                        var scrollDelta = data.scrollDelta.y;
-                        var valueChange = Mathf.Pow(10, Mathf.Floor(Mathf.Log10(Mathf.Max(Mathf.Abs(slider.minValue), Mathf.Abs(slider.maxValue)) / 100)));
+                        if (MouseScrollValueChange != null)
+                        {
+                            var valueChangeCustom = MouseScrollValueChange(data.scrollDelta);
+                            slider.value += valueChangeCustom;
+                        }
+                        else
+                        {
+                            // The goal is to make the slider value change by 1 unit that's visible in the textbox next to the slider
+                            // This assumes that the slider value shown in the text box has 3 digits visible at max value
+                            // 1% of log10 of the max value (e.g. 1 for 100 max, 1 for 300, 0.1 for 90, 0.01 for 1)
+                            var valueChange = Mathf.Pow(10, Mathf.Floor(Mathf.Log10(Mathf.Max(Mathf.Abs(slider.minValue), Mathf.Abs(slider.maxValue)) / 100)));
 
-                        if (scrollDelta < 0f)
-                            slider.value += valueChange;
-                        else if (scrollDelta > 0f)
-                            slider.value -= valueChange;
+                            var scrollDelta = data.scrollDelta.y;
+                            if (scrollDelta < 0f)
+                                slider.value += valueChange;
+                            else if (scrollDelta > 0f)
+                                slider.value -= valueChange;
+                        }
                     });
 
             var inputField = tr.Find("InputField").GetComponent<TMP_InputField>();
