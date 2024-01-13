@@ -292,8 +292,9 @@ Properties
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `Single` | DefaultValue | Value used when user presses the Reset button. | 
-| `Func<String, Single>` | StringToValue | Custom converter from text in the textbox to the slider value.  If not set, <code>float.Parse(txt) / 100f</code> is used. | 
-| `Func<Single, String>` | ValueToString | Custom converter from the slider value to what's displayed in the textbox.  If not set, <code>Mathf.RoundToInt(f * 100).ToString()</code> is used. | 
+| `Func<Vector2, Single>` | MouseScrollValueChange | Override for the default mouse scroll behaviour. It should return a value that should be added to the slider value (will be clamped, can be negative).  The Vector2 parameter is the mouse scroll delta. Most mice only use the Y scroll value. Delta can be negative and larger than 1.  If not set, the slider value will be changed based on the slider range (1% of log10 of the max value per vertical mouse wheel tick). | 
+| `Func<String, Single>` | StringToValue | Custom converter from text in the textbox to the slider value.  If not set, <code>float.Parse(txt) / 100f</code> is used.  You may need to also change `KKAPI.Maker.UI.MakerSlider.ValueToString` and `KKAPI.Maker.UI.MakerSlider.MouseScrollValueChange` if you set this. | 
+| `Func<Single, String>` | ValueToString | Custom converter from the slider value to what's displayed in the textbox.  If not set, <code>Mathf.RoundToInt(f * 100).ToString()</code> is used.  You may need to also change `KKAPI.Maker.UI.MakerSlider.StringToValue` and `KKAPI.Maker.UI.MakerSlider.MouseScrollValueChange` if you set this. | 
 | `Boolean` | WholeNumbers | Use integers instead of floats | 
 
 
