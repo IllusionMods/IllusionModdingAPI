@@ -340,10 +340,35 @@ namespace KKAPI.Maker
             var needsSeparator = contentParent.childCount > 1;
             foreach (var gr in entriesToAdd.GroupBy(x => x.GroupingID).OrderBy(x => x.Key))
             {
-                if (needsSeparator)
-                    new MakerSeparator(new MakerCategory(null, null), KoikatuAPI.Instance).CreateControl(contentParent);
+                var controlList = gr.ToList();
 
-                foreach (var control in gr)
+                if (needsSeparator)
+                {
+                    var seperator = new MakerSeparator(new MakerCategory(null, null), KoikatuAPI.Instance);
+
+                    var inited = false;
+
+                    void UpdateSidebarVisibility()
+                    {
+                        // Don't recalculate this when subscribing to every control's Visible (causing O(n2))
+                        if (!inited) return;
+                        var anyVisible = controlList.Any(c => c.Visible.Value);
+                        if (anyVisible != seperator.Visible.Value)
+                            seperator.Visible.OnNext(anyVisible);
+                    }
+
+                    foreach (var control in controlList)
+                        control.Visible.Subscribe(_ => UpdateSidebarVisibility());
+
+                    inited = true;
+
+                    // In case all controls are pre-hidden
+                    UpdateSidebarVisibility();
+
+                    seperator.CreateControl(contentParent);
+                }
+
+                foreach (var control in controlList)
                     control.CreateControl(contentParent);
 
                 needsSeparator = true;

@@ -166,7 +166,7 @@ namespace KKAPI.Maker.UI
         public string GroupingID { get; set; }
 
         /// <summary>
-        /// If true, Api automates showing and hiding of accessory controls
+        /// If true, Api automates showing and hiding of accessory controls (hide if no accessory is selected)
         /// </summary>
         internal bool AutomateVisible { get; set; }
 

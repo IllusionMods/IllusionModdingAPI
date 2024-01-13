@@ -21,7 +21,6 @@ namespace KKAPI.Maker
         private static readonly List<BaseGuiEntry> _guiEntries = new List<BaseGuiEntry>();
         private static readonly List<BaseGuiEntry> _sidebarEntries = new List<BaseGuiEntry>();
         private static readonly List<BaseGuiEntry> _accessoryWindowEntries = new List<BaseGuiEntry>();
-        private static readonly List<BaseGuiEntry> _accessoryWindowSeperators = new List<BaseGuiEntry>();
 
         private static readonly MakerCategory _accessorySlotWindowCategory = new MakerCategory("04_AccessoryTop", "Slots");
 
@@ -242,18 +241,35 @@ namespace KKAPI.Maker
             var needsSeparator = contentParent.childCount > 1;
             foreach (var gr in entriesToAdd.GroupBy(x => x.GroupingID).OrderBy(x => x.Key))
             {
+                var controlList = gr.ToList();
+
                 if (needsSeparator)
                 {
                     var seperator = new MakerSeparator(new MakerCategory(null, null), KoikatuAPI.Instance);
-                    seperator.CreateControl(contentParent);
-                    if (accessorieswindow && gr.Any(x => x.AutomateVisible))//add only groups with a automated control
+
+                    var inited = false;
+
+                    void UpdateSidebarVisibility()
                     {
-                        seperator.GroupingID = gr.First().GroupingID;
-                        _accessoryWindowSeperators.Add(seperator);
+                        // Don't recalculate this when subscribing to every control's Visible (causing O(n2))
+                        if (!inited) return;
+                        var anyVisible = controlList.Any(c => c.Visible.Value);
+                        if (anyVisible != seperator.Visible.Value)
+                            seperator.Visible.OnNext(anyVisible);
                     }
+
+                    foreach (var control in controlList)
+                        control.Visible.Subscribe(_ => UpdateSidebarVisibility());
+
+                    inited = true;
+
+                    // In case all controls are pre-hidden
+                    UpdateSidebarVisibility();
+
+                    seperator.CreateControl(contentParent);
                 }
 
-                foreach (var control in gr)
+                foreach (var control in controlList)
                     control.CreateControl(contentParent);
 
                 needsSeparator = true;
@@ -455,28 +471,7 @@ namespace KKAPI.Maker
                     item.Visible.OnNext(showAccControls);
             }
 
-            SeperatorVisibility();
-
             _accessoryControlShowState = showAccControls;
-        }
-
-        private static void SeperatorVisibility()
-        {
-            //foreach (var seperator in _accessoryWindowSeperators)
-            //{
-            //    var show = _accessoryWindowEntries.Where(x => x.GroupingID == seperator.GroupingID).Any(x => x.Visible.Value);
-            //    seperator.Visible.OnNext(show);
-            //}
-
-            foreach (var gr in _accessoryWindowEntries.GroupBy(x => x.GroupingID))
-            {
-                var show = gr.Any(x => x.Visible.Value);
-                var seperator = _accessoryWindowSeperators.Find(x => x.GroupingID == gr.Key);
-                if (seperator != null)
-                {
-                    seperator.Visible.OnNext(show);
-                }
-            }
         }
 
         //private static void KeelsChildNeglect(Transform parent, int generation)
