@@ -26,7 +26,7 @@ namespace KKAPI.Maker
             {
                 var categoryTransfrom = __instance.transform;
 
-                if (categoryTransfrom?.parent != null && categoryTransfrom.parent.name == "CvsMenuTree")
+                if (categoryTransfrom != null && categoryTransfrom.parent != null && categoryTransfrom.parent.name == "CvsMenuTree")
                 {
                     if (!_makerStarting)
                     {
@@ -70,8 +70,7 @@ namespace KKAPI.Maker
                 _makerStarting = false;
                 OnMakerFinishedLoading();
 
-                KoikatuAPI.Logger.LogDebug($"Maker loaded in {sw.ElapsedMilliseconds}ms");
-                KoikatuAPI.Logger.LogDebug($"1st frame:{sw1}ms; Maker base:{sw2}ms; Custom controls:{sw4}ms");
+                KoikatuAPI.Logger.LogDebug($"Maker loaded in {sw.ElapsedMilliseconds}ms -> 1st frame:{sw1}ms; Maker base:{sw2}ms; Custom controls:{sw4}ms");
             }
 
             [HarmonyPrefix]
@@ -134,7 +133,7 @@ namespace KKAPI.Maker
             /// Keep Load button in maker character load list enabled if any of the extra toggles are enabled, but none of the stock ones are. 
             /// </summary>
             [HarmonyPrefix]
-            [HarmonyPatch(typeof(Selectable), "set_interactable")]
+            [HarmonyPatch(typeof(Selectable), nameof(Selectable.interactable), MethodType.Setter)]
             public static void LoadButtonOverride(Selectable __instance, ref bool value)
             {
                 if (!value)
