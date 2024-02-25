@@ -157,7 +157,7 @@ namespace KKAPI.Chara
 
         #endregion
 
-        internal static readonly Dictionary<ChaFile, string> ChaFileFullPathLookup = new Dictionary<ChaFile, string>(); //todo add extension
+        internal static readonly WeakKeyDictionary<ChaFile, string> ChaFileFullPathLookup = new WeakKeyDictionary<ChaFile, string>(); //todo add extension
 
         /// <summary>
         /// Gets full path to the file where this ChaFile was loaded from. Usually this means the character card,

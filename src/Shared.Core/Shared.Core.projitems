@@ -50,6 +50,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\RecycleBinUtil.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TranslationHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\WeakDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\WindowsStringComparer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -57,5 +58,8 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-box.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-window-light.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-window.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Internal\" />
   </ItemGroup>
 </Project>
