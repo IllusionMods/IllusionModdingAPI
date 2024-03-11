@@ -24,6 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Studio\StudioObjectExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\BaseCurrentStateEditableGuiEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategoryColorPicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategoryDropdown.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategorySlider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategorySubItemBase.cs" />
