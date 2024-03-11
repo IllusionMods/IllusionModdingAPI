@@ -203,6 +203,7 @@ namespace KKAPI.Studio
             cat2.AddControl(new CurrentStateCategorySwitch("Test add", c => true)).Value.Subscribe(val => KoikatuAPI.Logger.LogMessage(val));
             cat2.AddControl(new CurrentStateCategorySlider("Test slider", c => 0.75f)).Value.Subscribe(val => KoikatuAPI.Logger.LogMessage(val));
             cat2.AddControl(new CurrentStateCategoryDropdown("dropdown test", new[] { "item 1", "i2", "test 3" }, c => 1)).Value.Subscribe(val => KoikatuAPI.Logger.LogMessage("dd " + val));
+            cat2.AddControls(new CurrentStateCategoryColorPicker("Test Color Picker", c => Color.white, c => KoikatuAPI.Logger.LogMessage("color picker: " + c)));
 
             CustomToolbarButtons.AddLeftToolbarButton(new Texture2D(32, 32), () => Console.WriteLine("click"));
             CustomToolbarButtons.AddLeftToolbarToggle(new Texture2D(55, 32), true, v => Console.WriteLine("click " + v));

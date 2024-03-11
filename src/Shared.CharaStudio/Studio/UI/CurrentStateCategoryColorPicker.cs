@@ -1,5 +1,4 @@
-﻿#if !PH
-#if AI || HS2
+﻿#if AI || HS2
 #define TMP
 #endif
 
@@ -69,8 +68,14 @@ namespace KKAPI.Studio.UI
             button.onClick.AddListener(() => Value.OnNext(Value.Value));
             button.onClick.AddListener(() =>
             {
+#if !PH
                 Singleton<GameStudio.Studio>.Instance.colorPalette.Setup(Name, Value.Value, c => { OnValueChanged(c); image.color = c; }, true);
                 Singleton<GameStudio.Studio>.Instance.colorPalette.visible = true;
+#elif PH
+                Singleton<GameStudio.Studio>.Instance.colorMenu.updateColorFunc = new GameStudio.UI_ColorInfo.UpdateColor(c => { OnValueChanged(c); image.color = c; });
+                Singleton<GameStudio.Studio>.Instance.colorMenu.SetColor(image.color, UI_ColorInfo.ControlType.PresetsSample);
+	            Singleton<GameStudio.Studio>.Instance.colorPaletteCtrl.visible = true;
+#endif
             });
             Value.Subscribe(newValue => image.color = newValue);
 
@@ -78,4 +83,3 @@ namespace KKAPI.Studio.UI
         }
     }
 }
-#endif
