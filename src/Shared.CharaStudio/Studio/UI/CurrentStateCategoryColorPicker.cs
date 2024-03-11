@@ -17,7 +17,10 @@ using Text = TMPro.TextMeshProUGUI;
 
 namespace KKAPI.Studio.UI
 {
-    internal class CurrentStateCategoryColorPicker : BaseCurrentStateEditableGuiEntry<Color>
+    /// <summary>
+    /// Custom control that draws a color picker in the Chara > CurrentState studio menu.
+    /// </summary>
+    public class CurrentStateCategoryColorPicker : BaseCurrentStateEditableGuiEntry<Color>
     {
         private static GameObject _originalObject;
 #if TMP
@@ -25,14 +28,13 @@ namespace KKAPI.Studio.UI
 #else
         private const float LineSpacing = 0.5f;
 #endif
-        public Action<Color> OnValueChanged;
+        private readonly Action<Color> OnValueChanged;
 
         /// <summary>
-        /// Custom control that draws a slider in the Chara > CurrentState studio menu.
+        /// Custom control that draws a color picker in the Chara > CurrentState studio menu.
         /// </summary>
-        /// <param name="name">Name of the button, shown on left</param> 
+        /// <param name="name">Name of the color picker, shown on left</param> 
         /// <param name="updateValue">Function called when the current character changes and the slider value needs to be updated.
-        /// <code>OCIChar</code> is the newly selected character. Return the new state. Can't be null.</param>
         /// <param name="onValueChanged">Action to perform when changing the color in the color picker</param>
         public CurrentStateCategoryColorPicker(string name, Func<OCIChar, Color> updateValue, Action<Color> onValueChanged) : base(name, updateValue)
         {
