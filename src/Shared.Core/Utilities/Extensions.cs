@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using HarmonyLib;
+using KKAPI.Chara;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -225,6 +226,34 @@ namespace KKAPI.Utilities
         public static bool SetFieldValue(this object self, string name, object value)
         {
             return Traverse.Create(self).Field(name).SetValue(value).FieldExists();
+        }
+
+        internal static void SafeInvokeWithLogging<T>(this T handler, Action<T> invokeCallback, string handlerName, ApiEventExecutionLogger eventLogger) where T : Delegate
+        {
+            try
+            {
+                if (handler == null) return;
+
+                eventLogger?.EventHandlerBegin(handlerName);
+
+                foreach (var singleHandler in handler.GetInvocationList())
+                {
+                    eventLogger?.EventHandlerStart();
+                    try
+                    {
+                        invokeCallback((T)singleHandler);
+                    }
+                    catch (Exception e)
+                    {
+                        KoikatuAPI.Logger.LogError("Event handler crashed with exception: " + e);
+                    }
+                    eventLogger?.EventHandlerEnd(singleHandler.Method);
+                }
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError("Unexpected crash when running events, some events might have been skipped! Reason: " + e);
+            }
         }
     }
 }

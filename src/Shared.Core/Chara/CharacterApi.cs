@@ -6,9 +6,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using HarmonyLib;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 #if AI || HS2
 using AIChara;
@@ -266,7 +268,7 @@ namespace KKAPI.Chara
 
             // Trigger the equivalent of "Start" reload from controllers
             if (!MakerAPI.InsideMaker)
-                target.StartCoroutine(CoroutineUtils.CreateCoroutine(new WaitForEndOfFrame(), () => { }, () => OnCharacterReloaded(target)));
+                target.StartCoroutine(CoroutineUtils.CreateCoroutine(new WaitForEndOfFrame(), () => { }, () => OnCharacterReloaded(target, null)));
         }
 
         private static void OnCardBeingSaved(ChaFile chaFile)
@@ -300,10 +302,23 @@ namespace KKAPI.Chara
 
         private static void OnCardBeingSaved(ChaControl chaControl, GameMode gamemode)
         {
-            KoikatuAPI.Logger.LogDebug("Character save: " + GetLogName(chaControl?.chaFile));
+            var charaName = GetLogName(chaControl?.chaFile);
+
+            KoikatuAPI.Logger.LogDebug("Character save: " + charaName);
+
+            var eventLogger = ApiEventExecutionLogger.GetEventLogger();
+            eventLogger.Begin(nameof(OnCardBeingSaved), charaName);
 
             foreach (var behaviour in GetBehaviours(chaControl))
+            {
+                eventLogger.PluginStart();
+
                 behaviour.OnCardBeingSavedInternal(gamemode);
+
+                eventLogger.PluginEnd(behaviour);
+            }
+
+            eventLogger.End();
         }
 
         private static readonly HashSet<ChaControl> _currentlyReloading = new HashSet<ChaControl>();
@@ -318,14 +333,26 @@ namespace KKAPI.Chara
             else
                 _currentlyReloading.Add(chaControl);
 
-            KoikatuAPI.Logger.LogDebug("Character load/reload: " + GetLogName(chaControl?.chaFile));
+            var charaName = GetLogName(chaControl?.chaFile);
+            KoikatuAPI.Logger.LogDebug("Character load/reload: " + charaName);
+
+            var eventLogger = ApiEventExecutionLogger.GetEventLogger();
+            eventLogger.Begin(nameof(ReloadChara), charaName);
 
             // Always send events to controllers before subscribers of CharacterReloaded
             var gamemode = KoikatuAPI.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(chaControl))
+            {
+                eventLogger.PluginStart();
+
                 behaviour.OnReloadInternal(gamemode);
 
-            OnCharacterReloaded(chaControl);
+                eventLogger.PluginEnd(behaviour);
+            }
+
+            OnCharacterReloaded(chaControl, eventLogger);
+
+            eventLogger.End();
 
             if (MakerAPI.InsideAndLoaded)
                 MakerAPI.OnReloadInterface(new CharaReloadEventArgs(chaControl));
@@ -336,17 +363,12 @@ namespace KKAPI.Chara
                 _currentlyReloading.Remove(chaControl);
         }
 
-        private static void OnCharacterReloaded(ChaControl chaControl)
+        private static void OnCharacterReloaded(ChaControl chaControl, ApiEventExecutionLogger eventLogger)
         {
+            if (CharacterReloaded == null) return;
+
             var args = new CharaReloadEventArgs(chaControl);
-            try
-            {
-                CharacterReloaded?.Invoke(null, args);
-            }
-            catch (Exception e)
-            {
-                KoikatuAPI.Logger.LogError(e);
-            }
+            CharacterReloaded.SafeInvokeWithLogging(handler => handler.Invoke(chaControl, args), nameof(CharacterApi) + "." + nameof(CharacterReloaded), eventLogger);
         }
 
         private static bool IsCurrentlyReloading(ChaControl chaControl)
