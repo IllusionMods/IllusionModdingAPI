@@ -8,26 +8,41 @@ namespace KKAPI.Chara
     {
         [ThreadStatic]
         private static ApiEventExecutionLogger _eventLogger;
-        public static ApiEventExecutionLogger GetEventLogger() => _eventLogger ?? (_eventLogger = new ApiEventExecutionLogger());
+        public static ApiEventExecutionLogger GetEventLogger() => _eventLogger != null && !_eventLogger._running ? _eventLogger : _eventLogger = new ApiEventExecutionLogger();
 
-        private readonly StringBuilder _sb;
+        private StringBuilder _sb;
         private readonly Stopwatch _swPlug, _swTotal;
         private int _pluginCounter, _handlerCounter;
+        private bool _running;
 
         private ApiEventExecutionLogger()
         {
-            //todo if(!KoikatuAPI.EnableDebugLogging) return;
-            _sb = new StringBuilder();
             _swPlug = new Stopwatch();
             _swTotal = new Stopwatch();
         }
 
         public void Begin(string eventName, string targetName)
         {
-            if (_sb == null) return;
+            if (!KoikatuAPI.EnableDebugLogging)
+            {
+                _sb = null;
+                return;
+            }
+            else if (_sb == null)
+            {
+                _sb = new StringBuilder();
+            }
+            else
+            {
+                _sb.Length = 0;
+            }
 
-            _sb.Length = 0;
-            _sb.Append("Finished running ").Append(eventName).Append(" events for: ").Append(targetName);
+            _running = true;
+
+            _sb.Append("Finished raising event: ").Append(eventName);
+            if (targetName != null) _sb.Append(" | Target: ").Append(targetName);
+
+            _sb.AppendLine().Append("___/ ").Append("Controllers:");
 
             _pluginCounter = 0;
             _handlerCounter = 0;
@@ -42,13 +57,19 @@ namespace KKAPI.Chara
             _swPlug.Start();
         }
 
-        public void PluginEnd(CharaCustomFunctionController pluginBehaviour)
+        public void PluginEnd(UnityEngine.MonoBehaviour pluginBehaviour)
+        {
+            if (_sb == null) return;
+
+            PluginEnd(pluginBehaviour.GetType().FullName);
+        }
+        public void PluginEnd(string pluginName)
         {
             if (_sb == null) return;
 
             _swPlug.Stop();
 
-            LogEnd(++_pluginCounter, pluginBehaviour.GetType().FullName ?? "NULL", _swPlug.ElapsedMilliseconds);
+            LogEnd(++_pluginCounter, pluginName ?? "NULL", _swPlug.ElapsedMilliseconds);
 
             _swPlug.Reset();
         }
@@ -57,7 +78,7 @@ namespace KKAPI.Chara
         {
             if (_sb == null) return;
 
-            _sb.AppendLine().Append(eventName).Append(" event handlers:");
+            _sb.AppendLine().Append("___/ ").Append(eventName).Append(" event handlers:");
             _handlerCounter = 0;
         }
 
@@ -74,7 +95,13 @@ namespace KKAPI.Chara
 
             _swPlug.Stop();
 
-            LogEnd(++_handlerCounter, (handler.DeclaringType?.FullName ?? "NULL") + "::" + handler.Name, _swPlug.ElapsedMilliseconds);
+            var declaringTypeFullName = handler.DeclaringType?.FullName;
+
+            const string spam = "KKAPI.Chara.CharacterExtensions+<>c__DisplayClass4_0`2[[";
+            if (declaringTypeFullName != null && declaringTypeFullName.StartsWith(spam))
+                declaringTypeFullName = declaringTypeFullName.Substring(spam.Length, declaringTypeFullName.IndexOfAny(new char[] { ',', ']' }, spam.Length) - spam.Length);
+
+            LogEnd(++_handlerCounter, (declaringTypeFullName ?? "NULL") + "::" + handler.Name, _swPlug.ElapsedMilliseconds);
 
             _swPlug.Reset();
         }
@@ -90,9 +117,10 @@ namespace KKAPI.Chara
 
         public void End()
         {
+            _running = false;
             if (_sb == null) return;
 
-            _sb.AppendLine().Append("## Total: ").Append(_swTotal.ElapsedMilliseconds).Append("ms");
+            _sb.AppendLine().Append("____ ").Append("Total: ").Append(_swTotal.ElapsedMilliseconds).Append("ms");
             KoikatuAPI.Logger.LogDebug(_sb.ToString());
         }
     }

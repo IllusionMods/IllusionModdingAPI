@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KKAPI.Chara;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -37,6 +38,57 @@ namespace KKAPI.Utilities
             evt.RemoveAllListeners();
             for (var i = 0; i < evt.GetPersistentEventCount(); i++)
                 evt.SetPersistentListenerState(i, UnityEventCallState.Off);
+        }
+        
+        internal static void SafeInvoke<T>(this T handler, Action<T> invokeCallback) where T : Delegate
+        {
+            if (handler == null) return;
+
+            try
+            {
+                foreach (var singleHandler in handler.GetInvocationList())
+                {
+                    try
+                    {
+                        invokeCallback((T)singleHandler);
+                    }
+                    catch (Exception e)
+                    {
+                        KoikatuAPI.Logger.LogError("Event handler crashed with exception: " + e);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError("Unexpected crash when running events, some events might have been skipped! Reason: " + e);
+            }
+        }
+        internal static void SafeInvokeWithLogging<T>(this T handler, Action<T> invokeCallback, string handlerName, ApiEventExecutionLogger eventLogger) where T : Delegate
+        {
+            if (handler == null) return;
+
+            try
+            {
+                eventLogger?.EventHandlerBegin(handlerName);
+
+                foreach (var singleHandler in handler.GetInvocationList())
+                {
+                    eventLogger?.EventHandlerStart();
+                    try
+                    {
+                        invokeCallback((T)singleHandler);
+                    }
+                    catch (Exception e)
+                    {
+                        KoikatuAPI.Logger.LogError("Event handler crashed with exception: " + e);
+                    }
+                    eventLogger?.EventHandlerEnd(singleHandler.Method);
+                }
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError("Unexpected crash when running events, some events might have been skipped! Reason: " + e);
+            }
         }
     }
 }

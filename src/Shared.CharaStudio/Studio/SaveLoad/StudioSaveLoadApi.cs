@@ -3,6 +3,7 @@ using Studio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using KKAPI.Chara;
 using UnityEngine;
 
 namespace KKAPI.Studio.SaveLoad
@@ -50,8 +51,12 @@ namespace KKAPI.Studio.SaveLoad
 
         private static void OnSceneBeingSaved()
         {
+            var eLogger = ApiEventExecutionLogger.GetEventLogger();
+            eLogger.Begin(nameof(OnSceneBeingSaved), null);
+
             foreach (var behaviour in _registeredHandlers)
             {
+                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnSceneSave();
@@ -60,24 +65,24 @@ namespace KKAPI.Studio.SaveLoad
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
+                eLogger.PluginEnd(behaviour.Key);
             }
 
-            try
-            {
-                SceneSave?.Invoke(KoikatuAPI.Instance, EventArgs.Empty);
-            }
-            catch (Exception e)
-            {
-                KoikatuAPI.Logger.LogError(e);
-            }
+            SceneSave.SafeInvokeWithLogging(handler => handler.Invoke(KoikatuAPI.Instance, EventArgs.Empty), nameof(SceneSave), eLogger);
+
+            eLogger.End();
         }
 
         private static void OnSceneBeingLoaded(SceneOperationKind operation)
         {
+            var eLogger = ApiEventExecutionLogger.GetEventLogger();
+            eLogger.Begin(nameof(OnSceneBeingLoaded), operation.ToString());
+
             var readonlyDict = GetLoadedObjects(operation).ToReadOnlyDictionary();
 
             foreach (var behaviour in _registeredHandlers)
             {
+                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnSceneLoad(operation, readonlyDict);
@@ -86,24 +91,25 @@ namespace KKAPI.Studio.SaveLoad
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
+                eLogger.PluginEnd(behaviour.Key);
             }
 
-            try
-            {
-                SceneLoad?.Invoke(KoikatuAPI.Instance, new SceneLoadEventArgs(operation, readonlyDict));
-            }
-            catch (Exception e)
-            {
-                KoikatuAPI.Logger.LogError(e);
-            }
+            var args = new SceneLoadEventArgs(operation, readonlyDict);
+            SceneLoad.SafeInvokeWithLogging(handler => handler.Invoke(KoikatuAPI.Instance, args), nameof(SceneLoad), eLogger);
+
+            eLogger.End();
         }
 
         private static void OnObjectsBeingCopied()
         {
+            var eLogger = ApiEventExecutionLogger.GetEventLogger();
+            eLogger.Begin(nameof(OnObjectsBeingCopied), null);
+
             var readonlyDict = GetLoadedObjects(SceneOperationKind.Import).ToReadOnlyDictionary();
 
             foreach (var behaviour in _registeredHandlers)
             {
+                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnObjectsCopied(readonlyDict);
@@ -112,22 +118,23 @@ namespace KKAPI.Studio.SaveLoad
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
+                eLogger.PluginEnd(behaviour.Key);
             }
 
-            try
-            {
-                ObjectsCopied?.Invoke(KoikatuAPI.Instance, new ObjectsCopiedEventArgs(readonlyDict));
-            }
-            catch (Exception e)
-            {
-                KoikatuAPI.Logger.LogError(e);
-            }
+            var args = new ObjectsCopiedEventArgs(readonlyDict);
+            ObjectsCopied.SafeInvokeWithLogging(handler => handler.Invoke(KoikatuAPI.Instance, args), nameof(ObjectsCopied), eLogger);
+
+            eLogger.End();
         }
 
         private static void OnObjectBeingDeleted(ObjectCtrlInfo objectCtrlInfo)
         {
+            var eLogger = ApiEventExecutionLogger.GetEventLogger();
+            eLogger.Begin(nameof(OnObjectBeingDeleted), objectCtrlInfo?.treeNodeObject?.textName);
+
             foreach (var behaviour in _registeredHandlers)
             {
+                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnObjectDeleted(objectCtrlInfo);
@@ -136,22 +143,23 @@ namespace KKAPI.Studio.SaveLoad
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
+                eLogger.PluginEnd(behaviour.Key);
             }
 
-            try
-            {
-                ObjectDeleted?.Invoke(KoikatuAPI.Instance, new ObjectDeletedEventArgs(objectCtrlInfo));
-            }
-            catch (Exception e)
-            {
-                KoikatuAPI.Logger.LogError(e);
-            }
+            var args = new ObjectDeletedEventArgs(objectCtrlInfo);
+            ObjectDeleted.SafeInvokeWithLogging(handler => handler.Invoke(KoikatuAPI.Instance, args), nameof(ObjectDeleted), eLogger);
+
+            eLogger.End();
         }
 
         private static void OnObjectVisibilityToggled(ObjectCtrlInfo objectCtrlInfo, bool visible)
         {
+            var eLogger = ApiEventExecutionLogger.GetEventLogger();
+            eLogger.Begin(nameof(OnObjectVisibilityToggled), objectCtrlInfo?.treeNodeObject?.textName);
+
             foreach (var behaviour in _registeredHandlers)
             {
+                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnObjectVisibilityToggled(objectCtrlInfo, visible);
@@ -160,22 +168,23 @@ namespace KKAPI.Studio.SaveLoad
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
+                eLogger.PluginEnd(behaviour.Key);
             }
 
-            try
-            {
-                ObjectVisibilityToggled?.Invoke(KoikatuAPI.Instance, new ObjectVisibilityToggledEventArgs(objectCtrlInfo, visible));
-            }
-            catch (Exception e)
-            {
-                KoikatuAPI.Logger.LogError(e);
-            }
+            var args = new ObjectVisibilityToggledEventArgs(objectCtrlInfo, visible);
+            ObjectVisibilityToggled.SafeInvokeWithLogging(handler => handler.Invoke(KoikatuAPI.Instance, args), nameof(ObjectVisibilityToggled), eLogger);
+
+            eLogger.End();
         }
 
         private static void OnObjectsSelected(List<ObjectCtrlInfo> objectCtrlInfos)
         {
+            var eLogger = ApiEventExecutionLogger.GetEventLogger();
+            eLogger.Begin(nameof(OnObjectsSelected), null);
+
             foreach (var behaviour in _registeredHandlers)
             {
+                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnObjectsSelected(objectCtrlInfos);
@@ -184,16 +193,13 @@ namespace KKAPI.Studio.SaveLoad
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
+                eLogger.PluginEnd(behaviour.Key);
             }
 
-            try
-            {
-                ObjectsSelected?.Invoke(KoikatuAPI.Instance, new ObjectsSelectedEventArgs(objectCtrlInfos));
-            }
-            catch (Exception e)
-            {
-                KoikatuAPI.Logger.LogError(e);
-            }
+            var args = new ObjectsSelectedEventArgs(objectCtrlInfos);
+            ObjectsSelected.SafeInvokeWithLogging(handler => handler.Invoke(KoikatuAPI.Instance, args), nameof(ObjectsSelected), eLogger);
+            
+            eLogger.End();
         }
 
         private static Dictionary<int, ObjectCtrlInfo> GetLoadedObjects(SceneOperationKind operation)
