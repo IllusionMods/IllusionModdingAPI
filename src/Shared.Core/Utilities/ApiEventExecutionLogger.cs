@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 
-namespace KKAPI.Chara
+namespace KKAPI.Utilities
 {
     internal class ApiEventExecutionLogger
     {
@@ -14,6 +14,7 @@ namespace KKAPI.Chara
         private readonly Stopwatch _swPlug, _swTotal;
         private int _pluginCounter, _handlerCounter;
         private bool _running;
+        private bool _addedPluginHeader;
 
         private ApiEventExecutionLogger()
         {
@@ -38,11 +39,10 @@ namespace KKAPI.Chara
             }
 
             _running = true;
+            _addedPluginHeader = false;
 
             _sb.Append("Finished raising event: ").Append(eventName);
             if (targetName != null) _sb.Append(" | Target: ").Append(targetName);
-
-            _sb.AppendLine().Append("___/ ").Append("Controllers:");
 
             _pluginCounter = 0;
             _handlerCounter = 0;
@@ -53,6 +53,12 @@ namespace KKAPI.Chara
         public void PluginStart()
         {
             if (_sb == null) return;
+
+            if (!_addedPluginHeader)
+            {
+                _sb.AppendLine().Append("___/ ").Append("Controllers:");
+                _addedPluginHeader = true;
+            }
 
             _swPlug.Start();
         }
