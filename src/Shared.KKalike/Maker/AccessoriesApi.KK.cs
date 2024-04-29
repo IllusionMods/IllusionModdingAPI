@@ -4,6 +4,7 @@ using HarmonyLib;
 using System;
 using System.Linq;
 using System.Reflection;
+using KKAPI.Utilities;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #pragma warning disable 612
@@ -275,17 +276,20 @@ namespace KKAPI.Maker
             if (newSlotIndex == SelectedMakerAccSlot) return;
             SelectedMakerAccSlot = newSlotIndex;
 
+            var args = new AccessorySlotEventArgs(newSlotIndex);
+
             if (KoikatuAPI.EnableDebugLogging)
+            {
                 KoikatuAPI.Logger.LogMessage("SelectedMakerAccSlotChanged - slot:" + newSlotIndex);
 
-            if (SelectedMakerAccSlotChanged == null) return;
-            try
-            {
-                SelectedMakerAccSlotChanged(source, new AccessorySlotEventArgs(newSlotIndex));
+                var eLogger = ApiEventExecutionLogger.GetEventLogger();
+                eLogger.Begin(nameof(OnSelectedMakerSlotChanged), newSlotIndex.ToString());
+                SelectedMakerAccSlotChanged.SafeInvokeWithLogging(handler => handler.Invoke(source, args), nameof(SelectedMakerAccSlotChanged), eLogger);
+                eLogger.End();
             }
-            catch (Exception ex)
+            else
             {
-                KoikatuAPI.Logger.LogError("Subscription to SelectedMakerSlot crashed: " + ex);
+                SelectedMakerAccSlotChanged.SafeInvoke(handler => handler.Invoke(source, args));
             }
 
             AutomaticControlVisibility();
@@ -296,32 +300,36 @@ namespace KKAPI.Maker
             if (KoikatuAPI.EnableDebugLogging)
                 KoikatuAPI.Logger.LogMessage("MakerAccSlotAdded - slot:" + newSlotIndex);
 
+            var eLogger = ApiEventExecutionLogger.GetEventLogger();
+            eLogger.Begin(nameof(OnMakerAccSlotAdded), newSlotIndex.ToString());
+            eLogger.PluginStart();
+
             MakerInterfaceCreator.OnMakerAccSlotAdded(newSlotTransform);
 
-            if (MakerAccSlotAdded == null) return;
-            try
-            {
-                MakerAccSlotAdded(source, new AccessorySlotEventArgs(newSlotIndex));
-            }
-            catch (Exception ex)
-            {
-                KoikatuAPI.Logger.LogError("Subscription to SelectedMakerSlot crashed: " + ex);
-            }
+            eLogger.PluginEnd("MakerInterfaceCreator.OnMakerAccSlotAdded");
+
+            var args = new AccessorySlotEventArgs(newSlotIndex);
+            MakerAccSlotAdded.SafeInvokeWithLogging(handler => handler.Invoke(source, args), nameof(MakerAccSlotAdded), eLogger);
+
+            eLogger.End();
         }
 
         private static void OnAccessoryKindChanged(object source, int slotNo)
         {
+            var args = new AccessorySlotEventArgs(slotNo);
+
             if (KoikatuAPI.EnableDebugLogging)
+            {
                 KoikatuAPI.Logger.LogMessage("AccessoryKindChanged - slot:" + slotNo);
 
-            if (AccessoryKindChanged == null) return;
-            try
-            {
-                AccessoryKindChanged(source, new AccessorySlotEventArgs(slotNo));
+                var eLogger = ApiEventExecutionLogger.GetEventLogger();
+                eLogger.Begin(nameof(OnAccessoryKindChanged), slotNo.ToString());
+                AccessoryKindChanged.SafeInvokeWithLogging(handler => handler.Invoke(source, args), nameof(AccessoryKindChanged), eLogger);
+                eLogger.End();
             }
-            catch (Exception ex)
+            else
             {
-                KoikatuAPI.Logger.LogError("Subscription to AccessoryKindChanged crashed: " + ex);
+                AccessoryKindChanged.SafeInvoke(handler => handler.Invoke(source, args));
             }
         }
 
@@ -346,10 +354,18 @@ namespace KKAPI.Maker
                 var args = new AccessoryCopyEventArgs(selected, (ChaFileDefine.CoordinateType)dropdowns[1].value, (ChaFileDefine.CoordinateType)dropdowns[0].value);
 
                 if (KoikatuAPI.EnableDebugLogging)
+                {
                     KoikatuAPI.Logger.LogMessage($"AccessoriesCopied - ids: {string.Join(", ", args.CopiedSlotIndexes.Select(x => x.ToString()).ToArray())}, src:{args.CopySource}, dst:{args.CopyDestination}");
 
-                if (AccessoriesCopied != null)
-                    AccessoriesCopied(instance, args);
+                    var eLogger = ApiEventExecutionLogger.GetEventLogger();
+                    eLogger.Begin(nameof(OnAccessoryKindChanged), null);
+                    AccessoriesCopied.SafeInvokeWithLogging(handler => handler.Invoke(instance, args), nameof(AccessoriesCopied), eLogger);
+                    eLogger.End();
+                }
+                else
+                {
+                    AccessoriesCopied.SafeInvoke(handler => handler.Invoke(instance, args));
+                }
             }
             catch (Exception ex)
             {
@@ -360,19 +376,19 @@ namespace KKAPI.Maker
 
         private static void OnChangeAcs(object instance, int selSrc, int selDst)
         {
+            var args = new AccessoryTransferEventArgs(selSrc, selDst);
             if (KoikatuAPI.EnableDebugLogging)
+            {
                 KoikatuAPI.Logger.LogMessage($"AccessoryTransferred - srcId:{selSrc}, dstId:{selDst}");
 
-            if (AccessoryTransferred == null) return;
-            try
-            {
-                var args = new AccessoryTransferEventArgs(selSrc, selDst);
-
-                AccessoryTransferred(instance, args);
+                var eLogger = ApiEventExecutionLogger.GetEventLogger();
+                eLogger.Begin(nameof(OnChangeAcs), selSrc + " -> " + selDst);
+                AccessoryTransferred.SafeInvokeWithLogging(handler => handler.Invoke(instance, args), nameof(AccessoryTransferred), eLogger);
+                eLogger.End();
             }
-            catch (Exception ex)
+            else
             {
-                KoikatuAPI.Logger.LogError("Crash in AccessoryTransferred event: " + ex);
+                AccessoryTransferred.SafeInvoke(handler => handler.Invoke(instance, args));
             }
         }
 

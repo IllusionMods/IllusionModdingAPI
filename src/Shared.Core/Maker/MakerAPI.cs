@@ -3,6 +3,7 @@ using System.Collections;
 using KKAPI.Chara;
 using KKAPI.Maker.UI;
 using KKAPI.Maker.UI.Sidebar;
+using KKAPI.Utilities;
 using UnityEngine;
 #if KK || KKS || EC
 using ChaCustom;
@@ -190,58 +191,19 @@ namespace KKAPI.Maker
         {
             MakerInterfaceCreator.InitializeMaker();
 
-            if (RegisterCustomSubCategories != null)
-            {
-                var args = new RegisterSubCategoriesEvent();
-                foreach (var handler in RegisterCustomSubCategories.GetInvocationList())
-                {
-                    try
-                    {
-                        ((EventHandler<RegisterSubCategoriesEvent>)handler).Invoke(KoikatuAPI.Instance, args);
-                    }
-                    catch (Exception e)
-                    {
-                        KoikatuAPI.Logger.LogError(e);
-                    }
-                }
-            }
+            var args = new RegisterSubCategoriesEvent();
+            RegisterCustomSubCategories.SafeInvoke(handler => handler.Invoke(KoikatuAPI.Instance, args));
         }
 
         private static void OnMakerStartedLoading()
         {
-            if (MakerStartedLoading != null)
-            {
-                var args = new RegisterCustomControlsEvent();
-                foreach (var handler in MakerStartedLoading.GetInvocationList())
-                {
-                    try
-                    {
-                        ((EventHandler<RegisterCustomControlsEvent>)handler).Invoke(KoikatuAPI.Instance, args);
-                    }
-                    catch (Exception e)
-                    {
-                        KoikatuAPI.Logger.LogError(e);
-                    }
-                }
-            }
+            var args = new RegisterCustomControlsEvent();
+            MakerStartedLoading.SafeInvoke(handler => handler.Invoke(KoikatuAPI.Instance, args));
         }
 
         private static void OnMakerFinishedLoading()
         {
-            if (MakerFinishedLoading != null)
-            {
-                foreach (var handler in MakerFinishedLoading.GetInvocationList())
-                {
-                    try
-                    {
-                        ((EventHandler)handler).Invoke(KoikatuAPI.Instance, EventArgs.Empty);
-                    }
-                    catch (Exception e)
-                    {
-                        KoikatuAPI.Logger.LogError(e);
-                    }
-                }
-            }
+            MakerFinishedLoading.SafeInvoke(handler => handler.Invoke(KoikatuAPI.Instance, EventArgs.Empty));
 #if KK || KKS ||EC
             AccessoriesApi.AutomaticControlVisibility();
 #endif
@@ -250,50 +212,31 @@ namespace KKAPI.Maker
 
         private static void OnMakerBaseLoaded()
         {
-            if (MakerBaseLoaded != null)
-            {
-                var args = new RegisterCustomControlsEvent();
-                foreach (var handler in MakerBaseLoaded.GetInvocationList())
-                {
-                    try
-                    {
-                        ((EventHandler<RegisterCustomControlsEvent>)handler).Invoke(KoikatuAPI.Instance, args);
-                    }
-                    catch (Exception e)
-                    {
-                        KoikatuAPI.Logger.LogError(e);
-                    }
-                }
-            }
+            var args = new RegisterCustomControlsEvent();
+            MakerBaseLoaded.SafeInvoke(handler => handler.Invoke(KoikatuAPI.Instance, args));
 
             MakerInterfaceCreator.InitializeGuiEntries();
         }
 
         private static void OnCreateCustomControls()
         {
+            var eLogger = ApiEventExecutionLogger.GetEventLogger();
+            eLogger.Begin(nameof(OnCreateCustomControls), null);
+
+            eLogger.PluginStart();
             MakerInterfaceCreator.CreateCustomControls();
+            eLogger.PluginEnd("MakerInterfaceCreator.CreateCustomControls");
 
             // todo prevent reloads from happening before this point? this needs testing in AIS and HS2
-            OnChaFileLoaded(new ChaFileLoadedEventArgs(null, (byte)GetMakerSex(), true, true, true, true, true, GetCharacterControl().chaFile, LastLoadedChaFile));
-            OnReloadInterface(new CharaReloadEventArgs(GetCharacterControl()));
+            OnChaFileLoaded(KoikatuAPI.Instance, new ChaFileLoadedEventArgs(null, (byte)GetMakerSex(), true, true, true, true, true, GetCharacterControl().chaFile, LastLoadedChaFile), eLogger);
+            OnReloadInterface(KoikatuAPI.Instance, new CharaReloadEventArgs(GetCharacterControl()), eLogger);
+
+            eLogger.End();
         }
 
         private static void OnMakerExiting()
         {
-            if (MakerExiting != null)
-            {
-                foreach (var handler in MakerExiting.GetInvocationList())
-                {
-                    try
-                    {
-                        ((EventHandler)handler).Invoke(KoikatuAPI.Instance, EventArgs.Empty);
-                    }
-                    catch (Exception e)
-                    {
-                        KoikatuAPI.Logger.LogError(e);
-                    }
-                }
-            }
+            MakerExiting.SafeInvoke(handler => handler.Invoke(KoikatuAPI.Instance, EventArgs.Empty));
 
             MakerInterfaceCreator.RemoveCustomControls();
         }
@@ -319,22 +262,9 @@ namespace KKAPI.Maker
         [Obsolete("Use ReloadCustomInterface instead")]
         public static event EventHandler<ChaFileLoadedEventArgs> ChaFileLoaded;
 
-        private static void OnChaFileLoaded(ChaFileLoadedEventArgs chaFileLoadedEventArgs)
+        private static void OnChaFileLoaded(object sender, ChaFileLoadedEventArgs args, ApiEventExecutionLogger eventLogger)
         {
-            if (ChaFileLoaded != null)
-            {
-                foreach (var handler in ChaFileLoaded.GetInvocationList())
-                {
-                    try
-                    {
-                        ((EventHandler<ChaFileLoadedEventArgs>)handler).Invoke(KoikatuAPI.Instance, chaFileLoadedEventArgs);
-                    }
-                    catch (Exception e)
-                    {
-                        KoikatuAPI.Logger.LogError(e);
-                    }
-                }
-            }
+            ChaFileLoaded.SafeInvokeWithLogging(handler => handler.Invoke(sender, args), nameof(ChaFileLoaded), eventLogger);
         }
 
         /// <summary>
@@ -344,22 +274,9 @@ namespace KKAPI.Maker
         /// </summary>
         public static event EventHandler ReloadCustomInterface;
 
-        internal static void OnReloadInterface(EventArgs args)
+        internal static void OnReloadInterface(object sender, EventArgs args, ApiEventExecutionLogger eventLogger)
         {
-            if (ReloadCustomInterface != null)
-            {
-                foreach (var handler in ReloadCustomInterface.GetInvocationList())
-                {
-                    try
-                    {
-                        ((EventHandler)handler).Invoke(KoikatuAPI.Instance, args);
-                    }
-                    catch (Exception e)
-                    {
-                        KoikatuAPI.Logger.LogError(e);
-                    }
-                }
-            }
+            ReloadCustomInterface.SafeInvokeWithLogging(handler => handler.Invoke(sender, args), nameof(ReloadCustomInterface), eventLogger);
 #if KK || KKS || EC
             AccessoriesApi.AutomaticControlVisibility();
 #endif
@@ -373,20 +290,7 @@ namespace KKAPI.Maker
 
         internal static void OnVisibilityTrigger(AccessoryContolVisibilityArgs args)
         {
-            if (AccessoryContolVisibility != null)
-            {
-                foreach (var handler in AccessoryContolVisibility.GetInvocationList())
-                {
-                    try
-                    {
-                        ((EventHandler<AccessoryContolVisibilityArgs>)handler).Invoke(KoikatuAPI.Instance, args);
-                    }
-                    catch (Exception e)
-                    {
-                        KoikatuAPI.Logger.LogError(e);
-                    }
-                }
-            }
+            AccessoryContolVisibility.SafeInvoke(handler => handler.Invoke(KoikatuAPI.Instance, args));
         }
 #endif
 
@@ -410,20 +314,7 @@ namespace KKAPI.Maker
                 {
                     _insideMaker = value;
 
-                    if (InsideMakerChanged != null)
-                    {
-                        foreach (var handler in InsideMakerChanged.GetInvocationList())
-                        {
-                            try
-                            {
-                                ((EventHandler)handler).Invoke(KoikatuAPI.Instance, EventArgs.Empty);
-                            }
-                            catch (Exception e)
-                            {
-                                KoikatuAPI.Logger.LogError(e);
-                            }
-                        }
-                    }
+                    InsideMakerChanged.SafeInvoke(handler => handler.Invoke(KoikatuAPI.Instance, EventArgs.Empty));
                 }
 
                 if (!_insideMaker)

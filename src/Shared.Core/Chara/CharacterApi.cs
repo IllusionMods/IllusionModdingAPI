@@ -6,9 +6,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using HarmonyLib;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 #if AI || HS2
 using AIChara;
@@ -266,7 +268,15 @@ namespace KKAPI.Chara
 
             // Trigger the equivalent of "Start" reload from controllers
             if (!MakerAPI.InsideMaker)
-                target.StartCoroutine(CoroutineUtils.CreateCoroutine(new WaitForEndOfFrame(), () => { }, () => OnCharacterReloaded(target)));
+            {
+                target.StartCoroutine(CoroutineUtils.CreateCoroutine(new WaitForEndOfFrame(), () => { }, () =>
+                {
+                    var eLogger = ApiEventExecutionLogger.GetEventLogger();
+                    eLogger.Begin("CreateOrAddBehaviours", GetLogName(target.chaFile));
+                    OnCharacterReloaded(target, eLogger);
+                    eLogger.End();
+                }));
+            }
         }
 
         private static void OnCardBeingSaved(ChaFile chaFile)
@@ -300,10 +310,23 @@ namespace KKAPI.Chara
 
         private static void OnCardBeingSaved(ChaControl chaControl, GameMode gamemode)
         {
-            KoikatuAPI.Logger.LogDebug("Character save: " + GetLogName(chaControl?.chaFile));
+            var charaName = GetLogName(chaControl?.chaFile);
+
+            KoikatuAPI.Logger.LogDebug("Character save: " + charaName);
+
+            var eventLogger = ApiEventExecutionLogger.GetEventLogger();
+            eventLogger.Begin(nameof(OnCardBeingSaved), charaName);
 
             foreach (var behaviour in GetBehaviours(chaControl))
+            {
+                eventLogger.PluginStart();
+
                 behaviour.OnCardBeingSavedInternal(gamemode);
+
+                eventLogger.PluginEnd(behaviour);
+            }
+
+            eventLogger.End();
         }
 
         private static readonly HashSet<ChaControl> _currentlyReloading = new HashSet<ChaControl>();
@@ -318,17 +341,27 @@ namespace KKAPI.Chara
             else
                 _currentlyReloading.Add(chaControl);
 
-            KoikatuAPI.Logger.LogDebug("Character load/reload: " + GetLogName(chaControl?.chaFile));
+            var charaName = GetLogName(chaControl?.chaFile);
+            KoikatuAPI.Logger.LogDebug("Character load/reload: " + charaName);
+
+            var eLogger = ApiEventExecutionLogger.GetEventLogger();
+            eLogger.Begin(nameof(ReloadChara), charaName);
 
             // Always send events to controllers before subscribers of CharacterReloaded
             var gamemode = KoikatuAPI.GetCurrentGameMode();
             foreach (var behaviour in GetBehaviours(chaControl))
+            {
+                eLogger.PluginStart();
                 behaviour.OnReloadInternal(gamemode);
+                eLogger.PluginEnd(behaviour);
+            }
 
-            OnCharacterReloaded(chaControl);
+            OnCharacterReloaded(chaControl, eLogger);
 
             if (MakerAPI.InsideAndLoaded)
-                MakerAPI.OnReloadInterface(new CharaReloadEventArgs(chaControl));
+                MakerAPI.OnReloadInterface(chaControl, new CharaReloadEventArgs(chaControl), eLogger);
+            
+            eLogger.End();
 
             if (chaControl == null)
                 _currentlyReloading.Clear();
@@ -336,17 +369,12 @@ namespace KKAPI.Chara
                 _currentlyReloading.Remove(chaControl);
         }
 
-        private static void OnCharacterReloaded(ChaControl chaControl)
+        private static void OnCharacterReloaded(ChaControl chaControl, ApiEventExecutionLogger eventLogger)
         {
+            if (CharacterReloaded == null) return;
+
             var args = new CharaReloadEventArgs(chaControl);
-            try
-            {
-                CharacterReloaded?.Invoke(null, args);
-            }
-            catch (Exception e)
-            {
-                KoikatuAPI.Logger.LogError(e);
-            }
+            CharacterReloaded.SafeInvokeWithLogging(handler => handler.Invoke(chaControl, args), nameof(CharacterApi) + "." + nameof(CharacterReloaded), eventLogger);
         }
 
         private static bool IsCurrentlyReloading(ChaControl chaControl)
@@ -364,48 +392,55 @@ namespace KKAPI.Chara
 
         private static void OnCoordinateBeingSaved(ChaControl character, ChaFileCoordinate coordinateFile)
         {
+            var charaName = GetLogName(character?.chaFile);
 #if KK || KKS
-            KoikatuAPI.Logger.LogDebug($"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character?.chaFile)}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+            KoikatuAPI.Logger.LogDebug($"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{charaName}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
 #else
-            KoikatuAPI.Logger.LogDebug($"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character?.chaFile)}\"");
+            KoikatuAPI.Logger.LogDebug($"Saving coord \"{coordinateFile.coordinateName}\" to chara \"{charaName}\"");
 #endif
 
-            foreach (var controller in GetBehaviours(character))
-                controller.OnCoordinateBeingSavedInternal(coordinateFile);
+            var eLogger = ApiEventExecutionLogger.GetEventLogger();
+            eLogger.Begin(nameof(OnCoordinateBeingSaved), charaName);
 
-            try
+            foreach (var controller in GetBehaviours(character))
             {
-                CoordinateSaving?.Invoke(null, new CoordinateEventArgs(character, coordinateFile));
+                eLogger.PluginStart();
+                controller.OnCoordinateBeingSavedInternal(coordinateFile);
+                eLogger.PluginEnd(controller);
             }
-            catch (Exception e)
-            {
-                KoikatuAPI.Logger.LogError(e);
-            }
+
+            var args = new CoordinateEventArgs(character, coordinateFile);
+            CoordinateSaving.SafeInvokeWithLogging(handler => handler.Invoke(character, args), nameof(CoordinateSaving), eLogger);
+
+            eLogger.End();
         }
 
         private static void OnCoordinateBeingLoaded(ChaControl character, ChaFileCoordinate coordinateFile)
         {
+            var charaName = GetLogName(character?.chaFile);
 #if KK || KKS
-            KoikatuAPI.Logger.LogDebug($"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character?.chaFile)}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
+            KoikatuAPI.Logger.LogDebug($"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{charaName}\" / {(ChaFileDefine.CoordinateType)character.fileStatus.coordinateType}");
 #else
-            KoikatuAPI.Logger.LogDebug($"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{GetLogName(character?.chaFile)}\"");
+            KoikatuAPI.Logger.LogDebug($"Loading coord \"{coordinateFile.coordinateName}\" to chara \"{charaName}\"");
 #endif
 
+            var eLogger = ApiEventExecutionLogger.GetEventLogger();
+            eLogger.Begin(nameof(OnCoordinateBeingLoaded), charaName);
+
             foreach (var controller in GetBehaviours(character))
+            {
+                eLogger.PluginStart();
                 controller.OnCoordinateBeingLoadedInternal(coordinateFile);
+                eLogger.PluginEnd(controller);
+            }
 
             var args = new CoordinateEventArgs(character, coordinateFile);
-            try
-            {
-                CoordinateLoaded?.Invoke(null, args);
-            }
-            catch (Exception e)
-            {
-                KoikatuAPI.Logger.LogError(e);
-            }
+            CoordinateLoaded.SafeInvokeWithLogging(handler => handler.Invoke(character, args), nameof(CoordinateLoaded), eLogger);
 
             if (MakerAPI.InsideAndLoaded)
-                MakerAPI.OnReloadInterface(args);
+                MakerAPI.OnReloadInterface(character, args, eLogger);
+
+            eLogger.End();
         }
 
         private static string GetLogName(ChaFile chaFile)

@@ -131,7 +131,7 @@ namespace KKAPI.Maker
                 bool hair, bool parameter, bool coordinate, ChaFileControl __instance)
             {
                 if (!CharaListIsLoading && InsideMaker)
-                    OnChaFileLoaded(new ChaFileLoadedEventArgs(filename, sex, face, body, hair, parameter, coordinate, __instance, InternalLastLoadedChaFile));
+                    OnChaFileLoaded(__instance, new ChaFileLoadedEventArgs(filename, sex, face, body, hair, parameter, coordinate, __instance, InternalLastLoadedChaFile), null);
             }
 
             public static void Init()
