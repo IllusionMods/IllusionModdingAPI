@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Bootstrap;
-using KKAPI.Chara;
 using KKAPI.Studio;
-using KKAPI.Utilities;
 using UnityEngine;
 
 namespace KKAPI.MainGame
@@ -124,13 +122,9 @@ namespace KKAPI.MainGame
 
         private static void OnGameBeingLoaded(string path, string fileName)
         {
-            var eLogger = ApiEventExecutionLogger.GetEventLogger();
-            eLogger.Begin(nameof(OnGameBeingLoaded), fileName);
-
             var args = new GameSaveLoadEventArgs(path, fileName);
             foreach (var behaviour in _registeredHandlers)
             {
-                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnGameLoad(args);
@@ -139,23 +133,23 @@ namespace KKAPI.MainGame
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
-                eLogger.PluginEnd(behaviour.Key);
             }
 
-            GameLoad.SafeInvokeWithLogging(handler => handler.Invoke(KoikatuAPI.Instance, args), nameof(GameLoad), eLogger);
-
-            eLogger.End();
+            try
+            {
+                GameLoad?.Invoke(KoikatuAPI.Instance, args);
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError(e);
+            }
         }
 
         private static void OnGameBeingSaved(string path, string fileName)
         {
-            var eLogger = ApiEventExecutionLogger.GetEventLogger();
-            eLogger.Begin(nameof(OnGameBeingSaved), fileName);
-
             var args = new GameSaveLoadEventArgs(path, fileName);
             foreach (var behaviour in _registeredHandlers)
             {
-                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnGameSave(args);
@@ -164,22 +158,22 @@ namespace KKAPI.MainGame
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
-                eLogger.PluginEnd(behaviour.Key);
             }
 
-            GameSave.SafeInvokeWithLogging(handler => handler.Invoke(KoikatuAPI.Instance, args), nameof(GameSave), eLogger);
-            
-            eLogger.End();
+            try
+            {
+                GameSave?.Invoke(KoikatuAPI.Instance, args);
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError(e);
+            }
         }
 
         private static void OnHEnd(HScene proc)
         {
-            var eLogger = ApiEventExecutionLogger.GetEventLogger();
-            eLogger.Begin(nameof(OnHEnd), null);
-
             foreach (var behaviour in _registeredHandlers)
             {
-                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnEndH(proc, false);
@@ -188,25 +182,25 @@ namespace KKAPI.MainGame
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
-                eLogger.PluginEnd(behaviour.Key);
             }
 
-            EndH.SafeInvokeWithLogging(handler => handler.Invoke(KoikatuAPI.Instance, EventArgs.Empty), nameof(EndH), eLogger);
-            
-            InsideHScene = false;
+            try
+            {
+                EndH?.Invoke(KoikatuAPI.Instance, EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError(e);
+            }
 
-            eLogger.End();
+            InsideHScene = false;
         }
 
         private static void OnHStart(HScene proc)
         {
-            var eLogger = ApiEventExecutionLogger.GetEventLogger();
-            eLogger.Begin(nameof(OnHStart), null);
-
-            InsideHScene = true;
+            InsideHScene = true;            
             foreach (var behaviour in _registeredHandlers)
             {
-                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnStartH(proc, false);
@@ -215,22 +209,22 @@ namespace KKAPI.MainGame
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
-                eLogger.PluginEnd(behaviour.Key);
             }
 
-            StartH.SafeInvokeWithLogging(handler => handler.Invoke(KoikatuAPI.Instance, EventArgs.Empty), nameof(StartH), eLogger);
-
-            eLogger.End();
+            try
+            {
+                StartH?.Invoke(KoikatuAPI.Instance, EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError(e);
+            }
         }
 
         private static void OnDayChange(int day)
         {
-            var eLogger = ApiEventExecutionLogger.GetEventLogger();
-            eLogger.Begin(nameof(OnDayChange), day.ToString());
-
             foreach (var behaviour in _registeredHandlers)
             {
-                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnDayChange(day);
@@ -239,20 +233,13 @@ namespace KKAPI.MainGame
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
-                eLogger.PluginEnd(behaviour.Key);
             }
-
-            eLogger.End();
         }
 
         private static void OnPeriodChange(AIProject.TimeZone period)
         {
-            var eLogger = ApiEventExecutionLogger.GetEventLogger();
-            eLogger.Begin(nameof(OnPeriodChange), period.ToString());
-
             foreach (var behaviour in _registeredHandlers)
             {
-                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnPeriodChange(period);
@@ -261,20 +248,13 @@ namespace KKAPI.MainGame
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
-                eLogger.PluginEnd(behaviour.Key);
             }
-
-            eLogger.End();
         }
 
         private static void OnNewGame()
         {
-            var eLogger = ApiEventExecutionLogger.GetEventLogger();
-            eLogger.Begin(nameof(OnNewGame), null);
-
             foreach (var behaviour in _registeredHandlers)
             {
-                eLogger.PluginStart();
                 try
                 {
                     behaviour.Key.OnNewGame();
@@ -283,10 +263,7 @@ namespace KKAPI.MainGame
                 {
                     KoikatuAPI.Logger.LogError(e);
                 }
-                eLogger.PluginEnd(behaviour.Key);
             }
-
-            eLogger.End();
         }
     }
 }
