@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Chara\Events\CharaReloadEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\Events\CoordinateEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\TestCharaCustomFunctionController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ApiEventExecutionLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\WeakDictionary.cs" />

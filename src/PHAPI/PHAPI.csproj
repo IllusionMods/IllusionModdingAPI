@@ -101,6 +101,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared.Core\Constants.cs">
+      <Link>Constants.cs</Link>
+    </Compile>
     <Compile Include="..\Shared.Core\Utilities\ApiEventExecutionLogger.cs">
       <Link>Utilities\ApiEventExecutionLogger.cs</Link>
     </Compile>
