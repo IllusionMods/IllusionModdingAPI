@@ -11,26 +11,27 @@ namespace KKAPI.Utilities
         public static ApiEventExecutionLogger GetEventLogger() => _eventLogger != null && !_eventLogger._running ? _eventLogger : _eventLogger = new ApiEventExecutionLogger();
 
         private StringBuilder _sb;
-        private readonly Stopwatch _swPlug, _swTotal;
+        private Stopwatch _swPlug, _swTotal;
         private int _pluginCounter, _handlerCounter;
         private bool _running;
         private bool _addedPluginHeader;
 
         private ApiEventExecutionLogger()
         {
-            _swPlug = new Stopwatch();
-            _swTotal = new Stopwatch();
         }
 
         public void Begin(string eventName, string targetName)
         {
             if (!KoikatuAPI.EnableDebugLogging)
             {
-                _sb = null;
+                _running = false;
                 return;
             }
-            else if (_sb == null)
+            
+            if (_sb == null)
             {
+                _swPlug = new Stopwatch();
+                _swTotal = new Stopwatch();
                 _sb = new StringBuilder();
             }
             else
@@ -52,7 +53,7 @@ namespace KKAPI.Utilities
 
         public void PluginStart()
         {
-            if (_sb == null) return;
+            if (!_running) return;
 
             if (!_addedPluginHeader)
             {
@@ -65,13 +66,13 @@ namespace KKAPI.Utilities
 
         public void PluginEnd(UnityEngine.MonoBehaviour pluginBehaviour)
         {
-            if (_sb == null) return;
+            if (!_running) return;
 
             PluginEnd(pluginBehaviour.GetType().FullName);
         }
         public void PluginEnd(string pluginName)
         {
-            if (_sb == null) return;
+            if (!_running) return;
 
             _swPlug.Stop();
 
@@ -82,7 +83,7 @@ namespace KKAPI.Utilities
 
         public void EventHandlerBegin(string eventName)
         {
-            if (_sb == null) return;
+            if (!_running) return;
 
             _sb.AppendLine().Append("___/ ").Append(eventName).Append(" event handlers:");
             _handlerCounter = 0;
@@ -90,14 +91,14 @@ namespace KKAPI.Utilities
 
         public void EventHandlerStart()
         {
-            if (_sb == null) return;
+            if (!_running) return;
 
             _swPlug.Start();
         }
 
         public void EventHandlerEnd(System.Reflection.MethodInfo handler)
         {
-            if (_sb == null) return;
+            if (!_running) return;
 
             _swPlug.Stop();
 
