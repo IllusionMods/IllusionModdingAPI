@@ -88,6 +88,7 @@
 
 - [`BaseCurrentStateEditableGuiEntry<T>`](KKAPI.Studio.UI.md#basecurrentstateeditableguientryt)
 - [`CurrentStateCategory`](KKAPI.Studio.UI.md#currentstatecategory)
+- [`CurrentStateCategoryColorPicker`](KKAPI.Studio.UI.md#currentstatecategorycolorpicker)
 - [`CurrentStateCategoryDropdown`](KKAPI.Studio.UI.md#currentstatecategorydropdown)
 - [`CurrentStateCategorySlider`](KKAPI.Studio.UI.md#currentstatecategoryslider)
 - [`CurrentStateCategorySubItemBase`](KKAPI.Studio.UI.md#currentstatecategorysubitembase)

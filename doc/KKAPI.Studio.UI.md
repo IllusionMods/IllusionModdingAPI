@@ -41,6 +41,22 @@ Methods
 | `void` | UpdateInfo(`OCIChar` ociChar) | Fired when currently selected character changes and the controls need to be updated | 
 
 
+## `CurrentStateCategoryColorPicker`
+
+Custom control that draws a color picker in the Chara &gt; CurrentState studio menu.
+```csharp
+public class KKAPI.Studio.UI.CurrentStateCategoryColorPicker
+    : BaseCurrentStateEditableGuiEntry<Color>
+
+```
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `GameObject` | CreateItem(`GameObject` categoryObject) |  | 
+
+
 ## `CurrentStateCategoryDropdown`
 
 Custom control that draws a dropdown menu in the Chara &gt; CurrentState studio menu.
