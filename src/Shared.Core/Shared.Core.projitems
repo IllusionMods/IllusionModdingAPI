@@ -9,7 +9,6 @@
     <Import_RootNamespace>API</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ArrayUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CardAuthorData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CardAuthorDataWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.ControllerRegistration.cs" />

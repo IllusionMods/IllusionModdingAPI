@@ -144,7 +144,7 @@ namespace KoiSkinOverlayX
             if (tex == null) throw new ArgumentNullException(nameof(tex));
             lock (_data)
             {
-                var existing = _data.FirstOrDefault(x => x.Value != null && KKAPI.Utilities.ArrayUtils.SequenceEqualFast(x.Value.Data, tex));
+                var existing = _data.FirstOrDefault(x => x.Value != null && x.Value.Data.SequenceEqualFast(tex));
                 if (existing.Value != null)
                 {
                     Console.WriteLine("StoreTexture - Texture already exists, reusing it");
