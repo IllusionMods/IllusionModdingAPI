@@ -227,7 +227,7 @@ namespace KKAPI.Utilities
         {
             return Traverse.Create(self).Field(name).SetValue(value).FieldExists();
         }
-        
+
         internal static void SafeInvoke<T>(this T handler, Action<T> invokeCallback) where T : Delegate
         {
             if (handler == null) return;
@@ -394,7 +394,7 @@ namespace KKAPI.Utilities
 
             return true;
 
-NotEquals:
+        NotEquals:
             // Return false indicating arrays are not equal.
             // Note: Using a return statement in the loop can potentially degrade performance due to the generated binary code, 
             return false;
