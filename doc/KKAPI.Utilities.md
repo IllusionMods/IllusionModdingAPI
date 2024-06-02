@@ -436,3 +436,15 @@ Static Methods
 | `Int32` | LogicalCompare(`String` x, `String` y) | Compare two strings with rules used by Windows Explorer to logically sort files. | 
 
 
+## `ArrayUtils`
+
+Utility function class for arrays.
+```csharp
+public static class KKAPI.Utilities.ArrayUtils
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | SequenceEqualFast(`byte[]` a, `Byte[]` b) | This method compares two byte arrays for equality, returning true if they are identical and false otherwise. This method is optimized for high performance. | 
