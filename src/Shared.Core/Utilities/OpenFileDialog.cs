@@ -89,15 +89,19 @@ namespace KKAPI.Utilities
             // Save and restore working directory since GetOpenFileName changes it for no good reason
             var currentWorkingDirectory = Environment.CurrentDirectory;
             var run = true;
-            BepInEx.ThreadingHelper.Instance.StartAsyncInvoke(() =>
+
+            if (!KoikatuAPI.RememberFilePickerFolder.Value)
             {
-                // Brute force seems to be the only viable way to prevent the current directory from getting changed
-                // Needed for compat with code running on different threads (including main unity thread) that uses relative paths
-                // This produces a ton of garbage and loads up one core, but `runInBackground = false` makes it much less of a problem
-                // Yes, this is horrible, if you know of a better way then do share
-                while (run) Environment.CurrentDirectory = currentWorkingDirectory;
-                return null;
-            });
+                BepInEx.ThreadingHelper.Instance.StartAsyncInvoke(() =>
+                {
+                    // Brute force seems to be the only viable way to prevent the current directory from getting changed
+                    // Needed for compat with code running on different threads (including main unity thread) that uses relative paths
+                    // This produces a ton of garbage and loads up one core, but `runInBackground = false` makes it much less of a problem
+                    // Yes, this is horrible, if you know of a better way then do share
+                    while (run) Environment.CurrentDirectory = currentWorkingDirectory;
+                    return null;
+                });
+            }
 
             var success = NativeMethods.GetOpenFileName(ofn);
 
