@@ -105,8 +105,12 @@ namespace KKAPI.Utilities
 
             var success = NativeMethods.GetOpenFileName(ofn);
 
-            run = false;
-            Environment.CurrentDirectory = currentWorkingDirectory;
+            if (!KoikatuAPI.RememberFilePickerFolder.Value)
+            {
+                run = false;
+                Environment.CurrentDirectory = currentWorkingDirectory;
+            }
+            
             UnityEngine.Application.runInBackground = currentRunInBackground;
 
             if (success)
