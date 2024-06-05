@@ -106,14 +106,19 @@ namespace KKAPI
             }
 
             Logger.LogDebug($"Processor: {SystemInfo.processorType} ({SystemInfo.processorCount} threads @ {SystemInfo.processorFrequency}MHz); RAM: {SystemInfo.systemMemorySize}MB ({MemoryInfo.GetCurrentStatus()?.dwMemoryLoad.ToString() ?? "--"}% used); OS: {SystemInfo.operatingSystem}");
-            
-            var versionFilename = Path.Combine(Paths.GameRootPath, "version");
-            if (File.Exists(versionFilename))
+
+            void PrintFileIfExists(string fileName1)
             {
-                var versionString = File.ReadAllText(versionFilename).Trim();
-                if (!string.IsNullOrEmpty(versionString))
-                    Logger.LogDebug($"Contents of the 'version' file: {versionString}");
+                var versionFilename = Path.Combine(Paths.GameRootPath, fileName1);
+                if (File.Exists(versionFilename))
+                {
+                    var versionString = File.ReadAllText(versionFilename).Trim();
+                    if (!string.IsNullOrEmpty(versionString))
+                        Logger.LogDebug($"Contents of the '{fileName1}' file: {versionString}");
+                }
             }
+            PrintFileIfExists(".doorstop_version");
+            PrintFileIfExists("version");
 
             SceneManager.sceneLoaded += (scene, mode) => Logger.LogDebug($"SceneManager.sceneLoaded - {scene.name} in {mode} mode");
             SceneManager.sceneUnloaded += scene => Logger.LogDebug($"SceneManager.sceneUnloaded - {scene.name}");
