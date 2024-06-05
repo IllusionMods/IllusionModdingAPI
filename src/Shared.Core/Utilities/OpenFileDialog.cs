@@ -73,9 +73,9 @@ namespace KKAPI.Utilities
             ofn.filter = filter.Replace("|", "\0") + "\0";
             ofn.fileTitle = new String(new char[MAX_FILE_LENGTH]);
             ofn.maxFileTitle = ofn.fileTitle.Length;
-            if (LastOpenedPaths.TryGetValue(initialDir, out string lastOpenedPath) && KoikatuAPI.RememberFilePickerFolder.Value)
-                ofn.initialDir = lastOpenedPath;
-            else
+            if (KoikatuAPI.RememberFilePickerFolder.Value)
+                LastOpenedPaths.TryGetValue(initialDir, out ofn.initialDir);
+            if (string.IsNullOrEmpty(ofn.initialDir))
                 ofn.initialDir = initialDir;
             ofn.title = title;
             ofn.flags = (int)flags;
