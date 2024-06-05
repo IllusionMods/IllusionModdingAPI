@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -23,6 +24,12 @@ namespace KKAPI.Utilities
         /// Arguments used for opening multiple files
         /// </summary>
         public const OpenSaveFileDialgueFlags MultiFileFlags = SingleFileFlags | OpenSaveFileDialgueFlags.OFN_ALLOWMULTISELECT;
+
+        /// <summary>
+        /// Dictionary storing last opened path per initialDir.
+        /// Key is the initialDir, value is the last opened path.
+        /// </summary>
+        private static readonly Dictionary<string, string> LastOpenedPaths = new Dictionary<string, string>();
 
         /// <inheritdoc cref="ShowDialog(string,string,string,string,OpenSaveFileDialgueFlags,string,IntPtr)"/>
         public static string[] ShowDialog(string title, string initialDir, string filter, string defaultExt, OpenSaveFileDialgueFlags flags, IntPtr owner = default)
@@ -66,7 +73,10 @@ namespace KKAPI.Utilities
             ofn.filter = filter.Replace("|", "\0") + "\0";
             ofn.fileTitle = new String(new char[MAX_FILE_LENGTH]);
             ofn.maxFileTitle = ofn.fileTitle.Length;
-            ofn.initialDir = initialDir;
+            if (KoikatuAPI.RememberFilePickerFolder.Value)
+                LastOpenedPaths.TryGetValue(initialDir, out ofn.initialDir);
+            if (string.IsNullOrEmpty(ofn.initialDir))
+                ofn.initialDir = initialDir;
             ofn.title = title;
             ofn.flags = (int)flags;
             if (defaultExt != null) ofn.defExt = defaultExt;
@@ -122,6 +132,7 @@ namespace KKAPI.Utilities
                     file = Marshal.PtrToStringAuto(ofn.file);
                 }
 
+                LastOpenedPaths[initialDir] = Path.GetDirectoryName(selectedFilesList[0]);
                 if (selectedFilesList.Count == 1)
                 {
                     // Only one file selected with full path

@@ -56,6 +56,7 @@ namespace KKAPI
         }
 
         private static ConfigEntry<bool> EnableDebugLoggingSetting { get; set; }
+        internal static ConfigEntry<bool> RememberFilePickerFolder { get; set; }
 
         internal static KoikatuAPI Instance { get; private set; }
         internal static new ManualLogSource Logger { get; private set; }
@@ -84,6 +85,7 @@ namespace KKAPI
             Logger = base.Logger;
 
             EnableDebugLoggingSetting = Config.Bind("Debug", "Show debug messages", false, "Enables display of additional log messages when certain events are triggered within KKAPI. Useful for plugin devs to understand when controller messages are fired. Changes take effect after game restart.");
+            RememberFilePickerFolder = Config.Bind("General", "Remember last folder in file pickers", true, "If true, file picker dialogs will remember the last opened folder and open already inside of it. If false, the dialogs will always open in the default folder.\n\nWarning: This setting only applies to plugins that use the file picker through this API.");
 
             Logger.LogDebug($"Game version {GetGameVersion()} running under {System.Threading.Thread.CurrentThread.CurrentCulture.Name} culture");
 
