@@ -107,14 +107,14 @@ namespace KKAPI
 
             Logger.LogDebug($"Processor: {SystemInfo.processorType} ({SystemInfo.processorCount} threads @ {SystemInfo.processorFrequency}MHz); RAM: {SystemInfo.systemMemorySize}MB ({MemoryInfo.GetCurrentStatus()?.dwMemoryLoad.ToString() ?? "--"}% used); OS: {SystemInfo.operatingSystem}");
 
-            void PrintFileIfExists(string fileName1)
+            void PrintFileIfExists(string fileName)
             {
-                var versionFilename = Path.Combine(Paths.GameRootPath, fileName1);
-                if (File.Exists(versionFilename))
+                var fullFilePath = Path.Combine(Paths.GameRootPath, fileName);
+                if (File.Exists(fullFilePath))
                 {
-                    var versionString = File.ReadAllText(versionFilename).Trim();
-                    if (!string.IsNullOrEmpty(versionString))
-                        Logger.LogDebug($"Contents of the '{fileName1}' file: {versionString}");
+                    var fileContents = File.ReadAllText(fullFilePath).Trim();
+                    if (!string.IsNullOrEmpty(fileContents))
+                        Logger.LogDebug($"Contents of the '{fileName}' file: {fileContents}");
                 }
             }
             PrintFileIfExists(".doorstop_version");
