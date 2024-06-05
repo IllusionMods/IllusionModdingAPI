@@ -99,7 +99,6 @@ namespace KKAPI.Utilities
             // Save and restore working directory since GetOpenFileName changes it for no good reason
             var currentWorkingDirectory = Environment.CurrentDirectory;
             var run = true;
-
             BepInEx.ThreadingHelper.Instance.StartAsyncInvoke(() =>
             {
                 // Brute force seems to be the only viable way to prevent the current directory from getting changed
@@ -114,7 +113,6 @@ namespace KKAPI.Utilities
 
             run = false;
             Environment.CurrentDirectory = currentWorkingDirectory;
-            
             UnityEngine.Application.runInBackground = currentRunInBackground;
 
             if (success)
