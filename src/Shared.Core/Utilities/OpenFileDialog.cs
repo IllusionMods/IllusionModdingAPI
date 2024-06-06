@@ -206,18 +206,32 @@ namespace KKAPI.Utilities
 
         internal static void SaveFilePickerStates()
         {
-            KoikatuAPI.RememberFilePickerSaveLoadState.Value = string.Join("; ", (string[])LastOpenedPaths.Select(
-                p => string.Format("{0}, {1}", p.Key, p.Value)
-            ));
+            try
+            {
+                KoikatuAPI.RememberFilePickerSaveLoadState.Value = string.Join("; ", (string[])LastOpenedPaths.Select(
+                    p => string.Format("{0}, {1}", p.Key, p.Value)
+                ));
+            }
+            catch
+            {
+                KoikatuAPI.Logger.LogError($"Failed saving folder states: '{KoikatuAPI.RememberFilePickerSaveLoadState.Value}'");
+            }
         }
 
         internal static void LoadFilePickerStates()
         {
-            if (KoikatuAPI.RememberFilePickerSaveLoad.Value)
-                LastOpenedPaths = KoikatuAPI.RememberFilePickerSaveLoadState.Value.Split(';')
-                    .Select(s => s.Split(','))
-                    .ToDictionary(p => p[0].Trim(), p => p[1].Trim()
-                );
+            try
+            {
+                if (KoikatuAPI.RememberFilePickerSaveLoad.Value && !KoikatuAPI.RememberFilePickerSaveLoadState.Value.IsNullOrEmpty())
+                    LastOpenedPaths = KoikatuAPI.RememberFilePickerSaveLoadState.Value.Split(';')
+                        .Select(s => s.Split(','))
+                        .ToDictionary(p => p[0].Trim(), p => p[1].Trim()
+                    );
+            }
+            catch
+            {
+                KoikatuAPI.Logger.LogError($"Failed loading folder states: '{KoikatuAPI.RememberFilePickerSaveLoadState.Value}'");
+            }
         }
 
 #pragma warning disable 1591
