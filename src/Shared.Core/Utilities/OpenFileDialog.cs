@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -29,7 +30,7 @@ namespace KKAPI.Utilities
         /// Dictionary storing last opened path per initialDir.
         /// Key is the initialDir, value is the last opened path.
         /// </summary>
-        private static readonly Dictionary<string, string> LastOpenedPaths = new Dictionary<string, string>();
+        private static Dictionary<string, string> LastOpenedPaths = new Dictionary<string, string>();
 
         /// <inheritdoc cref="ShowDialog(string,string,string,string,OpenSaveFileDialgueFlags,string,IntPtr)"/>
         public static string[] ShowDialog(string title, string initialDir, string filter, string defaultExt, OpenSaveFileDialgueFlags flags, IntPtr owner = default)
@@ -133,6 +134,7 @@ namespace KKAPI.Utilities
                 }
 
                 LastOpenedPaths[initialDir] = Path.GetDirectoryName(selectedFilesList[0]);
+                SaveFilePickerStates();
                 if (selectedFilesList.Count == 1)
                 {
                     // Only one file selected with full path
@@ -200,6 +202,22 @@ namespace KKAPI.Utilities
 
             [DllImport("user32.dll")]
             public static extern IntPtr GetActiveWindow();
+        }
+
+        internal static void SaveFilePickerStates()
+        {
+            KoikatuAPI.RememberFilePickerSaveLoadState.Value = string.Join("; ", (string[])LastOpenedPaths.Select(
+                p => string.Format("{0}, {1}", p.Key, p.Value)
+            ));
+        }
+
+        internal static void LoadFilePickerStates()
+        {
+            if (KoikatuAPI.RememberFilePickerSaveLoad.Value)
+                LastOpenedPaths = KoikatuAPI.RememberFilePickerSaveLoadState.Value.Split(';')
+                    .Select(s => s.Split(','))
+                    .ToDictionary(p => p[0].Trim(), p => p[1].Trim()
+                );
         }
 
 #pragma warning disable 1591
