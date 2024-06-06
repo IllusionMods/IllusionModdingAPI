@@ -77,7 +77,7 @@ namespace KKAPI.Utilities
             ofn.filter = filter.Replace("|", "\0") + "\0";
             ofn.fileTitle = new String(new char[MAX_FILE_LENGTH]);
             ofn.maxFileTitle = ofn.fileTitle.Length;
-            if (KoikatuAPI.RememberFilePickerFolder.Value)
+            if (KoikatuAPI.RememberFilePickerFolder.Value != KoikatuAPI.RememberFilePickerFolderSetting.Disabled)
                 LastOpenedPaths.TryGetValue(initialDir, out ofn.initialDir);
             if (string.IsNullOrEmpty(ofn.initialDir))
                 ofn.initialDir = initialDir;
@@ -226,7 +226,7 @@ namespace KKAPI.Utilities
         {
             try
             {
-                if (KoikatuAPI.RememberFilePickerSaveLoad.Value && File.Exists(lastOpenedPathsCachePath))
+                if (KoikatuAPI.RememberFilePickerFolder.Value == KoikatuAPI.RememberFilePickerFolderSetting.Enabled && File.Exists(lastOpenedPathsCachePath))
                 {
                     var lines = File.ReadAllLines(lastOpenedPathsCachePath);
                     foreach (var line in lines)
