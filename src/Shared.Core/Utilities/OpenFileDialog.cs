@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BepInEx;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -30,7 +32,8 @@ namespace KKAPI.Utilities
         /// Dictionary storing last opened path per initialDir.
         /// Key is the initialDir, value is the last opened path.
         /// </summary>
-        private static Dictionary<string, string> LastOpenedPaths = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> LastOpenedPaths = new Dictionary<string, string>();
+        private static readonly string lastOpenedPathsCachePath = Path.Combine(Paths.CachePath, "ModdingAPI.lastOpenedPaths");
 
         /// <inheritdoc cref="ShowDialog(string,string,string,string,OpenSaveFileDialgueFlags,string,IntPtr)"/>
         public static string[] ShowDialog(string title, string initialDir, string filter, string defaultExt, OpenSaveFileDialgueFlags flags, IntPtr owner = default)
@@ -208,13 +211,14 @@ namespace KKAPI.Utilities
         {
             try
             {
-                KoikatuAPI.RememberFilePickerSaveLoadState.Value = string.Join("; ", (string[])LastOpenedPaths.Select(
-                    p => string.Format("{0}, {1}", p.Key, p.Value)
-                ));
+                using (var fs = File.Create(lastOpenedPathsCachePath))
+                using (var wr = new StreamWriter(fs))
+                    foreach (var path in LastOpenedPaths)
+                        wr.WriteLine($"{path.Key}, {path.Value}");
             }
-            catch
+            catch (Exception ex)
             {
-                KoikatuAPI.Logger.LogError($"Failed saving folder states: '{KoikatuAPI.RememberFilePickerSaveLoadState.Value}'");
+                KoikatuAPI.Logger.LogError($"Failed saving folder states to '{lastOpenedPathsCachePath}' because of error: {ex}");
             }
         }
 
@@ -222,15 +226,22 @@ namespace KKAPI.Utilities
         {
             try
             {
-                if (KoikatuAPI.RememberFilePickerSaveLoad.Value && !KoikatuAPI.RememberFilePickerSaveLoadState.Value.IsNullOrEmpty())
-                    LastOpenedPaths = KoikatuAPI.RememberFilePickerSaveLoadState.Value.Split(';')
-                        .Select(s => s.Split(','))
-                        .ToDictionary(p => p[0].Trim(), p => p[1].Trim()
-                    );
+                if (KoikatuAPI.RememberFilePickerSaveLoad.Value && File.Exists(lastOpenedPathsCachePath))
+                {
+                    var lines = File.ReadAllLines(lastOpenedPathsCachePath);
+                    foreach (var line in lines)
+                    {
+                        if (string.IsNullOrEmpty(line)) continue;
+
+                        var s = line.Split(',');
+                        if (s.Length != 2) continue;
+                        LastOpenedPaths[s[0]] = s[1];
+                    }
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                KoikatuAPI.Logger.LogError($"Failed loading folder states: '{KoikatuAPI.RememberFilePickerSaveLoadState.Value}'");
+                KoikatuAPI.Logger.LogError($"Failed loading folder states from '{lastOpenedPathsCachePath}' because of error: {ex}");
             }
         }
 
