@@ -1,6 +1,9 @@
-﻿using System;
+﻿using BepInEx;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -30,6 +33,7 @@ namespace KKAPI.Utilities
         /// Key is the initialDir, value is the last opened path.
         /// </summary>
         private static readonly Dictionary<string, string> LastOpenedPaths = new Dictionary<string, string>();
+        private static readonly string lastOpenedPathsCachePath = Path.Combine(Paths.CachePath, "ModdingAPI.lastOpenedPaths");
 
         /// <inheritdoc cref="ShowDialog(string,string,string,string,OpenSaveFileDialgueFlags,string,IntPtr)"/>
         public static string[] ShowDialog(string title, string initialDir, string filter, string defaultExt, OpenSaveFileDialgueFlags flags, IntPtr owner = default)
@@ -73,7 +77,7 @@ namespace KKAPI.Utilities
             ofn.filter = filter.Replace("|", "\0") + "\0";
             ofn.fileTitle = new String(new char[MAX_FILE_LENGTH]);
             ofn.maxFileTitle = ofn.fileTitle.Length;
-            if (KoikatuAPI.RememberFilePickerFolder.Value)
+            if (KoikatuAPI.RememberFilePickerFolder.Value != KoikatuAPI.RememberFilePickerFolderSetting.Disabled)
                 LastOpenedPaths.TryGetValue(initialDir, out ofn.initialDir);
             if (string.IsNullOrEmpty(ofn.initialDir))
                 ofn.initialDir = initialDir;
@@ -133,6 +137,7 @@ namespace KKAPI.Utilities
                 }
 
                 LastOpenedPaths[initialDir] = Path.GetDirectoryName(selectedFilesList[0]);
+                SaveFilePickerStates();
                 if (selectedFilesList.Count == 1)
                 {
                     // Only one file selected with full path
@@ -200,6 +205,44 @@ namespace KKAPI.Utilities
 
             [DllImport("user32.dll")]
             public static extern IntPtr GetActiveWindow();
+        }
+
+        internal static void SaveFilePickerStates()
+        {
+            try
+            {
+                using (var fs = File.Create(lastOpenedPathsCachePath))
+                using (var wr = new StreamWriter(fs))
+                    foreach (var path in LastOpenedPaths)
+                        wr.WriteLine($"{path.Key}, {path.Value}");
+            }
+            catch (Exception ex)
+            {
+                KoikatuAPI.Logger.LogError($"Failed saving folder states to '{lastOpenedPathsCachePath}' because of error: {ex}");
+            }
+        }
+
+        internal static void LoadFilePickerStates()
+        {
+            try
+            {
+                if (KoikatuAPI.RememberFilePickerFolder.Value == KoikatuAPI.RememberFilePickerFolderSetting.Enabled && File.Exists(lastOpenedPathsCachePath))
+                {
+                    var lines = File.ReadAllLines(lastOpenedPathsCachePath);
+                    foreach (var line in lines)
+                    {
+                        if (string.IsNullOrEmpty(line)) continue;
+
+                        var s = line.Split(',');
+                        if (s.Length != 2) continue;
+                        LastOpenedPaths[s[0]] = s[1];
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                KoikatuAPI.Logger.LogError($"Failed loading folder states from '{lastOpenedPathsCachePath}' because of error: {ex}");
+            }
         }
 
 #pragma warning disable 1591

@@ -56,7 +56,7 @@ namespace KKAPI
         }
 
         private static ConfigEntry<bool> EnableDebugLoggingSetting { get; set; }
-        internal static ConfigEntry<bool> RememberFilePickerFolder { get; set; }
+        internal static ConfigEntry<RememberFilePickerFolderSetting> RememberFilePickerFolder { get; set; }
 
         internal static KoikatuAPI Instance { get; private set; }
         internal static new ManualLogSource Logger { get; private set; }
@@ -85,7 +85,7 @@ namespace KKAPI
             Logger = base.Logger;
 
             EnableDebugLoggingSetting = Config.Bind("Debug", "Show debug messages", false, "Enables display of additional log messages when certain events are triggered within KKAPI. Useful for plugin devs to understand when controller messages are fired. Changes take effect after game restart.");
-            RememberFilePickerFolder = Config.Bind("General", "Remember last folder in file pickers", true, "If true, file picker dialogs will remember the last opened folder and open already inside of it. If false, the dialogs will always open in the default folder.\n\nWarning: This setting only applies to plugins that use the file picker through this API.");
+            RememberFilePickerFolder = Config.Bind("General", "Remember last folder in file pickers", RememberFilePickerFolderSetting.Enabled, "If enabled, file picker dialogs will remember the last opened folder and open inside of it instead of the default folder. If disabled, the dialogs will always open in the default folder.\n\n'Reset On Restart' will remember the last opened folders only until the game is restarted, after which they will be reset.\n\nWarning: This setting only applies to plugins that use the file picker through this API.");
 
             Logger.LogDebug($"Game version {GetGameVersion()} running under {System.Threading.Thread.CurrentThread.CurrentCulture.Name} culture");
 
@@ -159,6 +159,7 @@ namespace KKAPI
                     }
                 });
             }
+            OpenFileDialog.LoadFilePickerStates();
 
 #if QUITTING_EVENT_AVAILABLE
             UnityEngine.Application.quitting += () => OnQuitting(EventArgs.Empty);
@@ -281,5 +282,12 @@ namespace KKAPI
             }
         }
 #endif
+
+        internal enum RememberFilePickerFolderSetting
+        {
+            Enabled = 1,
+            ResetOnRestart = 2,
+            Disabled = 3
+        }
     }
 }
