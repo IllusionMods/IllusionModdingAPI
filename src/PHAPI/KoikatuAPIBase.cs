@@ -60,7 +60,7 @@ namespace KKAPI
 
             EnableDebugLoggingSetting = Config.Bind("Debug", "Show debug messages", false, "Enables display of additional log messages when certain events are triggered within KKAPI. Useful for plugin devs to understand when controller messages are fired. Changes take effect after game restart.");
 
-            Logger.LogDebug($"Game version {GetGameVersion()} running under {System.Threading.Thread.CurrentThread.CurrentCulture.Name} culture");
+            Logger.LogDebug($"Game version {GetGameVersion()} running under {System.Threading.Thread.CurrentThread.CurrentCulture.Name} culture at UTC time {DateTime.UtcNow:yyyy/MM/dd HH:mm:ss}");
 
             var abdata = Path.Combine(Paths.GameRootPath, "abdata");
             if (Directory.Exists(abdata))
@@ -80,6 +80,18 @@ namespace KKAPI
 
             Logger.LogDebug($"Processor: {SystemInfo.processorType} ({SystemInfo.processorCount} threads @ {SystemInfo.processorFrequency}MHz); RAM: {SystemInfo.systemMemorySize}MB ({MemoryInfo.GetCurrentStatus()?.dwMemoryLoad.ToString() ?? "--"}% used); OS: {SystemInfo.operatingSystem}");
 
+            void PrintFileIfExists(string fileName)
+            {
+                var fullFilePath = Path.Combine(Paths.GameRootPath, fileName);
+                if (File.Exists(fullFilePath))
+                {
+                    var fileContents = File.ReadAllText(fullFilePath).Trim();
+                    if (!string.IsNullOrEmpty(fileContents))
+                        Logger.LogDebug($"Contents of the '{fileName}' file: {fileContents}");
+                }
+            }
+            PrintFileIfExists(".doorstop_version");
+            PrintFileIfExists("version");
             SceneManager.sceneLoaded += (scene, mode) => Logger.LogDebug($"SceneManager.sceneLoaded - {scene.name} in {mode} mode");
             SceneManager.sceneUnloaded += scene => Logger.LogDebug($"SceneManager.sceneUnloaded - {scene.name}");
             SceneManager.activeSceneChanged += (prev, next) => Logger.LogDebug($"SceneManager.activeSceneChanged - from {prev.name} to {next.name}");
