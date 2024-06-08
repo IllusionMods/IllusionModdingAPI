@@ -280,7 +280,8 @@ namespace KKAPI.Utilities
         }
 
         /// <summary>
-        /// Compares two byte arrays for equality in a high-performance manner using unsafe code.
+        /// This method compares two byte arrays for equality, returning true if they are identical and false otherwise.
+        /// It is optimized for high performance and uses unsafe code.
         /// </summary>
         /// <param name="a">The first byte array to compare.</param>
         /// <param name="b">The second byte array to compare.</param>

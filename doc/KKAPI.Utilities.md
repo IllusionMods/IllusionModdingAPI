@@ -88,7 +88,7 @@ Static Methods
 | `Transform` | GetTopmostParent(this `Transform` src) | Get the topmost parent of Transform that this this Component is attached to. | 
 | `Boolean` | IsDestroyed(this `Object` obj) | Return true if the object is a "fake" null (i.e. it was destroyed). | 
 | `void` | MarkXuaIgnored(this `Component` target) | Mark GameObject of this Component as ignored by AutoTranslator. Prevents AutoTranslator from trying to translate custom UI elements. | 
-| `Boolean` | SequenceEqualFast(this `byte[]` a, `Byte[]` b) | This method compares two byte arrays for equality, returning true if they are identical and false otherwise. This method is optimized for high performance. | 
+| `Boolean` | SequenceEqualFast(this `Byte[]` a, `Byte[]` b) | This method compares two byte arrays for equality, returning true if they are identical and false otherwise.  It is optimized for high performance and uses unsafe code. | 
 | `Boolean` | SetFieldValue(this `Object` self, `String` name, `Object` value) | Set value of a field through reflection | 
 | `Boolean` | SetPropertyValue(this `Object` self, `String` name, `Object` value) | Set value of a property through reflection | 
 | `ReadOnlyDictionary<TKey, TValue>` | ToReadOnlyDictionary(this `IDictionary<TKey, TValue>` original) | Wrap this dictionary in a read-only wrapper that will prevent any changes to it.  Warning: Any reference types inside the dictionary can still be modified. | 
@@ -435,3 +435,5 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `Int32` | LogicalCompare(`String` x, `String` y) | Compare two strings with rules used by Windows Explorer to logically sort files. | 
+
+
