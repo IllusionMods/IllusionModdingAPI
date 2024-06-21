@@ -48,5 +48,6 @@ Static Methods
 | `OCIChar` | GetOCIChar(this `ChaControl` chaControl) | Get GetOCIChar that is assigned to this character. Only works in CharaStudio, returns null elsewhere. | 
 | `Int32` | GetSceneId(this `ObjectCtrlInfo` obj) | Get the ID of this object as used in the currently loaded scene.  If the object was not found in current scene, -1 is returned. | 
 | `Int32` | GetSceneId(this `ObjectInfo` obj) | Get the ID of this object as used in the currently loaded scene.  If the object was not found in current scene, -1 is returned. | 
+| `Boolean` | TryGetObjectCtrlInfo(this `TreeNodeObject` tno, `ObjectCtrlInfo&` objectCtrlInfo) | Try to get the ObjectCtrlInfo controlled by this TreeNodeObject. | 
 
 

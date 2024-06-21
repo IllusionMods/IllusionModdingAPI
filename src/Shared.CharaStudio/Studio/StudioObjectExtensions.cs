@@ -87,5 +87,13 @@ namespace KKAPI.Studio
             return list;
         }
 #endif
+
+        /// <summary>
+        /// Try to get the ObjectCtrlInfo controlled by this TreeNodeObject.
+        /// </summary>
+        public static bool TryGetObjectCtrlInfo(this TreeNodeObject tno, out ObjectCtrlInfo objectCtrlInfo)
+        {
+            return Studio.dicInfo.TryGetValue(tno, out objectCtrlInfo);
+        } 
     }
 }
