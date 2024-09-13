@@ -1,5 +1,4 @@
-﻿
-#if KK || KKS || AI || HS2
+﻿#if KK || KKS || AI || HS2
 #define TMP
 #endif
 
