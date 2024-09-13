@@ -1,4 +1,5 @@
-﻿#if KK || KKS || AI || HS2
+﻿
+#if KK || KKS || AI || HS2
 #define TMP
 #endif
 
@@ -7,6 +8,7 @@ using KKAPI.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -17,7 +19,7 @@ using Text = TMPro.TextMeshProUGUI;
 namespace KKAPI.Studio.UI
 {
     /// <summary>
-    /// Class that adds a new subcategory to the Scene Effects menu. Create a new instance and then add SliderSets and ToggleSets.
+    /// Class that adds a new subcategory to the Scene Effects menu. Create a new instance and then add SliderSets, ToggleSets, DropdownSets, ColorPickerSets, or just plain LabelSets.
     /// </summary>
     public class SceneEffectsCategory
     {
@@ -34,6 +36,9 @@ namespace KKAPI.Studio.UI
         private static GameObject _colorPickerSource;
         private static GameObject _inputSource;
         private static GameObject _buttonSource;
+
+        private static Sprite _expandSprite;
+        private static Sprite _collapseSprite;
 #endif
 
         private static void Initialize()
@@ -76,6 +81,10 @@ namespace KKAPI.Studio.UI
             _buttonSource = sef.transform.Find(buttonSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + buttonSourcePath);
             _dropdownSource = sef.transform.Find(dropdownSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + dropdownSourcePath);
             _colorPickerSource = sef.transform.Find(colorPickerSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + colorPickerSourcePath);
+
+            //Not too proud of these, but they work fine and should continue to work fine.
+            _expandSprite = Resources.FindObjectsOfTypeAll<Sprite>().FirstOrDefault(r => r.name.Equals("sp_sn_09_00_05"));
+            _collapseSprite = Resources.FindObjectsOfTypeAll<Sprite>().FirstOrDefault(r => r.name.Equals("sp_sn_09_00_03"));
 #endif
 
             _wasInitialized = true;
@@ -90,6 +99,10 @@ namespace KKAPI.Studio.UI
         /// </summary>
         public GameObject Content { get; set; }
 
+        /// <summary>
+        /// Labels that have been added.
+        /// </summary>
+        public List<SceneEffectsLabelSet> Labels = new List<SceneEffectsLabelSet>();
         /// <summary>
         /// Toggles that have been added.
         /// </summary>
@@ -131,8 +144,43 @@ namespace KKAPI.Studio.UI
             layoutElement.preferredHeight = 0;
             layoutElement.preferredWidth = 375;
 
+#if !PH
+            //No clue if PH even has these buttons so marked it out.
+            var button = Header.GetComponentInChildren<Button>();
+            button.onClick.AddListener(() =>
+            {
+                Content.SetActive(!Content.activeSelf);
+                button.image.sprite = Content.activeSelf ? _collapseSprite: _expandSprite;
+            });
+#endif
+
             foreach (Transform child in Content.transform)
                 Object.Destroy(child.gameObject);
+        }
+
+        /// <summary>
+        /// Add a label to the category, can be used for sectioning.
+        /// </summary>
+        /// <param name="text">Label text</param>
+        /// <returns>Instance of the LabelSet</returns>
+        public SceneEffectsLabelSet AddLabelSet(string text)
+        {
+            var containingElement = new GameObject().AddComponent<RectTransform>();
+            containingElement.name = text;
+            containingElement.SetParent(Content.transform, false);
+
+            KoikatuAPI.Instance.StartCoroutine(SetPosDelayed(containingElement.transform, GetCurrentOffset()));
+
+            var label = Object.Instantiate(_labelSource).GetComponent<Text>();
+            label.transform.SetParent(containingElement.transform, false);
+            label.transform.localPosition = new Vector3(4f, 0f, 0f);
+
+            var labelSet = new SceneEffectsLabelSet(label, text);
+            Labels.Add(labelSet);
+
+            CorrectCategoryScale();
+
+            return labelSet;
         }
 
         /// <summary>
@@ -220,7 +268,7 @@ namespace KKAPI.Studio.UI
         /// <param name="setter">Method to be called when the dropdown selection changes.</param>
         /// <param name="options">A list of the options to display in the dropdown.</param>
         /// <param name="initialValue">The initial value to be selected in the dropdown.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the DropdownSet</returns>
         public SceneEffectsDropdownSet AddDropdownSet(string text, Action<int> setter, List<string> options, string initialValue)
         {
             var containingElement = new GameObject().AddComponent<RectTransform>();
@@ -244,6 +292,13 @@ namespace KKAPI.Studio.UI
 
             return dropDownSet;
         }
+        /// <summary>
+        /// Add a color picker to this category.
+        /// </summary>
+        /// <param name="text">The UI label text.</param>
+        /// <param name="setter">Function to be called when the color changes.</param>
+        /// <param name="initialValue">The initial color to display.</param>
+        /// <returns>Instance of the ColorPickerSet</returns>
         public SceneEffectsColorPickerSet AddColorPickerSet(string text, Action<Color> setter, Color initialValue)
         {
             var containingElement = new GameObject().AddComponent<RectTransform>();
@@ -287,6 +342,6 @@ namespace KKAPI.Studio.UI
             tr.localPosition = v;
         }
 
-        private float GetCurrentOffset() => OffsetMultiplier * (Toggles.Count + Sliders.Count + Dropdowns.Count + ColorPickers.Count);
+        private float GetCurrentOffset() => OffsetMultiplier * (Toggles.Count + Sliders.Count + Dropdowns.Count + ColorPickers.Count + Labels.Count);
     }
 }
