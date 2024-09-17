@@ -179,7 +179,7 @@ Static Methods
 
 ## `SceneEffectsCategory`
 
-Class that adds a new subcategory to the Scene Effects menu. Create a new instance and then add SliderSets and ToggleSets.
+Class that adds a new subcategory to the Scene Effects menu. Create a new instance and then add SliderSets, ToggleSets, DropdownSets, ColorPickerSets, or just plain LabelSets.
 ```csharp
 public class KKAPI.Studio.UI.SceneEffectsCategory
 
@@ -189,6 +189,9 @@ Fields
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `List<SceneEffectsColorPickerSet>` | ColorPickers | Color pickers that have been added. | 
+| `List<SceneEffectsDropdownSet>` | Dropdowns | Dropdowns that have been added. | 
+| `List<SceneEffectsLabelSet>` | Labels | Labels that have been added. | 
 | `List<SceneEffectsSliderSet>` | Sliders | Sliders that have been added. | 
 | `List<SceneEffectsToggleSet>` | Toggles | Toggles that have been added. | 
 
@@ -205,8 +208,84 @@ Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `SceneEffectsColorPickerSet` | AddColorPickerSet(`String` text, `Action<Color>` setter, `Color` initialValue) | Add a color picker to this category. | 
+| `SceneEffectsDropdownSet` | AddDropdownSet(`String` text, `Action<Int32>` setter, `List<String>` options, `String` initialValue) | Add a dropdown to this Screen Effects subcategory. | 
+| `SceneEffectsLabelSet` | AddLabelSet(`String` text) | Add a label to the category, can be used for sectioning. | 
 | `SceneEffectsSliderSet` | AddSliderSet(`String` text, `Action<Single>` setter, `Single` initialValue, `Single` sliderMinimum, `Single` sliderMaximum) | Add a slider with text box to this Screen Effects subcategory. | 
 | `SceneEffectsToggleSet` | AddToggleSet(`String` text, `Action<Boolean>` setter, `Boolean` initialValue) | Add a toggle to this Screen Effects subcategory. | 
+
+
+## `SceneEffectsColorPickerSet`
+
+A container for the value of a ColorPicker, associated label and button, and the setter method that triggers on value change.
+```csharp
+public class KKAPI.Studio.UI.SceneEffectsColorPickerSet
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Button` | Button | Button UI element. | 
+| `Image` | ColorImage | Color image, actual click functionality handled by button. | 
+| `TextMeshProUGUI` | Label | Label UI element. | 
+| `Action<Color>` | Setter | Method called when the value of the Color is changed. | 
+| `String` | Text | Get or set the text of the label. | 
+| `Color` | Value | Get or set the value of the ColorPicker. | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Color` | GetValue() | Get the value of the ColorPicker. | 
+| `void` | SetValue(`Color` value) | Set the value of the ColorPicker and trigger the Setter method. | 
+| `void` | SetValue(`Color` value, `Boolean` triggerEvents) | Set the value of the ColorPicker and trigger the Setter method. | 
+
+
+## `SceneEffectsDropdownSet`
+
+A container for the value of a dropdown, associated label and dropdown, and the setter method that triggers on value change.
+```csharp
+public class KKAPI.Studio.UI.SceneEffectsDropdownSet
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Dropdown` | Dropdown | DropDown UI element. | 
+| `TextMeshProUGUI` | Label | Label UI element. | 
+| `Action<Int32>` | Setter | Method called when the value of the Dropdown is changed. | 
+| `String` | Text | Get or set the text of the label. | 
+| `Int32` | Value | Get or set the value of the Dropdown. | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Int32` | GetValue() | Get the value of the Dropdown. | 
+| `void` | SetValue(`Int32` value) | Set the value of the Dropdown and trigger the Setter method. | 
+| `void` | SetValue(`Int32` value, `Boolean` triggerEvents) | Set the value of the Dropdown and trigger the Setter method. | 
+
+
+## `SceneEffectsLabelSet`
+
+A container for the value of a ColorPicker, associated label and button, and the setter method that triggers on value change.
+```csharp
+public class KKAPI.Studio.UI.SceneEffectsLabelSet
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `TextMeshProUGUI` | Label | Label UI element. | 
+| `String` | Text | Get or set the text of the label. | 
 
 
 ## `SceneEffectsSliderSet`

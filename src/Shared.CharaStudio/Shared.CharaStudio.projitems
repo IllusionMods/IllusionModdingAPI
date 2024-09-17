@@ -31,6 +31,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategoryToggle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CustomStateCategorySwitch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryColorPicker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryLabel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryToggle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\CustomToolbarButtons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategory.cs" />
