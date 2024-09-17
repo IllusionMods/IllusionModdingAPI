@@ -82,7 +82,7 @@ namespace KKAPI.Studio.UI
             _colorPickerSource = sef.transform.Find(colorPickerSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + colorPickerSourcePath);
 
             //Not too proud of these, but they work fine and should continue to work fine.
-            var allsprites = Resources.FindObjectsOfTypeAll<Sprite>();
+            var allSprites = Resources.FindObjectsOfTypeAll<Sprite>();
             _expandSprite = allSprites.FirstOrDefault(r => r.name.Equals("sp_sn_09_00_05"));
             _collapseSprite = allSprites.FirstOrDefault(r => r.name.Equals("sp_sn_09_00_03"));
 #endif
