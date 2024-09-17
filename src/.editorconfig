@@ -1,4 +1,10 @@
-﻿[*.{cs,vb}]
+﻿# Top-level EditorConfig file. Root applies to all subdirectories
+root = true
+
+[*.{cs,vb}]
 
 # IDE0041: Use 'is null' check
 dotnet_style_prefer_is_null_check_over_reference_equality_method = false:suggestion
+[*.cs]
+indent_style = space
+indent_size = 4
