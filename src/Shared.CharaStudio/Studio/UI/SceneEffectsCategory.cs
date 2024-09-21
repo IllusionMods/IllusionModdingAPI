@@ -52,7 +52,7 @@ namespace KKAPI.Studio.UI
             const string sliderSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Slider Focal Size";
             const string inputSourcePath = "Screen Effect/Viewport/Content/Depth of Field/InputField Focal Size";
             const string buttonSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Button Focal Size Default";
-            const string dropdownSourcePath = "Screen Effect/Viewport/Content/Sky/Pattern/Dropdown";
+            const string dropdownSourcePath = "Screen Effect/Viewport/Content/Amplify Color Effect/Dropdown Lut";
             const string colorPickerSourcePath = "Screen Effect/Viewport/Content/Amplify Occlusion Effect/Button Color";
 #elif AI || HS2
             const string labelSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Draw/TextMeshPro";
