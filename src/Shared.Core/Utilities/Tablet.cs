@@ -146,24 +146,11 @@ namespace KKAPI.Utilities
 
         private IntPtr _context = IntPtr.Zero;
         private bool _isInitialized;
-        private float _currentPressure;
         private uint _maxPressure = 65535;
-        private readonly object _lockObject = new object();
         private const int MAX_PACKETS = 128;
         private int _packetSize;
         private int _bufferSize;
         private IntPtr _packetBuffer;
-
-        public float CurrentPressure
-        {
-            get
-            {
-                lock (_lockObject)
-                {
-                    return _currentPressure;
-                }
-            }
-        }
 
         /// <summary>
         /// Represents the maximum pressure threshold supported by the tablet's pressure-sensitive input.
@@ -201,11 +188,14 @@ namespace KKAPI.Utilities
         /// <summary>
         /// Initializes the tablet by setting up the context and required configurations to enable digitizer input.
         /// </summary>
+        /// <param name="guid">
+        /// An optional identifier used to name the tablet log context. Defaults to "WinTabReader" if not provided.
+        /// </param>
         /// <returns>
         /// True if the tablet is successfully initialized and ready for digitizer input;
         /// otherwise, false if initialization fails or the necessary system components are unavailable.
         /// </returns>
-        public bool Initialize()
+        public bool Initialize(string guid = "WinTabReader")
         {
             try
             {
@@ -226,7 +216,7 @@ namespace KKAPI.Utilities
 
                 var context = logContext.Value;
 
-                context.lcName = "WinTabReader";
+                context.lcName = guid;
 
                 context.lcPktData = PK_X | PK_Y | PK_BUTTONS | PK_NORMAL_PRESSURE;
 
@@ -428,6 +418,11 @@ namespace KKAPI.Utilities
             return ushort.MaxValue;
         }
 
+        /// <summary>
+        /// Releases all resources used by the <see cref="Tablet"/> instance and cleans up its state.
+        /// This includes closing the tablet context, deallocating any buffer memory, and marking the instance
+        /// as uninitialized.
+        /// </summary>
         public void Dispose()
         {
             if (_context != IntPtr.Zero)
