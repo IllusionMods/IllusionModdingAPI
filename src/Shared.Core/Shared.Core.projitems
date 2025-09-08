@@ -23,7 +23,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ApiEventExecutionLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Curve.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SmartRect.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Tablet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\WeakDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)KoikatuAPIBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\CharacterLoadFlags.cs" />
