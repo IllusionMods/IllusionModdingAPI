@@ -97,7 +97,7 @@ namespace KKAPI.Utilities
                     }
                     catch (Exception e)
                     {
-
+                        Debug.LogException(e);
                     }
                 }
             }
