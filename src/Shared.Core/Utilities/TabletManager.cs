@@ -6,9 +6,9 @@ namespace KKAPI.Utilities
 {
     public delegate void TabletEvent(Packet[] packet);
 
-    public class TabletManager
+    public class TabletManager : MonoBehaviour
     {
-        private static TabletManager _instance;
+        private static GameObject _instance;
         private static readonly object _lock = new object();
         private readonly Tablet _tablet = new Tablet();
         private readonly List<TabletEvent> _subscribers = new List<TabletEvent>();
@@ -25,10 +25,15 @@ namespace KKAPI.Utilities
                     lock (_lock)
                     {
                         if (_instance == null)
-                            _instance = new TabletManager();
+                        {
+                            _instance = new GameObject("TabletManager");
+                            _instance.hideFlags = HideFlags.HideAndDontSave;
+                            _instance.AddComponent<TabletManager>();
+                            DontDestroyOnLoad(_instance);
+                        }
                     }
                 }
-                return _instance;
+                return _instance.GetComponent<TabletManager>();
             }
         }
 
@@ -56,7 +61,7 @@ namespace KKAPI.Utilities
 
         private void StartPolling()
         {
-            if (!IsInitialized && !_tablet.Initialize())
+            if (!_tablet.IsInitialized && !_tablet.Initialize())
                 return;
 
             _isPolling = true;
@@ -79,17 +84,6 @@ namespace KKAPI.Utilities
 
         private void PollTablet(object state)
         {
-            if (_tablet.IsInitialized && !Application.isFocused)
-            {
-                _tablet.Dispose();
-                return;
-            }
-
-            if (!_tablet.IsInitialized && Application.isFocused)
-            {
-                _tablet.Initialize();
-            }
-
             Packet[] packet;
             if (!_tablet.QueryMulti(out packet))
                 return;
@@ -109,7 +103,20 @@ namespace KKAPI.Utilities
             }
         }
 
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (_tablet.IsInitialized && !hasFocus)
+            {
+                _tablet.Dispose();
+                return;
+            }
+
+            if (!_tablet.IsInitialized && hasFocus)
+            {
+                _tablet.Initialize();
+            }
+        }
+
         public uint MaxPressure => _tablet.MaxPressure;
-        public bool IsInitialized => _tablet.IsInitialized;
     }
 }
