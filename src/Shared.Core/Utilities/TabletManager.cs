@@ -75,7 +75,7 @@ namespace KKAPI.Utilities
                 _isPolling = false;
                 if (_timer != null)
                 {
-                    _timer?.Dispose();
+                    _timer.Dispose();
                     _timer = null;
                 }
                 _tablet.Dispose();
