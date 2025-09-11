@@ -20,10 +20,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Chara\TestCharaCustomFunctionController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameMode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Tablet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ApiEventExecutionLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Curve.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SmartRect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Tablet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TabletManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\WeakDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)KoikatuAPIBase.cs" />
