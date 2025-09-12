@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace KKAPI.Utilities
     /// </summary>
     public class SmartRect
     {
+        public event EventHandler OnAnimationComplete; 
         private Rect _animateFrom;
         private Rect _animateTo;
         private float _animationDuration;
@@ -26,6 +28,9 @@ namespace KKAPI.Utilities
         private readonly float _offsetX;
         private readonly float _offsetY;
         private Rect _source;
+
+        public float OffsetX => _offsetX;
+        public float OffsetY => _offsetY;
 
         public float Height
         {
@@ -282,14 +287,14 @@ namespace KKAPI.Utilities
         }
 
         /// <summary>
-        /// Updates the animation of the rectangle using a Bézier curve.
+        /// Updates the animation of the rectangle independently using a provided solver function based on progress.
         /// </summary>
-        /// <param name="bezier">The <see cref="BezierTemplate"/> to use for the animation curve.</param>
+        /// <param name="solver">A function that takes progress (a value between 0 and 1) and returns a vector where the y-component determines the animation factor.</param>
         /// <returns>
         /// A boolean indicating whether the animation is still in progress.
         /// Returns <c>true</c> if the animation is ongoing, <c>false</c> if the animation has completed.
         /// </returns>
-        public bool UpdateAnimationIndependent(BezierTemplate bezier)
+        public bool UpdateAnimationIndependent(Func<float, Vector2> solver)
         {
             if (_animationDuration == 0)
                 return false;
@@ -299,18 +304,18 @@ namespace KKAPI.Utilities
             var widthDiff = _animateTo.width - _source.width;
             var heightDiff = _animateTo.height - _source.height;
 
-            // Accounting for floating point errors
             if (Mathf.Abs(xDiff) <= 0.01f && Mathf.Abs(yDiff) <= 0.01f && Mathf.Abs(widthDiff) <= 0.01f &&
                 Mathf.Abs(heightDiff) <= 0.01f)
             {
                 _source = _animateTo;
                 _animationDuration = 0;
                 _elapsedTime = 0;
+                OnAnimationComplete?.Invoke(this, null);
                 return false;
             }
 
             var progress = Mathf.Clamp01(_elapsedTime / _animationDuration);
-            var f = Beziers.Vector3(bezier, progress).y;
+            var f = solver(progress).y;
 
             _source.x = Mathf.Ceil(f * (_animateTo.x - _animateFrom.x) + _animateFrom.x);
             _source.y = Mathf.Ceil(f * (_animateTo.y - _animateFrom.y) + _animateFrom.y);
@@ -325,6 +330,7 @@ namespace KKAPI.Utilities
                 _source = _animateTo;
                 _elapsedTime = 0;
                 _animationDuration = 0;
+                OnAnimationComplete?.Invoke(this, null);
             }
 
             return updateAnimation;
@@ -384,7 +390,6 @@ namespace KKAPI.Utilities
         /// Moves the rectangle to the next row, optionally resetting the column position.
         /// </summary>
         /// <param name="resetColumn">Indicates whether the column position should be reset to the default X position.</param>
-        /// <param name="returnPrevious"></param>
         /// <returns>The updated instance of <see cref="SmartRect"/> after moving to the next row.</returns>
         public SmartRect NextRow(bool resetColumn = true)
         {
@@ -457,68 +462,5 @@ namespace KKAPI.Utilities
         {
             return r._source;
         }
-    }
-
-    public struct BezierTemplate
-    {
-        public Vector3 Start;
-        public Vector3 End;
-        public Vector3 Control1;
-        public Vector3 Control2;
-    }
-
-    public static class Beziers
-    {
-        public static Vector3 Vector3(BezierTemplate b, float f)
-        {
-            return Vector3(b.Start, b.Control1, b.Control2, b.End, f);
-        }
-
-        private static Vector3 Vector3(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float t)
-        {
-            t = Mathf.Clamp01(t);
-            float num = 1f - t;
-            return num * num * num * p0 + 3f * num * num * t * p1 + 3f * num * t * t * p2 + t * t * t * p3;
-        }
-
-        public static BezierTemplate LinearTemplate { get; } = new BezierTemplate
-        {
-            Start = Vector2.zero,
-            Control1 = Vector2.zero,
-            Control2 = Vector2.one,
-            End = Vector2.one
-        };
-
-        public static BezierTemplate EaseTemplate { get; } = new BezierTemplate
-        {
-            Start = Vector2.zero,
-            End = Vector2.one,
-            Control1 = new Vector2(0.25f, 0.1f),
-            Control2 = new Vector2(0.25f, 1f)
-        };
-
-        public static BezierTemplate EaseInTemplate { get; } = new BezierTemplate
-        {
-            Start = Vector2.zero,
-            End = Vector2.one,
-            Control1 = new Vector2(0.42f, 0f),
-            Control2 = Vector2.one
-        };
-
-        public static BezierTemplate EaseOutTemplate { get; } = new BezierTemplate
-        {
-            Start = Vector2.zero,
-            End = Vector2.one,
-            Control1 = Vector2.zero,
-            Control2 = new Vector2(0.58f, 1f)
-        };
-
-        public static BezierTemplate EaseInOutTemplate { get; } = new BezierTemplate
-        {
-            Start = Vector2.zero,
-            End = Vector2.one,
-            Control1 = new Vector2(0.42f, 0),
-            Control2 = new Vector2(0.58f, 1)
-        };
     }
 }
