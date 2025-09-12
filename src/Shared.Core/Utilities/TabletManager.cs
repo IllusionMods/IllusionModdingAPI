@@ -124,7 +124,7 @@ namespace KKAPI.Utilities
                     }
                     catch (Exception e)
                     {
-                        Debug.LogException(e);
+                        UnityEngine.Debug.LogError($"Subscriber crash! Removing subscriber {subscriber?.GetType().FullName} because of exception: {e}");
                         Unsubscribe(subscriber);
                         break;
                     }
