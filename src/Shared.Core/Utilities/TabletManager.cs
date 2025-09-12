@@ -6,6 +6,14 @@ namespace KKAPI.Utilities
 {
     public delegate void TabletEvent(Packet[] packets);
 
+    /// <summary>
+    /// Manages tablet input events and subscriptions.
+    /// </summary>
+    /// <remarks>
+    /// The TabletManager class is responsible for overseeing the handling of tablet input events and enabling
+    /// event subscriptions for external components. It ensures a singleton instance exists and facilitates
+    /// subscribing and unsubscribing of handlers to process tablet data packets.
+    /// </remarks>
     public class TabletManager : MonoBehaviour
     {
         private static GameObject _instance;
@@ -38,21 +46,37 @@ namespace KKAPI.Utilities
             }
         }
 
+        /// <summary>
+        /// Subscribes a provided event handler to receive tablet input updates.
+        /// </summary>
+        /// <param name="handler">The event handler to subscribe. If null, no operation is performed.</param>
         public static void Subscribe(TabletEvent handler)
         {
             lock (_lock)
             {
-                instance._subscribers.Add(handler);
+                if (handler != null)
+                {
+                    instance._subscribers.Add(handler);
+                }
+                
                 if (!instance._isPolling && instance._subscribers.Count > 0)
                     instance.StartPolling();
             }
         }
 
+        /// <summary>
+        /// Unsubscribes a previously registered event handler from receiving tablet input updates.
+        /// </summary>
+        /// <param name="handler">The event handler to unsubscribe. If null, no operation is performed.</param>
         public static void Unsubscribe(TabletEvent handler)
         {
             lock (_lock)
             {
-                instance._subscribers.Remove(handler);
+                if (handler != null)
+                {
+                    instance._subscribers.Remove(handler);
+                }
+                
                 if (instance._subscribers.Count == 0)
                     instance.StopPolling();
             }
@@ -122,6 +146,10 @@ namespace KKAPI.Utilities
             }
         }
 
+        /// <summary>
+        /// Gets the maximum pressure value supported by the tablet device.
+        /// This value indicates the upper limit of pressure sensitivity that the tablet can detect.
+        /// </summary>
         public static uint MaxPressure => instance._tablet.MaxPressure;
     }
 }
