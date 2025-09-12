@@ -100,7 +100,9 @@ namespace KKAPI.Utilities
                     }
                     catch (Exception e)
                     {
-
+                        Debug.LogException(e);
+                        Unsubscribe(subscriber);
+                        break;
                     }
                 }
             }
