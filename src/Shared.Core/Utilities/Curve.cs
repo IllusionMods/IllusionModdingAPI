@@ -3,8 +3,17 @@ using UnityEngine;
 
 namespace KKAPI.Utilities
 {
+    /// <summary>
+    /// Provides a comprehensive set of utilities for performing operations on curves, including interpolation via Catmull-Rom splines and Bezier curves.
+    /// </summary>
     public class Curve
     {
+        /// <summary>
+        /// A collection of predefined interpolation templates used for calculating positions along curves with various behaviors.
+        /// </summary>
+        /// <remarks>
+        /// This struct includes methods for linear interpolation, easing (in, out, and in-out), smooth stepping, and step functions.
+        /// </remarks>
         public struct Templates
         {
             /// <summary>
