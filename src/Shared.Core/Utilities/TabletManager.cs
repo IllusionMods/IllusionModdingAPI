@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace KKAPI.Utilities
 {
-    public delegate void TabletEvent(Packet[] packet);
+    public delegate void TabletEvent(Packet[] packets);
 
     public class TabletManager : MonoBehaviour
     {
@@ -16,56 +16,64 @@ namespace KKAPI.Utilities
 
         private TabletManager() { }
 
-        public static TabletManager Instance
+        private static TabletManager instance
         {
             get
             {
-                if (_instance == null)
+                if (_instance != null)
+                    return _instance.GetComponent<TabletManager>();
+                lock (_lock)
                 {
-                    lock (_lock)
+                    if (_instance == null)
                     {
-                        if (_instance == null)
+                        _instance = new GameObject("TabletManager")
                         {
-                            _instance = new GameObject("TabletManager");
-                            _instance.hideFlags = HideFlags.HideAndDontSave;
-                            _instance.AddComponent<TabletManager>();
-                            DontDestroyOnLoad(_instance);
-                        }
+                            hideFlags = HideFlags.HideAndDontSave
+                        };
+                        _instance.AddComponent<TabletManager>();
+                        DontDestroyOnLoad(_instance);
                     }
                 }
                 return _instance.GetComponent<TabletManager>();
             }
         }
 
-        public void Subscribe(TabletEvent handler)
+        public static void Subscribe(TabletEvent handler)
         {
             lock (_lock)
             {
-                _subscribers.Add(handler);
-                if (!_isPolling && _subscribers.Count > 0)
-                    StartPolling();
+                instance._subscribers.Add(handler);
+                if (!instance._isPolling && instance._subscribers.Count > 0)
+                    instance.StartPolling();
             }
         }
 
-        public void Unsubscribe(TabletEvent handler)
+        public static void Unsubscribe(TabletEvent handler)
         {
             lock (_lock)
             {
-                _subscribers.Remove(handler);
-                if (_subscribers.Count == 0)
-                    StopPolling();
+                instance._subscribers.Remove(handler);
+                if (instance._subscribers.Count == 0)
+                    instance.StopPolling();
             }
         }
 
-        private System.Threading.Timer _timer;
+        private void FixedUpdate()
+        {
+            if (_tablet.IsInitialized && _isPolling)
+            {
+                PollTablet();
+            }
+        }
 
         private void StartPolling()
         {
-            if (!_tablet.IsInitialized && !_tablet.Initialize())
-                return;
-
-            _isPolling = true;
-            _timer = new System.Threading.Timer(PollTablet, null, 0, 16);
+            lock (_lock)
+            {
+                if (!_tablet.IsInitialized && !_tablet.Initialize())
+                    return;
+                _isPolling = true;
+            }
         }
 
         private void StopPolling()
@@ -73,16 +81,11 @@ namespace KKAPI.Utilities
             lock (_lock)
             {
                 _isPolling = false;
-                if (_timer != null)
-                {
-                    _timer?.Dispose();
-                    _timer = null;
-                }
                 _tablet.Dispose();
             }
         }
 
-        private void PollTablet(object state)
+        private void PollTablet()
         {
             Packet[] packet;
             if (!_tablet.QueryMulti(out packet))
@@ -117,6 +120,6 @@ namespace KKAPI.Utilities
             }
         }
 
-        public uint MaxPressure => _tablet.MaxPressure;
+        public static uint MaxPressure => instance._tablet.MaxPressure;
     }
 }
