@@ -168,6 +168,15 @@ namespace KKAPI
 #endif
         }
 
+        private void OnGUI()
+        {
+            TooltipManager.OnGUI();
+        }
+        private void Update()
+        {
+            TooltipManager.Update();
+        }
+
         /// <summary>
         /// Check if a plugin is loaded and has at least the minimum version. 
         /// If the plugin is missing or older than minimumVersion, user is shown an error message on screen and false is returned.

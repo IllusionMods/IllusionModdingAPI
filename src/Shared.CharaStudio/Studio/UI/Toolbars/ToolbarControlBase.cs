@@ -27,7 +27,21 @@ namespace KKAPI.Studio.UI.Toolbars
         private static Vector2 _originPosition;
         private static readonly Vector2 _positionOffset = new Vector2(40, 40f);
 
-        private protected RectTransform RectTransform;
+        private RectTransform _rectTransform;
+        private TooltipManager.Tooltip _tooltip;
+        private protected RectTransform RectTransform
+        {
+            get => _rectTransform;
+            set
+            {
+                if (_rectTransform != value)
+                {
+                    _rectTransform = value;
+                    if (_tooltip != null) _tooltip.Destroy();
+                    if (!string.IsNullOrEmpty(HoverText)) _tooltip = TooltipManager.RegisterTooltip(_rectTransform, HoverText);
+                }
+            }
+        }
 
         private readonly Func<Texture2D> _iconGetter;
         private Texture2D _iconTex;
@@ -55,6 +69,9 @@ namespace KKAPI.Studio.UI.Toolbars
             if (ButtonID.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
                 throw new ArgumentException("buttonID contains invalid characters", nameof(buttonID));
 
+#if DEBUG
+            hoverText = $"{GetType().FullName}\nOwner={owner.Info.Metadata.Name}\nName={buttonID}\n\n{hoverText ?? "<NULL>"}";
+#endif
             HoverText = hoverText;
             _iconGetter = iconGetter ?? throw new ArgumentNullException(nameof(iconGetter));
             Owner = owner ?? throw new ArgumentNullException(nameof(owner));
