@@ -31,7 +31,9 @@ namespace KKAPI
         public static Tooltip RegisterTooltip(RectTransform target, string text)
         {
             if (target == null) throw new ArgumentNullException(nameof(target));
-            if (string.IsNullOrEmpty(text)) throw new ArgumentNullException(nameof(text));
+            if (text == null) throw new ArgumentNullException(nameof(text));
+            text = text.Trim();
+            if (string.IsNullOrEmpty(text)) throw new ArgumentException("Tooltip text cannot be empty or whitespace.", nameof(text));
 
             // Check if a tooltip is already registered for this target
             foreach (var existing in _tooltips)
@@ -51,8 +53,30 @@ namespace KKAPI
             return tooltip;
         }
 
-        internal static void Update() => UpdateTooltipSelection();
-        internal static void OnGUI() => DrawTooltip();
+        internal static void Update()
+        {
+            if (_tooltipBackground == null)
+            {
+                _tooltipBackground = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+                _tooltipBackground.SetPixel(0, 0, new Color(0, 0, 0, 0.65f));
+                _tooltipBackground.Apply();
+
+                _tooltipStyle = new GUIStyle
+                {
+                    normal = new GUIStyleState { textColor = Color.white, background = _tooltipBackground },
+                    wordWrap = true,
+                    alignment = TextAnchor.MiddleCenter
+                };
+                _tooltipContent = new GUIContent();
+            }
+
+            UpdateTooltipSelection();
+        }
+
+        internal static void OnGUI()
+        {
+            DrawTooltip();
+        }
 
         private static void UpdateTooltipSelection()
         {
@@ -107,22 +131,7 @@ namespace KKAPI
 
         private static void DrawTooltip()
         {
-            if (string.IsNullOrEmpty(_currentTooltipText)) return;
-
-            if (_tooltipBackground == null)
-            {
-                _tooltipBackground = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-                _tooltipBackground.SetPixel(0, 0, new Color(0, 0, 0, 0.65f));
-                _tooltipBackground.Apply();
-
-                _tooltipStyle = new GUIStyle
-                {
-                    normal = new GUIStyleState { textColor = Color.white, background = _tooltipBackground },
-                    wordWrap = true,
-                    alignment = TextAnchor.MiddleCenter
-                };
-                _tooltipContent = new GUIContent();
-            }
+            if (_currentTooltipText == null) return;
 
             _tooltipContent.text = _currentTooltipText;
 
