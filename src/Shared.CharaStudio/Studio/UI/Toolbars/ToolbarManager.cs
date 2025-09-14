@@ -1,7 +1,11 @@
 ﻿using BepInEx;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using BepInEx.Configuration;
+using KKAPI.Utilities;
+using UnityEngine;
 
 namespace KKAPI.Studio.UI.Toolbars
 {
@@ -13,6 +17,8 @@ namespace KKAPI.Studio.UI.Toolbars
     public static class ToolbarManager
     {
         internal static readonly HashSet<ToolbarControlBase> Buttons = new HashSet<ToolbarControlBase>();
+        private static ConfigEntry<string> _positionSetting;
+
         private static bool _studioLoaded;
         private static bool _dirty;
 
@@ -62,6 +68,9 @@ namespace KKAPI.Studio.UI.Toolbars
         internal static void OnStudioLoaded()
         {
             _dirty = true;
+
+            _positionSetting = KoikatuAPI.Instance.Config.Bind("Toolbars", "LeftToolbarButtonPositions", "", new ConfigDescription("Stores desired positions of custom toolbar buttons. Do not edit this setting manually.", null, new BrowsableAttribute(false)));
+
             ToolbarControlBase.InitToolbar();
             _studioLoaded = true;
             UpdateInterface();
@@ -75,6 +84,8 @@ namespace KKAPI.Studio.UI.Toolbars
             lock (Buttons)
             {
                 if (!_dirty) return;
+
+                //LoadButtonPositions();
 
                 var takenPositions = new HashSet<KeyValuePair<int, int>>();
                 var positionNotSet = new List<ToolbarControlBase>();
@@ -93,7 +104,6 @@ namespace KKAPI.Studio.UI.Toolbars
                         continue;
                     }
 
-                    // TODO: saving and loading positions
                     // Now try to set position
                     var desiredRow = customToolbarToggle.DesiredRow;
                     var desiredCol = customToolbarToggle.DesiredColumn;
@@ -131,26 +141,80 @@ namespace KKAPI.Studio.UI.Toolbars
                 }
 
                 // Now place all buttons that didn't have a desired position set
-                // First find the last used position in the two leftmost columns
-                var lastPos = takenPositions.Where(x => x.Value < 2).OrderByDescending(x => x.Key).ThenByDescending(x => x.Value).First();
-                var addedPos = (lastPos.Key - 1) * 2 + lastPos.Value;
+                // First find the first unused position in the two leftmost columns
+                var addedPos = 0;
                 foreach (var btn in positionNotSet)
                 {
                     // Find the next free position in the left two columns
                     KeyValuePair<int, int> newPos;
                     do
                     {
-                        addedPos++;
                         var row = addedPos / 2;
                         var col = addedPos % 2;
                         newPos = new KeyValuePair<int, int>(row, col);
+                        addedPos++;
                     } while (takenPositions.Contains(newPos));
 
-                    btn.SetActualPosition(newPos.Key, newPos.Value, true);
+                    btn.SetActualPosition(newPos.Key, newPos.Value, false); // Do not save position
                     takenPositions.Add(newPos);
                 }
 
                 _dirty = false;
+
+                //SaveButtonPositions();
+            }
+        }
+
+        //todo completely borked because button IDs are not unique
+        /// <summary>
+        /// Saves the desired positions of all toolbar buttons to the config entry.
+        /// </summary>
+        private static void SaveButtonPositions()
+        {
+            if (_positionSetting == null)
+                return;
+
+            // Format: ButtonID:row:column|ButtonID2:row:column|...
+            var entries = Buttons
+                          .Where(b => b.DesiredRow >= 0 && b.DesiredColumn >= 0)
+                          .OrderBy(b => b.ButtonID)
+                          .Select(b => $"{b.ButtonID}:{b.DesiredRow}:{b.DesiredColumn}");
+
+            _positionSetting.Value = string.Join("|", entries.ToArray());
+        }
+
+        /// <summary>
+        /// Loads button positions from the config entry and applies them to the registered buttons.
+        /// </summary>
+        private static void LoadButtonPositions()
+        {
+            if (_positionSetting == null || string.IsNullOrEmpty(_positionSetting.Value))
+                return;
+
+            // Format: ButtonID:row:column|ButtonID2:row:column|...
+            var entries = _positionSetting.Value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var positions = new Dictionary<string, KeyValuePair<int, int>>();
+            foreach (var entry in entries)
+            {
+                var parts = entry.Split(':');
+                if (parts.Length != 3) continue;
+                var id = parts[0];
+                if (int.TryParse(parts[1], out int row) && int.TryParse(parts[2], out int col))
+                {
+                    positions[id] = new KeyValuePair<int, int>(row, col);
+                }
+            }
+
+            lock (Buttons)
+            {
+                foreach (var btn in Buttons)
+                {
+                    if (positions.TryGetValue(btn.ButtonID, out var pos))
+                    {
+                        btn.DesiredRow = pos.Key;
+                        btn.DesiredColumn = pos.Value;
+                    }
+                }
             }
         }
     }

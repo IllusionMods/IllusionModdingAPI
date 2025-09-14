@@ -12,7 +12,6 @@ using Object = UnityEngine.Object;
 namespace KKAPI.Studio.UI.Toolbars
 {
     // TODO:
-    // - implement tooltips
     // - save/load button order
     // - hide and show buttons?
     // - maybe right click context menu?
@@ -117,14 +116,14 @@ namespace KKAPI.Studio.UI.Toolbars
         /// For the bottom left toolbar, this is counted from bottom left corner of the screen.
         /// Set to -1 to automatically add to the end of the toolbar.
         /// </summary>
-        public int DesiredRow { get; private protected set; } = -1;
+        public int DesiredRow { get; internal set; } = -1;
 
         /// <summary>
         /// Which column to place the button in.
         /// For the bottom left toolbar, this is counted from bottom left corner of the screen.
         /// Set to -1 to automatically add to the end of the toolbar.
         /// </summary>
-        public int DesiredColumn { get; private protected set; } = -1;
+        public int DesiredColumn { get; internal set; } = -1;
 
         /// <summary>
         /// The Unity UI Button object for this toolbar button.
