@@ -33,11 +33,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryColorPicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryLabel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\CustomToolbarControlBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\CustomToolbarButtons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategorySlider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryDropdown.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarButton.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)studio\ui\toolbars\Obsolete.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarButtonControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarControlPlaceholder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarToggleControl.cs" />
   </ItemGroup>
 </Project>
