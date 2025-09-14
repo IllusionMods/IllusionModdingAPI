@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using KKAPI.Utilities;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using UniRx;
@@ -14,9 +13,8 @@ namespace KKAPI.Studio.UI.Toolbars
 {
     // TODO:
     // - implement tooltips
-    // - drag and drop to reorder buttons
     // - save/load button order
-    // - hide and show buttons
+    // - hide and show buttons?
     // - maybe right click context menu?
 
     /// <summary>
@@ -211,12 +209,15 @@ namespace KKAPI.Studio.UI.Toolbars
         /// <summary>
         /// Set the actual transform position of the button.
         /// </summary>
-        internal void SetActualPosition(int row, int column)
+        internal void SetActualPosition(int row, int column, bool setDesired)
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(ToolbarControlBase));
 
-            DesiredRow = row;
-            DesiredColumn = column;
+            if (setDesired)
+            {
+                DesiredRow = row;
+                DesiredColumn = column;
+            }
 
             var newPos = new Vector2(_originPosition.x + column * _positionOffset.x,
                                      _originPosition.y + row * _positionOffset.y);
@@ -238,9 +239,8 @@ namespace KKAPI.Studio.UI.Toolbars
 
             var x = Mathf.RoundToInt(anchoredPosition.x);
             column = Mathf.RoundToInt((x - _originPosition.x) / _positionOffset.x);
-#if DEBUG
-            Console.WriteLine($"GetActualPosition: x={anchoredPosition.x} -> col={column} y={anchoredPosition.y} -> row={row}");
-#endif
+
+            //Console.WriteLine($"GetActualPosition: x={anchoredPosition.x} -> col={column} y={anchoredPosition.y} -> row={row}");
         }
 
         /// <summary>
@@ -301,13 +301,12 @@ namespace KKAPI.Studio.UI.Toolbars
                 // Move to front so it's not hidden behind other buttons while dragging
                 button.transform.SetAsLastSibling();
 
-                // Make button interactable while dragging so it doesn't trigger click events
-                button.interactable = false;
+                // Disable while dragging so it doesn't trigger click events
+                button.enabled = false;
             }
+
             void IDragHandler.OnDrag(PointerEventData eventData)
             {
-                //TODO move ToolbarManager.Buttons out of way while dragging without changing their DesiredRow/Column
-
                 // Move the object with the mouse
                 var rt = _owner.RectTransform;
                 RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)rt.parent, eventData.position, eventData.pressEventCamera, out var localPoint);
@@ -316,20 +315,39 @@ namespace KKAPI.Studio.UI.Toolbars
                 localPoint.y += rt.rect.height / 2;
                 rt.anchoredPosition = localPoint;
                 GetActualPosition(rt.anchoredPosition, out _currentDragRow, out _currentDragCol);
-                //if (_currentDragRow != _originalRow || _currentDragCol != _originalCol)
-                //{
-                //    // Snap to grid
-                //    var newPos = new Vector2(_originPosition.x + _currentDragCol * _positionOffset.x,
-                //                             _originPosition.y + _currentDragRow * _positionOffset.y);
-                //    rt.anchoredPosition = newPos;
-                //}
             }
+
             void IEndDragHandler.OnEndDrag(PointerEventData eventData)
             {
-                _owner.SetActualPosition(_currentDragRow, _currentDragCol);
-                //TODO move other buttons to make room if necessary (to next column in the same row)
+                _owner.ButtonObject.Value.enabled = true;
 
-                _owner.ButtonObject.Value.interactable = _owner.Interactable.Value;
+                // Move other buttons to make room if necessary (to next column in the same row)
+                var rowButtons = ToolbarManager.Buttons.Where(b => b != _owner && b.DesiredRow == _currentDragRow && b.DesiredColumn >= 0 && b.Visible.Value)
+                                               .ToDictionary(b => b.DesiredColumn, b => b);
+
+                if (rowButtons.TryGetValue(_currentDragCol, out var otherButtonToMove))
+                {
+                    // The position is already taken, try to move the other button to make space
+                    if (_currentDragCol >= 1 && !rowButtons.ContainsKey(_currentDragCol - 1))
+                    {
+                        // Move left if there is space
+                        otherButtonToMove.DesiredColumn = _currentDragCol - 1;
+                    }
+                    else
+                    {
+                        // Otherwise move all buttons right
+                        for (int c = _currentDragCol + 1; ; c++)
+                        {
+                            otherButtonToMove.DesiredColumn = c;
+
+                            if (!rowButtons.TryGetValue(c, out otherButtonToMove))
+                                break;
+                        }
+                    }
+                }
+
+                // Place the dragged button at the new position and trigger relayout
+                _owner.SetDesiredPosition(_currentDragRow, _currentDragCol);
             }
         }
     }

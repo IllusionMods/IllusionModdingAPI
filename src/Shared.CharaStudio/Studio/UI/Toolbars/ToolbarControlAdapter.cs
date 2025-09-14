@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UniRx;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace KKAPI.Studio.UI.Toolbars
@@ -15,7 +16,20 @@ namespace KKAPI.Studio.UI.Toolbars
             GetActualPosition(out var row, out var col);
             DesiredRow = row;
             DesiredColumn = col;
+
+            // BUG: These don't update if the button is changed by game code
+            Interactable.OnNext(btnObject.interactable);
+            Interactable.Subscribe(b => btnObject.interactable = b);
             Visible.OnNext(btnObject.gameObject.activeSelf);
+            Visible.Subscribe(b =>
+            {
+                if (btnObject.gameObject.activeSelf != b)
+                {
+                    btnObject.gameObject.SetActive(b);
+                    ToolbarManager.RequestToolbarRelayout();
+                }
+            });
+
             DragHelper.SetUpDragging(this, btnObject.gameObject);
         }
 

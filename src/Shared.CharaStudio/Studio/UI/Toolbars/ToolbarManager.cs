@@ -50,7 +50,7 @@ namespace KKAPI.Studio.UI.Toolbars
         {
             lock (Buttons)
             {
-                if (_dirty || !_studioLoaded) return;
+                if (!_studioLoaded || _dirty) return;
                 _dirty = true;
                 ThreadingHelper.Instance.StartSyncInvoke(UpdateInterface);
             }
@@ -78,15 +78,23 @@ namespace KKAPI.Studio.UI.Toolbars
 
                 var takenPositions = new HashSet<KeyValuePair<int, int>>();
                 var positionNotSet = new List<ToolbarControlBase>();
+                var nonVisibleWithPosition = new List<ToolbarControlBase>();
+
+                // First pass: create controls and classify buttons
                 foreach (var customToolbarToggle in Buttons.OrderByDescending(x => x is ToolbarControlAdapter).ThenBy(x => x.ButtonID))
                 {
                     customToolbarToggle.CreateControl();
 
                     if (!customToolbarToggle.Visible.Value)
+                    {
+                        // Track non-visible buttons with a set position
+                        if (customToolbarToggle.DesiredRow >= 0 && customToolbarToggle.DesiredColumn >= 0)
+                            nonVisibleWithPosition.Add(customToolbarToggle);
                         continue;
+                    }
 
-                    // Now try to set position
                     // TODO: saving and loading positions
+                    // Now try to set position
                     var desiredRow = customToolbarToggle.DesiredRow;
                     var desiredCol = customToolbarToggle.DesiredColumn;
                     if (desiredRow >= 0 && desiredCol >= 0)
@@ -94,7 +102,7 @@ namespace KKAPI.Studio.UI.Toolbars
                         // Try to set to desired position, if taken then move right until free spot is found
                         while (takenPositions.Contains(new KeyValuePair<int, int>(desiredRow, desiredCol)))
                             desiredCol++;
-                        customToolbarToggle.SetActualPosition(desiredRow, desiredCol);
+                        customToolbarToggle.SetActualPosition(desiredRow, desiredCol, true);
                         takenPositions.Add(new KeyValuePair<int, int>(desiredRow, desiredCol));
                     }
                     else
@@ -103,13 +111,32 @@ namespace KKAPI.Studio.UI.Toolbars
                     }
                 }
 
+                // Second pass: move non-visible buttons out of the way if their position is now taken
+                foreach (var btn in nonVisibleWithPosition)
+                {
+                    var desiredRow = btn.DesiredRow;
+                    var desiredCol = btn.DesiredColumn;
+                    var pos = new KeyValuePair<int, int>(desiredRow, desiredCol);
+                    if (takenPositions.Contains(pos))
+                    {
+                        // Move to next free position in the same row
+                        do
+                        {
+                            desiredCol++;
+                            pos = new KeyValuePair<int, int>(desiredRow, desiredCol);
+                        } while (takenPositions.Contains(pos));
+                        btn.SetActualPosition(desiredRow, desiredCol, true);
+                    }
+                    takenPositions.Add(pos);
+                }
+
                 // Now place all buttons that didn't have a desired position set
                 // First find the last used position in the two leftmost columns
                 var lastPos = takenPositions.Where(x => x.Value < 2).OrderByDescending(x => x.Key).ThenByDescending(x => x.Value).First();
                 var addedPos = (lastPos.Key - 1) * 2 + lastPos.Value;
                 foreach (var btn in positionNotSet)
                 {
-                    // Find the next free position
+                    // Find the next free position in the left two columns
                     KeyValuePair<int, int> newPos;
                     do
                     {
@@ -119,7 +146,7 @@ namespace KKAPI.Studio.UI.Toolbars
                         newPos = new KeyValuePair<int, int>(row, col);
                     } while (takenPositions.Contains(newPos));
 
-                    btn.SetActualPosition(newPos.Key, newPos.Value);
+                    btn.SetActualPosition(newPos.Key, newPos.Value, true);
                     takenPositions.Add(newPos);
                 }
 
@@ -127,5 +154,4 @@ namespace KKAPI.Studio.UI.Toolbars
             }
         }
     }
-
 }
