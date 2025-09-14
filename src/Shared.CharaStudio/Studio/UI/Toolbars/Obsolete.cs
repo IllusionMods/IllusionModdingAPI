@@ -27,7 +27,7 @@ namespace KKAPI.Studio.UI
         public static ToolbarToggle AddLeftToolbarToggle(Texture2D iconTex, bool initialValue = false, Action<bool> onValueChanged = null)
         {
             if (iconTex == null) throw new ArgumentNullException(nameof(iconTex));
-            var tgl = new ToolbarToggleControl(Assembly.GetCallingAssembly().GetName().Name, "", () => iconTex, initialValue, onValueChanged, KoikatuAPI.Instance);
+            var tgl = new ToolbarToggleControl(Assembly.GetCallingAssembly().GetName().Name, null, () => iconTex, initialValue, onValueChanged, KoikatuAPI.Instance);
             AddLeftToolbarControl(tgl);
             return new ToolbarToggle(tgl);
         }
@@ -45,7 +45,7 @@ namespace KKAPI.Studio.UI
         public static ToolbarButton AddLeftToolbarButton(Texture2D iconTex, Action onClicked = null)
         {
             if (iconTex == null) throw new ArgumentNullException(nameof(iconTex));
-            var btn = new ToolbarButtonControl(Assembly.GetCallingAssembly().GetName().Name, "", () => iconTex, onClicked, KoikatuAPI.Instance);
+            var btn = new ToolbarButtonControl(Assembly.GetCallingAssembly().GetName().Name, null, () => iconTex, onClicked, KoikatuAPI.Instance);
             AddLeftToolbarControl(btn);
             return new ToolbarButton(btn);
         }

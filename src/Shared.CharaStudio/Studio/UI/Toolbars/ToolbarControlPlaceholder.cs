@@ -8,7 +8,7 @@ namespace KKAPI.Studio.UI
     /// </summary>
     internal sealed class ToolbarControlPlaceholder : CustomToolbarControlBase
     {
-        public ToolbarControlPlaceholder(Button btnObject) : base(btnObject.gameObject.name, string.Empty, () => null, KoikatuAPI.Instance)
+        public ToolbarControlPlaceholder(Button btnObject) : base(btnObject.gameObject.name, null, () => null, KoikatuAPI.Instance)
         {
             ButtonObject.OnNext(btnObject);
             RectTransform = (RectTransform)btnObject.transform;
