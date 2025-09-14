@@ -9,7 +9,7 @@ namespace KKAPI.Studio.UI
     /// <summary>
     /// Toolbar button that acts as a toggle (on/off).
     /// </summary>
-    public class ToolbarToggleControl : CustomToolbarControlBase
+    public class ToolbarToggleControl : ToolbarControlBase
     {
         /// <summary>
         /// Observable value representing the toggle state.

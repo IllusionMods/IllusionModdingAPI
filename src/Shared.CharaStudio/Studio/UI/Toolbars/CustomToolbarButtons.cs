@@ -11,7 +11,7 @@ namespace KKAPI.Studio.UI
     /// </summary>
     public static partial class CustomToolbarButtons
     {
-        internal static readonly HashSet<CustomToolbarControlBase> Buttons = new HashSet<CustomToolbarControlBase>();
+        internal static readonly HashSet<ToolbarControlBase> Buttons = new HashSet<ToolbarControlBase>();
         private static bool _studioLoaded;
         private static bool _dirty;
 
@@ -20,7 +20,7 @@ namespace KKAPI.Studio.UI
         /// </summary>
         /// <param name="button">The custom toolbar button to add.</param>
         /// <returns>True if the button was added, false if already present.</returns>
-        public static bool AddLeftToolbarControl(CustomToolbarControlBase button)
+        public static bool AddLeftToolbarControl(ToolbarControlBase button)
         {
             if (button == null) throw new ArgumentNullException(nameof(button));
             if (button.IsDisposed) throw new ObjectDisposedException(nameof(button));
@@ -61,7 +61,7 @@ namespace KKAPI.Studio.UI
         internal static void OnStudioLoaded()
         {
             _dirty = true;
-            CustomToolbarControlBase.InitToolbar();
+            ToolbarControlBase.InitToolbar();
             _studioLoaded = true;
             UpdateInterface();
         }
@@ -76,8 +76,8 @@ namespace KKAPI.Studio.UI
                 if (!_dirty) return;
 
                 var takenPositions = new HashSet<KeyValuePair<int, int>>();
-                var positionNotSet = new List<CustomToolbarControlBase>();
-                foreach (var customToolbarToggle in Buttons.OrderByDescending(x => x is ToolbarControlPlaceholder).ThenBy(x => x.ButtonID))
+                var positionNotSet = new List<ToolbarControlBase>();
+                foreach (var customToolbarToggle in Buttons.OrderByDescending(x => x is ToolbarControlAdapter).ThenBy(x => x.ButtonID))
                 {
                     customToolbarToggle.CreateControl();
 

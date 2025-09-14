@@ -6,9 +6,9 @@ namespace KKAPI.Studio.UI
     /// <summary>
     /// Wrapper for stock game toolbar buttons to allow unified handling.
     /// </summary>
-    internal sealed class ToolbarControlPlaceholder : CustomToolbarControlBase
+    internal sealed class ToolbarControlAdapter : ToolbarControlBase
     {
-        public ToolbarControlPlaceholder(Button btnObject) : base(btnObject.gameObject.name, null, () => null, KoikatuAPI.Instance)
+        public ToolbarControlAdapter(Button btnObject) : base(btnObject.gameObject.name, null, () => null, KoikatuAPI.Instance)
         {
             ButtonObject.OnNext(btnObject);
             RectTransform = (RectTransform)btnObject.transform;

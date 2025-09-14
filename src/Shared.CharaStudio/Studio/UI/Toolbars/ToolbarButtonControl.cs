@@ -9,7 +9,7 @@ namespace KKAPI.Studio.UI
     /// <summary>
     /// Simple toolbar button that triggers an action when clicked.
     /// </summary>
-    public class ToolbarButtonControl : CustomToolbarControlBase
+    public class ToolbarButtonControl : ToolbarControlBase
     {
         /// <summary>
         /// Observable triggered when the button is clicked.

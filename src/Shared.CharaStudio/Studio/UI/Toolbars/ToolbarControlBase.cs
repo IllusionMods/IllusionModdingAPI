@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using BepInEx;
-using Illusion.Extensions;
 using KKAPI.Utilities;
 using UniRx;
 using UnityEngine;
@@ -11,10 +10,17 @@ using Object = UnityEngine.Object;
 
 namespace KKAPI.Studio.UI
 {
+    // TODO:
+    // - implement tooltips
+    // - drag and drop to reorder buttons
+    // - save/load button order
+    // - hide and show buttons
+    // - maybe right click context menu?
+
     /// <summary>
     /// Base class for custom toolbar buttons in the studio UI.
     /// </summary>
-    public abstract class CustomToolbarControlBase : IDisposable
+    public abstract class ToolbarControlBase : IDisposable
     {
         private static GameObject _existingButton;
         private static Transform _allButtonParent;
@@ -26,7 +32,7 @@ namespace KKAPI.Studio.UI
         private protected RectTransform RectTransform;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CustomToolbarControlBase" /> class.
+        /// Initializes a new instance of the <see cref="ToolbarControlBase" /> class.
         /// </summary>
         /// <param name="buttonID">Unique button ID.</param>
         /// <param name="hoverText">Hover text for the button. null to disable.</param>
@@ -39,7 +45,7 @@ namespace KKAPI.Studio.UI
         /// This func is always called on main thread, it may not be called if button is hidden by user.
         /// </param>
         /// <param name="owner">Plugin that owns the button.</param>
-        protected CustomToolbarControlBase(string buttonID, string hoverText, Func<Texture2D> iconGetter, BaseUnityPlugin owner)
+        protected ToolbarControlBase(string buttonID, string hoverText, Func<Texture2D> iconGetter, BaseUnityPlugin owner)
         {
             ButtonID = buttonID ?? throw new ArgumentNullException(nameof(buttonID));
             ButtonID = ButtonID.Trim();
@@ -75,7 +81,7 @@ namespace KKAPI.Studio.UI
         {
             get
             {
-                if (IsDisposed) throw new ObjectDisposedException(nameof(CustomToolbarControlBase));
+                if (IsDisposed) throw new ObjectDisposedException(nameof(ToolbarControlBase));
                 if (_iconTex != null)
                     return _iconTex;
 
@@ -149,7 +155,7 @@ namespace KKAPI.Studio.UI
         /// </summary>
         protected internal virtual void CreateControl()
         {
-            if (IsDisposed) throw new ObjectDisposedException(nameof(CustomToolbarControlBase));
+            if (IsDisposed) throw new ObjectDisposedException(nameof(ToolbarControlBase));
             if (ButtonObject.Value) return; // already created
 
             var iconTex = IconTex;
@@ -189,7 +195,7 @@ namespace KKAPI.Studio.UI
         /// <param name="column">Column index. 0 indexed.</param>
         public void SetDesiredPosition(int row, int column)
         {
-            if (IsDisposed) throw new ObjectDisposedException(nameof(CustomToolbarControlBase));
+            if (IsDisposed) throw new ObjectDisposedException(nameof(ToolbarControlBase));
 
             DesiredRow = row;
             DesiredColumn = column;
@@ -202,7 +208,7 @@ namespace KKAPI.Studio.UI
         /// </summary>
         internal void SetActualPosition(int row, int column)
         {
-            if (IsDisposed) throw new ObjectDisposedException(nameof(CustomToolbarControlBase));
+            if (IsDisposed) throw new ObjectDisposedException(nameof(ToolbarControlBase));
 
             DesiredRow = row;
             DesiredColumn = column;
@@ -247,7 +253,7 @@ namespace KKAPI.Studio.UI
 
             foreach (var allStockButton in allStockButtons)
             {
-                var wrapper = new ToolbarControlPlaceholder(allStockButton.GetComponent<Button>());
+                var wrapper = new ToolbarControlAdapter(allStockButton.GetComponent<Button>());
                 CustomToolbarButtons.Buttons.Add(wrapper);
             }
         }
