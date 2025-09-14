@@ -4,12 +4,12 @@ using UniRx;
 using UnityEngine;
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
 
-namespace KKAPI.Studio.UI
+namespace KKAPI.Studio.UI.Toolbars
 {
     /// <summary>
     /// Simple toolbar button that triggers an action when clicked.
     /// </summary>
-    public class ToolbarButtonControl : ToolbarControlBase
+    public class SimpleToolbarButton : ToolbarControlBase
     {
         /// <summary>
         /// Observable triggered when the button is clicked.
@@ -17,11 +17,11 @@ namespace KKAPI.Studio.UI
         public Subject<Unit> OnClicked { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToolbarButtonControl"/> class.
+        /// Initializes a new instance of the <see cref="SimpleToolbarButton"/> class.
         /// </summary>
         /// <inheritdoc />
         /// <param name="onClicked">Action to invoke when clicked.</param>
-        public ToolbarButtonControl(string buttonID, string hoverText, Func<Texture2D> iconGetter, Action onClicked, BaseUnityPlugin owner)
+        public SimpleToolbarButton(string buttonID, string hoverText, Func<Texture2D> iconGetter, Action onClicked, BaseUnityPlugin owner)
             : base(buttonID, hoverText, iconGetter, owner)
         {
             OnClicked = new Subject<Unit>();

@@ -4,12 +4,12 @@ using UniRx;
 using UnityEngine;
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
 
-namespace KKAPI.Studio.UI
+namespace KKAPI.Studio.UI.Toolbars
 {
     /// <summary>
     /// Toolbar button that acts as a toggle (on/off).
     /// </summary>
-    public class ToolbarToggleControl : ToolbarControlBase
+    public class SimpleToolbarToggle : ToolbarControlBase
     {
         /// <summary>
         /// Observable value representing the toggle state.
@@ -17,12 +17,12 @@ namespace KKAPI.Studio.UI
         public BehaviorSubject<bool> Value { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToolbarToggleControl"/> class.
+        /// Initializes a new instance of the <see cref="SimpleToolbarToggle"/> class.
         /// </summary>
         /// <inheritdoc />
         /// <param name="initialValue">Initial toggle value.</param>
         /// <param name="onValueChanged">Action to invoke when value changes.</param>
-        public ToolbarToggleControl(string buttonID, string hoverText, Func<Texture2D> iconGetter, bool initialValue, Action<bool> onValueChanged, BaseUnityPlugin owner)
+        public SimpleToolbarToggle(string buttonID, string hoverText, Func<Texture2D> iconGetter, bool initialValue, Action<bool> onValueChanged, BaseUnityPlugin owner)
             : base(buttonID, hoverText, iconGetter, owner)
         {
             Value = new BehaviorSubject<bool>(initialValue);
@@ -50,7 +50,7 @@ namespace KKAPI.Studio.UI
 
         private void UpdateVisualState()
         {
-            if (IsDisposed) throw new ObjectDisposedException(nameof(ToolbarToggleControl));
+            if (IsDisposed) throw new ObjectDisposedException(nameof(SimpleToolbarToggle));
             var button = ButtonObject.Value;
             if (!button) return;
             var btnIcon = button.image;

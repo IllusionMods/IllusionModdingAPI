@@ -1,14 +1,16 @@
-﻿using System;
+﻿using BepInEx;
+using KKAPI.Utilities;
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using BepInEx;
-using KKAPI.Utilities;
 using UniRx;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace KKAPI.Studio.UI
+namespace KKAPI.Studio.UI.Toolbars
 {
     // TODO:
     // - implement tooltips
@@ -22,14 +24,15 @@ namespace KKAPI.Studio.UI
     /// </summary>
     public abstract class ToolbarControlBase : IDisposable
     {
-        private static GameObject _existingButton;
-        private static Transform _allButtonParent;
+        private static GameObject _existingButtonGo;
+        private static Transform _allButtonParentTr;
         private static Vector2 _originPosition;
         private static readonly Vector2 _positionOffset = new Vector2(40, 40f);
-        private readonly Func<Texture2D> _iconGetter;
 
-        private Texture2D _iconTex;
         private protected RectTransform RectTransform;
+
+        private readonly Func<Texture2D> _iconGetter;
+        private Texture2D _iconTex;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToolbarControlBase" /> class.
@@ -122,7 +125,7 @@ namespace KKAPI.Studio.UI
         /// Whether the button is visible.
         /// </summary>
         public BehaviorSubject<bool> Visible { get; } = new BehaviorSubject<bool>(true);
-        
+
         /// <summary>
         /// True if the button has been removed and needs to be recreated to be used again.
         /// </summary>
@@ -135,9 +138,9 @@ namespace KKAPI.Studio.UI
         {
             if (IsDisposed) return;
 
-            lock (CustomToolbarButtons.Buttons)
+            lock (ToolbarManager.Buttons)
             {
-                CustomToolbarButtons.Buttons.Remove(this);
+                ToolbarManager.Buttons.Remove(this);
             }
 
             IsDisposed = true;
@@ -163,9 +166,9 @@ namespace KKAPI.Studio.UI
             var btnIconSprite = Sprite.Create(iconTex, new Rect(0f, 0f, 32f, 32f), new Vector2(16f, 16f));
 
             // Create new button
-            var copyButton = Object.Instantiate(_existingButton, _allButtonParent, false);
-            copyButton.name = $"Button {ButtonID} (StudioAPI)";
-            RectTransform = copyButton.GetComponent<RectTransform>();
+            var newGobject = Object.Instantiate(_existingButtonGo, _allButtonParentTr, false);
+            newGobject.name = $"Button {ButtonID} (StudioAPI)";
+            RectTransform = newGobject.GetComponent<RectTransform>();
             RectTransform.localScale = Vector3.one;
 
             var copyBtn = RectTransform.GetComponent<Button>();
@@ -179,12 +182,14 @@ namespace KKAPI.Studio.UI
             Visible.Subscribe(b =>
             {
                 var gameObject = ButtonObject.Value.gameObject;
-                if(gameObject.activeSelf != b)
+                if (gameObject.activeSelf != b)
                 {
                     gameObject.SetActive(b);
-                    CustomToolbarButtons.RequestToolbarRelayout();
+                    ToolbarManager.RequestToolbarRelayout();
                 }
             });
+
+            DragHelper.SetUpDragging(this, newGobject);
         }
 
         /// <summary>
@@ -200,7 +205,7 @@ namespace KKAPI.Studio.UI
             DesiredRow = row;
             DesiredColumn = column;
 
-            CustomToolbarButtons.RequestToolbarRelayout();
+            ToolbarManager.RequestToolbarRelayout();
         }
 
         /// <summary>
@@ -219,20 +224,22 @@ namespace KKAPI.Studio.UI
         }
 
         /// <summary>
-        /// Gets the actual position of the button in the toolbar.
+        /// Gets the actual row and column position of the button in the toolbar.
         /// </summary>
-        internal void GetActualPosition(out int row, out int col)
+        internal void GetActualPosition(out int row, out int col) => GetActualPosition(RectTransform.anchoredPosition, out row, out col);
+
+        /// <summary>
+        /// Gets row and column of a position in the toolbar.
+        /// </summary>
+        internal static void GetActualPosition(Vector2 anchoredPosition, out int row, out int column)
         {
-            // Calculate row and column based on position
-            var pos = RectTransform.anchoredPosition;
-            var x = Mathf.RoundToInt(pos.x);
-            var y = Mathf.RoundToInt(pos.y);
-
+            var y = Mathf.RoundToInt(anchoredPosition.y);
             row = Mathf.RoundToInt((y - _originPosition.y) / _positionOffset.y);
-            col = Mathf.RoundToInt((x - _originPosition.x) / _positionOffset.x);
 
+            var x = Mathf.RoundToInt(anchoredPosition.x);
+            column = Mathf.RoundToInt((x - _originPosition.x) / _positionOffset.x);
 #if DEBUG
-            Console.WriteLine($"GetActualPosition: {ButtonID} x={pos.x} col={col} y={pos.y} row={row}");
+            Console.WriteLine($"GetActualPosition: x={anchoredPosition.x} -> col={column} y={anchoredPosition.y} -> row={row}");
 #endif
         }
 
@@ -241,11 +248,11 @@ namespace KKAPI.Studio.UI
         /// </summary>
         internal static void InitToolbar()
         {
-            if (_existingButton) return;
+            if (_existingButtonGo) return;
 
-            _existingButton = GameObject.Find("StudioScene/Canvas System Menu/01_Button/Button Center");
-            _allButtonParent = _existingButton.transform.parent;
-            var allStockButtons = _allButtonParent.OfType<RectTransform>().ToList();
+            _existingButtonGo = GameObject.Find("StudioScene/Canvas System Menu/01_Button/Button Center");
+            _allButtonParentTr = _existingButtonGo.transform.parent;
+            var allStockButtons = _allButtonParentTr.OfType<RectTransform>().ToList();
 
             // Find bottom-left-most button to use as origin
             var origin = allStockButtons.OrderBy(x => Mathf.RoundToInt(x.anchoredPosition.y)).ThenBy(x => Mathf.RoundToInt(x.anchoredPosition.x)).First();
@@ -254,7 +261,75 @@ namespace KKAPI.Studio.UI
             foreach (var allStockButton in allStockButtons)
             {
                 var wrapper = new ToolbarControlAdapter(allStockButton.GetComponent<Button>());
-                CustomToolbarButtons.Buttons.Add(wrapper);
+                ToolbarManager.Buttons.Add(wrapper);
+            }
+        }
+
+        /// <summary>
+        /// Helper class to enable drag-and-drop reordering of toolbar buttons.
+        /// </summary>
+        protected sealed class DragHelper : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+        {
+            /// <summary>
+            /// Sets up drag handling for a toolbar button.
+            /// </summary>
+            /// <param name="owner">The <see cref="ToolbarControlBase"/> instance that owns the button.</param>
+            /// <param name="buttonObject">The button <see cref="GameObject"/> to enable dragging for.</param>
+            /// <returns>The created <see cref="DragHelper"/> component.</returns>
+            public static DragHelper SetUpDragging(ToolbarControlBase owner, GameObject buttonObject)
+            {
+                if (owner == null) throw new ArgumentNullException(nameof(owner));
+                if (buttonObject == null) throw new ArgumentNullException(nameof(buttonObject));
+                // The template might already have a DragHelper component, so check first
+                var dh = buttonObject.GetComponent<DragHelper>() ?? buttonObject.AddComponent<DragHelper>();
+                dh._owner = owner;
+                return dh;
+            }
+
+            private ToolbarControlBase _owner;
+            private int _originalRow, _originalCol, _currentDragRow, _currentDragCol;
+
+            void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
+            {
+                _owner.GetActualPosition(out _originalRow, out _originalCol);
+                _currentDragRow = _originalRow;
+                _currentDragCol = _originalCol;
+
+                var button = _owner.ButtonObject.Value;
+                if (button == null) throw new ArgumentNullException(nameof(button));
+
+                // Move to front so it's not hidden behind other buttons while dragging
+                button.transform.SetAsLastSibling();
+
+                // Make button interactable while dragging so it doesn't trigger click events
+                button.interactable = false;
+            }
+            void IDragHandler.OnDrag(PointerEventData eventData)
+            {
+                //TODO move ToolbarManager.Buttons out of way while dragging without changing their DesiredRow/Column
+
+                // Move the object with the mouse
+                var rt = _owner.RectTransform;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)rt.parent, eventData.position, eventData.pressEventCamera, out var localPoint);
+                // Adjust position so button is centered under mouse
+                localPoint.x -= rt.rect.width / 2;
+                localPoint.y += rt.rect.height / 2;
+                rt.anchoredPosition = localPoint;
+                GetActualPosition(rt.anchoredPosition, out _currentDragRow, out _currentDragCol);
+                //if (_currentDragRow != _originalRow || _currentDragCol != _originalCol)
+                //{
+                //    // Snap to grid
+                //    var newPos = new Vector2(_originPosition.x + _currentDragCol * _positionOffset.x,
+                //                             _originPosition.y + _currentDragRow * _positionOffset.y);
+                //    rt.anchoredPosition = newPos;
+                //}
+            }
+            void IEndDragHandler.OnEndDrag(PointerEventData eventData)
+            {
+                _owner.SetActualPosition(_currentDragRow, _currentDragCol);
+                //TODO move other buttons to make room if necessary (to next column in the same row)
+
+                _owner.ButtonObject.Value.interactable = _owner.Interactable.Value;
             }
         }
     }

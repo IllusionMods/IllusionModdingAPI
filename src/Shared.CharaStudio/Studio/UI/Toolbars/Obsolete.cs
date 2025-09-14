@@ -1,12 +1,18 @@
 using KKAPI.Maker.UI;
 using System;
 using System.Reflection;
+using KKAPI.Studio.UI.Toolbars;
 using UniRx;
 using UnityEngine;
 
 namespace KKAPI.Studio.UI
 {
-    public static partial class CustomToolbarButtons
+    /// <summary>
+    /// Add custom buttons to studio toolbars.
+    /// You can find a button template here https://github.com/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
+    /// </summary>
+    [Obsolete("Use ToolbarManager instead")]
+    public static class CustomToolbarButtons
     {
         /// <summary>
         /// Add a toggle button to the top of the left studio toolbar.
@@ -27,8 +33,8 @@ namespace KKAPI.Studio.UI
         public static ToolbarToggle AddLeftToolbarToggle(Texture2D iconTex, bool initialValue = false, Action<bool> onValueChanged = null)
         {
             if (iconTex == null) throw new ArgumentNullException(nameof(iconTex));
-            var tgl = new ToolbarToggleControl(Assembly.GetCallingAssembly().GetName().Name, null, () => iconTex, initialValue, onValueChanged, KoikatuAPI.Instance);
-            AddLeftToolbarControl(tgl);
+            var tgl = new SimpleToolbarToggle(Assembly.GetCallingAssembly().GetName().Name, null, () => iconTex, initialValue, onValueChanged, KoikatuAPI.Instance);
+            ToolbarManager.AddLeftToolbarControl(tgl);
             return new ToolbarToggle(tgl);
         }
 
@@ -45,8 +51,8 @@ namespace KKAPI.Studio.UI
         public static ToolbarButton AddLeftToolbarButton(Texture2D iconTex, Action onClicked = null)
         {
             if (iconTex == null) throw new ArgumentNullException(nameof(iconTex));
-            var btn = new ToolbarButtonControl(Assembly.GetCallingAssembly().GetName().Name, null, () => iconTex, onClicked, KoikatuAPI.Instance);
-            AddLeftToolbarControl(btn);
+            var btn = new SimpleToolbarButton(Assembly.GetCallingAssembly().GetName().Name, null, () => iconTex, onClicked, KoikatuAPI.Instance);
+            ToolbarManager.AddLeftToolbarControl(btn);
             return new ToolbarButton(btn);
         }
     }
@@ -61,7 +67,7 @@ namespace KKAPI.Studio.UI
         /// Initializes a new instance of the <see cref="ToolbarToggle"/> class.
         /// </summary>
         /// <param name="target">The target toggle toolbar button.</param>
-        public ToolbarToggle(ToolbarToggleControl target) : base(null, target.Value.Value, null)
+        public ToolbarToggle(SimpleToolbarToggle target) : base(null, target.Value.Value, null)
         {
             target.Value.Subscribe(b =>
             {
@@ -99,7 +105,7 @@ namespace KKAPI.Studio.UI
         /// Initializes a new instance of the <see cref="ToolbarButton"/> class.
         /// </summary>
         /// <param name="target">The target simple toolbar button.</param>
-        internal ToolbarButton(ToolbarButtonControl target) : base(null, null)
+        internal ToolbarButton(SimpleToolbarButton target) : base(null, null)
         {
             target.OnClicked.Subscribe(_ => _clicked.OnNext(Unit.Default));
             target.ButtonObject.Subscribe(b =>

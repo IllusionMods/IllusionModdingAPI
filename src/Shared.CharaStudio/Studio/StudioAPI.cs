@@ -1,6 +1,7 @@
 ﻿using KKAPI.Chara;
 using KKAPI.Studio.SaveLoad;
 using KKAPI.Studio.UI;
+using KKAPI.Studio.UI.Toolbars;
 using Studio;
 using System;
 using System.Collections;
@@ -174,7 +175,7 @@ namespace KKAPI.Studio
                         CreateCategory(cat);
 
                     yield return null; // todo Only needed for compat with QAB. Can remove once QAB is using this API
-                    CustomToolbarButtons.OnStudioLoaded();
+                    ToolbarManager.OnStudioLoaded();
                 }
             }
         }
@@ -205,8 +206,8 @@ namespace KKAPI.Studio
             cat2.AddControl(new CurrentStateCategoryDropdown("dropdown test", new[] { "item 1", "i2", "test 3" }, c => 1)).Value.Subscribe(val => KoikatuAPI.Logger.LogMessage("dd " + val));
             cat2.AddControls(new CurrentStateCategoryColorPicker("Test Color Picker", c => Color.white, c => KoikatuAPI.Logger.LogMessage("color picker: " + c)));
 
-            CustomToolbarButtons.AddLeftToolbarButton(new Texture2D(32, 32), () => Console.WriteLine("click"));
-            CustomToolbarButtons.AddLeftToolbarToggle(new Texture2D(55, 32), true, v => Console.WriteLine("click " + v));
+            ToolbarManager.AddLeftToolbarControl(new SimpleToolbarButton("test", "test text", () => new Texture2D(32, 32), () => Console.WriteLine("click"), KoikatuAPI.Instance));
+            ToolbarManager.AddLeftToolbarControl(new SimpleToolbarToggle("test toggle", "test toggle text", () => new Texture2D(55, 32), true, v => Console.WriteLine("click " + v), KoikatuAPI.Instance));
         }
     }
 }

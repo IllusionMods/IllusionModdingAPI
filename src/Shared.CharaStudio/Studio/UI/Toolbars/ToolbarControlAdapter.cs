@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace KKAPI.Studio.UI
+namespace KKAPI.Studio.UI.Toolbars
 {
     /// <summary>
     /// Wrapper for stock game toolbar buttons to allow unified handling.
@@ -16,7 +16,9 @@ namespace KKAPI.Studio.UI
             DesiredRow = row;
             DesiredColumn = col;
             Visible.OnNext(btnObject.gameObject.activeSelf);
+            DragHelper.SetUpDragging(this, btnObject.gameObject);
         }
+
         /// <inheritdoc />
         protected internal override void CreateControl() { }
         /// <inheritdoc />

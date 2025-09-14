@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KKAPI.Studio.UI
+namespace KKAPI.Studio.UI.Toolbars
 {
+    // todo rename ToolbarManager, make MB, move namespace
     /// <summary>
     /// Add custom buttons to studio toolbars.
     /// You can find a button template here https://github.com/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
     /// </summary>
-    public static partial class CustomToolbarButtons
+    public static class ToolbarManager
     {
         internal static readonly HashSet<ToolbarControlBase> Buttons = new HashSet<ToolbarControlBase>();
         private static bool _studioLoaded;

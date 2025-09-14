@@ -1,3 +1,45 @@
+## `Beziers`
+
+```csharp
+public static class KKAPI.Utilities.Beziers
+
+```
+
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `BezierTemplate` | EaseInOutTemplate |  | 
+| `BezierTemplate` | EaseInTemplate |  | 
+| `BezierTemplate` | EaseOutTemplate |  | 
+| `BezierTemplate` | EaseTemplate |  | 
+| `BezierTemplate` | LinearTemplate |  | 
+
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Vector3` | Vector3(`BezierTemplate` b, `Single` f) |  | 
+
+
+## `BezierTemplate`
+
+```csharp
+public struct KKAPI.Utilities.BezierTemplate
+
+```
+
+Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Vector3` | Control1 |  | 
+| `Vector3` | Control2 |  | 
+| `Vector3` | End |  | 
+| `Vector3` | Start |  | 
+
+
 ## `ConfigurationManagerAttributes`
 
 Class that specifies how a setting should be displayed inside the ConfigurationManager settings window.    Usage:  You can use this copy of the class instead of including it in your own plugin.  Make a new instance, assign any fields that you want to override, and pass it as a tag for your setting.    If a field is null (default), it will be ignored and won't change how the setting is displayed.  If a field is non-null (you assigned a value to it), it will override default behavior.
@@ -330,6 +372,77 @@ Static Methods
 | --- | --- | --- | 
 | `Byte[]` | GetEmbeddedResource(`String` resourceFileName, `Assembly` containingAssembly = null) | Get a file set as "Embedded Resource" from the assembly that is calling this code, or optionally from a specified assembly.  The filename is matched to the end of the resource path, no need to give the full path.  If 0 or more than 1 resources match the provided filename, an exception is thrown.  For example if you have a file "ProjectRoot\Resources\icon.png" set as "Embedded Resource", you can use this to load it by  doing <code>GetEmbeddedResource("icon.png"), assuming that no other embedded files have the same name.</code> | 
 | `Byte[]` | ReadAllBytes(this `Stream` input) | Read all bytes starting at current position and ending at the end of the stream. | 
+
+
+## `SmartRect`
+
+Represents a smart rectangle that provides advanced manipulation of a rectangle's dimensions and position.
+```csharp
+public class KKAPI.Utilities.SmartRect
+
+```
+
+Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Single` | DefaultHeight |  | 
+| `Single` | DefaultWidth |  | 
+| `Single` | DefaultX |  | 
+| `Single` | DefaultY |  | 
+
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Single` | Height |  | 
+| `Single` | TotalHeight |  | 
+| `Single` | TotalWidth |  | 
+| `Single` | Width |  | 
+| `Single` | X |  | 
+| `Single` | Y |  | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `SmartRect` | BeginHorizontal(`Int32` elementCount) | Divides the current width of the rectangle into equal segments for horizontal layout.  Adjusts the width of each segment based on the total number of elements and specified horizontal offsets. | 
+| `SmartRect` | Col(`Int32` col) |  | 
+| `SmartRect` | EndHorizontal() | Synonymous to `KKAPI.Utilities.SmartRect.ResetX(System.Boolean)` | 
+| `SmartRect` | HeightToEnd(`Single` y) | Sets the height of the rectangle such that its bottom edge aligns with the specified y-coordinate. | 
+| `SmartRect` | Move(`Vector2` vec) | Moves the SmartRect by the specified vector values. | 
+| `SmartRect` | Move(`Int32` x, `Int32` y) | Moves the SmartRect by the specified vector values. | 
+| `SmartRect` | MoveOffsetX(`Single` off) | Moves the rectangle's X position by the specified offset and adjusts its width accordingly. | 
+| `SmartRect` | MoveOffsetY(`Single` off) | Adjusts the Y position and height of the smart rectangle by the specified offset. | 
+| `SmartRect` | MoveToEndX(`Rect` box, `Single` width) | Adjusts the X position of the current rectangle to align with the right edge of the specified rectangle, taking into account the given width. | 
+| `SmartRect` | MoveToEndY(`Rect` box, `Single` height) | Moves the Y position of the rectangle represented by the current `KKAPI.Utilities.SmartRect` instance  to the bottom of the specified 'box' plus the specified 'height'. | 
+| `SmartRect` | MoveX() | Moves the rectangle horizontally by a predefined offset and returns the updated `KKAPI.Utilities.SmartRect` instance. | 
+| `SmartRect` | MoveX(`Single` off, `Boolean` considerWidth = False) | Moves the rectangle horizontally by a predefined offset and returns the updated `KKAPI.Utilities.SmartRect` instance. | 
+| `SmartRect` | MoveY() | Moves the <seealso cref="T:KKAPI.Utilities.SmartRect" /> by it's own height. | 
+| `SmartRect` | MoveY(`Single` offset, `Boolean` considerHeight = False) | Moves the <seealso cref="T:KKAPI.Utilities.SmartRect" /> by it's own height. | 
+| `SmartRect` | NextColumn() | Moves to the next column by shifting the rectangle horizontally by a predefined offset. | 
+| `SmartRect` | NextRow(`Boolean` resetColumn = True) | Moves the rectangle to the next row, optionally resetting the column position. | 
+| `SmartRect` | Reset() | Resets the `KKAPI.Utilities.SmartRect` to its default position and dimensions. | 
+| `SmartRect` | ResetX(`Boolean` includeWidth = True) | Resets the x-coordinate of the rectangle to its default value.  Optionally resets the width to its default value. | 
+| `SmartRect` | ResetY(`Boolean` includeHeight = False) | Resets the y-coordinate of the rectangle to its default value.  Optionally resets the height to its default value. | 
+| `SmartRect` | Row(`Int32` row) |  | 
+| `SmartRect` | SetAnimateTo(`Rect` to, `Single` duration) | Sets the target rectangle and duration for an animation. | 
+| `SmartRect` | SetAnimation(`Rect` from, `Rect` to, `Single` duration) | Sets the starting and target rectangles, along with the duration for an animation. | 
+| `SmartRect` | SetHeight(`Single` height) |  | 
+| `SmartRect` | SetWidth(`Single` width) |  | 
+| `Rect` | ToRect() | Converts the current `KKAPI.Utilities.SmartRect` instance into a Rect object. | 
+| `Boolean` | UpdateAnimationIndependent(`BezierTemplate` bezier) | Updates the animation of the rectangle using a Bézier curve. | 
+| `SmartRect` | WidthToEnd(`Single` x) | Sets the width of the rectangle such that its right edge aligns with the specified x-coordinate. | 
+
+
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Single` | DefaultOffsetX |  | 
+| `Single` | DefaultOffsetY |  | 
 
 
 ## `TextureUtils`
