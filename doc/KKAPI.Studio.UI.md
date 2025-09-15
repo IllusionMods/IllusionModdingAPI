@@ -161,6 +161,22 @@ Methods
 | `GameObject` | CreateItem(`GameObject` categoryObject) |  | 
 
 
+## `CustomToolbarButtons`
+
+Add custom buttons to studio toolbars
+```csharp
+public static class KKAPI.Studio.UI.CustomToolbarButtons
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `ToolbarButton` | AddLeftToolbarButton(`Texture2D` iconTex, `Action` onClicked = null) | Add a simple button to the top of the left studio toolbar. | 
+| `ToolbarToggle` | AddLeftToolbarToggle(`Texture2D` iconTex, `Boolean` initialValue = False, `Action<Boolean>` onValueChanged = null) | Add a toggle button to the top of the left studio toolbar.  Clicking on the button will toggle it between being on and off. | 
+
+
 ## `SceneEffectsCategory`
 
 Class that adds a new subcategory to the Scene Effects menu. Create a new instance and then add SliderSets, ToggleSets, DropdownSets, ColorPickerSets, or just plain LabelSets.
@@ -348,5 +364,39 @@ Methods
 | `void` | Reset(`Boolean` triggerEvents) | Reset the toggle to the initial value and trigger the Setter method. | 
 | `void` | SetValue(`Boolean` value) | Set the value of the toggle and trigger the Setter method. | 
 | `void` | SetValue(`Boolean` value, `Boolean` triggerEvents) | Set the value of the toggle and trigger the Setter method. | 
+
+
+## `ToolbarButton`
+
+Custom toolbar button. Add using `KKAPI.Studio.UI.CustomToolbarButtons.AddLeftToolbarButton(UnityEngine.Texture2D,System.Action)`.
+```csharp
+public class KKAPI.Studio.UI.ToolbarButton
+    : BaseGuiEntry, IDisposable
+
+```
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `void` | Initialize() |  | 
+| `GameObject` | OnCreateControl(`Transform` subCategoryList) |  | 
+
+
+## `ToolbarToggle`
+
+Custom toolbar toggle button. Add using `KKAPI.Studio.UI.CustomToolbarButtons.AddLeftToolbarToggle(UnityEngine.Texture2D,System.Boolean,System.Action{System.Boolean})`.
+```csharp
+public class KKAPI.Studio.UI.ToolbarToggle
+    : BaseEditableGuiEntry<Boolean>, IDisposable
+
+```
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `void` | Initialize() |  | 
+| `GameObject` | OnCreateControl(`Transform` subCategoryList) |  | 
 
 
