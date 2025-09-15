@@ -354,28 +354,35 @@ namespace KKAPI
         /// <summary>
         /// Queries the tablet for multiple packets of data if available.
         /// </summary>
-        /// <param name="data">Outputs the array of received packet data if the query is successful.</param>
+        /// <param name="data">Outputs the array of received packet data if the query is successful or null if empty.</param>
         /// <returns>
         /// True if one or more packets were successfully read; otherwise, false if no data is available
         /// or if the tablet is not initialized.
         /// </returns>
-        public bool QueryMulti(out Packet[] data)
+        public unsafe bool QueryMulti(out Packet[] data)
         {
-            data = new Packet[0];
+            data = null;
             if (!_isInitialized || _packetBuffer == IntPtr.Zero)
                 return false;
 
             try
             {
                 int numPackets = WTPacketsGet(_context, MAX_PACKETS, _packetBuffer);
-                int size = Marshal.SizeOf(typeof(Packet));
+                if (numPackets == 0) return true;
+                
                 data = new Packet[numPackets];
-                IntPtr current = _packetBuffer;
 
-                for (int i = 0; i < numPackets; i++)
+                fixed (Packet* dest = data)
                 {
-                    data[i] = (Packet)Marshal.PtrToStructure(current, typeof(Packet));
-                    current = new IntPtr(current.ToInt64() + size);
+#if KK
+                    Packet* src = (Packet*)_packetBuffer.ToPointer();
+                    for (int i = 0; i < numPackets; i++)
+                    {
+                        dest[i] = src[i];
+                    }
+#else
+                    Buffer.MemoryCopy(_packetBuffer.ToPointer(), dest, numPackets * _packetSize, numPackets * _packetSize);
+#endif
                 }
 
                 return true;
