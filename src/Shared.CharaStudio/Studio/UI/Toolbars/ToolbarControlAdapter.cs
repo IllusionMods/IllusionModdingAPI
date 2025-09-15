@@ -1,4 +1,5 @@
-﻿using UniRx;
+﻿using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ namespace KKAPI.Studio.UI.Toolbars
     /// </summary>
     internal sealed class ToolbarControlAdapter : ToolbarControlBase
     {
-        public ToolbarControlAdapter(Button btnObject) : base(btnObject.gameObject.name.Replace("Button ", ""), null, () => null, KoikatuAPI.Instance)
+        public ToolbarControlAdapter(Button btnObject) : base(btnObject.gameObject.name.Replace("Button ", ""), TryGetTooltip(btnObject.gameObject.name), () => null, KoikatuAPI.Instance)
         {
             ButtonObject.OnNext(btnObject);
             RectTransform = (RectTransform)btnObject.transform;
@@ -32,6 +33,27 @@ namespace KKAPI.Studio.UI.Toolbars
 
             DragHelper.SetUpDragging(this, btnObject.gameObject);
         }
+
+        private static string TryGetTooltip(string originalName)
+        {
+            _BaseGameTooltips.TryGetValue(originalName, out var value);
+            return value;
+        }
+
+        private static readonly Dictionary<string, string> _BaseGameTooltips = new Dictionary<string, string>
+        {
+            // "Button Target" is not implemented so no tooltip
+            {"Button Camera", "Switch between free and locked camera."},
+            {"Button Center", "Toggle showing the camera center point when moving the camera."},
+            {"Button Object", "Open Move Controller.\nA tool for making fine adjustments to object positions and rotations."},
+            {"Button Map", "Open Map Controller.\nA tool for moving and rotating the currently set Map.\nIt can change time of day if the map supports this feature.\nOnly works with maps added through the 'add -> Map' menu."},
+            //TODO What does this do exactly? Only in KKS. {"Button Gimmick", "Toggle display of some gimmick gizmos."},
+            {"Button Axis", "Toggle display of movement/rotation gizmo."},
+            {"Button Axis Trans", "Toggle display of translation gizmos\nin the movement/rotation gizmo."},
+            {"Button Axis Center", "Toggle display of the origin point\nof the currently selected object."},
+            {"Button Undo", "Undo last action."},
+            {"Button Redo", "Redo last undone action."},
+        };
 
         /// <inheritdoc />
         protected internal override void CreateControl() { }
