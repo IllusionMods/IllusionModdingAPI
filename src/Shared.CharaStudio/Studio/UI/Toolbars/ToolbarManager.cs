@@ -1,24 +1,17 @@
 ﻿using BepInEx;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using BepInEx.Configuration;
-using KKAPI.Utilities;
-using UnityEngine;
 
 namespace KKAPI.Studio.UI.Toolbars
 {
-    // todo rename ToolbarManager, make MB, move namespace
     /// <summary>
-    /// Add custom buttons to studio toolbars.
+    /// Add custom buttons to studio toolbars. Thread-safe.
     /// You can find a button template here https://github.com/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
     /// </summary>
     public static class ToolbarManager
     {
-        internal static readonly HashSet<ToolbarControlBase> Buttons = new HashSet<ToolbarControlBase>();
-        private static ConfigEntry<string> _positionSetting;
-
+        private static readonly HashSet<ToolbarControlBase> _buttons = new HashSet<ToolbarControlBase>();
         private static bool _studioLoaded;
         private static bool _dirty;
 
@@ -38,10 +31,11 @@ namespace KKAPI.Studio.UI.Toolbars
                 return false;
             }
 
-            lock (Buttons)
+            lock (_buttons)
             {
-                if (Buttons.Add(button))
+                if (_buttons.Add(button))
                 {
+                    ToolbarDataStorage.ApplyInitialPosition(button);
                     RequestToolbarRelayout();
                     return true;
                 }
@@ -50,11 +44,32 @@ namespace KKAPI.Studio.UI.Toolbars
         }
 
         /// <summary>
+        /// Removes the button from the toolbar and destroys it. The button must be recreated to be used again.
+        /// </summary>
+        public static void RemoveControl(ToolbarControlBase toolbarControlBase)
+        {
+            lock (_buttons)
+            {
+                _buttons.Remove(toolbarControlBase);
+                toolbarControlBase.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Get all toolbar buttons added so far.
+        /// </summary>
+        public static ToolbarControlBase[] GetAllButtons()
+        {
+            lock (_buttons)
+                return _buttons.ToArray();
+        }
+
+        /// <summary>
         /// Queues an update of the toolbar interface if necessary.
         /// </summary>
         public static void RequestToolbarRelayout()
         {
-            lock (Buttons)
+            lock (_buttons)
             {
                 if (!_studioLoaded || _dirty) return;
                 _dirty = true;
@@ -67,32 +82,35 @@ namespace KKAPI.Studio.UI.Toolbars
         /// </summary>
         internal static void OnStudioLoaded()
         {
-            _dirty = true;
+            lock (_buttons)
+            {
+                _dirty = true;
 
-            _positionSetting = KoikatuAPI.Instance.Config.Bind("Toolbars", "LeftToolbarButtonPositions", "", new ConfigDescription("Stores desired positions of custom toolbar buttons. Do not edit this setting manually.", null, new BrowsableAttribute(false)));
+                foreach (var stockButton in ToolbarControlBase.InitToolbar())
+                {
+                    _buttons.Add(stockButton);
+                    ToolbarDataStorage.ApplyInitialPosition(stockButton);
+                }
 
-            ToolbarControlBase.InitToolbar();
-            _studioLoaded = true;
-            UpdateInterface();
+                _studioLoaded = true;
+                UpdateInterface();
+            }
         }
 
         // Must be called on main thread
         private static void UpdateInterface()
         {
-            if (!_studioLoaded) return;
-
-            lock (Buttons)
+            lock (_buttons)
             {
+                if (!_studioLoaded) return;
                 if (!_dirty) return;
-
-                //LoadButtonPositions();
 
                 var takenPositions = new HashSet<KeyValuePair<int, int>>();
                 var positionNotSet = new List<ToolbarControlBase>();
                 var nonVisibleWithPosition = new List<ToolbarControlBase>();
 
                 // First pass: create controls and classify buttons
-                foreach (var customToolbarToggle in Buttons.OrderByDescending(x => x is ToolbarControlAdapter).ThenBy(x => x.ButtonID))
+                foreach (var customToolbarToggle in _buttons.OrderByDescending(x => x is ToolbarControlAdapter).ThenBy(x => x.ButtonID).ThenBy(x => x.Owner.Info.Metadata.GUID))
                 {
                     customToolbarToggle.CreateControl();
 
@@ -161,60 +179,7 @@ namespace KKAPI.Studio.UI.Toolbars
 
                 _dirty = false;
 
-                //SaveButtonPositions();
-            }
-        }
-
-        //todo completely borked because button IDs are not unique
-        /// <summary>
-        /// Saves the desired positions of all toolbar buttons to the config entry.
-        /// </summary>
-        private static void SaveButtonPositions()
-        {
-            if (_positionSetting == null)
-                return;
-
-            // Format: ButtonID:row:column|ButtonID2:row:column|...
-            var entries = Buttons
-                          .Where(b => b.DesiredRow >= 0 && b.DesiredColumn >= 0)
-                          .OrderBy(b => b.ButtonID)
-                          .Select(b => $"{b.ButtonID}:{b.DesiredRow}:{b.DesiredColumn}");
-
-            _positionSetting.Value = string.Join("|", entries.ToArray());
-        }
-
-        /// <summary>
-        /// Loads button positions from the config entry and applies them to the registered buttons.
-        /// </summary>
-        private static void LoadButtonPositions()
-        {
-            if (_positionSetting == null || string.IsNullOrEmpty(_positionSetting.Value))
-                return;
-
-            // Format: ButtonID:row:column|ButtonID2:row:column|...
-            var entries = _positionSetting.Value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-            var positions = new Dictionary<string, KeyValuePair<int, int>>();
-            foreach (var entry in entries)
-            {
-                var parts = entry.Split(':');
-                if (parts.Length != 3) continue;
-                var id = parts[0];
-                if (int.TryParse(parts[1], out int row) && int.TryParse(parts[2], out int col))
-                {
-                    positions[id] = new KeyValuePair<int, int>(row, col);
-                }
-            }
-
-            lock (Buttons)
-            {
-                foreach (var btn in Buttons)
-                {
-                    if (positions.TryGetValue(btn.ButtonID, out var pos))
-                    {
-                        btn.DesiredRow = pos.Key;
-                        btn.DesiredColumn = pos.Value;
-                    }
-                }
+                ToolbarDataStorage.SaveButtonPositions(_buttons);
             }
         }
     }

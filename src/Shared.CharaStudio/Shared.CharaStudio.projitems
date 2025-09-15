@@ -34,6 +34,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryLabel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryToggle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarControlBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarDataStorage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategorySlider.cs" />

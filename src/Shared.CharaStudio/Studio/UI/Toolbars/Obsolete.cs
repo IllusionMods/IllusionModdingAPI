@@ -1,6 +1,8 @@
 using KKAPI.Maker.UI;
 using System;
-using System.Reflection;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using KKAPI.Studio.UI.Toolbars;
 using UniRx;
 using UnityEngine;
@@ -33,7 +35,7 @@ namespace KKAPI.Studio.UI
         public static ToolbarToggle AddLeftToolbarToggle(Texture2D iconTex, bool initialValue = false, Action<bool> onValueChanged = null)
         {
             if (iconTex == null) throw new ArgumentNullException(nameof(iconTex));
-            var tgl = new SimpleToolbarToggle(Assembly.GetCallingAssembly().GetName().Name, null, () => iconTex, initialValue, onValueChanged, KoikatuAPI.Instance);
+            var tgl = new SimpleToolbarToggle(GetUniqueName(), null, () => iconTex, initialValue, onValueChanged, KoikatuAPI.Instance);
             ToolbarManager.AddLeftToolbarControl(tgl);
             return new ToolbarToggle(tgl);
         }
@@ -51,9 +53,30 @@ namespace KKAPI.Studio.UI
         public static ToolbarButton AddLeftToolbarButton(Texture2D iconTex, Action onClicked = null)
         {
             if (iconTex == null) throw new ArgumentNullException(nameof(iconTex));
-            var btn = new SimpleToolbarButton(Assembly.GetCallingAssembly().GetName().Name, null, () => iconTex, onClicked, KoikatuAPI.Instance);
+            var btn = new SimpleToolbarButton(GetUniqueName(), null, () => iconTex, onClicked, KoikatuAPI.Instance);
             ToolbarManager.AddLeftToolbarControl(btn);
             return new ToolbarButton(btn);
+        }
+
+        private static readonly HashSet<string> _usedNames = new HashSet<string>();
+        private static string GetUniqueName()
+        {
+            var bestAssMatch = new StackTrace(2, false).GetFrames()?
+                                                       .Select(x => x.GetMethod()?.Module.Assembly)
+                                                       .FirstOrDefault(x => x != null && !x.FullName.StartsWith("Unity") && !x.FullName.StartsWith("System"));
+
+            var name = bestAssMatch?.GetName().Name ?? "Unknown";
+            
+            // Ensure unique name. Add a number suffix if needed until we find a free name.
+            var baseName = name;
+            var suffix = 2;
+            while (!_usedNames.Add(name))
+            {
+                name = baseName + suffix;
+                suffix++;
+            }
+
+            return name;
         }
     }
 

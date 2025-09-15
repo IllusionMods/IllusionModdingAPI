@@ -9,7 +9,7 @@ namespace KKAPI.Studio.UI.Toolbars
     /// </summary>
     internal sealed class ToolbarControlAdapter : ToolbarControlBase
     {
-        public ToolbarControlAdapter(Button btnObject) : base(btnObject.gameObject.name, null, () => null, KoikatuAPI.Instance)
+        public ToolbarControlAdapter(Button btnObject) : base(btnObject.gameObject.name.Replace("Button ", ""), null, () => null, KoikatuAPI.Instance)
         {
             ButtonObject.OnNext(btnObject);
             RectTransform = (RectTransform)btnObject.transform;

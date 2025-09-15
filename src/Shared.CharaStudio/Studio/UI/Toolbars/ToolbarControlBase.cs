@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using KKAPI.Utilities;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UniRx;
@@ -12,7 +13,6 @@ using Object = UnityEngine.Object;
 namespace KKAPI.Studio.UI.Toolbars
 {
     // TODO:
-    // - save/load button order
     // - hide and show buttons?
     // - maybe right click context menu?
 
@@ -67,13 +67,12 @@ namespace KKAPI.Studio.UI.Toolbars
             // Check if buttonID contains any characters that can't be used in a GameObject name
             if (ButtonID.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
                 throw new ArgumentException("buttonID contains invalid characters", nameof(buttonID));
-
+            _iconGetter = iconGetter ?? throw new ArgumentNullException(nameof(iconGetter));
+            Owner = owner ?? throw new ArgumentNullException(nameof(owner));
 #if DEBUG
             hoverText = $"{GetType().FullName}\nOwner={owner.Info.Metadata.Name}\nName={buttonID}\n\n{hoverText ?? "<NULL>"}";
 #endif
             HoverText = hoverText;
-            _iconGetter = iconGetter ?? throw new ArgumentNullException(nameof(iconGetter));
-            Owner = owner ?? throw new ArgumentNullException(nameof(owner));
         }
 
         /// <summary>
@@ -151,13 +150,9 @@ namespace KKAPI.Studio.UI.Toolbars
         public virtual void Dispose()
         {
             if (IsDisposed) return;
-
-            lock (ToolbarManager.Buttons)
-            {
-                ToolbarManager.Buttons.Remove(this);
-            }
-
             IsDisposed = true;
+
+            ToolbarManager.RemoveControl(this);
 
             Visible?.Dispose();
             Interactable?.Dispose();
@@ -262,9 +257,9 @@ namespace KKAPI.Studio.UI.Toolbars
         /// <summary>
         /// Initializes the toolbar and finds the origin position for custom buttons.
         /// </summary>
-        internal static void InitToolbar()
+        internal static IEnumerable<ToolbarControlAdapter> InitToolbar()
         {
-            if (_existingButtonGo) return;
+            if (_existingButtonGo) return Enumerable.Empty<ToolbarControlAdapter>();
 
             _existingButtonGo = GameObject.Find("StudioScene/Canvas System Menu/01_Button/Button Center");
             _allButtonParentTr = _existingButtonGo.transform.parent;
@@ -274,11 +269,7 @@ namespace KKAPI.Studio.UI.Toolbars
             var origin = allStockButtons.OrderBy(x => Mathf.RoundToInt(x.anchoredPosition.y)).ThenBy(x => Mathf.RoundToInt(x.anchoredPosition.x)).First();
             _originPosition = origin.anchoredPosition;
 
-            foreach (var allStockButton in allStockButtons)
-            {
-                var wrapper = new ToolbarControlAdapter(allStockButton.GetComponent<Button>());
-                ToolbarManager.Buttons.Add(wrapper);
-            }
+            return allStockButtons.Select(stockButton => new ToolbarControlAdapter(stockButton.GetComponent<Button>()));
         }
 
         /// <summary>
@@ -338,25 +329,28 @@ namespace KKAPI.Studio.UI.Toolbars
                 _owner.ButtonObject.Value.enabled = true;
 
                 // Move other buttons to make room if necessary (to next column in the same row)
-                var rowButtons = ToolbarManager.Buttons.Where(b => b != _owner && b.DesiredRow == _currentDragRow && b.DesiredColumn >= 0 && b.Visible.Value)
+
+                // Get all buttons in the same row that are visible and not this button
+                var allButtons = ToolbarManager.GetAllButtons();
+                var sameRowButtons = allButtons.Where(b => b.DesiredRow == _currentDragRow && b.DesiredColumn >= 0 && b != _owner && b.Visible.Value)
                                                .ToDictionary(b => b.DesiredColumn, b => b);
 
-                if (rowButtons.TryGetValue(_currentDragCol, out var otherButtonToMove))
+                // If the position is already taken, try to move the other button to make space
+                if (sameRowButtons.TryGetValue(_currentDragCol, out var otherButtonToMove))
                 {
-                    // The position is already taken, try to move the other button to make space
-                    if (_currentDragCol >= 1 && !rowButtons.ContainsKey(_currentDragCol - 1))
+                    // Move by one to the left if there is space
+                    if (_currentDragCol >= 1 && !sameRowButtons.ContainsKey(_currentDragCol - 1))
                     {
-                        // Move left if there is space
                         otherButtonToMove.DesiredColumn = _currentDragCol - 1;
                     }
                     else
                     {
-                        // Otherwise move all buttons right
+                        // Otherwise move all buttons right until a free space is found
                         for (int c = _currentDragCol + 1; ; c++)
                         {
                             otherButtonToMove.DesiredColumn = c;
 
-                            if (!rowButtons.TryGetValue(c, out otherButtonToMove))
+                            if (!sameRowButtons.TryGetValue(c, out otherButtonToMove))
                                 break;
                         }
                     }
