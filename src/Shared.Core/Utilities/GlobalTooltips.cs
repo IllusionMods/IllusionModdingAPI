@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
-namespace KKAPI
+namespace KKAPI.Utilities
 {
     /// <summary>
-    /// API for displaying tooltips in game.
+    /// API for easily displaying tooltips in game and studio.
     /// </summary>
-    public static class TooltipManager
+    public static class GlobalTooltips
     {
         private const float TooltipDelay = 0.5f; // seconds
 
@@ -18,8 +18,8 @@ namespace KKAPI
         private static GUIContent _tooltipContent;
         private static Texture2D _tooltipBackground;
 
-        private static TooltipData _currentTooltip;
-        private static string _currentTooltipText;
+        private static TooltipData _previouslyHovered;
+        private static Tooltip _currentlyDisplayedTooltip;
         private static float _hoverStartTime;
 
         /// <summary>
@@ -95,7 +95,6 @@ namespace KKAPI
                     continue;
                 }
 
-                if (data.Tooltip == null) continue;
                 if (!data.Target.gameObject.activeInHierarchy) continue;
 
                 var rect = GetScreenRect(data.Target);
@@ -106,16 +105,16 @@ namespace KKAPI
                 }
             }
 
-            if (hovered != _currentTooltip)
+            if (hovered != _previouslyHovered)
             {
-                _currentTooltip = hovered;
+                _previouslyHovered = hovered;
                 _hoverStartTime = Time.realtimeSinceStartup;
             }
 
-            if (_currentTooltip != null && Time.realtimeSinceStartup - _hoverStartTime >= TooltipDelay)
-                _currentTooltipText = _currentTooltip.Tooltip.Text;
+            if (_previouslyHovered != null && Time.realtimeSinceStartup - _hoverStartTime >= TooltipDelay)
+                _currentlyDisplayedTooltip = _previouslyHovered.Tooltip;
             else
-                _currentTooltipText = null;
+                _currentlyDisplayedTooltip = null;
         }
 
         private static Rect GetScreenRect(RectTransform rectTransform)
@@ -131,26 +130,23 @@ namespace KKAPI
 
         private static void DrawTooltip()
         {
-            if (_currentTooltipText == null) return;
+            if (_currentlyDisplayedTooltip == null) return;
 
-            _tooltipContent.text = _currentTooltipText;
+            // Calculate tooltip size
+            _tooltipContent.text = _currentlyDisplayedTooltip.Text;
+            _tooltipStyle.CalcMinMaxWidth(_tooltipContent, out var minWidth, out var maxWidth);
+            const int margin = 10;
+            var width = Mathf.Clamp((int)maxWidth + margin,
+                                    Mathf.Max(_currentlyDisplayedTooltip.MinWidth, (int)minWidth),
+                                    Mathf.Min(_currentlyDisplayedTooltip.MaxWidth, Screen.width / 3));
+            var height = _tooltipStyle.CalcHeight(_tooltipContent, width) + margin;
 
-            _tooltipStyle.CalcMinMaxWidth(_tooltipContent, out var minWidth, out var width);
+            // Calculate tooltip position
+            var mousePosition = Event.current.mousePosition;
+            var x = mousePosition.x + width > Screen.width ? Screen.width - width : mousePosition.x;
+            var y = mousePosition.y + 25 + height > Screen.height ? mousePosition.y - height : mousePosition.y + 25;
 
-            var tooltipWidth = Mathf.Min((int)width + 10, Screen.width / 3);
-
-            var height = _tooltipStyle.CalcHeight(_tooltipContent, tooltipWidth) + 10;
-            var currentEvent = Event.current;
-
-            var x = currentEvent.mousePosition.x + tooltipWidth > Screen.width
-                ? Screen.width - tooltipWidth
-                : currentEvent.mousePosition.x;
-
-            var y = currentEvent.mousePosition.y + 25 + height > Screen.height
-                ? currentEvent.mousePosition.y - height
-                : currentEvent.mousePosition.y + 25;
-
-            GUI.Box(new Rect(x, y, tooltipWidth, height), _currentTooltipText, _tooltipStyle);
+            GUI.Box(new Rect(x, y, width, height), _tooltipContent, _tooltipStyle);
         }
 
         private sealed class TooltipData
@@ -190,6 +186,16 @@ namespace KKAPI
             /// </summary>
             public string Text { get; set; }
 
+            /// <summary>
+            /// Maximum width of the tooltip in pixels. Default is uncapped.
+            /// </summary>
+            public int MaxWidth { get; set; } = int.MaxValue;
+
+            /// <summary>
+            /// Minimum width of the tooltip in pixels. Default is uncapped.
+            /// </summary>
+            public int MinWidth { get; set; } = 0;
+
             /// <inheritdoc />
             void IDisposable.Dispose()
             {
@@ -197,7 +203,7 @@ namespace KKAPI
             }
 
             /// <summary>
-            /// Remove the tooltip from existence.
+            /// Remove the tooltip from existence. The tooltip cannot be used after this and has to be recreated.
             /// </summary>
             public void Destroy()
             {

@@ -170,11 +170,11 @@ namespace KKAPI
 
         private void OnGUI()
         {
-            TooltipManager.OnGUI();
+            GlobalTooltips.OnGUI();
         }
         private void Update()
         {
-            TooltipManager.Update();
+            GlobalTooltips.Update();
         }
 
         /// <summary>

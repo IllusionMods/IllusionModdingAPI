@@ -107,6 +107,9 @@
     <Compile Include="..\Shared.Core\Utilities\ApiEventExecutionLogger.cs">
       <Link>Utilities\ApiEventExecutionLogger.cs</Link>
     </Compile>
+    <Compile Include="..\Shared.Core\Utilities\GlobalTooltips.cs">
+      <Link>Utilities\GlobalTooltips.cs</Link>
+    </Compile>
     <Compile Include="Chara\CharacterApi.ControllerRegistration.cs" />
     <Compile Include="Chara\CharacterApi.cs" />
     <Compile Include="Chara\CharacterApi.Hooks.PH.cs" />

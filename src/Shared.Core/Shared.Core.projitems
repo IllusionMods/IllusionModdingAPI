@@ -20,7 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Chara\TestCharaCustomFunctionController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameMode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TooltipManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\GlobalTooltips.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ApiEventExecutionLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SmartRect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\WeakDictionary.cs" />

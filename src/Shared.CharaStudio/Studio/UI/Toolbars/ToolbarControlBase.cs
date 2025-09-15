@@ -27,7 +27,7 @@ namespace KKAPI.Studio.UI.Toolbars
         private static readonly Vector2 _positionOffset = new Vector2(40, 40f);
 
         private RectTransform _rectTransform;
-        private TooltipManager.Tooltip _tooltip;
+        private GlobalTooltips.Tooltip _tooltip;
         private protected RectTransform RectTransform
         {
             get => _rectTransform;
@@ -37,7 +37,7 @@ namespace KKAPI.Studio.UI.Toolbars
                 {
                     _rectTransform = value;
                     if (_tooltip != null) _tooltip.Destroy();
-                    if (!string.IsNullOrEmpty(HoverText)) _tooltip = TooltipManager.RegisterTooltip(_rectTransform, HoverText);
+                    if (!string.IsNullOrEmpty(HoverText)) _tooltip = GlobalTooltips.RegisterTooltip(_rectTransform, HoverText);
                 }
             }
         }
@@ -203,7 +203,7 @@ namespace KKAPI.Studio.UI.Toolbars
 
         /// <summary>
         /// Set the desired position of the button in the toolbar.
-        /// If another button has already requested this position, this button will be moved to the right.
+        /// If another button has already requested this position, this button may be moved to the right.
         /// </summary>
         /// <param name="row">Row index. 0 indexed.</param>
         /// <param name="column">Column index. 0 indexed.</param>
