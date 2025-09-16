@@ -45,7 +45,7 @@ namespace KKAPI.Studio.UI.Toolbars
             {"Button Center", "Toggle showing the camera center point when moving the camera."},
             {"Button Object", "Open Move Controller.\nA tool for making fine adjustments to object positions and rotations."},
             {"Button Map", "Open Map Controller.\nA tool for moving and rotating the currently set Map.\nIt can change time of day if the map supports this feature.\nOnly works with maps added through the 'add -> Map' menu."},
-            //TODO What does this do exactly? Only in KKS. {"Button Gimmick", "Toggle display of some gimmick gizmos."},
+            {"Button Gimmick", "Toggle display of position gizmos for gimmicks.\nOnly works with gizmos with no object, and even\nthen not all gizmos are supported."},
             {"Button Axis", "Toggle display of movement/rotation gizmo and\nselection circles if objects are set to 'Show all'.\nHotkey: Q (press W / E / R to switch modes)"},
             {"Button Axis Trans", "Toggle display of translation gizmos\nin the movement/rotation gizmo.\nHotkey: J"},
             {"Button Axis Center", "Toggle display of the origin point\nof the currently selected object.\nHotkey: K"},
