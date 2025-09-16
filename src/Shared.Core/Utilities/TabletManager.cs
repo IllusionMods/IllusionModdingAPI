@@ -151,5 +151,6 @@ namespace KKAPI.Utilities
         /// This value indicates the upper limit of pressure sensitivity that the tablet can detect.
         /// </summary>
         public static uint MaxPressure => instance._tablet.MaxPressure;
+        public static bool IsAvailable => instance._tablet.IsInitialized;
     }
 }
