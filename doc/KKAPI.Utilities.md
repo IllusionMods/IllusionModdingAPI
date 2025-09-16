@@ -62,6 +62,27 @@ Static Methods
 | `IEnumerator` | StripYields(this `IEnumerator` coroutine, `Boolean` onlyStripNulls = True, `Boolean` flatten = True) | Remove yields from the coroutine, making its code run immediately. | 
 
 
+## `Curve`
+
+Provides a comprehensive set of utilities for performing operations on curves, including interpolation via Catmull-Rom splines and Bezier curves.
+```csharp
+public class KKAPI.Utilities.Curve
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Vector4` | Bezier(`Vector4` p0, `Vector4` p1, `Vector4` p2, `Vector4` p3, `Single` t) | Calculates a position on a cubic Bezier curve for a given interpolation value. | 
+| `Vector3` | Bezier(`Vector3` p0, `Vector3` p1, `Vector3` p2, `Vector3` p3, `Single` t) | Calculates a position on a cubic Bezier curve for a given interpolation value. | 
+| `Vector2` | Bezier(`Vector2` p0, `Vector2` p1, `Vector2` p2, `Vector2` p3, `Single` t) | Calculates a position on a cubic Bezier curve for a given interpolation value. | 
+| `Vector4` | CatmullRom(`Vector4` p0, `Vector4` p1, `Vector4` p2, `Vector4` p3, `Single` t) | Performs Catmull-Rom spline interpolation between four points to calculate a position at a specific interpolation value. | 
+| `Vector3` | CatmullRom(`Vector3` p0, `Vector3` p1, `Vector3` p2, `Vector3` p3, `Single` t) | Performs Catmull-Rom spline interpolation between four points to calculate a position at a specific interpolation value. | 
+| `Vector2` | CatmullRom(`Vector2` p0, `Vector2` p1, `Vector2` p2, `Vector2` p3, `Single` t) | Performs Catmull-Rom spline interpolation between four points to calculate a position at a specific interpolation value. | 
+| `Vector3[]` | ResamplePoly(`Vector3[]` points, `Int32` count, `Boolean` smooth = False, `Func<Vector3, Vector3, Vector3, Vector3, Single, Vector3>` solver = null) | Resamples a polyline represented by a set of 3D points into a specified number of evenly spaced points, with optional smoothing. | 
+
+
 ## `Extensions`
 
 General utility extensions that don't fit in other categories.
@@ -83,15 +104,33 @@ Static Methods
 | `String` | GetFullPath(this `GameObject` self) | Get full GameObject "path" to this GameObject.  Example: RootObject\ChildObject1\ChildObject2 | 
 | `String` | GetFullPath(this `Component` self) | Get full GameObject "path" to this GameObject.  Example: RootObject\ChildObject1\ChildObject2 | 
 | `Boolean` | GetPropertyValue(this `Object` self, `String` name, `Object&` value) | Get value of a property through reflection | 
+| `Rect` | GetScreenRect(this `RectTransform` rectTransform) | Get the screen-space rectangle of this RectTransform. | 
 | `Transform` | GetTopmostParent(this `Component` src) | Get the topmost parent of Transform that this this Component is attached to. | 
 | `Transform` | GetTopmostParent(this `GameObject` src) | Get the topmost parent of Transform that this this Component is attached to. | 
 | `Transform` | GetTopmostParent(this `Transform` src) | Get the topmost parent of Transform that this this Component is attached to. | 
 | `Boolean` | IsDestroyed(this `Object` obj) | Return true if the object is a "fake" null (i.e. it was destroyed). | 
+| `Boolean` | IsInsideScreenBounds(this `RectTransform` rectTransform, `Int32` margin = 0) | Check if the RectTransform's bounds are fully within the screen bounds. | 
 | `void` | MarkXuaIgnored(this `Component` target) | Mark GameObject of this Component as ignored by AutoTranslator. Prevents AutoTranslator from trying to translate custom UI elements. | 
 | `Boolean` | SequenceEqualFast(this `Byte[]` a, `Byte[]` b) | This method compares two byte arrays for equality, returning true if they are identical and false otherwise.  It is optimized for high performance and uses unsafe code. | 
 | `Boolean` | SetFieldValue(this `Object` self, `String` name, `Object` value) | Set value of a field through reflection | 
 | `Boolean` | SetPropertyValue(this `Object` self, `String` name, `Object` value) | Set value of a property through reflection | 
 | `ReadOnlyDictionary<TKey, TValue>` | ToReadOnlyDictionary(this `IDictionary<TKey, TValue>` original) | Wrap this dictionary in a read-only wrapper that will prevent any changes to it.  Warning: Any reference types inside the dictionary can still be modified. | 
+
+
+## `GlobalTooltips`
+
+API for easily displaying tooltips in game and studio.
+```csharp
+public static class KKAPI.Utilities.GlobalTooltips
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Tooltip` | RegisterTooltip(`GameObject` target, `String` text) |  | 
+| `void` | RegisterTooltip(`GameObject` target, `Tooltip` tooltip) |  | 
 
 
 ## `HSceneUtils`
@@ -330,6 +369,110 @@ Static Methods
 | --- | --- | --- | 
 | `Byte[]` | GetEmbeddedResource(`String` resourceFileName, `Assembly` containingAssembly = null) | Get a file set as "Embedded Resource" from the assembly that is calling this code, or optionally from a specified assembly.  The filename is matched to the end of the resource path, no need to give the full path.  If 0 or more than 1 resources match the provided filename, an exception is thrown.  For example if you have a file "ProjectRoot\Resources\icon.png" set as "Embedded Resource", you can use this to load it by  doing <code>GetEmbeddedResource("icon.png"), assuming that no other embedded files have the same name.</code> | 
 | `Byte[]` | ReadAllBytes(this `Stream` input) | Read all bytes starting at current position and ending at the end of the stream. | 
+
+
+## `SmartRect`
+
+Represents a smart rectangle that provides advanced manipulation of a rectangle's dimensions and position.
+```csharp
+public class KKAPI.Utilities.SmartRect
+
+```
+
+Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Single` | DefaultHeight |  | 
+| `Single` | DefaultWidth |  | 
+| `Single` | DefaultX |  | 
+| `Single` | DefaultY |  | 
+
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Single` | Height |  | 
+| `Single` | OffsetX |  | 
+| `Single` | OffsetY |  | 
+| `Single` | TotalHeight |  | 
+| `Single` | TotalWidth |  | 
+| `Single` | Width |  | 
+| `Single` | X |  | 
+| `Single` | Y |  | 
+
+
+Events
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `EventHandler` | OnAnimationComplete |  | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `SmartRect` | BeginHorizontal(`Int32` elementCount) | Divides the current width of the rectangle into equal segments for horizontal layout.  Adjusts the width of each segment based on the total number of elements and specified horizontal offsets. | 
+| `SmartRect` | Col(`Int32` col) |  | 
+| `SmartRect` | EndHorizontal() | Synonymous to `KKAPI.Utilities.SmartRect.ResetX(System.Boolean)` | 
+| `SmartRect` | HeightToEnd(`Single` y) | Sets the height of the rectangle such that its bottom edge aligns with the specified y-coordinate. | 
+| `SmartRect` | Move(`Vector2` vec) | Moves the SmartRect by the specified vector values. | 
+| `SmartRect` | Move(`Int32` x, `Int32` y) | Moves the SmartRect by the specified vector values. | 
+| `SmartRect` | MoveOffsetX(`Single` off) | Moves the rectangle's X position by the specified offset and adjusts its width accordingly. | 
+| `SmartRect` | MoveOffsetY(`Single` off) | Adjusts the Y position and height of the smart rectangle by the specified offset. | 
+| `SmartRect` | MoveToEndX(`Rect` box, `Single` width) | Adjusts the X position of the current rectangle to align with the right edge of the specified rectangle, taking into account the given width. | 
+| `SmartRect` | MoveToEndY(`Rect` box, `Single` height) | Moves the Y position of the rectangle represented by the current `KKAPI.Utilities.SmartRect` instance  to the bottom of the specified 'box' plus the specified 'height'. | 
+| `SmartRect` | MoveX() | Moves the rectangle horizontally by a predefined offset and returns the updated `KKAPI.Utilities.SmartRect` instance. | 
+| `SmartRect` | MoveX(`Single` off, `Boolean` considerWidth = False) | Moves the rectangle horizontally by a predefined offset and returns the updated `KKAPI.Utilities.SmartRect` instance. | 
+| `SmartRect` | MoveY() | Moves the <seealso cref="T:KKAPI.Utilities.SmartRect" /> by it's own height. | 
+| `SmartRect` | MoveY(`Single` offset, `Boolean` considerHeight = False) | Moves the <seealso cref="T:KKAPI.Utilities.SmartRect" /> by it's own height. | 
+| `SmartRect` | NextColumn() | Moves to the next column by shifting the rectangle horizontally by a predefined offset. | 
+| `SmartRect` | NextRow(`Boolean` resetColumn = True) | Moves the rectangle to the next row, optionally resetting the column position. | 
+| `SmartRect` | Reset() | Resets the `KKAPI.Utilities.SmartRect` to its default position and dimensions. | 
+| `SmartRect` | ResetX(`Boolean` includeWidth = True) | Resets the x-coordinate of the rectangle to its default value.  Optionally resets the width to its default value. | 
+| `SmartRect` | ResetY(`Boolean` includeHeight = False) | Resets the y-coordinate of the rectangle to its default value.  Optionally resets the height to its default value. | 
+| `SmartRect` | Row(`Int32` row) |  | 
+| `SmartRect` | SetAnimateTo(`Rect` to, `Single` duration) | Sets the target rectangle and duration for an animation. | 
+| `SmartRect` | SetAnimation(`Rect` from, `Rect` to, `Single` duration) | Sets the starting and target rectangles, along with the duration for an animation. | 
+| `SmartRect` | SetHeight(`Single` height) |  | 
+| `SmartRect` | SetWidth(`Single` width) |  | 
+| `Rect` | ToRect() | Converts the current `KKAPI.Utilities.SmartRect` instance into a Rect object. | 
+| `Boolean` | UpdateAnimationIndependent(`Func<Single, Vector2>` solver) | Updates the animation of the rectangle independently using a provided solver function based on progress. | 
+| `SmartRect` | WidthToEnd(`Single` x) | Sets the width of the rectangle such that its right edge aligns with the specified x-coordinate. | 
+
+
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Single` | DefaultOffsetX |  | 
+| `Single` | DefaultOffsetY |  | 
+
+
+## `TabletManager`
+
+Manages tablet input events and subscriptions.
+```csharp
+public class KKAPI.Utilities.TabletManager
+    : MonoBehaviour
+
+```
+
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `UInt32` | MaxPressure | Gets the maximum pressure value supported by the tablet device.  This value indicates the upper limit of pressure sensitivity that the tablet can detect. | 
+
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `void` | Subscribe(`TabletEvent` handler) | Subscribes a provided event handler to receive tablet input updates. | 
+| `void` | Unsubscribe(`TabletEvent` handler) | Unsubscribes a previously registered event handler from receiving tablet input updates. | 
 
 
 ## `TextureUtils`

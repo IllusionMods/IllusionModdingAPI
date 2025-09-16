@@ -65,6 +65,66 @@ Static Events
 | `EventHandler` | Quitting | Occurs when application is quitting.  Plugins can use this to do things like write config files and caches, or stop outstanding coroutines to prevent shutdown delays.  Note: This event might not fire if the game isn't closed cleanly (hard crashes, killed process, closing the console window, etc.). | 
 
 
+## `Orientation`
+
+```csharp
+public struct KKAPI.Orientation
+
+```
+
+Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `UInt32` | orAltitude |  | 
+| `UInt32` | orAzimuth |  | 
+| `UInt32` | orTwist |  | 
+
+
+## `Packet`
+
+Represents a data packet structure used for interacting with tablet hardware,  containing information about button states, positional coordinates, and  pressure sensitivity. This structure is primarily utilized for processing  input data from digitizing devices.
+```csharp
+public struct KKAPI.Packet
+
+```
+
+Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `UInt32` | pkButtons |  | 
+| `UInt32` | pkChanged |  | 
+| `IntPtr` | pkContext |  | 
+| `UInt32` | pkCursor |  | 
+| `UInt32` | pkNormalPressure |  | 
+| `Orientation` | pkOrientation |  | 
+| `Rotation` | pkRotation |  | 
+| `UInt32` | pkSerialNumber |  | 
+| `UInt32` | pkStatus |  | 
+| `UInt32` | pkTangentPressure |  | 
+| `UInt32` | pkTime |  | 
+| `Int32` | pkX |  | 
+| `Int32` | pkY |  | 
+| `Int32` | pkZ |  | 
+
+
+## `Rotation`
+
+```csharp
+public struct KKAPI.Rotation
+
+```
+
+Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `UInt32` | roPitch |  | 
+| `UInt32` | roRoll |  | 
+| `UInt32` | roYaw |  | 
+
+
 ## `SceneApi`
 
 Game-agnostic version of Manager.Scene. It allows using the same code in all games without any #if directives.
