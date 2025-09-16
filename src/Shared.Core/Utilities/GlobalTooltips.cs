@@ -37,6 +37,7 @@ namespace KKAPI.Utilities
         /// <summary>
         /// Show a tooltip when user hovers over the target.
         /// Only works for objects that block mouse raycasts (e.g. UI elements, move gizmos).
+        /// Tooltip does not show if the object is obstructed by another blocking object or by an IMGUI window.
         /// </summary>
         /// <param name="target">GameObject to attach the tooltip to.</param>
         /// <param name="tooltip">The tooltip to attach.</param>
@@ -143,7 +144,6 @@ namespace KKAPI.Utilities
             /// <summary>
             /// Creates a new Tooltip instance.
             /// </summary>
-            /// <param name="target">The RectTransform to attach to.</param>
             /// <param name="text">The tooltip text.</param>
             public Tooltip(string text)
             {
