@@ -33,7 +33,7 @@ namespace KKAPI.Utilities
             RegisterTooltip(target, tooltip);
             return tooltip;
         }
-        
+
         /// <summary>
         /// Show a tooltip when user hovers over the target.
         /// Only works for objects that block mouse raycasts (e.g. UI elements, move gizmos).
@@ -45,7 +45,7 @@ namespace KKAPI.Utilities
             if (target == null) throw new ArgumentNullException(nameof(target));
             if (tooltip == null) throw new ArgumentNullException(nameof(tooltip));
 
-            if (_tooltips.ContainsKey(target)) 
+            if (_tooltips.ContainsKey(target))
                 KoikatuAPI.Logger.LogWarning($"A tooltip is already registered for {target.name} - it will be replaced!\n" + new StackTrace());
 
             _tooltips[target] = tooltip;
@@ -81,16 +81,22 @@ namespace KKAPI.Utilities
             var current = EventSystem.current;
             if (current == null) return;
 
-            var im = (StandaloneInputModule)current.currentInputModule;
-            im.GetPointerData(-1, out var pointerEventData, false);
-
             Tooltip hovered = null;
-            if (!ReferenceEquals(pointerEventData?.pointerEnter, null))
+
+            // Check if mouse is over any IMGUI window or GUI control that takes mouse input, don't show tooltips in that case
+            if (!GUIUtility.mouseUsed)
             {
-                if (_tooltips.TryGetValue(pointerEventData.pointerEnter, out hovered) && hovered.IsDestroyed)
+                // Find out what the mouse is currently over
+                var im = (StandaloneInputModule)current.currentInputModule;
+                im.GetPointerData(-1, out var pointerEventData, false);
+
+                if (!ReferenceEquals(pointerEventData?.pointerEnter, null))
                 {
-                    _tooltips.Remove(pointerEventData.pointerEnter);
-                    hovered = null;
+                    if (_tooltips.TryGetValue(pointerEventData.pointerEnter, out hovered) && hovered.IsDestroyed)
+                    {
+                        _tooltips.Remove(pointerEventData.pointerEnter);
+                        hovered = null;
+                    }
                 }
             }
 
