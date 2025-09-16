@@ -104,14 +104,8 @@
     <Compile Include="..\Shared.Core\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
-    <Compile Include="..\Shared.Core\Utilities\ApiEventExecutionLogger.cs">
-      <Link>Utilities\ApiEventExecutionLogger.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared.Core\Utilities\Extensions.cs">
-      <Link>Utilities\Extensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared.Core\Utilities\GlobalTooltips.cs">
-      <Link>Utilities\GlobalTooltips.cs</Link>
+    <Compile Include="..\Shared.Core\KoikatuAPIBase.cs">
+      <Link>KoikatuAPIBase.cs</Link>
     </Compile>
     <Compile Include="Chara\CharacterApi.ControllerRegistration.cs" />
     <Compile Include="Chara\CharacterApi.cs" />
@@ -123,7 +117,6 @@
     <Compile Include="Chara\TestCharaCustomFunctionController.cs" />
     <Compile Include="GameMode.cs" />
     <Compile Include="KoikatuAPI.cs" />
-    <Compile Include="KoikatuAPIBase.cs" />
     <Compile Include="Maker\AccessoriesApi.Hooks.PH.cs" />
     <Compile Include="Maker\AccessoriesApi.PH.cs" />
     <Compile Include="Maker\AccessoryControlWrapper.PH.cs" />
@@ -154,16 +147,14 @@
     <Compile Include="Maker\UI\Sidebar\SidebarSeparator.cs" />
     <Compile Include="Maker\UI\Sidebar\SidebarToggle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\CoroutineUtils.cs" />
-    <Compile Include="Utilities\IMGUIUtils.cs" />
-    <Compile Include="Utilities\MemoryInfo.cs" />
-    <Compile Include="Utilities\OpenFileDialog.cs" />
-    <Compile Include="Utilities\ReadOnlyDictionary.cs" />
-    <Compile Include="Utilities\RecycleBinUtil.cs" />
-    <Compile Include="Utilities\ResourceUtils.cs" />
-    <Compile Include="Utilities\TextureUtils.cs" />
-    <Compile Include="Utilities\TextUtils.cs" />
-    <Compile Include="Utilities\WindowsStringComparer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Shared.Core\Utilities\**\*.cs">
+      <Link>Utilities\%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </Compile>
+    <EmbeddedResource Include="..\Shared.Core\Utilities\**\*.png">
+      <Link>Utilities\%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

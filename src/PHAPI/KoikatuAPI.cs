@@ -35,8 +35,9 @@ namespace KKAPI
 
         private void Awake()
         {
-            var insideStudio = Application.productName.StartsWith("PlayHomeStudio");
+            BaseAwake();
 
+            var insideStudio = Application.productName.StartsWith("PlayHomeStudio");
             MakerAPI.Init(insideStudio);
             StudioAPI.Init(insideStudio);
             CharacterApi.Init();

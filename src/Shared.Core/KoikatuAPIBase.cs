@@ -275,9 +275,13 @@ namespace KKAPI
 #if !QUITTING_EVENT_AVAILABLE
         private static class SharedHooks
         {
-
             [HarmonyPrefix]
+#if PH
+            [HarmonyPatch(typeof(global::Studio.Scene), nameof(global::Studio.Scene.GameExit))]
+            [HarmonyPatch(typeof(global::ExitScene), nameof(global::ExitScene.Start))]
+#else
             [HarmonyPatch(typeof(Manager.Scene), nameof(Manager.Scene.GameExit))]
+#endif
             private static void GameExitPrefix()
             {
                 try
