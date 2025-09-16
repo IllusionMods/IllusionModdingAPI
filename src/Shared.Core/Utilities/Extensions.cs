@@ -400,5 +400,39 @@ namespace KKAPI.Utilities
             // Note: Using a return statement in the loop can potentially degrade performance due to the generated binary code, 
             return false;
         }
+
+        /// <summary>
+        /// Check if the RectTransform's bounds are fully within the screen bounds.
+        /// </summary>
+        /// <param name="rectTransform">Transform to check</param>
+        /// <param name="margin">How many pixels to keep away from screen edges. If negative will allow sticking past the screen edge by this many pixels.</param>
+        public static bool IsInsideScreenBounds(this RectTransform rectTransform, int margin = 0)
+        {
+            var corners = new Vector3[4];
+            rectTransform.GetWorldCorners(corners);
+            var maxw = Screen.width - margin;
+            var maxh = Screen.height - margin;
+            for (var i = 0; i < corners.Length; i++)
+            {
+                var v3 = corners[i];
+                if (v3.x >= margin && v3.x <= maxw && v3.y >= margin && v3.y <= maxh) continue;
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Get the screen-space rectangle of this RectTransform.
+        /// </summary>
+        public static Rect GetScreenRect(this RectTransform rectTransform)
+        {
+            var corners = new Vector3[4];
+            rectTransform.GetWorldCorners(corners);
+            var xMin = corners[0].x;
+            var yMin = Screen.height - corners[1].y;
+            var width = corners[2].x - corners[0].x;
+            var height = corners[1].y - corners[0].y;
+            return new Rect(xMin, yMin, width, height);
+        }
     }
 }

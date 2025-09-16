@@ -230,6 +230,7 @@ namespace KKAPI.Studio.UI.Toolbars
 
         /// <summary>
         /// Set the actual transform position of the button.
+        /// Returns true if the position is within screen bounds.
         /// </summary>
         internal bool SetActualPosition(int row, int column, bool setDesired)
         {
@@ -239,31 +240,13 @@ namespace KKAPI.Studio.UI.Toolbars
                                      _originPosition.y + row * _positionOffset.y);
             RectTransform.anchoredPosition = newPos;
 
-            var positionIsInBounds = PositionIsInBounds(RectTransform);
+            var positionIsInBounds = RectTransform.IsInsideScreenBounds(-5);
             if (setDesired)
             {
                 DesiredRow = positionIsInBounds ? row : (int?)null;
                 DesiredColumn = positionIsInBounds ? column : (int?)null;
             }
             return positionIsInBounds;
-        }
-
-        /// <summary>
-        /// Check if the transform is fully within the screen bounds.
-        /// </summary>
-        private static bool PositionIsInBounds(RectTransform rectTransform)
-        {
-            var corners = new Vector3[4];
-            rectTransform.GetWorldCorners(corners);
-            var maxw = Screen.width;
-            var maxh = Screen.height;
-            for (var i = 0; i < corners.Length; i++)
-            {
-                var v3 = corners[i];
-                if (v3.x >= 0 && v3.x <= maxw && v3.y >= 0 && v3.y <= maxh) continue;
-                return false;
-            }
-            return true;
         }
 
         /// <summary>

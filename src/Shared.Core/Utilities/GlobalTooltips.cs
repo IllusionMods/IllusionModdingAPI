@@ -97,7 +97,7 @@ namespace KKAPI.Utilities
 
                 if (!data.Target.gameObject.activeInHierarchy) continue;
 
-                var rect = GetScreenRect(data.Target);
+                var rect = data.Target.GetScreenRect();
                 if (rect.Contains(mousePos))
                 {
                     hovered = data;
@@ -115,17 +115,6 @@ namespace KKAPI.Utilities
                 _currentlyDisplayedTooltip = _previouslyHovered.Tooltip;
             else
                 _currentlyDisplayedTooltip = null;
-        }
-
-        private static Rect GetScreenRect(RectTransform rectTransform)
-        {
-            var corners = new Vector3[4];
-            rectTransform.GetWorldCorners(corners);
-            var xMin = corners[0].x;
-            var yMin = Screen.height - corners[1].y;
-            var width = corners[2].x - corners[0].x;
-            var height = corners[1].y - corners[0].y;
-            return new Rect(xMin, yMin, width, height);
         }
 
         private static void DrawTooltip()
