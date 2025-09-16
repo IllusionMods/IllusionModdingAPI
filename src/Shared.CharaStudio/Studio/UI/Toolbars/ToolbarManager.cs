@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace KKAPI.Studio.UI.Toolbars
@@ -58,10 +59,10 @@ namespace KKAPI.Studio.UI.Toolbars
         /// <summary>
         /// Get all toolbar buttons added so far.
         /// </summary>
-        public static ToolbarControlBase[] GetAllButtons()
+        public static ToolbarControlBase[] GetAllButtons(bool includeInvisible)
         {
             lock (_buttons)
-                return _buttons.ToArray();
+                return includeInvisible ? _buttons.ToArray() : _buttons.Where(x => x.Visible.Value).ToArray();
         }
 
         /// <summary>
@@ -107,55 +108,34 @@ namespace KKAPI.Studio.UI.Toolbars
 
                 var takenPositions = new HashSet<KeyValuePair<int, int>>();
                 var positionNotSet = new List<ToolbarControlBase>();
-                var nonVisibleWithPosition = new List<ToolbarControlBase>();
 
                 // First pass: create controls and classify buttons
-                foreach (var customToolbarToggle in _buttons.OrderByDescending(x => x is ToolbarControlAdapter).ThenBy(x => x.ButtonID).ThenBy(x => x.Owner.Info.Metadata.GUID))
+                foreach (var customToolbarToggle in _buttons.Where(x => x.Visible.Value) // Do not process invisible buttons
+                                                            .OrderByDescending(x => x is ToolbarControlAdapter) // Base game buttons first
+                                                            .ThenBy(x => x.ButtonID) // Allow plugins to control order with ButtonID
+                                                            .ThenBy(x => x.Owner.Info.Metadata.GUID)) // Keep order stable if there's duplicate ButtonIDs
                 {
                     customToolbarToggle.CreateControl();
-
-                    if (!customToolbarToggle.Visible.Value)
-                    {
-                        // Track non-visible buttons with a set position
-                        if (customToolbarToggle.DesiredRow >= 0 && customToolbarToggle.DesiredColumn >= 0)
-                            nonVisibleWithPosition.Add(customToolbarToggle);
-                        continue;
-                    }
 
                     // Now try to set position
                     var desiredRow = customToolbarToggle.DesiredRow;
                     var desiredCol = customToolbarToggle.DesiredColumn;
-                    if (desiredRow >= 0 && desiredCol >= 0)
+                    if (desiredRow.HasValue && desiredCol.HasValue)
                     {
+                        var row = desiredRow.Value;
+                        var col = desiredCol.Value;
                         // Try to set to desired position, if taken then move right until free spot is found
-                        while (takenPositions.Contains(new KeyValuePair<int, int>(desiredRow, desiredCol)))
+                        while (takenPositions.Contains(new KeyValuePair<int, int>(row, col)))
                             desiredCol++;
-                        customToolbarToggle.SetActualPosition(desiredRow, desiredCol, true);
-                        takenPositions.Add(new KeyValuePair<int, int>(desiredRow, desiredCol));
+                        if (customToolbarToggle.SetActualPosition(row, col, true))
+                            takenPositions.Add(new KeyValuePair<int, int>(row, col));
+                        else
+                            positionNotSet.Add(customToolbarToggle); // Failed to set position, will assign later
                     }
                     else
                     {
                         positionNotSet.Add(customToolbarToggle);
                     }
-                }
-
-                // Second pass: move non-visible buttons out of the way if their position is now taken
-                foreach (var btn in nonVisibleWithPosition)
-                {
-                    var desiredRow = btn.DesiredRow;
-                    var desiredCol = btn.DesiredColumn;
-                    var pos = new KeyValuePair<int, int>(desiredRow, desiredCol);
-                    if (takenPositions.Contains(pos))
-                    {
-                        // Move to next free position in the same row
-                        do
-                        {
-                            desiredCol++;
-                            pos = new KeyValuePair<int, int>(desiredRow, desiredCol);
-                        } while (takenPositions.Contains(pos));
-                        btn.SetActualPosition(desiredRow, desiredCol, true);
-                    }
-                    takenPositions.Add(pos);
                 }
 
                 // Now place all buttons that didn't have a desired position set

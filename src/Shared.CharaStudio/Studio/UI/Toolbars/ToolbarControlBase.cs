@@ -115,14 +115,14 @@ namespace KKAPI.Studio.UI.Toolbars
         /// For the bottom left toolbar, this is counted from bottom left corner of the screen.
         /// Set to -1 to automatically add to the end of the toolbar.
         /// </summary>
-        public int DesiredRow { get; internal set; } = -1;
+        public int? DesiredRow { get; internal set; }
 
         /// <summary>
         /// Which column to place the button in.
         /// For the bottom left toolbar, this is counted from bottom left corner of the screen.
         /// Set to -1 to automatically add to the end of the toolbar.
         /// </summary>
-        public int DesiredColumn { get; internal set; } = -1;
+        public int? DesiredColumn { get; internal set; }
 
         /// <summary>
         /// The Unity UI Button object for this toolbar button.
@@ -218,21 +218,52 @@ namespace KKAPI.Studio.UI.Toolbars
         }
 
         /// <summary>
+        /// Resets the desired position, allowing the button position to be chosen automatically.
+        /// </summary>
+        public void ResetDesiredPosition()
+        {
+            DesiredColumn = null;
+            DesiredRow = null;
+
+            ToolbarManager.RequestToolbarRelayout();
+        }
+
+        /// <summary>
         /// Set the actual transform position of the button.
         /// </summary>
-        internal void SetActualPosition(int row, int column, bool setDesired)
+        internal bool SetActualPosition(int row, int column, bool setDesired)
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(ToolbarControlBase));
-
-            if (setDesired)
-            {
-                DesiredRow = row;
-                DesiredColumn = column;
-            }
-
+            
             var newPos = new Vector2(_originPosition.x + column * _positionOffset.x,
                                      _originPosition.y + row * _positionOffset.y);
             RectTransform.anchoredPosition = newPos;
+
+            var positionIsInBounds = PositionIsInBounds(RectTransform);
+            if (setDesired)
+            {
+                DesiredRow = positionIsInBounds ? row : (int?)null;
+                DesiredColumn = positionIsInBounds ? column : (int?)null;
+            }
+            return positionIsInBounds;
+        }
+
+        /// <summary>
+        /// Check if the transform is fully within the screen bounds.
+        /// </summary>
+        private static bool PositionIsInBounds(RectTransform rectTransform)
+        {
+            var corners = new Vector3[4];
+            rectTransform.GetWorldCorners(corners);
+            var maxw = Screen.width;
+            var maxh = Screen.height;
+            for (var i = 0; i < corners.Length; i++)
+            {
+                var v3 = corners[i];
+                if (v3.x >= 0 && v3.x <= maxw && v3.y >= 0 && v3.y <= maxh) continue;
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -331,8 +362,8 @@ namespace KKAPI.Studio.UI.Toolbars
                 // Move other buttons to make room if necessary (to next column in the same row)
 
                 // Get all buttons in the same row that are visible and not this button
-                var allButtons = ToolbarManager.GetAllButtons();
-                var sameRowButtons = allButtons.Where(b => b.DesiredRow == _currentDragRow && b.DesiredColumn >= 0 && b != _owner && b.Visible.Value)
+                var allButtons = ToolbarManager.GetAllButtons(false);
+                var sameRowButtons = allButtons.Where(b => b.DesiredRow == _currentDragRow && b.DesiredColumn >= 0 && b != _owner)
                                                .ToDictionary(b => b.DesiredColumn, b => b);
 
                 // If the position is already taken, try to move the other button to make space
