@@ -22,6 +22,7 @@ namespace KKAPI.Utilities
         private static Tooltip _previouslyHovered;
         private static Tooltip _currentlyDisplayed;
         private static float _hoverStartTime;
+        private static Vector2 _mousePosition;
 
         /// <inheritdoc cref="RegisterTooltip(UnityEngine.GameObject,Tooltip)"/>
         /// <param name="target">GameObject to attach the tooltip to.</param>
@@ -88,11 +89,13 @@ namespace KKAPI.Utilities
             if (!GUIUtility.mouseUsed)
             {
                 // Find out what the mouse is currently over
-                var im = (StandaloneInputModule)current.currentInputModule;
+                // Use PointerInputModule for best compatibility, AI/HS2 have their own implementation that inherits from it
+                var im = (PointerInputModule)current.currentInputModule;
                 im.GetPointerData(-1, out var pointerEventData, false);
 
                 if (!ReferenceEquals(pointerEventData?.pointerEnter, null))
                 {
+                    _mousePosition = pointerEventData.position;
                     if (_tooltips.TryGetValue(pointerEventData.pointerEnter, out hovered) && hovered.IsDestroyed)
                     {
                         _tooltips.Remove(pointerEventData.pointerEnter);
@@ -127,9 +130,11 @@ namespace KKAPI.Utilities
             var height = _tooltipStyle.CalcHeight(_tooltipContent, width) + margin;
 
             // Calculate tooltip position
-            var mousePosition = Event.current.mousePosition;
+            // Event.current.mousePosition doesn't work correctly in AI/HS2, it's not updated and has weird origin point
+            var mousePosition = _mousePosition;
+            mousePosition.y = Screen.height - mousePosition.y;
             var x = mousePosition.x + width > Screen.width ? Screen.width - width : mousePosition.x;
-            var y = mousePosition.y + 25 + height > Screen.height ? mousePosition.y - height : mousePosition.y + 25;
+            var y = mousePosition.y + 25 + height > Screen.height ? mousePosition.y - 2 - height : mousePosition.y + 25;
 
             GUI.Box(new Rect(x, y, width, height), _tooltipContent, _tooltipStyle);
         }

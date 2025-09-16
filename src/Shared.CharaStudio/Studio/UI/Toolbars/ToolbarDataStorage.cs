@@ -77,7 +77,7 @@ namespace KKAPI.Studio.UI.Toolbars
             var duplicateIds = new HashSet<string>();
             var entries = new List<string>(buttons.Count);
 
-            foreach (var b in buttons.Where(b => b.DesiredRow >= 0 && b.DesiredColumn >= 0))
+            foreach (var b in buttons.Where(b => b.DesiredRow.HasValue && b.DesiredColumn.HasValue))
             {
                 var saveKey = GetUniqueName(b);
                 if (entries.Contains(saveKey))

@@ -126,7 +126,7 @@ namespace KKAPI.Studio.UI.Toolbars
                         var col = desiredCol.Value;
                         // Try to set to desired position, if taken then move right until free spot is found
                         while (takenPositions.Contains(new KeyValuePair<int, int>(row, col)))
-                            desiredCol++;
+                            col++;
                         if (customToolbarToggle.SetActualPosition(row, col, true))
                             takenPositions.Add(new KeyValuePair<int, int>(row, col));
                         else
