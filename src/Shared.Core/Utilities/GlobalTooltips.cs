@@ -46,7 +46,7 @@ namespace KKAPI.Utilities
             if (tooltip == null) throw new ArgumentNullException(nameof(tooltip));
 
             if (_tooltips.ContainsKey(target))
-                KoikatuAPI.Logger.LogWarning($"A tooltip is already registered for {target.name} - it will be replaced!\n" + new StackTrace());
+                KoikatuAPI.Logger.LogWarning($"A tooltip is already registered for {target.name} - it will be replaced!" + (KoikatuAPI.EnableDebugLogging ? "\n" + new StackTrace() : null));
 
             _tooltips[target] = tooltip;
         }
@@ -177,13 +177,13 @@ namespace KKAPI.Utilities
             /// <inheritdoc />
             void IDisposable.Dispose()
             {
-                Destroy();
+                Unregister();
             }
 
             /// <summary>
             /// Remove the tooltip from existence. The tooltip cannot be used after this and has to be recreated.
             /// </summary>
-            public void Destroy()
+            public void Unregister()
             {
                 IsDestroyed = true;
             }

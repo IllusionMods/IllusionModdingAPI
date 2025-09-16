@@ -10,12 +10,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
+// TODO: Hide and show buttons? Maybe right click context menu?
 namespace KKAPI.Studio.UI.Toolbars
 {
-    // TODO:
-    // - hide and show buttons?
-    // - maybe right click context menu?
-
     /// <summary>
     /// Base class for custom toolbar buttons in the studio UI.
     /// </summary>
@@ -26,8 +23,8 @@ namespace KKAPI.Studio.UI.Toolbars
         private static Vector2 _originPosition;
         private static readonly Vector2 _positionOffset = new Vector2(40, 40f);
 
+        private readonly GlobalTooltips.Tooltip _tooltip;
         private RectTransform _rectTransform;
-        private GlobalTooltips.Tooltip _tooltip;
         private protected RectTransform RectTransform
         {
             get => _rectTransform;
@@ -36,8 +33,8 @@ namespace KKAPI.Studio.UI.Toolbars
                 if (_rectTransform != value)
                 {
                     _rectTransform = value;
-                    if (_tooltip != null) _tooltip.Destroy();
-                    if (!string.IsNullOrEmpty(HoverText)) _tooltip = GlobalTooltips.RegisterTooltip(_rectTransform.gameObject, HoverText);
+                    if (_tooltip != null) 
+                        GlobalTooltips.RegisterTooltip(_rectTransform.gameObject, _tooltip);
                 }
             }
         }
@@ -73,6 +70,8 @@ namespace KKAPI.Studio.UI.Toolbars
             hoverText = $"{GetType().FullName}\nOwner={owner.Info.Metadata.Name}\nName={buttonID}\n\n{hoverText ?? "<NULL>"}";
 #endif
             HoverText = hoverText;
+            if (!string.IsNullOrEmpty(hoverText))
+                _tooltip = new GlobalTooltips.Tooltip(hoverText);
         }
 
         /// <summary>
