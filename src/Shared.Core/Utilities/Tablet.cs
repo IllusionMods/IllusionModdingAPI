@@ -374,7 +374,7 @@ namespace KKAPI
 
                 fixed (Packet* dest = data)
                 {
-#if KK
+#if KK || PH
                     Packet* src = (Packet*)_packetBuffer.ToPointer();
                     for (int i = 0; i < numPackets; i++)
                     {
