@@ -464,7 +464,8 @@ Static Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `UInt32` | MaxPressure | Gets the maximum pressure value supported by the tablet device.  This value indicates the upper limit of pressure sensitivity that the tablet can detect. | 
+| `Boolean` | IsAvailable |  | 
+| `UInt32` | MaxPressure |  | 
 
 
 Static Methods

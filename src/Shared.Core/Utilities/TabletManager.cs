@@ -58,7 +58,7 @@ namespace KKAPI.Utilities
                 {
                     instance._subscribers.Add(handler);
                 }
-                
+
                 if (!instance._isPolling && instance._subscribers.Count > 0)
                     instance.StartPolling();
             }
@@ -76,7 +76,7 @@ namespace KKAPI.Utilities
                 {
                     instance._subscribers.Remove(handler);
                 }
-                
+
                 if (instance._subscribers.Count == 0)
                     instance.StopPolling();
             }
@@ -146,11 +146,10 @@ namespace KKAPI.Utilities
             }
         }
 
-        /// <summary>
-        /// Gets the maximum pressure value supported by the tablet device.
-        /// This value indicates the upper limit of pressure sensitivity that the tablet can detect.
-        /// </summary>
+        /// <inheritdoc cref="Tablet.MaxPressure"/>
         public static uint MaxPressure => instance._tablet.MaxPressure;
+
+        /// <inheritdoc cref="Tablet.IsInitialized"/>
         public static bool IsAvailable => instance._tablet.IsInitialized;
     }
 }
