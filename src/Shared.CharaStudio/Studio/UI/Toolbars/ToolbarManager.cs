@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace KKAPI.Studio.UI.Toolbars
@@ -46,6 +45,7 @@ namespace KKAPI.Studio.UI.Toolbars
 
         /// <summary>
         /// Removes the button from the toolbar and destroys it. The button must be recreated to be used again.
+        /// If you want to temporarily hide a button, set its Visible property to false instead.
         /// </summary>
         public static void RemoveControl(ToolbarControlBase toolbarControlBase)
         {
@@ -57,7 +57,7 @@ namespace KKAPI.Studio.UI.Toolbars
         }
 
         /// <summary>
-        /// Get all toolbar buttons added so far.
+        /// Get an array of all toolbar buttons added so far. Optionally exclude invisible buttons.
         /// </summary>
         public static ToolbarControlBase[] GetAllButtons(bool includeInvisible)
         {
@@ -66,7 +66,8 @@ namespace KKAPI.Studio.UI.Toolbars
         }
 
         /// <summary>
-        /// Queues an update of the toolbar interface if necessary.
+        /// Queues an update of the toolbar interface, which will be done on the next frame if necessary.
+        /// Shouldn't need to be called manually unless button positions are changed externally.
         /// </summary>
         public static void RequestToolbarRelayout()
         {
@@ -106,35 +107,33 @@ namespace KKAPI.Studio.UI.Toolbars
                 if (!_studioLoaded) return;
                 if (!_dirty) return;
 
-                var takenPositions = new HashSet<KeyValuePair<int, int>>();
+                var takenPositions = new HashSet<ToolbarPosition>();
                 var positionNotSet = new List<ToolbarControlBase>();
 
                 // First pass: create controls and classify buttons
-                foreach (var customToolbarToggle in _buttons.Where(x => x.Visible.Value) // Do not process invisible buttons
-                                                            .OrderByDescending(x => x is ToolbarControlAdapter) // Base game buttons first
-                                                            .ThenBy(x => x.ButtonID) // Allow plugins to control order with ButtonID
-                                                            .ThenBy(x => x.Owner.Info.Metadata.GUID)) // Keep order stable if there's duplicate ButtonIDs
+                foreach (var button in _buttons.Where(x => x.Visible.Value) // Do not process invisible buttons
+                                               .OrderByDescending(x => x is ToolbarControlAdapter) // Base game buttons first
+                                               .ThenBy(x => x.ButtonID) // Allow plugins to control order with ButtonID
+                                               .ThenBy(x => x.Owner.Info.Metadata.GUID)) // Keep order stable if there's duplicate ButtonIDs
                 {
-                    customToolbarToggle.CreateControl();
+                    button.CreateControl();
 
                     // Now try to set position
-                    var desiredRow = customToolbarToggle.DesiredRow;
-                    var desiredCol = customToolbarToggle.DesiredColumn;
-                    if (desiredRow.HasValue && desiredCol.HasValue)
+                    if (button.DesiredPosition.HasValue)
                     {
-                        var row = desiredRow.Value;
-                        var col = desiredCol.Value;
                         // Try to set to desired position, if taken then move right until free spot is found
-                        while (takenPositions.Contains(new KeyValuePair<int, int>(row, col)))
-                            col++;
-                        if (customToolbarToggle.SetActualPosition(row, col, true))
-                            takenPositions.Add(new KeyValuePair<int, int>(row, col));
+                        var position = button.DesiredPosition.Value;
+                        while (takenPositions.Contains(position))
+                            position = new ToolbarPosition(position.Row, position.Column + 1);
+                        
+                        if (button.SetActualPosition(position, true))
+                            takenPositions.Add(position);
                         else
-                            positionNotSet.Add(customToolbarToggle); // Failed to set position, will assign later
+                            positionNotSet.Add(button); // Failed to set position, will assign later
                     }
                     else
                     {
-                        positionNotSet.Add(customToolbarToggle);
+                        positionNotSet.Add(button);
                     }
                 }
 
@@ -144,16 +143,16 @@ namespace KKAPI.Studio.UI.Toolbars
                 foreach (var btn in positionNotSet)
                 {
                     // Find the next free position in the left two columns
-                    KeyValuePair<int, int> newPos;
+                    ToolbarPosition newPos;
                     do
                     {
                         var row = addedPos / 2;
                         var col = addedPos % 2;
-                        newPos = new KeyValuePair<int, int>(row, col);
+                        newPos = new ToolbarPosition(row, col);
                         addedPos++;
                     } while (takenPositions.Contains(newPos));
 
-                    btn.SetActualPosition(newPos.Key, newPos.Value, false); // Do not save position
+                    btn.SetActualPosition(newPos, false); // Do not save position
                     takenPositions.Add(newPos);
                 }
 

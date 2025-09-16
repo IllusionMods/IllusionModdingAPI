@@ -12,11 +12,9 @@ namespace KKAPI.Studio.UI.Toolbars
     {
         public ToolbarControlAdapter(Button btnObject) : base(btnObject.gameObject.name.Replace("Button ", ""), TryGetTooltip(btnObject.gameObject.name), () => null, KoikatuAPI.Instance)
         {
-            ButtonObject.OnNext(btnObject);
+            ButtonObject = btnObject;
             RectTransform = (RectTransform)btnObject.transform;
-            GetActualPosition(out var row, out var col);
-            DesiredRow = row;
-            DesiredColumn = col;
+            DesiredPosition = GetActualPosition();
 
             // BUG: These don't update if the button is changed by game code
             Interactable.OnNext(btnObject.interactable);

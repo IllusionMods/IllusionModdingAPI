@@ -43,5 +43,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\SimpleToolbarButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarControlAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\SimpleToolbarToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarPosition.cs" />
   </ItemGroup>
 </Project>

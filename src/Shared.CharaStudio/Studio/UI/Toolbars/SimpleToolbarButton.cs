@@ -1,7 +1,10 @@
 ﻿using System;
 using BepInEx;
 using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
 
 namespace KKAPI.Studio.UI.Toolbars
@@ -14,26 +17,32 @@ namespace KKAPI.Studio.UI.Toolbars
         /// <summary>
         /// Observable triggered when the button is clicked.
         /// </summary>
-        public Subject<Unit> OnClicked { get; }
+        public Subject<PointerEventData.InputButton> OnClicked { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleToolbarButton"/> class.
         /// </summary>
         /// <inheritdoc />
         /// <param name="onClicked">Action to invoke when clicked.</param>
-        public SimpleToolbarButton(string buttonID, string hoverText, Func<Texture2D> iconGetter, Action onClicked, BaseUnityPlugin owner)
+        public SimpleToolbarButton(string buttonID, string hoverText, Func<Texture2D> iconGetter, BaseUnityPlugin owner, Action<PointerEventData.InputButton> onClicked = null)
             : base(buttonID, hoverText, iconGetter, owner)
         {
-            OnClicked = new Subject<Unit>();
-            if (onClicked != null) OnClicked.Subscribe(_ => onClicked());
+            OnClicked = new Subject<PointerEventData.InputButton>();
+            if (onClicked != null) OnClicked.Subscribe(onClicked);
         }
 
         /// <inheritdoc />
         protected internal override void CreateControl()
         {
-            if (ButtonObject.Value) return;
+            if (ButtonObject) return;
             base.CreateControl();
-            ButtonObject.Value.onClick.AddListener(() => OnClicked.OnNext(Unit.Default));
+            // Do this instead of ButtonObject.onClick to support right and middle clicks too
+            ButtonObject.image.OnPointerClickAsObservable().Subscribe(data =>
+            {
+                // Recreate Button.onClick behavior
+                if (ButtonObject.IsActive() && ButtonObject.IsInteractable())
+                    OnClicked.OnNext(data.button);
+            });
         }
     }
 }

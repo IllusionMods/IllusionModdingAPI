@@ -4,13 +4,14 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using BepInEx.Configuration;
+using UnityEngine;
 
 namespace KKAPI.Studio.UI.Toolbars
 {
     internal static class ToolbarDataStorage
     {
         private static ConfigEntry<string> _positionSetting;
-        private static Dictionary<string, KeyValuePair<int, int>> _initialPositions;
+        private static Dictionary<string, ToolbarPosition> _initialPositions;
 
         private static string GetUniqueName(ToolbarControlBase button)
         {
@@ -35,15 +36,12 @@ namespace KKAPI.Studio.UI.Toolbars
             }
 
             if (_initialPositions.TryGetValue(GetUniqueName(btn), out var pos))
-            {
-                btn.DesiredRow = pos.Key;
-                btn.DesiredColumn = pos.Value;
-            }
+                btn.DesiredPosition = pos;
         }
 
-        private static Dictionary<string, KeyValuePair<int, int>> ParseButtonPositions(string value)
+        private static Dictionary<string, ToolbarPosition> ParseButtonPositions(string value)
         {
-            var dict = new Dictionary<string, KeyValuePair<int, int>>();
+            var dict = new Dictionary<string, ToolbarPosition>();
             if (string.IsNullOrEmpty(value)) return dict;
 
             // SaveKey:row:col|SaveKey2:row:col|...
@@ -51,17 +49,21 @@ namespace KKAPI.Studio.UI.Toolbars
             foreach (var entry in entries)
             {
                 var posParts = entry.Split(new[] { ':' }, StringSplitOptions.None);
-                if (posParts.Length == 3 && int.TryParse(posParts[1], out int row) && int.TryParse(posParts[2], out int col))
+                if (posParts.Length == 3)
                 {
-                    if (!dict.ContainsKey(posParts[0]))
-                        dict[posParts[0]] = new KeyValuePair<int, int>(row, col);
-                    else
-                        KoikatuAPI.Logger.LogWarning($"Duplicate toolbar button position entry found during loading for ID: {posParts[0]}");
+                    var saveKey = posParts[0];
+                    if (saveKey.Length > 0 && int.TryParse(posParts[1], out int row) && int.TryParse(posParts[2], out int col))
+                    {
+                        if (!dict.ContainsKey(saveKey))
+                            dict[saveKey] = new ToolbarPosition(row, col);
+                        else
+                            KoikatuAPI.Logger.LogWarning($"Duplicate toolbar button position entry found during loading for ID: {saveKey}");
+
+                        continue;
+                    }
                 }
-                else
-                {
-                    KoikatuAPI.Logger.LogWarning($"Could not parse toolbar button position entry: {entry}");
-                }
+
+                KoikatuAPI.Logger.LogWarning($"Could not parse toolbar button position entry: {entry}");
             }
             return dict;
         }
@@ -77,15 +79,18 @@ namespace KKAPI.Studio.UI.Toolbars
             var duplicateIds = new HashSet<string>();
             var entries = new List<string>(buttons.Count);
 
-            foreach (var b in buttons.Where(b => b.DesiredRow.HasValue && b.DesiredColumn.HasValue))
+            foreach (var b in buttons)
             {
+                if (!b.DesiredPosition.HasValue) continue;
+
                 var saveKey = GetUniqueName(b);
                 if (entries.Contains(saveKey))
                 {
                     duplicateIds.Add(saveKey);
                     continue;
                 }
-                entries.Add($"{saveKey}:{b.DesiredRow}:{b.DesiredColumn}");
+
+                entries.Add($"{saveKey}:{b.DesiredPosition.Value.Row}:{b.DesiredPosition.Value.Column}");
             }
 
             if (duplicateIds.Count > 0)

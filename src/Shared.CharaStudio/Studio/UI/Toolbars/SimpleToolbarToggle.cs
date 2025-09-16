@@ -2,6 +2,8 @@
 using BepInEx;
 using UniRx;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
 
 namespace KKAPI.Studio.UI.Toolbars
@@ -9,12 +11,12 @@ namespace KKAPI.Studio.UI.Toolbars
     /// <summary>
     /// Toolbar button that acts as a toggle (on/off).
     /// </summary>
-    public class SimpleToolbarToggle : ToolbarControlBase
+    public class SimpleToolbarToggle : SimpleToolbarButton
     {
         /// <summary>
         /// Observable value representing the toggle state.
         /// </summary>
-        public BehaviorSubject<bool> Value { get; }
+        public BehaviorSubject<bool> Toggled { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleToolbarToggle"/> class.
@@ -22,15 +24,16 @@ namespace KKAPI.Studio.UI.Toolbars
         /// <inheritdoc />
         /// <param name="initialValue">Initial toggle value.</param>
         /// <param name="onValueChanged">Action to invoke when value changes.</param>
-        public SimpleToolbarToggle(string buttonID, string hoverText, Func<Texture2D> iconGetter, bool initialValue, Action<bool> onValueChanged, BaseUnityPlugin owner)
+        public SimpleToolbarToggle(string buttonID, string hoverText, Func<Texture2D> iconGetter, bool initialValue, BaseUnityPlugin owner, Action<bool> onValueChanged = null)
             : base(buttonID, hoverText, iconGetter, owner)
         {
-            Value = new BehaviorSubject<bool>(initialValue);
-            Value.Subscribe(_ => UpdateVisualState());
+            Toggled = new BehaviorSubject<bool>(initialValue);
+            Toggled.Subscribe(_ => UpdateVisualState());
+
             if (onValueChanged != null)
             {
                 var firstSkipped = false;
-                Value.Subscribe(b =>
+                Toggled.Subscribe(b =>
                 {
                     if (firstSkipped) onValueChanged(b);
                     else firstSkipped = true;
@@ -41,27 +44,33 @@ namespace KKAPI.Studio.UI.Toolbars
         /// <inheritdoc />
         protected internal override void CreateControl()
         {
-            if (ButtonObject.Value) return;
+            if (ButtonObject) return;
 
             base.CreateControl();
-            ButtonObject.Value.onClick.AddListener(() => Value.OnNext(!Value.Value));
+
+            OnClicked.Subscribe(button =>
+            {
+                if (button == PointerEventData.InputButton.Left)
+                    Toggled.OnNext(!Toggled.Value);
+            });
+
             UpdateVisualState();
         }
 
         private void UpdateVisualState()
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(SimpleToolbarToggle));
-            var button = ButtonObject.Value;
+            var button = ButtonObject;
             if (!button) return;
             var btnIcon = button.image;
-            btnIcon.color = Value.Value ? Color.green : Color.white;
+            btnIcon.color = Toggled.Value ? Color.green : Color.white;
         }
 
         /// <inheritdoc />
         public override void Dispose()
         {
             base.Dispose();
-            Value?.Dispose();
+            Toggled?.Dispose();
         }
     }
 }

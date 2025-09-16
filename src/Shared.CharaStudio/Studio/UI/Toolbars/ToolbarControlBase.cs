@@ -33,7 +33,7 @@ namespace KKAPI.Studio.UI.Toolbars
                 if (_rectTransform != value)
                 {
                     _rectTransform = value;
-                    if (_tooltip != null) 
+                    if (_tooltip != null)
                         GlobalTooltips.RegisterTooltip(_rectTransform.gameObject, _tooltip);
                 }
             }
@@ -110,23 +110,16 @@ namespace KKAPI.Studio.UI.Toolbars
         }
 
         /// <summary>
-        /// Which row to place the button in.
+        /// Which row and column to place the button in.
         /// For the bottom left toolbar, this is counted from bottom left corner of the screen.
-        /// Set to -1 to automatically add to the end of the toolbar.
+        /// If null, the button position will be chosen automatically.
         /// </summary>
-        public int? DesiredRow { get; internal set; }
+        public ToolbarPosition? DesiredPosition { get; internal set; }
 
         /// <summary>
-        /// Which column to place the button in.
-        /// For the bottom left toolbar, this is counted from bottom left corner of the screen.
-        /// Set to -1 to automatically add to the end of the toolbar.
+        /// The Unity UI Button object for this toolbar button. Null until the button is created in the UI.
         /// </summary>
-        public int? DesiredColumn { get; internal set; }
-
-        /// <summary>
-        /// The Unity UI Button object for this toolbar button.
-        /// </summary>
-        public BehaviorSubject<Button> ButtonObject { get; } = new BehaviorSubject<Button>(null);
+        public Button ButtonObject { get; protected set; }
 
         /// <summary>
         /// Whether the button is interactable.
@@ -156,7 +149,7 @@ namespace KKAPI.Studio.UI.Toolbars
             Visible?.Dispose();
             Interactable?.Dispose();
 
-            var button = ButtonObject.Value;
+            var button = ButtonObject;
             if (button) Object.Destroy(button.gameObject);
             Object.Destroy(_iconTex);
         }
@@ -167,7 +160,7 @@ namespace KKAPI.Studio.UI.Toolbars
         protected internal virtual void CreateControl()
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(ToolbarControlBase));
-            if (ButtonObject.Value) return; // already created
+            if (ButtonObject) return; // already created
 
             var iconTex = IconTex;
 
@@ -184,12 +177,12 @@ namespace KKAPI.Studio.UI.Toolbars
             var btnIcon = copyBtn.image;
             btnIcon.sprite = btnIconSprite;
             btnIcon.color = Color.white;
-            ButtonObject.OnNext(copyBtn);
+            ButtonObject = copyBtn;
 
-            Interactable.Subscribe(b => ButtonObject.Value.interactable = b);
-            Visible.Subscribe(b =>
+            Interactable.SubscribeOnMainThread().Subscribe(b => ButtonObject.interactable = b);
+            Visible.SubscribeOnMainThread().Subscribe(b =>
             {
-                var gameObject = ButtonObject.Value.gameObject;
+                var gameObject = ButtonObject.gameObject;
                 if (gameObject.activeSelf != b)
                 {
                     gameObject.SetActive(b);
@@ -198,32 +191,33 @@ namespace KKAPI.Studio.UI.Toolbars
             });
 
             DragHelper.SetUpDragging(this, newGobject);
+
+            ControlCreated?.Invoke(newGobject);
         }
+
+        internal event Action<GameObject> ControlCreated;
 
         /// <summary>
         /// Set the desired position of the button in the toolbar.
         /// If another button has already requested this position, this button may be moved to the right.
         /// </summary>
-        /// <param name="row">Row index. 0 indexed.</param>
-        /// <param name="column">Column index. 0 indexed.</param>
-        public void SetDesiredPosition(int row, int column)
+        public void SetDesiredPosition(int row, int column) => SetDesiredPosition(new ToolbarPosition(row, column));
+
+        /// <inheritdoc cref="SetDesiredPosition(int,int)"/>
+        public void SetDesiredPosition(ToolbarPosition position)
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(ToolbarControlBase));
 
-            DesiredRow = row;
-            DesiredColumn = column;
-
+            DesiredPosition = position;
             ToolbarManager.RequestToolbarRelayout();
         }
 
         /// <summary>
-        /// Resets the desired position, allowing the button position to be chosen automatically.
+        /// Clear the desired position and let the button be positioned automatically.
         /// </summary>
         public void ResetDesiredPosition()
         {
-            DesiredColumn = null;
-            DesiredRow = null;
-
+            DesiredPosition = null;
             ToolbarManager.RequestToolbarRelayout();
         }
 
@@ -231,40 +225,39 @@ namespace KKAPI.Studio.UI.Toolbars
         /// Set the actual transform position of the button.
         /// Returns true if the position is within screen bounds.
         /// </summary>
-        internal bool SetActualPosition(int row, int column, bool setDesired)
+        internal bool SetActualPosition(ToolbarPosition position, bool setDesired)
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(ToolbarControlBase));
-            
-            var newPos = new Vector2(_originPosition.x + column * _positionOffset.x,
-                                     _originPosition.y + row * _positionOffset.y);
+
+            var newPos = new Vector2(_originPosition.x + position.Column * _positionOffset.x,
+                                     _originPosition.y + position.Row * _positionOffset.y);
             RectTransform.anchoredPosition = newPos;
 
             var positionIsInBounds = RectTransform.IsInsideScreenBounds(-5);
             if (setDesired)
-            {
-                DesiredRow = positionIsInBounds ? row : (int?)null;
-                DesiredColumn = positionIsInBounds ? column : (int?)null;
-            }
+                DesiredPosition = positionIsInBounds ? position : (ToolbarPosition?)null;
             return positionIsInBounds;
         }
 
         /// <summary>
-        /// Gets the actual row and column position of the button in the toolbar.
+        /// Gets the current position of the actual button object as placed in the toolbar.
+        /// Use to see where the button ended up after layout (e.g. when desired position is null).
         /// </summary>
-        internal void GetActualPosition(out int row, out int col) => GetActualPosition(RectTransform.anchoredPosition, out row, out col);
+        protected internal ToolbarPosition GetActualPosition() => GetActualPosition(RectTransform.anchoredPosition);
 
         /// <summary>
-        /// Gets row and column of a position in the toolbar.
+        /// Gets the toolbar position of the specified anchoredPosition as if it was in the toolbar.
         /// </summary>
-        internal static void GetActualPosition(Vector2 anchoredPosition, out int row, out int column)
+        internal static ToolbarPosition GetActualPosition(Vector2 anchoredPosition)
         {
             var y = Mathf.RoundToInt(anchoredPosition.y);
-            row = Mathf.RoundToInt((y - _originPosition.y) / _positionOffset.y);
+            var row = Mathf.RoundToInt((y - _originPosition.y) / _positionOffset.y);
 
             var x = Mathf.RoundToInt(anchoredPosition.x);
-            column = Mathf.RoundToInt((x - _originPosition.x) / _positionOffset.x);
+            var column = Mathf.RoundToInt((x - _originPosition.x) / _positionOffset.x);
 
             //Console.WriteLine($"GetActualPosition: x={anchoredPosition.x} -> col={column} y={anchoredPosition.y} -> row={row}");
+            return new ToolbarPosition(row, column);
         }
 
         /// <summary>
@@ -307,15 +300,13 @@ namespace KKAPI.Studio.UI.Toolbars
             }
 
             private ToolbarControlBase _owner;
-            private int _originalRow, _originalCol, _currentDragRow, _currentDragCol;
+            private ToolbarPosition _currentDragPosition;
 
             void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
             {
-                _owner.GetActualPosition(out _originalRow, out _originalCol);
-                _currentDragRow = _originalRow;
-                _currentDragCol = _originalCol;
+                _currentDragPosition = _owner.GetActualPosition();
 
-                var button = _owner.ButtonObject.Value;
+                var button = _owner.ButtonObject;
                 if (button == null) throw new ArgumentNullException(nameof(button));
 
                 // Move to front so it's not hidden behind other buttons while dragging
@@ -334,34 +325,34 @@ namespace KKAPI.Studio.UI.Toolbars
                 localPoint.x -= rt.rect.width / 2;
                 localPoint.y += rt.rect.height / 2;
                 rt.anchoredPosition = localPoint;
-                GetActualPosition(rt.anchoredPosition, out _currentDragRow, out _currentDragCol);
+                _currentDragPosition = GetActualPosition(rt.anchoredPosition);
             }
 
             void IEndDragHandler.OnEndDrag(PointerEventData eventData)
             {
-                _owner.ButtonObject.Value.enabled = true;
+                _owner.ButtonObject.enabled = true;
 
                 // Move other buttons to make room if necessary (to next column in the same row)
 
                 // Get all buttons in the same row that are visible and not this button
                 var allButtons = ToolbarManager.GetAllButtons(false);
-                var sameRowButtons = allButtons.Where(b => b.DesiredRow == _currentDragRow && b.DesiredColumn >= 0 && b != _owner)
-                                               .ToDictionary(b => b.DesiredColumn, b => b);
+                var sameRowButtons = allButtons.Where(b => b.DesiredPosition != null && b.DesiredPosition.Value.Row == _currentDragPosition.Row && b != _owner)
+                                               .ToDictionary(b => b.DesiredPosition.Value.Column, b => b);
 
                 // If the position is already taken, try to move the other button to make space
-                if (sameRowButtons.TryGetValue(_currentDragCol, out var otherButtonToMove))
+                if (sameRowButtons.TryGetValue(_currentDragPosition.Column, out var otherButtonToMove))
                 {
                     // Move by one to the left if there is space
-                    if (_currentDragCol >= 1 && !sameRowButtons.ContainsKey(_currentDragCol - 1))
+                    if (_currentDragPosition.Column >= 1 && !sameRowButtons.ContainsKey(_currentDragPosition.Column - 1))
                     {
-                        otherButtonToMove.DesiredColumn = _currentDragCol - 1;
+                        otherButtonToMove.DesiredPosition = new ToolbarPosition(_currentDragPosition.Row, _currentDragPosition.Column - 1);
                     }
                     else
                     {
                         // Otherwise move all buttons right until a free space is found
-                        for (int c = _currentDragCol + 1; ; c++)
+                        for (int c = _currentDragPosition.Column + 1; ; c++)
                         {
-                            otherButtonToMove.DesiredColumn = c;
+                            otherButtonToMove.DesiredPosition = new ToolbarPosition(_currentDragPosition.Row, c);
 
                             if (!sameRowButtons.TryGetValue(c, out otherButtonToMove))
                                 break;
@@ -370,7 +361,7 @@ namespace KKAPI.Studio.UI.Toolbars
                 }
 
                 // Place the dragged button at the new position and trigger relayout
-                _owner.SetDesiredPosition(_currentDragRow, _currentDragCol);
+                _owner.SetDesiredPosition(_currentDragPosition);
             }
         }
     }

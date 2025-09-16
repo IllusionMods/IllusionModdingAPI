@@ -1,11 +1,12 @@
 using KKAPI.Maker.UI;
+using KKAPI.Studio.UI.Toolbars;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using KKAPI.Studio.UI.Toolbars;
 using UniRx;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace KKAPI.Studio.UI
 {
@@ -35,7 +36,7 @@ namespace KKAPI.Studio.UI
         public static ToolbarToggle AddLeftToolbarToggle(Texture2D iconTex, bool initialValue = false, Action<bool> onValueChanged = null)
         {
             if (iconTex == null) throw new ArgumentNullException(nameof(iconTex));
-            var tgl = new SimpleToolbarToggle(GetUniqueName(), null, () => iconTex, initialValue, onValueChanged, KoikatuAPI.Instance);
+            var tgl = new SimpleToolbarToggle(GetUniqueName(), null, () => iconTex, initialValue, KoikatuAPI.Instance, onValueChanged);
             ToolbarManager.AddLeftToolbarControl(tgl);
             return new ToolbarToggle(tgl);
         }
@@ -53,7 +54,8 @@ namespace KKAPI.Studio.UI
         public static ToolbarButton AddLeftToolbarButton(Texture2D iconTex, Action onClicked = null)
         {
             if (iconTex == null) throw new ArgumentNullException(nameof(iconTex));
-            var btn = new SimpleToolbarButton(GetUniqueName(), null, () => iconTex, onClicked, KoikatuAPI.Instance);
+            var onLeftClicked = onClicked != null ? button => { if (button == PointerEventData.InputButton.Left) onClicked(); } : (Action<PointerEventData.InputButton>)null;
+            var btn = new SimpleToolbarButton(GetUniqueName(), null, () => iconTex, KoikatuAPI.Instance, onLeftClicked);
             ToolbarManager.AddLeftToolbarControl(btn);
             return new ToolbarButton(btn);
         }
@@ -66,7 +68,7 @@ namespace KKAPI.Studio.UI
                                                        .FirstOrDefault(x => x != null && !x.FullName.StartsWith("Unity") && !x.FullName.StartsWith("System"));
 
             var name = bestAssMatch?.GetName().Name ?? "Unknown";
-            
+
             // Ensure unique name. Add a number suffix if needed until we find a free name.
             var baseName = name;
             var suffix = 2;
@@ -90,23 +92,23 @@ namespace KKAPI.Studio.UI
         /// Initializes a new instance of the <see cref="ToolbarToggle"/> class.
         /// </summary>
         /// <param name="target">The target toggle toolbar button.</param>
-        public ToolbarToggle(SimpleToolbarToggle target) : base(null, target.Value.Value, null)
+        public ToolbarToggle(SimpleToolbarToggle target) : base(null, target.Toggled.Value, null)
         {
-            target.Value.Subscribe(b =>
+            ValueChanged.Subscribe(b =>
+            {
+                if (b != target.Toggled.Value)
+                    target.Toggled.OnNext(b);
+            });
+            target.Toggled.Subscribe(b =>
             {
                 if (b != Value)
                     Value = b;
             });
-            ValueChanged.Subscribe(b =>
-            {
-                if (b != target.Value.Value)
-                    target.Value.OnNext(b);
-            });
-            target.ButtonObject.Subscribe(b =>
+            target.ControlCreated += go =>
             {
                 _controlObjects.Clear();
-                if (b != null) _controlObjects.Add(b.gameObject);
-            });
+                _controlObjects.Add(go);
+            };
         }
 
         /// <inheritdoc />
@@ -131,11 +133,11 @@ namespace KKAPI.Studio.UI
         internal ToolbarButton(SimpleToolbarButton target) : base(null, null)
         {
             target.OnClicked.Subscribe(_ => _clicked.OnNext(Unit.Default));
-            target.ButtonObject.Subscribe(b =>
+            target.ControlCreated += go =>
             {
                 _controlObjects.Clear();
-                if (b != null) _controlObjects.Add(b.gameObject);
-            });
+                _controlObjects.Add(go);
+            };
         }
 
         /// <summary>
