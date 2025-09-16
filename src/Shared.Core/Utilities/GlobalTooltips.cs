@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace KKAPI.Utilities
 {
@@ -12,45 +13,42 @@ namespace KKAPI.Utilities
     {
         private const float TooltipDelay = 0.5f; // seconds
 
-        private static readonly List<TooltipData> _tooltips = new List<TooltipData>();
+        private static readonly Dictionary<GameObject, Tooltip> _tooltips = new Dictionary<GameObject, Tooltip>();
 
         private static GUIStyle _tooltipStyle;
         private static GUIContent _tooltipContent;
         private static Texture2D _tooltipBackground;
 
-        private static TooltipData _previouslyHovered;
-        private static Tooltip _currentlyDisplayedTooltip;
+        private static Tooltip _previouslyHovered;
+        private static Tooltip _currentlyDisplayed;
         private static float _hoverStartTime;
 
-        /// <summary>
-        /// Show a tooltip when the user hovers over the target RectTransform.
-        /// </summary>
-        /// <param name="target">The RectTransform to attach the tooltip to.</param>
+        /// <inheritdoc cref="RegisterTooltip(UnityEngine.GameObject,Tooltip)"/>
+        /// <param name="target">GameObject to attach the tooltip to.</param>
         /// <param name="text">The text to display in the tooltip.</param>
         /// <returns>A Tooltip object that can be used to update or remove the tooltip.</returns>
-        public static Tooltip RegisterTooltip(RectTransform target, string text)
+        public static Tooltip RegisterTooltip(GameObject target, string text)
+        {
+            var tooltip = new Tooltip(text);
+            RegisterTooltip(target, tooltip);
+            return tooltip;
+        }
+        
+        /// <summary>
+        /// Show a tooltip when user hovers over the target.
+        /// Only works for objects that block mouse raycasts (e.g. UI elements, move gizmos).
+        /// </summary>
+        /// <param name="target">GameObject to attach the tooltip to.</param>
+        /// <param name="tooltip">The tooltip to attach.</param>
+        public static void RegisterTooltip(GameObject target, Tooltip tooltip)
         {
             if (target == null) throw new ArgumentNullException(nameof(target));
-            if (text == null) throw new ArgumentNullException(nameof(text));
-            text = text.Trim();
-            if (string.IsNullOrEmpty(text)) throw new ArgumentException("Tooltip text cannot be empty or whitespace.", nameof(text));
+            if (tooltip == null) throw new ArgumentNullException(nameof(tooltip));
 
-            // Check if a tooltip is already registered for this target
-            foreach (var existing in _tooltips)
-            {
-                if (existing.Target == target)
-                {
-                    KoikatuAPI.Logger.LogWarning($"A tooltip is already registered for the target {target.name}! Updating its text, may cause conflicts.\n" + new StackTrace());
-                    existing.Tooltip.Text = text;
-                    return existing.Tooltip;
-                }
-            }
+            if (_tooltips.ContainsKey(target)) 
+                KoikatuAPI.Logger.LogWarning($"A tooltip is already registered for {target.name} - it will be replaced!\n" + new StackTrace());
 
-            var tooltip = new Tooltip(target, text);
-            var data = new TooltipData { Target = target, Tooltip = tooltip };
-            _tooltips.Add(data);
-
-            return tooltip;
+            _tooltips[target] = tooltip;
         }
 
         internal static void Update()
@@ -80,28 +78,19 @@ namespace KKAPI.Utilities
 
         private static void UpdateTooltipSelection()
         {
-            Vector2 mousePos = Input.mousePosition;
-            mousePos.y = Screen.height - mousePos.y; // Convert to GUI coordinates
+            var current = EventSystem.current;
+            if (current == null) return;
 
-            TooltipData hovered = null;
-            for (var i = 0; i < _tooltips.Count; i++)
+            var im = (StandaloneInputModule)current.currentInputModule;
+            im.GetPointerData(-1, out var pointerEventData, false);
+
+            Tooltip hovered = null;
+            if (!ReferenceEquals(pointerEventData?.pointerEnter, null))
             {
-                var data = _tooltips[i];
-
-                if (data.Target == null || data.Tooltip.IsDestroyed)
+                if (_tooltips.TryGetValue(pointerEventData.pointerEnter, out hovered) && hovered.IsDestroyed)
                 {
-                    _tooltips.RemoveAt(i);
-                    i--;
-                    continue;
-                }
-
-                if (!data.Target.gameObject.activeInHierarchy) continue;
-
-                var rect = data.Target.GetScreenRect();
-                if (rect.Contains(mousePos))
-                {
-                    hovered = data;
-                    break;
+                    _tooltips.Remove(pointerEventData.pointerEnter);
+                    hovered = null;
                 }
             }
 
@@ -112,22 +101,22 @@ namespace KKAPI.Utilities
             }
 
             if (_previouslyHovered != null && Time.realtimeSinceStartup - _hoverStartTime >= TooltipDelay)
-                _currentlyDisplayedTooltip = _previouslyHovered.Tooltip;
+                _currentlyDisplayed = _previouslyHovered;
             else
-                _currentlyDisplayedTooltip = null;
+                _currentlyDisplayed = null;
         }
 
         private static void DrawTooltip()
         {
-            if (_currentlyDisplayedTooltip == null) return;
+            if (_currentlyDisplayed == null) return;
 
             // Calculate tooltip size
-            _tooltipContent.text = _currentlyDisplayedTooltip.Text;
+            _tooltipContent.text = _currentlyDisplayed.Text;
             _tooltipStyle.CalcMinMaxWidth(_tooltipContent, out var minWidth, out var maxWidth);
             const int margin = 10;
             var width = Mathf.Clamp((int)maxWidth + margin,
-                                    Mathf.Max(_currentlyDisplayedTooltip.MinWidth, (int)minWidth),
-                                    Mathf.Min(_currentlyDisplayedTooltip.MaxWidth, Screen.width / 3));
+                                    Mathf.Max(_currentlyDisplayed.MinWidth, (int)minWidth),
+                                    Mathf.Min(_currentlyDisplayed.MaxWidth, Screen.width / 3));
             var height = _tooltipStyle.CalcHeight(_tooltipContent, width) + margin;
 
             // Calculate tooltip position
@@ -138,32 +127,22 @@ namespace KKAPI.Utilities
             GUI.Box(new Rect(x, y, width, height), _tooltipContent, _tooltipStyle);
         }
 
-        private sealed class TooltipData
-        {
-            public RectTransform Target;
-            public Tooltip Tooltip;
-        }
-
         /// <summary>
-        /// Represents a registered tooltip. Allows updating the text and destroying the tooltip.
+        /// Information required to show a tooltip. Can be destroyed to unregister it.
         /// </summary>
         public sealed class Tooltip : IDisposable
         {
+            private string _text;
+
             /// <summary>
             /// Creates a new Tooltip instance.
             /// </summary>
             /// <param name="target">The RectTransform to attach to.</param>
             /// <param name="text">The tooltip text.</param>
-            internal Tooltip(RectTransform target, string text)
+            public Tooltip(string text)
             {
-                Target = target;
-                Text = text;
+                Text = text ?? throw new ArgumentNullException(nameof(text));
             }
-
-            /// <summary>
-            /// The RectTransform this tooltip is attached to.
-            /// </summary>
-            public RectTransform Target { get; }
 
             /// <summary>
             /// Whether this tooltip has been destroyed.
@@ -173,7 +152,11 @@ namespace KKAPI.Utilities
             /// <summary>
             /// The text displayed in the tooltip.
             /// </summary>
-            public string Text { get; set; }
+            public string Text
+            {
+                get => _text;
+                set => _text = value ?? "";
+            }
 
             /// <summary>
             /// Maximum width of the tooltip in pixels. Default is uncapped.

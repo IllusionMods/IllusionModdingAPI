@@ -37,7 +37,7 @@ namespace KKAPI.Studio.UI.Toolbars
                 {
                     _rectTransform = value;
                     if (_tooltip != null) _tooltip.Destroy();
-                    if (!string.IsNullOrEmpty(HoverText)) _tooltip = GlobalTooltips.RegisterTooltip(_rectTransform, HoverText);
+                    if (!string.IsNullOrEmpty(HoverText)) _tooltip = GlobalTooltips.RegisterTooltip(_rectTransform.gameObject, HoverText);
                 }
             }
         }
