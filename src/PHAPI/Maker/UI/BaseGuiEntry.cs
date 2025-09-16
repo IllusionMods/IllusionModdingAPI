@@ -19,7 +19,7 @@ namespace KKAPI.Maker.UI
         public static readonly string GuiApiNameAppendix = "(MakerAPI)";
 
         private static Transform _guiCacheTransfrom;
-        private readonly List<GameObject> _controlObjects = new List<GameObject>(1);
+        internal readonly List<GameObject> _controlObjects = new List<GameObject>(1);
         
         /// <summary>
         /// Create a new custom control

@@ -33,11 +33,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryColorPicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryLabel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryToggle.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\CustomToolbarButtons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarControlBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarDataStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategorySlider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\SceneEffectsCategoryDropdown.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarButton.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)studio\ui\toolbars\Obsolete.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\SimpleToolbarButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarControlAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\SimpleToolbarToggle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarPosition.cs" />
   </ItemGroup>
 </Project>

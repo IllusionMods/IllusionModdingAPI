@@ -19,7 +19,7 @@ namespace KKAPI.Maker.UI
         public static readonly string GuiApiNameAppendix = "(MakerAPI)";
 
         private static Transform _guiCacheTransfrom;
-        private readonly List<GameObject> _controlObjects = new List<GameObject>(1);
+        internal readonly List<GameObject> _controlObjects = new List<GameObject>(1);
 
         private static readonly Type[] _localisationComponentTypes = typeof(Manager.Scene).Assembly.GetTypes()
             .Where(t => string.Equals(t.Namespace, "Localize.Translate", StringComparison.Ordinal))

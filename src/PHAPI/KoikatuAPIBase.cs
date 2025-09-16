@@ -96,5 +96,14 @@ namespace KKAPI
             SceneManager.sceneUnloaded += scene => Logger.LogDebug($"SceneManager.sceneUnloaded - {scene.name}");
             SceneManager.activeSceneChanged += (prev, next) => Logger.LogDebug($"SceneManager.activeSceneChanged - from {prev.name} to {next.name}");
         }
+
+        private void OnGUI()
+        {
+            GlobalTooltips.OnGUI();
+        }
+        private void Update()
+        {
+            GlobalTooltips.Update();
+        }
     }
 }
