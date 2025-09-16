@@ -29,7 +29,7 @@ namespace KKAPI.Studio.UI.Toolbars
         {
             if (_initialPositions == null)
             {
-                _positionSetting = KoikatuAPI.Instance.Config.Bind("Toolbars", "LeftToolbarButtonPositions", "", new ConfigDescription("Stores desired positions of custom toolbar buttons. Do not edit this setting manually.", null, new BrowsableAttribute(false)));
+                _positionSetting = KoikatuAPI.Instance.Config.Bind("Toolbars", "LeftToolbarButtonPositions", "", new ConfigDescription("Stores desired positions of custom toolbar buttons. Remove to reset all button positions on next studio start.", null, new BrowsableAttribute(false)));
 
                 _initialPositions = ParseButtonPositions(_positionSetting.Value);
             }
