@@ -4,7 +4,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+#pragma warning disable CS1573 // Necessary because inheritdoc doesn't count as having a param tag for the compiler, even though the tag is indeed added
 
 namespace KKAPI.Studio.UI.Toolbars
 {
