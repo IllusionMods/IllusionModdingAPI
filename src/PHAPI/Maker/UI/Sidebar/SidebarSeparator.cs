@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace KKAPI.Maker.UI.Sidebar
 {
+    /// <inheritdoc cref="ISidebarControl"/>
     [Obsolete("Not supported")]
     public class SidebarSeparator : BaseGuiEntry, ISidebarControl
     {

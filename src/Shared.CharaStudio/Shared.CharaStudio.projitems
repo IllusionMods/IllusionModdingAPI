@@ -6,7 +6,7 @@
     <SharedGUID>a4b901df-f460-4510-8e04-8b3666990222</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Shared.CharaStudio</Import_RootNamespace>
+    <Import_RootNamespace>KKAPI</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\ObjectDeletedEventArgs.cs" />

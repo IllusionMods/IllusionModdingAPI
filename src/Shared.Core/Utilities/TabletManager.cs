@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace KKAPI.Utilities
 {
+    /// <summary>
+    /// Represents a method that handles tablet input events by processing an array of data packets.
+    /// </summary>
     public delegate void TabletEvent(Packet[] packets);
 
     /// <summary>

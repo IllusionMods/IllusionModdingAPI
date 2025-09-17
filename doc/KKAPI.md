@@ -67,6 +67,7 @@ Static Events
 
 ## `Orientation`
 
+PK_ORIENTATION - Represents the orientation data of a tablet input device.
 ```csharp
 public struct KKAPI.Orientation
 
@@ -111,6 +112,7 @@ Fields
 
 ## `Rotation`
 
+PK_ROTATION - Represents the rotation data of a tablet input device.
 ```csharp
 public struct KKAPI.Rotation
 

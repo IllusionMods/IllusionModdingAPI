@@ -1,13 +1,14 @@
 ﻿using ActionGame;
 using BepInEx.Logging;
+using UnityEngine;
 
 namespace KKAPI.MainGame
 {
     internal sealed class TestGameFunctionController : GameCustomFunctionController
     {
-        protected internal override void OnEndH(HSceneProc proc, bool freeH)
+        protected internal override void OnEndH(MonoBehaviour proc, HFlag hFlag, bool vr)
         {
-            KoikatuAPI.Logger.Log(LogLevel.Warning | LogLevel.Message, "GameController - OnEndH - FreeH:" + freeH);
+            KoikatuAPI.Logger.Log(LogLevel.Warning | LogLevel.Message, "GameController - OnEndH - FreeH:" + hFlag.isFreeH);
         }
 
         protected internal override void OnEnterNightMenu()
@@ -25,9 +26,9 @@ namespace KKAPI.MainGame
             KoikatuAPI.Logger.Log(LogLevel.Warning | LogLevel.Message, "GameController - OnGameSave - Path:" + args.FullFilename);
         }
 
-        protected internal override void OnStartH(HSceneProc proc, bool freeH)
+        protected internal override void OnStartH(MonoBehaviour proc, HFlag hFlag, bool vr)
         {
-            KoikatuAPI.Logger.Log(LogLevel.Warning | LogLevel.Message, "GameController - OnStartH - FreeH:" + freeH);
+            KoikatuAPI.Logger.Log(LogLevel.Warning | LogLevel.Message, "GameController - OnStartH - FreeH:" + hFlag.isFreeH);
         }
 
         protected internal override void OnDayChange(Cycle.Week day)

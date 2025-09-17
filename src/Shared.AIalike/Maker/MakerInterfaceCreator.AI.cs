@@ -15,6 +15,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
+#pragma warning disable CS0618 // Type or member is obsolete
+
 namespace KKAPI.Maker
 {
     internal static class MakerInterfaceCreator

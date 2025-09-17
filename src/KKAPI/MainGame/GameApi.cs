@@ -164,7 +164,7 @@ namespace KKAPI.MainGame
         }
 
         /// <inheritdoc cref="AddActionIcon(int,Vector3,Sprite,Sprite,Action,Action{TriggerEnterExitEvent},bool,bool)"/>
-        [Obsolete]
+        [Obsolete("Use another overload", true)]
         public static void AddActionIcon(int mapNo, Vector3 position, Sprite iconOn, Sprite iconOff, Action onOpen, Action<TriggerEnterExitEvent> onCreated)
         {
             AddActionIcon(mapNo, position, iconOn, iconOff, onOpen, onCreated, true, false);
@@ -321,7 +321,7 @@ namespace KKAPI.MainGame
         private static void OnHEnd(BaseLoader baseLoader)
         {
             var proc = baseLoader as HSceneProc;
-            var flags = proc?.flags ?? GameObject.FindObjectOfType<HFlag>();
+            var flags = proc?.flags ?? UnityEngine.Object.FindObjectOfType<HFlag>();
             foreach (var behaviour in _registeredHandlers)
             {
                 try
@@ -356,7 +356,7 @@ namespace KKAPI.MainGame
             InsideHScene = true;
             yield return null;
             var proc = baseLoader as HSceneProc;
-            var flags = proc?.flags ?? GameObject.FindObjectOfType<HFlag>();
+            var flags = proc?.flags ?? UnityEngine.Object.FindObjectOfType<HFlag>();
             foreach (var behaviour in _registeredHandlers)
             {
                 try
@@ -456,23 +456,39 @@ namespace KKAPI.MainGame
             }
         }
 
+        /// <summary>
+        /// Event data for day changes in main game.
+        /// </summary>
         public class DayChangeEventArgs : EventArgs
         {
+            /// <summary>
+            /// Create a new instance
+            /// </summary>
             public DayChangeEventArgs(Cycle.Week newDay)
             {
                 NewDay = newDay;
             }
-
+            /// <summary>
+            /// Day that was changed to.
+            /// </summary>
             public Cycle.Week NewDay { get; }
         }
 
+        /// <summary>
+        /// Event data for period changes within a day in main game.
+        /// </summary>
         public class PeriodChangeEventArgs : EventArgs
         {
+            /// <summary>
+            /// Create a new instance
+            /// </summary>
             public PeriodChangeEventArgs(Cycle.Type period)
             {
                 NewPeriod = period;
             }
-
+            /// <summary>
+            /// Period that was changed to.
+            /// </summary>
             public Cycle.Type NewPeriod { get; }
         }
 
@@ -517,7 +533,7 @@ namespace KKAPI.MainGame
         /// </summary>
         public static TalkScene GetTalkScene()
         {
-            return GameObject.FindObjectOfType<TalkScene>();
+            return UnityEngine.Object.FindObjectOfType<TalkScene>();
         }
 
         /// <summary>
@@ -526,7 +542,7 @@ namespace KKAPI.MainGame
         /// </summary>
         public static SaveData.Heroine GetCurrentHeroine()
         {
-            var hFlag = GameObject.FindObjectOfType<HFlag>();
+            var hFlag = UnityEngine.Object.FindObjectOfType<HFlag>();
             if (hFlag != null)
                 return hFlag.GetLeadingHeroine();
 
