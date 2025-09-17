@@ -33,7 +33,7 @@ namespace KKAPI.Studio.UI
         /// Custom control that draws a color picker in the Chara > CurrentState studio menu.
         /// </summary>
         /// <param name="name">Name of the color picker, shown on left</param> 
-        /// <param name="updateValue">Function called when the current character changes and the slider value needs to be updated.
+        /// <param name="updateValue">Function called when the current character changes and the slider value needs to be updated.</param>
         /// <param name="onValueChanged">Action to perform when changing the color in the color picker</param>
         public CurrentStateCategoryColorPicker(string name, Func<OCIChar, Color> updateValue, Action<Color> onValueChanged) : base(name, updateValue)
         {
@@ -47,7 +47,7 @@ namespace KKAPI.Studio.UI
                 _originalObject = GameObject.Find("StudioScene/Canvas Main Menu/02_Manipulate/00_Chara/01_State/Viewport/Content/Etc/Color");
 
             var copy = Object.Instantiate(_originalObject, categoryObject.transform, true);
-            copy.gameObject.SetActive(true);
+            copy.SetActive(true);
             copy.name = "CustomColor " + Name;
             copy.transform.localScale = Vector3.one;
 
@@ -74,7 +74,7 @@ namespace KKAPI.Studio.UI
 #elif PH
                 Singleton<GameStudio.Studio>.Instance.colorMenu.updateColorFunc = new GameStudio.UI_ColorInfo.UpdateColor(c => { OnValueChanged(c); image.color = c; });
                 Singleton<GameStudio.Studio>.Instance.colorMenu.SetColor(image.color, UI_ColorInfo.ControlType.PresetsSample);
-	            Singleton<GameStudio.Studio>.Instance.colorPaletteCtrl.visible = true;
+                Singleton<GameStudio.Studio>.Instance.colorPaletteCtrl.visible = true;
 #endif
             });
             Value.Subscribe(newValue => image.color = newValue);

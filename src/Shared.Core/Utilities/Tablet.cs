@@ -1,8 +1,12 @@
 using System;
 using System.Runtime.InteropServices;
 
+// ReSharper disable InconsistentNaming
+
 namespace KKAPI
 {
+#pragma warning disable CS1591
+
     /// <summary>
     /// Represents a data packet structure used for interacting with tablet hardware,
     /// containing information about button states, positional coordinates, and
@@ -28,6 +32,9 @@ namespace KKAPI
         public Rotation pkRotation;             // PK_ROTATION
     }
 
+    /// <summary>
+    /// PK_ORIENTATION - Represents the orientation data of a tablet input device.
+    /// </summary>
     public struct Orientation
     {
         public uint orAzimuth;
@@ -35,12 +42,17 @@ namespace KKAPI
         public uint orTwist;
     }
 
+    /// <summary>
+    /// PK_ROTATION - Represents the rotation data of a tablet input device.
+    /// </summary>
     public struct Rotation
     {
         public uint roPitch;
         public uint roRoll;
         public uint roYaw;
     }
+
+#pragma warning restore CS1591
 
     /// <summary>
     /// Represents a tablet input device that utilizes WinTabAPI for digitizer integration.
@@ -232,8 +244,6 @@ namespace KKAPI
 
         #endregion
 
-        internal Tablet() { }
-
         /// <summary>
         /// Initializes the tablet by setting up the context and required configurations to enable digitizer input.
         /// </summary>
@@ -369,7 +379,7 @@ namespace KKAPI
             {
                 int numPackets = WTPacketsGet(_context, MAX_PACKETS, _packetBuffer);
                 if (numPackets == 0) return true;
-                
+
                 data = new Packet[numPackets];
 
                 fixed (Packet* dest = data)

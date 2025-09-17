@@ -14,6 +14,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+
 namespace KKAPI.MainGame
 {
     /// <summary>
@@ -252,12 +254,9 @@ namespace KKAPI.MainGame
 
             public CustomTrespassingButton(string buttonText, Func<HSprite, bool> spawnConditionCheck, Action<HSprite> onButtonClicked)
             {
-                if (buttonText == null) throw new ArgumentNullException(nameof(buttonText));
-                if (onButtonClicked == null) throw new ArgumentNullException(nameof(onButtonClicked));
-
-                ButtonText = buttonText;
-                SpawnConditionCheck = spawnConditionCheck;
-                OnButtonClicked = onButtonClicked;
+                ButtonText = buttonText ?? throw new ArgumentNullException(nameof(buttonText));
+                SpawnConditionCheck = spawnConditionCheck; // Can be null
+                OnButtonClicked = onButtonClicked ?? throw new ArgumentNullException(nameof(onButtonClicked));
             }
 
             public void Dispose()

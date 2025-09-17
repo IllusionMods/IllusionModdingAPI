@@ -53,7 +53,7 @@ namespace KKAPI.Maker
 
         /// <summary>
         /// Add a control to the accessory selection and settings window.
-        /// For editable controls that depend on the selected accessory use <see cref="AddEditableAccessoryWindowControl{T,TVal}"/>.
+        /// For editable controls that depend on the selected accessory use <see cref="AddEditableAccessoryWindowControl{T,TVal}(T)"/>.
         /// </summary>
         public static T AddAccessoryWindowControl<T>(T control) where T : BaseGuiEntry
         {
@@ -65,7 +65,7 @@ namespace KKAPI.Maker
 #if KK || KKS || EC //todo AI and HS2
         /// <summary>
         /// Add a control to the accessory selection and settings window.
-        /// For editable controls that depend on the selected accessory use <see cref="AddEditableAccessoryWindowControl{T,TVal}"/>.
+        /// For editable controls that depend on the selected accessory use <see cref="AddEditableAccessoryWindowControl{T,TVal}(T)"/>.
         /// To have API control visibility automatically set automate_visible to true.
         /// </summary>
         public static T AddAccessoryWindowControl<T>(T control, bool automate_visible) where T : BaseGuiEntry
@@ -108,7 +108,7 @@ namespace KKAPI.Maker
 
 
         {
-            var res = (int)Hooks._modeSex;
+            var res = Hooks._modeSex;
 #if DEBUG
             if(GetMakerBase().modeSex != res)
                 KoikatuAPI.Logger.LogMessage($"Difference in modesex hooks={res} base={GetMakerBase().modeSex}");
@@ -284,7 +284,7 @@ namespace KKAPI.Maker
 
 #if KK || KKS || EC
         /// <summary>
-        /// Fired when the visbility state of accessory controls, added by <see cref="AddAccessoryWindowControl{T}"/>, should change state if not managed automatically by the api.
+        /// Fired when the visbility state of accessory controls, added by <see cref="AddAccessoryWindowControl{T}(T)"/>, should change state if not managed automatically by the api.
         /// </summary>
         public static event EventHandler<AccessoryContolVisibilityArgs> AccessoryContolVisibility;
 
@@ -387,7 +387,7 @@ namespace KKAPI.Maker
 #if KK || KKS || EC
             // Exit maker / save character dialog boxes
             if (!ccwGo)
-                ccwGo = GameObject.FindObjectOfType<CustomChangeSystemMenu>()?.checkWindow.gameObject;
+                ccwGo = UnityEngine.Object.FindObjectOfType<CustomChangeSystemMenu>()?.checkWindow.gameObject;
             else if (ccwGo.activeSelf)
                 return false;
 #endif
@@ -395,6 +395,8 @@ namespace KKAPI.Maker
             return true;
         }
 
+#if KK || KKS || EC
         private static GameObject ccwGo;
+#endif
     }
 }

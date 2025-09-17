@@ -1,5 +1,4 @@
 using System;
-using JetBrains.Annotations;
 using UnityEngine;
 
 namespace KKAPI.Utilities
@@ -9,18 +8,41 @@ namespace KKAPI.Utilities
     /// </summary>
     public class SmartRect
     {
-        public event EventHandler OnAnimationComplete; 
+        /// <summary>
+        /// Occurs when the animation completes.
+        /// </summary>
+        public event EventHandler OnAnimationComplete;
         private Rect _animateFrom;
         private Rect _animateTo;
         private float _animationDuration;
         private float _elapsedTime;
 
+        /// <summary>
+        /// Default horizontal offset value. Used if not specified in constructor.
+        /// </summary>
         public static float DefaultOffsetX => 20;
+        /// <summary>
+        /// Default vertical offset value. Used if not specified in constructor.
+        /// </summary>
         public static float DefaultOffsetY => 5f;
 
+        /// <summary>
+        /// The initial height of the rectangle.
+        /// Used to <see cref="Reset"/> the rectangle back to its original dimensions.
+        /// </summary>
         public readonly float DefaultHeight;
+        /// <summary>
+        /// The initial width of the rectangle.
+        /// Used to <see cref="Reset"/> the rectangle back to its original dimensions.
+        /// </summary>
         public readonly float DefaultWidth;
+        /// <summary>
+        /// The initial X offset of the rectangle.
+        /// </summary>
         public readonly float DefaultX;
+        /// <summary>
+        /// The initial Y offset of the rectangle.
+        /// </summary>
         public readonly float DefaultY;
 
         private float _moveX;
@@ -29,9 +51,18 @@ namespace KKAPI.Utilities
         private readonly float _offsetY;
         private Rect _source;
 
+        /// <summary>
+        /// Gets the horizontal offset applied to the rectangle.
+        /// </summary>
         public float OffsetX => _offsetX;
+        /// <summary>
+        /// Gets the vertical offset applied to the rectangle.
+        /// </summary>
         public float OffsetY => _offsetY;
 
+        /// <summary>
+        /// Gets or sets the height of the rectangle.
+        /// </summary>
         public float Height
         {
             get => _source.height;
@@ -42,9 +73,18 @@ namespace KKAPI.Utilities
             }
         }
 
+        /// <summary>
+        /// Gets the total width of the rectangle including the horizontal offset.
+        /// </summary>
         public float TotalWidth => Width + _offsetX;
+        /// <summary>
+        /// Gets the total height of the rectangle including the vertical offset.
+        /// </summary>
         public float TotalHeight => Height + _offsetY;
 
+        /// <summary>
+        /// Gets or sets the width of the rectangle.
+        /// </summary>
         public float Width
         {
             get => _source.width;
@@ -55,12 +95,18 @@ namespace KKAPI.Utilities
             }
         }
 
+        /// <summary>
+        /// Gets or sets the X position of the rectangle.
+        /// </summary>
         public float X
         {
             get => _source.x;
             set => _source.x = value;
         }
 
+        /// <summary>
+        /// Gets or sets the Y position of the rectangle.
+        /// </summary>
         public float Y
         {
             get => _source.y;
@@ -95,10 +141,12 @@ namespace KKAPI.Utilities
             DefaultY = src.y;
         }
 
+        /// <inheritdoc cref="SmartRect(Rect,float,float)"/>
         public SmartRect(float x, float y, float width, float height) : this(new Rect(x, y, width, height))
         {
         }
 
+        /// <inheritdoc cref="SmartRect(Rect,float,float)"/>
         public SmartRect(float x, float y, float width, float height, float offX, float offY) : this(
             new Rect(x, y, width, height), offX, offY)
         {
@@ -252,12 +300,20 @@ namespace KKAPI.Utilities
             return this;
         }
 
+        /// <summary>
+        /// Sets the width of the rectangle.
+        /// </summary>
+        /// <returns>The current instance of <see cref="SmartRect"/> to allow method chaining.</returns>
         public SmartRect SetWidth(float width)
         {
             _source.width = width;
             return this;
         }
 
+        /// <summary>
+        /// Sets the height of the rectangle.
+        /// </summary>
+        /// <returns>The current instance of <see cref="SmartRect"/> to allow method chaining.</returns>
         public SmartRect SetHeight(float height)
         {
             _source.height = height;
@@ -380,9 +436,19 @@ namespace KKAPI.Utilities
             return this;
         }
 
+        /// <summary>
+        /// Creates a new <see cref="SmartRect"/> instance by adjusting the X-coordinate based on the specified column index.
+        /// </summary>
+        /// <param name="col">The column index used to calculate the horizontal offset. Must be a non-negative integer.</param>
+        /// <returns>A new <see cref="SmartRect"/> with the adjusted X-coordinate, while retaining the original Y-coordinate, width, and height.</returns>
         public SmartRect Col(int col) =>
             new SmartRect(_source.x + _moveX * col, _source.y, _source.width, _source.height);
 
+        /// <summary>
+        /// Creates a new <see cref="SmartRect"/> instance representing a specific row, offset vertically by the specified row index.
+        /// </summary>
+        /// <param name="row">The zero-based index of the row to calculate. Must be a non-negative integer.</param>
+        /// <returns>A new <see cref="SmartRect"/> with the same width and height as the source, but offset vertically by the row index.</returns>
         public SmartRect Row(int row) =>
             new SmartRect(_source.x, _source.y + _moveY * row, _source.width, _source.height);
 

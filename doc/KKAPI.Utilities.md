@@ -383,31 +383,31 @@ Fields
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Single` | DefaultHeight |  | 
-| `Single` | DefaultWidth |  | 
-| `Single` | DefaultX |  | 
-| `Single` | DefaultY |  | 
+| `Single` | DefaultHeight | The initial height of the rectangle.  Used to `KKAPI.Utilities.SmartRect.Reset` the rectangle back to its original dimensions. | 
+| `Single` | DefaultWidth | The initial width of the rectangle.  Used to `KKAPI.Utilities.SmartRect.Reset` the rectangle back to its original dimensions. | 
+| `Single` | DefaultX | The initial X offset of the rectangle. | 
+| `Single` | DefaultY | The initial Y offset of the rectangle. | 
 
 
 Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Single` | Height |  | 
-| `Single` | OffsetX |  | 
-| `Single` | OffsetY |  | 
-| `Single` | TotalHeight |  | 
-| `Single` | TotalWidth |  | 
-| `Single` | Width |  | 
-| `Single` | X |  | 
-| `Single` | Y |  | 
+| `Single` | Height | Gets or sets the height of the rectangle. | 
+| `Single` | OffsetX | Gets the horizontal offset applied to the rectangle. | 
+| `Single` | OffsetY | Gets the vertical offset applied to the rectangle. | 
+| `Single` | TotalHeight | Gets the total height of the rectangle including the vertical offset. | 
+| `Single` | TotalWidth | Gets the total width of the rectangle including the horizontal offset. | 
+| `Single` | Width | Gets or sets the width of the rectangle. | 
+| `Single` | X | Gets or sets the X position of the rectangle. | 
+| `Single` | Y | Gets or sets the Y position of the rectangle. | 
 
 
 Events
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `EventHandler` | OnAnimationComplete |  | 
+| `EventHandler` | OnAnimationComplete | Occurs when the animation completes. | 
 
 
 Methods
@@ -415,7 +415,7 @@ Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `SmartRect` | BeginHorizontal(`Int32` elementCount) | Divides the current width of the rectangle into equal segments for horizontal layout.  Adjusts the width of each segment based on the total number of elements and specified horizontal offsets. | 
-| `SmartRect` | Col(`Int32` col) |  | 
+| `SmartRect` | Col(`Int32` col) | Creates a new `KKAPI.Utilities.SmartRect` instance by adjusting the X-coordinate based on the specified column index. | 
 | `SmartRect` | EndHorizontal() | Synonymous to `KKAPI.Utilities.SmartRect.ResetX(System.Boolean)` | 
 | `SmartRect` | HeightToEnd(`Single` y) | Sets the height of the rectangle such that its bottom edge aligns with the specified y-coordinate. | 
 | `SmartRect` | Move(`Vector2` vec) | Moves the SmartRect by the specified vector values. | 
@@ -433,11 +433,11 @@ Methods
 | `SmartRect` | Reset() | Resets the `KKAPI.Utilities.SmartRect` to its default position and dimensions. | 
 | `SmartRect` | ResetX(`Boolean` includeWidth = True) | Resets the x-coordinate of the rectangle to its default value.  Optionally resets the width to its default value. | 
 | `SmartRect` | ResetY(`Boolean` includeHeight = False) | Resets the y-coordinate of the rectangle to its default value.  Optionally resets the height to its default value. | 
-| `SmartRect` | Row(`Int32` row) |  | 
+| `SmartRect` | Row(`Int32` row) | Creates a new `KKAPI.Utilities.SmartRect` instance representing a specific row, offset vertically by the specified row index. | 
 | `SmartRect` | SetAnimateTo(`Rect` to, `Single` duration) | Sets the target rectangle and duration for an animation. | 
 | `SmartRect` | SetAnimation(`Rect` from, `Rect` to, `Single` duration) | Sets the starting and target rectangles, along with the duration for an animation. | 
-| `SmartRect` | SetHeight(`Single` height) |  | 
-| `SmartRect` | SetWidth(`Single` width) |  | 
+| `SmartRect` | SetHeight(`Single` height) | Sets the height of the rectangle. | 
+| `SmartRect` | SetWidth(`Single` width) | Sets the width of the rectangle. | 
 | `Rect` | ToRect() | Converts the current `KKAPI.Utilities.SmartRect` instance into a Rect object. | 
 | `Boolean` | UpdateAnimationIndependent(`Func<Single, Vector2>` solver) | Updates the animation of the rectangle independently using a provided solver function based on progress. | 
 | `SmartRect` | WidthToEnd(`Single` x) | Sets the width of the rectangle such that its right edge aligns with the specified x-coordinate. | 
@@ -447,8 +447,8 @@ Static Properties
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `Single` | DefaultOffsetX |  | 
-| `Single` | DefaultOffsetY |  | 
+| `Single` | DefaultOffsetX | Default horizontal offset value. Used if not specified in constructor. | 
+| `Single` | DefaultOffsetY | Default vertical offset value. Used if not specified in constructor. | 
 
 
 ## `TabletManager`

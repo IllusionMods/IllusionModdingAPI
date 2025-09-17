@@ -79,7 +79,7 @@ namespace KKAPI.Maker.UI
 
         private static void MakeCopy()
         {
-            var originalSlider = GameObject.FindObjectOfType<CustomSliderSet>().transform;
+            var originalSlider = UnityEngine.Object.FindObjectOfType<CustomSliderSet>().transform;
 
             _sliderCopy = Object.Instantiate(originalSlider, GuiCacheTransfrom, false);
             _sliderCopy.gameObject.SetActive(false);

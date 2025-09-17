@@ -11,6 +11,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
+#pragma warning disable CS0618 // Type or member is obsolete
+
 namespace KKAPI.Maker
 {
     internal static class MakerInterfaceCreator
@@ -106,7 +108,7 @@ namespace KKAPI.Maker
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
 
             MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle"))
-                .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
+                                     .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
             MakerCoordinateLoadToggle.AddLoadToggle(new MakerCoordinateLoadToggle("Test toggle 2"))
                 .ValueChanged.Subscribe(b => KoikatuAPI.Logger.LogMessage(b));
 

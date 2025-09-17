@@ -6,7 +6,7 @@
     <SharedGUID>16441a78-1945-4d7c-b3f4-333bab848211</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Shared.KKalike</Import_RootNamespace>
+    <Import_RootNamespace>KKAPI</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.Hooks.KK.cs" />

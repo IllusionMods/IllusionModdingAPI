@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C275954F-05F9-4AFF-8290-E8190B54A602}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>ModdingAPI</RootNamespace>
+    <RootNamespace>KKAPI</RootNamespace>
     <AssemblyName>KKSAPI</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

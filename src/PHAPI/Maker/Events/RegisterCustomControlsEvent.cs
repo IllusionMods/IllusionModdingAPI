@@ -2,6 +2,8 @@
 using KKAPI.Maker.UI;
 using KKAPI.Maker.UI.Sidebar;
 
+#pragma warning disable CS0618 // Type or member is obsolete
+
 namespace KKAPI.Maker
 {
     /// <summary>

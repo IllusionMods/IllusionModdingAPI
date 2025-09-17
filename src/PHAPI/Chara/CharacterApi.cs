@@ -133,7 +133,7 @@ namespace KKAPI.Chara
             {
                 if (file == null) return;
 
-                var character = GameObject.FindObjectOfType<Human>(); //MakerAPI.GetCharacterControl();
+                var character = UnityEngine.Object.FindObjectOfType<Human>(); //MakerAPI.GetCharacterControl();
                 if (character == null)
                 {
                     KoikatuAPI.Logger.LogError("OnCoordinateBeingSaved fired outside chara maker");
