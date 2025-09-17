@@ -141,7 +141,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\BepInEx.Analyzers.1.0.4\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.Unity.Analyzers.1.18.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.Unity.Analyzers.1.25.0\analyzers\dotnet\cs\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\Shared.Core\Shared.Core.projitems" Label="Shared" />
   <Import Project="..\Shared.KKalike\Shared.KKalike.projitems" Label="Shared" />
@@ -149,10 +149,13 @@
   <PropertyGroup>
     <PostBuildEvent>IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) EC</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
+    <Error Condition="!Exists('..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets'))" />
+    <Error Condition="!Exists('..\packages\IllusionLibs.BepInEx.MonoMod.22.1.29.1\build\IllusionLibs.BepInEx.MonoMod.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.BepInEx.MonoMod.22.1.29.1\build\IllusionLibs.BepInEx.MonoMod.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6.4\build\IllusionLibs.EmotionCreators.Assembly-CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6.4\build\IllusionLibs.EmotionCreators.Assembly-CSharp.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.4\build\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.4\build\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.EmotionCreators.IL.2019.6.6.4\build\IllusionLibs.EmotionCreators.IL.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.EmotionCreators.IL.2019.6.6.4\build\IllusionLibs.EmotionCreators.IL.targets'))" />
@@ -165,9 +168,8 @@
     <Error Condition="!Exists('..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.UI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.UI.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.EmotionCreators.UnityEngine.UIModule.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.UIModule.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.EmotionCreators.UnityEngine.UIModule.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.UIModule.targets'))" />
     <Error Condition="!Exists('..\packages\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.4.18.0\build\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.4.18.0\build\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.targets'))" />
-    <Error Condition="!Exists('..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets'))" />
-    <Error Condition="!Exists('..\packages\IllusionLibs.BepInEx.MonoMod.22.1.29.1\build\IllusionLibs.BepInEx.MonoMod.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IllusionLibs.BepInEx.MonoMod.22.1.29.1\build\IllusionLibs.BepInEx.MonoMod.targets'))" />
   </Target>
+  <Import Project="..\packages\IllusionLibs.BepInEx.MonoMod.22.1.29.1\build\IllusionLibs.BepInEx.MonoMod.targets" Condition="Exists('..\packages\IllusionLibs.BepInEx.MonoMod.22.1.29.1\build\IllusionLibs.BepInEx.MonoMod.targets')" />
   <Import Project="..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6.4\build\IllusionLibs.EmotionCreators.Assembly-CSharp.targets" Condition="Exists('..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp.2019.6.6.4\build\IllusionLibs.EmotionCreators.Assembly-CSharp.targets')" />
   <Import Project="..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.4\build\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.targets" Condition="Exists('..\packages\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.2019.6.6.4\build\IllusionLibs.EmotionCreators.Assembly-CSharp-firstpass.targets')" />
   <Import Project="..\packages\IllusionLibs.EmotionCreators.IL.2019.6.6.4\build\IllusionLibs.EmotionCreators.IL.targets" Condition="Exists('..\packages\IllusionLibs.EmotionCreators.IL.2019.6.6.4\build\IllusionLibs.EmotionCreators.IL.targets')" />
@@ -180,6 +182,4 @@
   <Import Project="..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.UI.targets" Condition="Exists('..\packages\IllusionLibs.EmotionCreators.UnityEngine.UI.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.UI.targets')" />
   <Import Project="..\packages\IllusionLibs.EmotionCreators.UnityEngine.UIModule.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.UIModule.targets" Condition="Exists('..\packages\IllusionLibs.EmotionCreators.UnityEngine.UIModule.2017.4.24.4\build\IllusionLibs.EmotionCreators.UnityEngine.UIModule.targets')" />
   <Import Project="..\packages\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.4.18.0\build\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.targets" Condition="Exists('..\packages\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.4.18.0\build\IllusionLibs.XUnity.AutoTranslator.Plugin.Core.targets')" />
-  <Import Project="..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\packages\IllusionLibs.BepInEx.Harmony.2.9.0\build\IllusionLibs.BepInEx.Harmony.targets')" />
-  <Import Project="..\packages\IllusionLibs.BepInEx.MonoMod.22.1.29.1\build\IllusionLibs.BepInEx.MonoMod.targets" Condition="Exists('..\packages\IllusionLibs.BepInEx.MonoMod.22.1.29.1\build\IllusionLibs.BepInEx.MonoMod.targets')" />
 </Project>
