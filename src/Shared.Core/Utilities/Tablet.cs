@@ -190,24 +190,12 @@ namespace KKAPI
 
         private IntPtr _context = IntPtr.Zero;
         private bool _isInitialized;
-        private float _currentPressure;
         private uint _maxPressure = 65535;
         private readonly object _lockObject = new object();
         private const int MAX_PACKETS = 128;
         private int _packetSize;
         private int _bufferSize;
         private IntPtr _packetBuffer;
-
-        public float CurrentPressure
-        {
-            get
-            {
-                lock (_lockObject)
-                {
-                    return _currentPressure;
-                }
-            }
-        }
 
         /// <summary>
         /// Represents the maximum pressure threshold supported by the tablet's pressure-sensitive input.

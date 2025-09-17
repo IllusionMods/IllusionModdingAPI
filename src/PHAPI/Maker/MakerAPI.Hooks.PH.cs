@@ -15,7 +15,7 @@ namespace KKAPI.Maker
     {
         private static class Hooks
         {
-            private static bool _makerStarting;
+            //private static bool _makerStarting;
 
             internal static EditMode currenEditMode;
 
@@ -96,7 +96,7 @@ namespace KKAPI.Maker
                 for (var i = 0; i < 2; i++)
                     yield return null;
 
-                _makerStarting = false;
+                //_makerStarting = false;
                 OnMakerFinishedLoading();
 
                 KoikatuAPI.Logger.LogDebug($"Maker loaded in {sw.ElapsedMilliseconds}ms");
@@ -170,7 +170,7 @@ namespace KKAPI.Maker
 
             public static void Init()
             {
-                var hi = Harmony.CreateAndPatchAll(typeof(Hooks));
+                Harmony.CreateAndPatchAll(typeof(Hooks));
 
                 //// KK LoadFile(BinaryReader br, bool noLoadPNG, bool noLoadStatus)
                 //// EC LoadFile(BinaryReader br, int lang, bool noLoadPNG, bool noLoadStatus)

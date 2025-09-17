@@ -19,7 +19,7 @@ namespace KKAPI.Studio.UI
     public class SceneEffectsColorPickerSet
     {
         private Color CurrentValue;
-        private bool EventsEnabled = true;
+        //private bool EventsEnabled = true;
 
         #region Backing Fields
 
@@ -117,10 +117,10 @@ namespace KKAPI.Studio.UI
         /// <param name="triggerEvents">Whether to trigger the Setter method</param>
         public void SetValue(Color value, bool triggerEvents)
         {
-            EventsEnabled = false;
+            //EventsEnabled = false;
             CurrentValue = value;
             ColorImage.color = value;
-            EventsEnabled = true;
+            //EventsEnabled = true;
             if (triggerEvents)
                 Setter.Invoke(value);
         }
