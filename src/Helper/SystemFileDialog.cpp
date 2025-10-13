@@ -56,6 +56,18 @@ __declspec(dllexport) std::wstring SetFileTypes(IFileDialog* dialog, const wchar
     return defaultExt;
 }
 
+/**
+ * Creates and displays an open file dialog with the specified parameters.
+ * The selected file(s) path(s) will be written to the specified output buffer.
+ *
+ * @param title The title of the file dialog. Pass a null pointer or an empty string to use the default title.
+ * @param initialPath The initial folder path to display in the file dialog. Pass a null pointer or an empty string to use the default location.
+ * @param outPath A writable buffer to store the selected file path(s). Paths of multiple selected files, if applicable, are separated by '|'. This buffer should have a capacity of at least 32767 wide characters.
+ * @param fosFlags File open dialog options specified as a combination of FOS_* flags. These flags control the behavior of the dialog (e.g., allowing multi-selection, file type filtering).
+ * @param filter A string specifying file type filters. The format should follow standard file dialog filter conventions (e.g., "Text Files (*.txt)|*.txt").
+ * @param hr A reference to an HRESULT variable that will receive the result of the dialog creation and operation.
+ * @param result A reference to a BOOL value that will be set to `TRUE` if the user selects at least one file and clicks "OK," or `FALSE` otherwise.
+ */
 __declspec(dllexport) void create_open_file_dialog(const wchar_t* title, const wchar_t* initialPath, wchar_t* outPath,
                                                    int fosFlags,
                                                    const wchar_t* filter, HRESULT& hr, BOOL& result)
@@ -152,6 +164,18 @@ __declspec(dllexport) void create_open_file_dialog(const wchar_t* title, const w
     }
 }
 
+/**
+ * Creates and displays an save file dialog with the specified parameters.
+ * The selected file(s) path(s) will be written to the specified output buffer.
+ *
+ * @param title The title of the file dialog. Pass a null pointer or an empty string to use the default title.
+ * @param initialPath The initial folder path to display in the file dialog. Pass a null pointer or an empty string to use the default location.
+ * @param outPath A writable buffer to store the selected file path(s). Paths of multiple selected files, if applicable, are separated by '|'. This buffer should have a capacity of at least 32767 wide characters.
+ * @param fosFlags File open dialog options specified as a combination of FOS_* flags. These flags control the behavior of the dialog (e.g., allowing multi-selection, file type filtering).
+ * @param filter A string specifying file type filters. The format should follow standard file dialog filter conventions (e.g., "Text Files (*.txt)|*.txt").
+ * @param hr A reference to an HRESULT variable that will receive the result of the dialog creation and operation.
+ * @param result A reference to a BOOL value that will be set to `TRUE` if the user selects at least one file and clicks "OK," or `FALSE` otherwise.
+ */
 __declspec(dllexport) void create_file_save_dialog(const wchar_t* title, const wchar_t* initialPath, wchar_t* outPath,
                                                    int fosFlags,
                                                    const wchar_t* filter, HRESULT& hr, BOOL& result)
@@ -217,6 +241,18 @@ __declspec(dllexport) void create_file_save_dialog(const wchar_t* title, const w
     }
 }
 
+/**
+ * Displays a file dialog (open or save) based on the specified parameters and returns the result.
+ * The dialog is created using the Windows Common Item Dialog interfaces and initialized according
+ * to the provided options and parameters.
+ *
+ * @param title The title of the file dialog. Pass a null pointer or an empty string to use the default title.
+ * @param initialPath The initial folder path displayed in the file dialog. Pass a null pointer or an empty string for the default location.
+ * @param outPath A writable buffer to store the selected file path(s). In the case of multiple file selection, paths are returned as a single string separated by the '|' character. This buffer should have sufficient capacity to store the resulting paths.
+ * @param fosFlags A combination of FOS_* flags that specify the behavior of the file dialog (e.g., FOS_ALLOWMULTISELECT, FOS_CREATEPROMPT).
+ * @param filter A string that defines file type filters to be applied in the dialog. It follows the standard format for file filters, such as: "Text Files (*.txt)|*.txt".
+ * @return TRUE if the user successfully selects a file or files and clicks "OK." Returns FALSE if the user cancels the dialog or an error occurs during its operation.
+ */
 __declspec(dllexport) BOOL ShowDialog(
     const wchar_t* title,
     const wchar_t* initialPath,
