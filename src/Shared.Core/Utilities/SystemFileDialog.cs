@@ -4,6 +4,13 @@ using System.Text;
 
 namespace KKAPI.Utilities
 {
+    /// <summary>
+    /// Provides functionality for displaying system file dialogs to allow users to select files or folders.
+    /// </summary>
+    /// <remarks>The <see cref="SystemFileDialog"/> class includes methods and enumerations for customizing
+    /// the behavior and appearance of file dialogs, such as specifying filters, enabling multi-selection, and
+    /// controlling whether folders or files can be selected. It is designed to simplify interaction with native file
+    /// dialog functionality.</remarks>
     public class SystemFileDialog
     {
         /// <summary>
@@ -119,7 +126,9 @@ namespace KKAPI.Utilities
             [MarshalAs(UnmanagedType.LPWStr)] string filter
         );
 
+        /// <summary>
         /// Displays a system file dialog to allow the user to select a file or folder.
+        /// </summary>
         /// <param name="title">
         /// The title of the dialog. If null or empty, a default title will be used based on the specified flags.
         /// </param>
