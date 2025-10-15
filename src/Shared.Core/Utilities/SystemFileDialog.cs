@@ -110,7 +110,7 @@ namespace KKAPI.Utilities
             SUPPORTSTREAMABLEITEMS = 0x80000000
         }
 
-        [DllImport("Helper.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Constants2.NativeHelperFilename, CharSet = CharSet.Unicode)]
         private static extern bool ShowDialog(
             [MarshalAs(UnmanagedType.LPWStr)] string title,
             [MarshalAs(UnmanagedType.LPWStr)] string initialPath,

@@ -1,57 +1,57 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36518.9 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKAPI", "KKAPI\KKAPI.csproj", "{74C2DB86-55BB-47B4-9805-51B5B992EF35}"
+	ProjectSection(ProjectDependencies) = postProject
+		{240874A0-0873-4EA1-BC5D-350B09EB1182} = {240874A0-0873-4EA1-BC5D-350B09EB1182}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECAPI", "ECAPI\ECAPI.csproj", "{F4928B3C-E2B0-4AEC-9FBC-327BB2A0E6BB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{240874A0-0873-4EA1-BC5D-350B09EB1182} = {240874A0-0873-4EA1-BC5D-350B09EB1182}
+	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.Core", "Shared.Core\Shared.Core.shproj", "{BD697C6C-A7D7-4307-A227-CCAFC95C8744}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIAPI", "AIAPI\AIAPI.csproj", "{601F5CCA-63FA-4E77-A7C5-16591977578F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{240874A0-0873-4EA1-BC5D-350B09EB1182} = {240874A0-0873-4EA1-BC5D-350B09EB1182}
+	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.KKalike", "Shared.KKalike\Shared.KKalike.shproj", "{16441A78-1945-4D7C-B3F4-333BAB848211}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.CharaStudio", "Shared.CharaStudio\Shared.CharaStudio.shproj", "{A4B901DF-F460-4510-8E04-8B3666990222}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PHAPI", "PHAPI\PHAPI.csproj", "{B0AA6926-D9A2-40B8-8100-CCEB9A17FF10}"
+	ProjectSection(ProjectDependencies) = postProject
+		{240874A0-0873-4EA1-BC5D-350B09EB1182} = {240874A0-0873-4EA1-BC5D-350B09EB1182}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HS2API", "HS2API\HS2API.csproj", "{32333D00-1E55-4714-AD80-291B514A4F6E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{240874A0-0873-4EA1-BC5D-350B09EB1182} = {240874A0-0873-4EA1-BC5D-350B09EB1182}
+	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared.AIalike", "Shared.AIalike\Shared.AIalike.shproj", "{BED55866-7531-4CC4-BA58-F406D901D3E8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E9E9D0D7-5830-4DD7-B8D9-F3790F705B00}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{E9E9D0D7-5830-4DD7-B8D9-F3790F705B00}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKSAPI", "KKSAPI\KKSAPI.csproj", "{C275954F-05F9-4AFF-8290-E8190B54A602}"
+	ProjectSection(ProjectDependencies) = postProject
+		{240874A0-0873-4EA1-BC5D-350B09EB1182} = {240874A0-0873-4EA1-BC5D-350B09EB1182}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Helper", "Helper\Helper.vcxproj", "{240874A0-0873-4EA1-BC5D-350B09EB1182}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NativeHelper", "Helper\Helper.vcxproj", "{240874A0-0873-4EA1-BC5D-350B09EB1182}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GameSpecific", "GameSpecific", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Shared.KKalike\Shared.KKalike.projitems*{16441a78-1945-4d7c-b3f4-333bab848211}*SharedItemsImports = 13
-		Shared.AIalike\Shared.AIalike.projitems*{32333d00-1e55-4714-ad80-291b514a4f6e}*SharedItemsImports = 4
-		Shared.CharaStudio\Shared.CharaStudio.projitems*{32333d00-1e55-4714-ad80-291b514a4f6e}*SharedItemsImports = 4
-		Shared.Core\Shared.Core.projitems*{32333d00-1e55-4714-ad80-291b514a4f6e}*SharedItemsImports = 4
-		Shared.AIalike\Shared.AIalike.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
-		Shared.CharaStudio\Shared.CharaStudio.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
-		Shared.Core\Shared.Core.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
-		Shared.CharaStudio\Shared.CharaStudio.projitems*{74c2db86-55bb-47b4-9805-51b5b992ef35}*SharedItemsImports = 4
-		Shared.Core\Shared.Core.projitems*{74c2db86-55bb-47b4-9805-51b5b992ef35}*SharedItemsImports = 4
-		Shared.KKalike\Shared.KKalike.projitems*{74c2db86-55bb-47b4-9805-51b5b992ef35}*SharedItemsImports = 4
-		Shared.CharaStudio\Shared.CharaStudio.projitems*{a4b901df-f460-4510-8e04-8b3666990222}*SharedItemsImports = 13
-		Shared.CharaStudio\Shared.CharaStudio.projitems*{b0aa6926-d9a2-40b8-8100-cceb9a17ff10}*SharedItemsImports = 4
-		Shared.Core\Shared.Core.projitems*{bd697c6c-a7d7-4307-a227-ccafc95c8744}*SharedItemsImports = 13
-		Shared.AIalike\Shared.AIalike.projitems*{bed55866-7531-4cc4-ba58-f406d901d3e8}*SharedItemsImports = 13
-		Shared.CharaStudio\Shared.CharaStudio.projitems*{c275954f-05f9-4aff-8290-e8190b54a602}*SharedItemsImports = 4
-		Shared.Core\Shared.Core.projitems*{c275954f-05f9-4aff-8290-e8190b54a602}*SharedItemsImports = 4
-		Shared.KKalike\Shared.KKalike.projitems*{c275954f-05f9-4aff-8290-e8190b54a602}*SharedItemsImports = 4
-		Shared.Core\Shared.Core.projitems*{f4928b3c-e2b0-4aec-9fbc-327bb2a0e6bb}*SharedItemsImports = 4
-		Shared.KKalike\Shared.KKalike.projitems*{f4928b3c-e2b0-4aec-9fbc-327bb2a0e6bb}*SharedItemsImports = 4
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -89,7 +89,36 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{74C2DB86-55BB-47B4-9805-51B5B992EF35} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{F4928B3C-E2B0-4AEC-9FBC-327BB2A0E6BB} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{601F5CCA-63FA-4E77-A7C5-16591977578F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{B0AA6926-D9A2-40B8-8100-CCEB9A17FF10} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{32333D00-1E55-4714-AD80-291B514A4F6E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C275954F-05F9-4AFF-8290-E8190B54A602} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28F0A8B3-ACB9-46D0-995C-4D9717D8E724}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Shared.KKalike\Shared.KKalike.projitems*{16441a78-1945-4d7c-b3f4-333bab848211}*SharedItemsImports = 13
+		Shared.AIalike\Shared.AIalike.projitems*{32333d00-1e55-4714-ad80-291b514a4f6e}*SharedItemsImports = 4
+		Shared.CharaStudio\Shared.CharaStudio.projitems*{32333d00-1e55-4714-ad80-291b514a4f6e}*SharedItemsImports = 4
+		Shared.Core\Shared.Core.projitems*{32333d00-1e55-4714-ad80-291b514a4f6e}*SharedItemsImports = 4
+		Shared.AIalike\Shared.AIalike.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
+		Shared.CharaStudio\Shared.CharaStudio.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
+		Shared.Core\Shared.Core.projitems*{601f5cca-63fa-4e77-a7c5-16591977578f}*SharedItemsImports = 4
+		Shared.CharaStudio\Shared.CharaStudio.projitems*{74c2db86-55bb-47b4-9805-51b5b992ef35}*SharedItemsImports = 4
+		Shared.Core\Shared.Core.projitems*{74c2db86-55bb-47b4-9805-51b5b992ef35}*SharedItemsImports = 4
+		Shared.KKalike\Shared.KKalike.projitems*{74c2db86-55bb-47b4-9805-51b5b992ef35}*SharedItemsImports = 4
+		Shared.CharaStudio\Shared.CharaStudio.projitems*{a4b901df-f460-4510-8e04-8b3666990222}*SharedItemsImports = 13
+		Shared.CharaStudio\Shared.CharaStudio.projitems*{b0aa6926-d9a2-40b8-8100-cceb9a17ff10}*SharedItemsImports = 4
+		Shared.Core\Shared.Core.projitems*{bd697c6c-a7d7-4307-a227-ccafc95c8744}*SharedItemsImports = 13
+		Shared.AIalike\Shared.AIalike.projitems*{bed55866-7531-4cc4-ba58-f406d901d3e8}*SharedItemsImports = 13
+		Shared.CharaStudio\Shared.CharaStudio.projitems*{c275954f-05f9-4aff-8290-e8190b54a602}*SharedItemsImports = 4
+		Shared.Core\Shared.Core.projitems*{c275954f-05f9-4aff-8290-e8190b54a602}*SharedItemsImports = 4
+		Shared.KKalike\Shared.KKalike.projitems*{c275954f-05f9-4aff-8290-e8190b54a602}*SharedItemsImports = 4
+		Shared.Core\Shared.Core.projitems*{f4928b3c-e2b0-4aec-9fbc-327bb2a0e6bb}*SharedItemsImports = 4
+		Shared.KKalike\Shared.KKalike.projitems*{f4928b3c-e2b0-4aec-9fbc-327bb2a0e6bb}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal
