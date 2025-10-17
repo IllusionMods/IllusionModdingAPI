@@ -27,10 +27,8 @@ function CreateZip ($pluginFile)
     Remove-Item -Force -Path ($dir + "\copy") -Recurse -ErrorAction SilentlyContinue
     New-Item -ItemType Directory -Force -Path $copy
 
-    # the actual dll
-    Copy-Item -Path $pluginFile.FullName -Destination $copy -Recurse -Force
-    # the docs xml if it exists
-    Copy-Item -Path ($pluginFile.DirectoryName + "\" + $pluginFile.BaseName + ".xml") -Destination $copy -Recurse -Force -ErrorAction Ignore
+    # copy the dll and any accompanying files
+    Copy-Item -Path ($pluginFile.DirectoryName + "\" + $pluginFile.BaseName + ".*") -Destination $copy -Recurse -Force -ErrorAction Ignore
 
     # the replace removes .0 from the end of version up until it hits a non-0 or there are only 2 version parts remaining (e.g. v1.0 v1.0.1)
     $ver = (Get-ChildItem -Path ($copy) -Filter "*.dll" -Recurse -Force)[0].VersionInfo.FileVersion.ToString() -replace "^([\d+\.]+?\d+)[\.0]*$", '${1}'
@@ -38,7 +36,7 @@ function CreateZip ($pluginFile)
     Compress-Archive -Path ($copy + "\..\") -Force -CompressionLevel "Optimal" -DestinationPath ($dir + "\out\" + $pluginFile.BaseName + "_" + "v" + $ver + ".zip")
 }
 
-foreach ($pluginFile in Get-ChildItem -Path $pluginDir -Filter *.dll) 
+foreach ($pluginFile in Get-ChildItem -Path $pluginDir -Filter *API.dll) 
 {
     try
     {

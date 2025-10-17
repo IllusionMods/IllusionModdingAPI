@@ -36,6 +36,7 @@ namespace KKAPI.Utilities
         private static readonly string lastOpenedPathsCachePath = Path.Combine(Paths.CachePath, "ModdingAPI.lastOpenedPaths");
 
         /// <inheritdoc cref="ShowDialog(string,string,string,string,OpenSaveFileDialgueFlags,string,IntPtr)"/>
+        [Obsolete("Use SystemFileDialog instead")]
         public static string[] ShowDialog(string title, string initialDir, string filter, string defaultExt, OpenSaveFileDialgueFlags flags, IntPtr owner = default)
         {
             return ShowDialog(title, initialDir, filter, defaultExt, flags, null, owner);
@@ -67,6 +68,7 @@ namespace KKAPI.Utilities
         /// </param>
         /// <param name="owner">Hwnd pointer of the owner window. IntPtr.Zero to use default parent</param>
         /// <param name="defaultFilename"> Filename that is initially entered in the filename box. </param>
+        [Obsolete("Use SystemFileDialog instead")]
         public static string[] ShowDialog(string title, string initialDir, string filter, string defaultExt, OpenSaveFileDialgueFlags flags, string defaultFilename, IntPtr owner = default)
         {
             const int MAX_FILE_LENGTH = 2048;
