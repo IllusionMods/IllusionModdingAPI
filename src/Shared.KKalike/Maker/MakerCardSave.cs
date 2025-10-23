@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using ChaCustom;
 using HarmonyLib;
 using Illusion.Game;
-#if KKS
 using Mono.Cecil;
 using MonoMod.Cil;
 using MonoMod.Utils;
-#endif
 using Object = UnityEngine.Object;
 
 namespace KKAPI.Maker
@@ -21,12 +18,20 @@ namespace KKAPI.Maker
     /// </summary>
     public static class MakerCardSave
     {
-        private static readonly Harmony _harmony;
-
         static MakerCardSave()
         {
-            _harmony = new Harmony(nameof(MakerCardSave));
-            _harmony.PatchAll(typeof(MakerCardSave));
+            try
+            {
+                var methodInfo = FindSaveMethod();
+                KoikatuAPI.Logger.LogDebug("Save method found for patching MakerCardSave - " + methodInfo.Name);
+                var patchMethod = AccessTools.Method(typeof(MakerCardSave), nameof(CardSavePatch)) ?? throw new MissingMethodException("could not find CardSavePatch");
+                var harmony = new Harmony(nameof(MakerCardSave));
+                harmony.Patch(methodInfo, prefix: new HarmonyMethod(patchMethod));
+            }
+            catch (Exception e)
+            {
+                KoikatuAPI.Logger.LogError("Patching MakerCardSave failed! " + e);
+            }
         }
 
         /// <summary>
@@ -51,16 +56,13 @@ namespace KKAPI.Maker
             _modifiers.Add(new KeyValuePair<DirectoryPathModifier, CardNameModifier>(directoryPathModifier, filenameModifier));
         }
 
-        [HarmonyTranspiler, HarmonyPatch(typeof(CustomControl), "Start")]
-        internal static IEnumerable<CodeInstruction> FindSaveMethod(IEnumerable<CodeInstruction> instructions)
+        private static MethodBase FindSaveMethod()
         {
-            var btnSaveField = AccessTools.Field(typeof(CustomControl), "btnSave") ?? throw new MissingFieldException("could not find btnSave");
-            var patchMethod = AccessTools.Method(typeof(MakerCardSave), nameof(CardSavePatch)) ?? throw new MissingMethodException("could not find CardSavePatch");
-
+            var targetMethod = AccessTools.Method(typeof(CustomControl), "Start");
 #if KKS
-            var cm = new CodeMatcher(instructions);
-            var asyncGeneratedField = (FieldInfo)cm.MatchForward(false, new CodeMatch(OpCodes.Stfld)).Instruction.operand;
-            var movenext = asyncGeneratedField.DeclaringType.GetMethod("MoveNext", AccessTools.all);
+            var btnSaveField = AccessTools.Field(typeof(CustomControl), "btnSave") ?? throw new MissingFieldException("could not find btnSave");
+
+            MethodInfo movenext = Utilities.CoroutineUtils.GetMoveNext(targetMethod);
             if (movenext == null) throw new ArgumentNullException(nameof(movenext));
 
             var ctx = new ILContext(new DynamicMethodDefinition(movenext).Definition);
@@ -70,38 +72,29 @@ namespace KKAPI.Maker
             il.GotoNext(instruction => instruction.MatchLdftn(out targetMethodReference));
             if (targetMethodReference == null) throw new ArgumentNullException(nameof(targetMethodReference));
 
-            var targetMethod = targetMethodReference.ResolveReflection();
-            KoikatuAPI.Logger.LogDebug("Save method found for patching MakerCardSave - " + targetMethod.Name);
-            _harmony.Patch(targetMethod, new HarmonyMethod(patchMethod));
-
-            return instructions;
+            return targetMethodReference.ResolveReflection();
 #else
-            var codes = instructions.ToList();
-            bool buttonFound = false, success = false;
+            var ctx = new ILContext(new DynamicMethodDefinition(targetMethod).Definition);
+            var codes = ctx.Instrs;
+            bool buttonFound = false;
 
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
 
-                if (!buttonFound && code.opcode == OpCodes.Ldfld && code.operand as FieldInfo == btnSaveField)
+                if (!buttonFound && code.OpCode == Mono.Cecil.Cil.OpCodes.Ldfld && code.Operand is FieldReference fr && fr.FullName == "UnityEngine.UI.Button ChaCustom.CustomControl::btnSave")
                     buttonFound = true;
 
-                if (buttonFound && code.opcode == OpCodes.Ldftn)
+                if (buttonFound && code.OpCode == Mono.Cecil.Cil.OpCodes.Ldftn)
                 {
-                    if (code.operand is MethodInfo methodInfo)
-                    {
-                        _harmony.Patch(methodInfo, new HarmonyMethod(patchMethod));
-                        KoikatuAPI.Logger.LogDebug("Save method found for patching MakerCardSave - " + methodInfo.Name);
-                        success = true;
-                    }
-
-                    break;
+                    if (code.Operand is MethodReference methodReference)
+                        return methodReference.ResolveReflection();
+                    else
+                        throw new ArgumentException("methodReference is " + code.Operand?.GetType().FullName);
                 }
             }
 
-            if (!success) KoikatuAPI.Logger.LogWarning("Could not find save method for patching MakerCardSave");
-            
-            return codes;
+            throw new ArgumentException("Could not find save method");
 #endif
         }
 
