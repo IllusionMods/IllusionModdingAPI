@@ -90,7 +90,7 @@ namespace KKAPI.Maker
                     if (code.Operand is MethodReference methodReference)
                         return methodReference.ResolveReflection();
                     else
-                        throw new ArgumentException("methodReference is " + code.Operand?.GetType().FullName);
+                        throw new ArgumentException($"Expected MethodReference but found {code.Operand?.GetType().FullName ?? "null"}");
                 }
             }
 
