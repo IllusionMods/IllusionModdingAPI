@@ -64,6 +64,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\WindowsStringComparer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\local-back.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\local-check.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\local-frame.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-box-light.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-box.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-window-light.png" />

@@ -38,9 +38,4 @@
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\Sidebar\SidebarToggle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\UI\SubCategoryCreator.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Maker\UI\local-back.png" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Maker\UI\local-check.png" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Maker\UI\local-frame.png" />
-  </ItemGroup>
 </Project>
