@@ -49,7 +49,7 @@ namespace KKAPI.Maker {
             /// <summary>
             /// Textures should be saved separately from the card in a local folder
             /// </summary>
-            Local = 1,
+            Local = 2,
         }
 
         internal static ConfigEntry<TextureSaveType> ConfTexSaveType { get; set; }
