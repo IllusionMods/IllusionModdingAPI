@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace KKAPI.Maker {
     /// <summary>
-    /// API for universal toggling of locally saved textures.
+    /// API for global toggling of locally saved textures
     /// </summary>
     public static partial class LocalTextures
     {
         /// <summary>
-        /// Fired whenever the SaveType changes.
+        /// Fired whenever SaveType changes
         /// </summary>
         public static System.EventHandler SaveTypeChangedEvent;
 
