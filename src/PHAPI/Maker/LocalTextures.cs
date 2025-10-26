@@ -5,6 +5,7 @@ namespace KKAPI.Maker
 {
     /// <summary>
     /// API for universal toggling of locally saved textures.
+    /// The UI is only set up if SaveType is read / set, or if an action is registered to SaveTypeChangedEvent.
     /// </summary>
     public static class LocalTextures
     {

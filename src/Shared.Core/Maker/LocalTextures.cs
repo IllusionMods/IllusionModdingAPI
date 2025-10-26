@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace KKAPI.Maker {
     /// <summary>
-    /// API for global toggling of locally saved textures
+    /// API for global toggling of locally saved textures.
+    /// The UI is only set up if SaveType is read / set, or if an action is registered to SaveTypeChangedEvent.
     /// </summary>
     public static partial class LocalTextures
     {
