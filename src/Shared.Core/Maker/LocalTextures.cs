@@ -42,7 +42,7 @@ namespace KKAPI.Maker {
 
         static LocalTextures()
         {
-            ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Card Save Type", TextureSaveType.Bundled, new ConfigDescription("Whether external textures used by plugins should be bundled with the card or to a local folder.", null, new ConfigurationManagerAttributes { Browsable = false }));
+            ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Card Save Type", TextureSaveType.Bundled, new ConfigDescription("Whether external textures used by plugins should be bundled with the card or to a local folder.", null, new ConfigurationManagerAttributes { IsAdvanced = true }));
             MakerAPI.MakerStartedLoading += (x, y) => { SetupUI(); };
             if (MakerAPI.InsideAndLoaded) SetupUI();
         }
