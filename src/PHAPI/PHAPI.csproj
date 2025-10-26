@@ -125,7 +125,7 @@
     <Compile Include="Maker\Events\AccessoryTransferEventArgs.cs" />
     <Compile Include="Maker\Events\AccessoryWindowControlValueChangedEventArgs.cs" />
     <Compile Include="Maker\Events\CharacterChangedEventArgs.cs" />
-    <Compile Include="Maker\Events\LocalSaveChangedEventArgs.cs" />
+    <Compile Include="Events\LocalSaveChangedEventArgs.cs" />
     <Compile Include="Maker\Events\RegisterCustomControlsEvent.cs" />
     <Compile Include="Maker\Events\RegisterSubCategoriesEvent.cs" />
     <Compile Include="Maker\LocalTextures.cs" />
@@ -149,6 +149,7 @@
     <Compile Include="Maker\UI\Sidebar\SidebarSeparator.cs" />
     <Compile Include="Maker\UI\Sidebar\SidebarToggle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextureSaveType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Shared.Core\Utilities\**\*.cs">

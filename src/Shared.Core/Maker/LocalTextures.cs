@@ -37,21 +37,6 @@ namespace KKAPI.Maker {
             }
         }
 
-        /// <summary>
-        /// Options for the type of texture saving that plugins should use
-        /// </summary>
-        public enum TextureSaveType
-        {
-            /// <summary>
-            /// Textures should be bundled with the card
-            /// </summary>
-            Bundled = 0,
-            /// <summary>
-            /// Textures should be saved separately from the card in a local folder
-            /// </summary>
-            Local = 2,
-        }
-
         internal static ConfigEntry<TextureSaveType> ConfTexSaveType { get; set; }
         private static bool saveTypeChanging = false;
 
