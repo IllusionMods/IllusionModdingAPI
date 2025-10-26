@@ -125,8 +125,10 @@
     <Compile Include="Maker\Events\AccessoryTransferEventArgs.cs" />
     <Compile Include="Maker\Events\AccessoryWindowControlValueChangedEventArgs.cs" />
     <Compile Include="Maker\Events\CharacterChangedEventArgs.cs" />
+    <Compile Include="Maker\Events\LocalSaveChangedEventArgs.cs" />
     <Compile Include="Maker\Events\RegisterCustomControlsEvent.cs" />
     <Compile Include="Maker\Events\RegisterSubCategoriesEvent.cs" />
+    <Compile Include="Maker\LocalTextures.cs" />
     <Compile Include="Maker\MakerAPI.cs" />
     <Compile Include="Maker\MakerAPI.Hooks.PH.cs" />
     <Compile Include="Maker\MakerCategory.cs" />
