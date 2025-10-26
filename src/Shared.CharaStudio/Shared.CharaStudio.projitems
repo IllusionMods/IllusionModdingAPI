@@ -9,12 +9,12 @@
     <Import_RootNamespace>KKAPI</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\ObjectDeletedEventArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\ObjectsCopiedEventArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\ObjectsSelectedEventArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\ObjectVisibilityToggledEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\Events\ObjectDeletedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\Events\ObjectsCopiedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\Events\ObjectsSelectedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\Events\ObjectVisibilityToggledEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\SceneCustomFunctionController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\SceneLoadEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\Events\SceneLoadEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\SceneOperationKind.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\StudioSaveLoadApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\StudioSaveLoadApi.Hooks.cs" />
