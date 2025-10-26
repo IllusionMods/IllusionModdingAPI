@@ -7,9 +7,6 @@ using TMPro;
 
 namespace KKAPI.Maker
 {
-    /// <summary>
-    /// API for universal toggling of locally saved textures.
-    /// </summary>
     public static partial class LocalTextures
     {
         private static void SetupUI()
