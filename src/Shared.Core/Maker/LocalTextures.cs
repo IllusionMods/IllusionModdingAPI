@@ -25,6 +25,7 @@ namespace KKAPI.Maker {
             }
             set
             {
+                if (ConfTexSaveType.Value == value) return;
                 saveTypeChanging = true;
                 ConfTexSaveType.Value = value;
                 var eLogger = ApiEventExecutionLogger.GetEventLogger();
