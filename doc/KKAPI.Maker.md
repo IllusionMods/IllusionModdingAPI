@@ -210,6 +210,68 @@ Fields
 | `Boolean` | Parameters |  | 
 
 
+## `CharaLocalTextures`
+
+API for global toggling of locally saved textures in Maker.  This module is activated only if Activate is called, SaveType is read / set, or if an action is registered to SaveTypeChangedEvent.
+```csharp
+public static class KKAPI.Maker.CharaLocalTextures
+
+```
+
+Static Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `EventHandler<CharaTextureSaveTypeChangedEventArgs>` | SaveTypeChangedEvent | Fired whenever SaveType changes | 
+
+
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `CharaTextureSaveType` | SaveType | The type of texture saving that plugins should use | 
+
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | Activate() | Activates the LocalTextures API | 
+
+
+## `CharaTextureSaveType`
+
+Options for the type of texture saving that plugins should use in Maker.
+```csharp
+public enum KKAPI.Maker.CharaTextureSaveType
+    : Enum, IComparable, IFormattable, IConvertible
+
+```
+
+Enum
+
+| Value | Name | Summary | 
+| --- | --- | --- | 
+| `0` | Bundled | Textures should be bundled with the card. | 
+| `2` | Local | Textures should be saved separately from the card in a local folder. | 
+
+
+## `CharaTextureSaveTypeChangedEventArgs`
+
+Event argument used for when texture save type for cards is changed
+```csharp
+public class KKAPI.Maker.CharaTextureSaveTypeChangedEventArgs
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `CharaTextureSaveType` | NewSetting | The new state of the setting | 
+
+
 ## `CoordinateLoadFlags`
 
 Specifies which parts of the coordinate will be loaded when loading a clothing card in character maker.

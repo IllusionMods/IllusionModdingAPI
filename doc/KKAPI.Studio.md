@@ -1,3 +1,66 @@
+## `SceneLocalTextures`
+
+API for global toggling of locally saved textures in Studio.  The module is only activated if Activate is called, SaveType is read / set, or if an action is registered to SaveTypeChangedEvent.
+```csharp
+public static class KKAPI.Studio.SceneLocalTextures
+
+```
+
+Static Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `EventHandler<SceneTextureSaveTypeChangedEventArgs>` | SaveTypeChangedEvent | Fired whenever SaveType changes | 
+
+
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `SceneTextureSaveType` | SaveType | The type of texture saving that plugins should use | 
+
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | Activate() | Activates the LocalTextures API | 
+
+
+## `SceneTextureSaveType`
+
+Options for the type of texture saving that plugins should use in Studio.
+```csharp
+public enum KKAPI.Studio.SceneTextureSaveType
+    : Enum, IComparable, IFormattable, IConvertible
+
+```
+
+Enum
+
+| Value | Name | Summary | 
+| --- | --- | --- | 
+| `0` | Bundled | Textures should be bundled with the scene. | 
+| `1` | Deduped | Textures should be deduped between different Chara and SceneControllers. | 
+| `2` | Local | Textures should be saved separately from the scene in a local folder. | 
+
+
+## `SceneTextureSaveTypeChangedEventArgs`
+
+Event argument used for when texture save type for scenes is changed
+```csharp
+public class KKAPI.Studio.SceneTextureSaveTypeChangedEventArgs
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `SceneTextureSaveType` | NewSetting | The new state of the setting | 
+
+
 ## `StudioAPI`
 
 Provides a way to add custom menu items to CharaStudio, and gives useful methods for interfacing with the studio.

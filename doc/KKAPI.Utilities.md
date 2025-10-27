@@ -153,6 +153,21 @@ Static Methods
 | `Boolean` | IsSonyu(this `HFlag` hFlag) | Is current H mode penetration? | 
 
 
+## `ImageTypeIdentifier`
+
+Tool for identifying likely file extension for byte arrays representing images.
+```csharp
+public static class KKAPI.Utilities.ImageTypeIdentifier
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `String` | Identify(`Byte[]` bytes, `String` defReturn = bin) | Identify the file extension of a byte array representing an image.  Returns "bin" by default if the array is shorter than 20 bytes, or identification is unsuccessful. | 
+
+
 ## `ImguiComboBox`
 
 Dropdown control for use in GUILayout areas and windows. Keep the instance and call Show on it to draw it inside OnGUI.  Remember to call `DrawDropdownIfOpen` at the very end of the OnGUI area/window to actually display the dropdown list if it's open.  Only one dropdown list can be open globally. If a new dropdown is opened, all others are closed without changing the selected index.
@@ -298,8 +313,6 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `void` | Show(`Action<String[]>` onAccept, `String` title, `String` initialDir, `String` filter, `String` defaultExt, `OpenSaveFileDialgueFlags` flags = OFN_NOCHANGEDIR, OFN_FILEMUSTEXIST, OFN_EXPLORER, OFN_LONGNAMES) | Show windows file open dialog. Doesn't pause the game. | 
-| `String[]` | ShowDialog(`String` title, `String` initialDir, `String` filter, `String` defaultExt, `OpenSaveFileDialgueFlags` flags, `IntPtr` owner = null) |  | 
-| `String[]` | ShowDialog(`String` title, `String` initialDir, `String` filter, `String` defaultExt, `OpenSaveFileDialgueFlags` flags, `String` defaultFilename, `IntPtr` owner = null) |  | 
 
 
 ## `ReadOnlyDictionary<TKey, TValue>`
@@ -449,6 +462,21 @@ Static Properties
 | --- | --- | --- | 
 | `Single` | DefaultOffsetX | Default horizontal offset value. Used if not specified in constructor. | 
 | `Single` | DefaultOffsetY | Default vertical offset value. Used if not specified in constructor. | 
+
+
+## `SystemFileDialog`
+
+Provides functionality for displaying system file dialogs to allow users to select files or folders.
+```csharp
+public class KKAPI.Utilities.SystemFileDialog
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | ShowDialog(`String` title, `String` path, `String&` result, `FOS` fos = 0, `String` filter = All Files|*.*) | Displays a system file dialog to allow the user to select a file or folder. | 
 
 
 ## `TabletManager`

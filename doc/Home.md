@@ -40,6 +40,9 @@
 - [`AccessoryWindowControlValueChangedEventArgs<TVal>`](KKAPI.Maker.md#accessorywindowcontrolvaluechangedeventargstval)
 - [`ChaFileLoadedEventArgs`](KKAPI.Maker.md#chafileloadedeventargs)
 - [`CharacterLoadFlags`](KKAPI.Maker.md#characterloadflags)
+- [`CharaLocalTextures`](KKAPI.Maker.md#charalocaltextures)
+- [`CharaTextureSaveType`](KKAPI.Maker.md#charatexturesavetype)
+- [`CharaTextureSaveTypeChangedEventArgs`](KKAPI.Maker.md#charatexturesavetypechangedeventargs)
 - [`CoordinateLoadFlags`](KKAPI.Maker.md#coordinateloadflags)
 - [`MakerAPI`](KKAPI.Maker.md#makerapi)
 - [`MakerCardSave`](KKAPI.Maker.md#makercardsave)
@@ -73,6 +76,9 @@
 
 ## [KKAPI.Studio](KKAPI.Studio.md)
 
+- [`SceneLocalTextures`](KKAPI.Studio.md#scenelocaltextures)
+- [`SceneTextureSaveType`](KKAPI.Studio.md#scenetexturesavetype)
+- [`SceneTextureSaveTypeChangedEventArgs`](KKAPI.Studio.md#scenetexturesavetypechangedeventargs)
 - [`StudioAPI`](KKAPI.Studio.md#studioapi)
 - [`StudioObjectExtensions`](KKAPI.Studio.md#studioobjectextensions)
 
@@ -120,6 +126,7 @@
 - [`Extensions`](KKAPI.Utilities.md#extensions)
 - [`GlobalTooltips`](KKAPI.Utilities.md#globaltooltips)
 - [`HSceneUtils`](KKAPI.Utilities.md#hsceneutils)
+- [`ImageTypeIdentifier`](KKAPI.Utilities.md#imagetypeidentifier)
 - [`ImguiComboBox`](KKAPI.Utilities.md#imguicombobox)
 - [`IMGUIUtils`](KKAPI.Utilities.md#imguiutils)
 - [`ImguiWindow<T>`](KKAPI.Utilities.md#imguiwindowt)
@@ -130,6 +137,7 @@
 - [`RecycleBinUtil`](KKAPI.Utilities.md#recyclebinutil)
 - [`ResourceUtils`](KKAPI.Utilities.md#resourceutils)
 - [`SmartRect`](KKAPI.Utilities.md#smartrect)
+- [`SystemFileDialog`](KKAPI.Utilities.md#systemfiledialog)
 - [`TabletManager`](KKAPI.Utilities.md#tabletmanager)
 - [`TextureUtils`](KKAPI.Utilities.md#textureutils)
 - [`TextUtils`](KKAPI.Utilities.md#textutils)
