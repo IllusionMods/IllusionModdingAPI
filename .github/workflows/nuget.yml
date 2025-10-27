@@ -17,13 +17,18 @@ jobs:
       
     - name: Setup Nuget
       uses: nuget/setup-nuget@v1
-      
+
+    - name: Build NativeHelper
+      working-directory: ./src/Helper
+      run: |
+        msbuild Helper.vcxproj /p:Configuration=Release /p:Platform=x64
+    
     - name: Nuget pack
       working-directory: ./src
       run: |
         nuget restore
         gci -Recurse -Filter *.nuspec | foreach { nuget pack "$($_.DirectoryName)\$($_.BaseName).csproj" -build -properties Configuration=Release }
-      
+        
     - name: Nuget push
       working-directory: ./src
       env:
