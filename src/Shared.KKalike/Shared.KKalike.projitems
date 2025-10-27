@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Chara\CharacterApi.Hooks.KK.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)maker\LocalTextures.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)maker\CharaLocalTextures.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UniversalRefObjKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.KK.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\AccessoriesApi.Hooks.KK.cs" />

@@ -2,14 +2,14 @@
 
 #pragma warning disable 1591
 
-namespace KKAPI
+namespace KKAPI.Maker
 {
     /// <summary>
     /// Event argument used for when save type for cards is toggled
     /// </summary>
-    public sealed class LocalSaveChangedEventArgs : EventArgs
+    public sealed class CharaTextureSaveTypeChangedEventArgs : EventArgs
     {
-        public LocalSaveChangedEventArgs(TextureSaveType saveType)
+        public CharaTextureSaveTypeChangedEventArgs(CharaTextureSaveType saveType)
         {
             NewSetting = saveType;
         }
@@ -17,6 +17,6 @@ namespace KKAPI
         /// <summary>
         /// The new state of the setting
         /// </summary>
-        public TextureSaveType NewSetting { get; }
+        public CharaTextureSaveType NewSetting { get; }
     }
 }

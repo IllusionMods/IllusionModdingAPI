@@ -7,17 +7,17 @@ namespace KKAPI.Maker
     /// API for global toggling of locally saved textures in Maker.
     /// The module is only activated if Activate is called, SaveType is read / set, or if an action is registered to SaveTypeChangedEvent.
     /// </summary>
-    public static class LocalTextures
+    public static class CharaLocalTextures
     {
         /// <summary>
         /// Fired whenever the SaveType changes.
         /// </summary>
-        public static System.EventHandler SaveTypeChangedEvent;
+        public static System.EventHandler<CharaTextureSaveTypeChangedEventArgs> SaveTypeChangedEvent;
 
         /// <summary>
         /// The type of texture saving that plugins should use
         /// </summary>
-        public static TextureSaveType SaveType
+        public static CharaTextureSaveType SaveType
         {
             get
             {
@@ -37,7 +37,7 @@ namespace KKAPI.Maker
         {
             try
             {
-                var hello = Studio.LocalTextures.SaveType;
+                var hello = Studio.SceneLocalTextures.SaveType;
             }
             catch
             {
@@ -46,23 +46,23 @@ namespace KKAPI.Maker
             return true;
         }
 
-        internal static ConfigEntry<TextureSaveType> ConfTexSaveType { get; private set; }
+        internal static ConfigEntry<CharaTextureSaveType> ConfTexSaveType { get; private set; }
 
-        static LocalTextures()
+        static CharaLocalTextures()
         {
-            string description = "Whether external textures used by plugins should be bundled with the card or saved to a local folder.\nCards with local textures save storage space but cannot be shared.";
-            ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Card Save Type", TextureSaveType.Bundled, new ConfigDescription(description, new AcceptableValueEnums<TextureSaveType>(TextureSaveType.Bundled, TextureSaveType.Local), new ConfigurationManagerAttributes { IsAdvanced = true }));
+            string description = "Whether external textures used by plugins should be bundled with the card or saved to a local folder.\nWARNING: Cards with local textures save storage space but cannot be shared.";
+            ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Card Save Type", CharaTextureSaveType.Bundled, new ConfigDescription(description, null, new ConfigurationManagerAttributes { IsAdvanced = true }));
             ConfTexSaveType.SettingChanged += OnSaveTypeChanged;
 
             // Activates Studio LocalTexture API
-            Studio.LocalTextures.SaveType.ToString();
+            Studio.SceneLocalTextures.SaveType.ToString();
         }
 
         private static void OnSaveTypeChanged(object x, System.EventArgs y)
         {
             var eLogger = ApiEventExecutionLogger.GetEventLogger();
             eLogger.Begin(nameof(SaveTypeChangedEvent), "");
-            SaveTypeChangedEvent.SafeInvokeWithLogging(handler => handler.Invoke(null, new LocalSaveChangedEventArgs(SaveType)), nameof(SaveTypeChangedEvent), eLogger);
+            SaveTypeChangedEvent.SafeInvokeWithLogging(handler => handler.Invoke(null, new CharaTextureSaveTypeChangedEventArgs(SaveType)), nameof(SaveTypeChangedEvent), eLogger);
             eLogger.End();
         }
     }

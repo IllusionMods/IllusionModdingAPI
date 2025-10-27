@@ -15,17 +15,17 @@ namespace KKAPI.Studio
     /// API for global toggling of locally saved textures in Studio.
     /// The module is only activated if Activate is called, SaveType is read / set, or if an action is registered to SaveTypeChangedEvent.
     /// </summary>
-    public static partial class LocalTextures
+    public static class SceneLocalTextures
     {
         /// <summary>
         /// Fired whenever SaveType changes
         /// </summary>
-        public static System.EventHandler SaveTypeChangedEvent;
+        public static System.EventHandler<SceneTextureSaveTypeChangedEventArgs> SaveTypeChangedEvent;
 
         /// <summary>
         /// The type of texture saving that plugins should use
         /// </summary>
-        public static TextureSaveType SaveType
+        public static SceneTextureSaveType SaveType
         {
             get
             {
@@ -45,7 +45,7 @@ namespace KKAPI.Studio
         {
             try
             {
-                var hello = Maker.LocalTextures.SaveType;
+                var hello = Maker.CharaLocalTextures.SaveType;
             }
             catch
             {
@@ -54,21 +54,21 @@ namespace KKAPI.Studio
             return true;
         }
 
-        internal static ConfigEntry<TextureSaveType> ConfTexSaveType { get; set; }
+        internal static ConfigEntry<SceneTextureSaveType> ConfTexSaveType { get; set; }
 
         private static bool saveTypeChanging = false;
         private static readonly Harmony harmony = null;
 
-        static LocalTextures()
+        static SceneLocalTextures()
         {
             string description = "Whether external textures used by plugins should be bundled with the scene, deduped and then saved to the scene, or saved to a local folder.\nWARNING: Scenes with deduped textures save some space but cannot be loaded by earlier plugin versions. Scenes with local textures save more space but cannot be shared.";
-            ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Scene Save Type", TextureSaveType.Bundled, new ConfigDescription(description, null, new ConfigurationManagerAttributes { IsAdvanced = true }));
+            ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Scene Save Type", SceneTextureSaveType.Bundled, new ConfigDescription(description, null, new ConfigurationManagerAttributes { IsAdvanced = true }));
             ConfTexSaveType.SettingChanged += OnSaveTypeChanged;
             if (StudioAPI.InsideStudio)
-                harmony = Harmony.CreateAndPatchAll(typeof(LocalTextures));
+                harmony = Harmony.CreateAndPatchAll(typeof(SceneLocalTextures));
 
             // Activates Maker LocalTexture API
-            Maker.LocalTextures.SaveType.ToString();
+            Maker.CharaLocalTextures.SaveType.ToString();
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(SceneLoadScene), nameof(SceneLoadScene.Awake))]
@@ -179,7 +179,7 @@ namespace KKAPI.Studio
             var validator = localSave.AddComponent<ToggleValidator>();
 
             List<Toggle> toggles = new List<Toggle>();
-            foreach (TextureSaveType option in System.Enum.GetValues(typeof(TextureSaveType)))
+            foreach (SceneTextureSaveType option in System.Enum.GetValues(typeof(SceneTextureSaveType)))
             {
                 Toggle nowToggle = localSave.transform.GetChild(1 + (int)option).GetComponent<Toggle>();
                 nowToggle.isOn = SaveType == option;
@@ -198,8 +198,8 @@ namespace KKAPI.Studio
             SaveTypeChangedEvent += (x, y) =>
             {
                 if (toggles == null) return;
-                TextureSaveType newValue = (y as LocalSaveChangedEventArgs).NewSetting;
-                foreach (TextureSaveType option in System.Enum.GetValues(typeof(TextureSaveType)))
+                SceneTextureSaveType newValue = y.NewSetting;
+                foreach (SceneTextureSaveType option in System.Enum.GetValues(typeof(SceneTextureSaveType)))
                 {
                     if (toggles.Count < 1 + (int)option) break;
                     Toggle toggle = toggles[(int)option];
@@ -245,7 +245,7 @@ namespace KKAPI.Studio
             saveTypeChanging = true;
             var eLogger = ApiEventExecutionLogger.GetEventLogger();
             eLogger.Begin(nameof(SaveTypeChangedEvent), "");
-            SaveTypeChangedEvent.SafeInvokeWithLogging(handler => handler.Invoke(null, new LocalSaveChangedEventArgs(SaveType)), nameof(SaveTypeChangedEvent), eLogger);
+            SaveTypeChangedEvent.SafeInvokeWithLogging(handler => handler.Invoke(null, new SceneTextureSaveTypeChangedEventArgs(SaveType)), nameof(SaveTypeChangedEvent), eLogger);
             eLogger.End();
             saveTypeChanging = false;
         }
@@ -262,7 +262,7 @@ namespace KKAPI.Studio
             private void OnEnable()
             {
                 if (toggles == null) return;
-                foreach (TextureSaveType option in System.Enum.GetValues(typeof(TextureSaveType)))
+                foreach (SceneTextureSaveType option in System.Enum.GetValues(typeof(SceneTextureSaveType)))
                 {
                     var toggle = toggles[(int)option];
                     if (toggle != null && SaveType == option && !toggle.isOn)

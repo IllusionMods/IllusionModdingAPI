@@ -16,7 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessorySlotEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryTransferEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\Events\AccessoryWindowControlValueChangedEventArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)maker\LocalTextures.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)maker\CharaLocalTextures.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerAPI.Hooks.AI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerCardSave.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\MakerConstants.AI.cs" />
