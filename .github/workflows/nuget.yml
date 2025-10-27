@@ -17,13 +17,21 @@ jobs:
       
     - name: Setup Nuget
       uses: nuget/setup-nuget@v1
+
+    - name: Setup MSBuild # Needed by Build NativeHelper
+      uses: microsoft/setup-msbuild@v1
       
+    - name: Build NativeHelper # Need to build this separately first because nuget pack doesn't seem to handle vcxproj
+      working-directory: ./src/Helper
+      run: |
+        msbuild Helper.vcxproj /p:Configuration=Release /p:Platform=x64
+    
     - name: Nuget pack
       working-directory: ./src
       run: |
         nuget restore
         gci -Recurse -Filter *.nuspec | foreach { nuget pack "$($_.DirectoryName)\$($_.BaseName).csproj" -build -properties Configuration=Release }
-      
+        
     - name: Nuget push
       working-directory: ./src
       env:
