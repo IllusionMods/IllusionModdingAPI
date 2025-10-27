@@ -77,8 +77,6 @@ namespace KKAPI.Maker
             else
             {
                 isNewPanel = true;
-                localSave = null;
-
                 localSave = new GameObject("localSave", new[] { typeof(RectTransform), typeof(ToggleGroup), typeof(Image) });
                 localSave.transform.SetParent(root.transform);
                 localSave.GetComponent<Image>().sprite = MakeSprite("local-frame.png", 12);
@@ -92,12 +90,12 @@ namespace KKAPI.Maker
                 SetTfProps(text.GetComponent<RectTransform>(), 0, 1, 1, 1, 8, -136, 0, -88);
 
                 var tglGrp = localSave.GetComponent<ToggleGroup>();
-                tglGrp.RegisterToggle(CreateCheck("imgRbFace", "Bundled Textures", TextureSaveType.Bundled, -40, -8));
-                tglGrp.RegisterToggle(CreateCheck("imgRbCard", "Local Textures", TextureSaveType.Local, -80, -48));
+                tglGrp.RegisterToggle(CreateCheck("imgRbFace", "Bundled Textures", -40, -8));
+                tglGrp.RegisterToggle(CreateCheck("imgRbCard", "Local Textures", -80, -48));
 
                 SetLayers(localSave.transform);
                 
-                Toggle CreateCheck(string name, string checkName, TextureSaveType type, float f, float h)
+                Toggle CreateCheck(string name, string checkName, float f, float h)
                 {
                     var checkRoot = new GameObject(name, new[] { typeof(RectTransform), typeof(Image), typeof(Toggle) });
                     checkRoot.transform.SetParent(localSave.transform);

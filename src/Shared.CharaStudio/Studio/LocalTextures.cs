@@ -105,9 +105,9 @@ namespace KKAPI.Studio
                 SetTfProps(title.GetComponent<RectTransform>(), 0, 1, 1, 1, 12, -48, 0, -5);
 
                 var tglGrp = localSave.GetComponent<ToggleGroup>();
-                tglGrp.RegisterToggle(CreateCheck("tglBundled", "Bundled", TextureSaveType.Bundled, -80, -48));
-                tglGrp.RegisterToggle(CreateCheck("tglDeduped", "Deduped", TextureSaveType.Local, -120, -88));
-                tglGrp.RegisterToggle(CreateCheck("tglLocal", "Local", TextureSaveType.Local, -160, -128));
+                tglGrp.RegisterToggle(CreateCheck("tglBundled", "Bundled", -80, -48));
+                tglGrp.RegisterToggle(CreateCheck("tglDeduped", "Deduped", -120, -88));
+                tglGrp.RegisterToggle(CreateCheck("tglLocal", "Local", -160, -128));
 
                 var warning = new GameObject("warning", new[] { typeof(RectTransform) });
                 warning.transform.SetParent(localSave.transform);
@@ -121,7 +121,7 @@ namespace KKAPI.Studio
 
                 SetLayers(localSave.transform);
 
-                Toggle CreateCheck(string name, string checkName, TextureSaveType type, float f, float h)
+                Toggle CreateCheck(string name, string checkName, float f, float h)
                 {
                     var checkRoot = new GameObject(name, new[] { typeof(RectTransform), typeof(Image), typeof(Toggle) });
                     checkRoot.transform.SetParent(localSave.transform);

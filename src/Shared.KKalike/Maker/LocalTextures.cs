@@ -68,12 +68,12 @@ namespace KKAPI.Maker
                 SetTfProps(text.GetComponent<RectTransform>(), 0, 1, 1, 1, 8, -136, 0, -88);
 
                 var tglGrp = localSave.GetComponent<ToggleGroup>();
-                tglGrp.RegisterToggle(CreateCheck("imgRbFace", tglText1, TextureSaveType.Bundled, -40, -8));
-                tglGrp.RegisterToggle(CreateCheck("imgRbCard", tglText2, TextureSaveType.Local, -80, -48));
+                tglGrp.RegisterToggle(CreateCheck("imgRbFace", tglText1, -40, -8));
+                tglGrp.RegisterToggle(CreateCheck("imgRbCard", tglText2, -80, -48));
 
                 SetLayers(localSave.transform);
 
-                Toggle CreateCheck(string name, string checkName, TextureSaveType type, float f, float h)
+                Toggle CreateCheck(string name, string checkName, float f, float h)
                 {
                     var checkRoot = new GameObject(name, new[] { typeof(RectTransform), typeof(Image), typeof(Toggle) });
                     checkRoot.transform.SetParent(localSave.transform);
