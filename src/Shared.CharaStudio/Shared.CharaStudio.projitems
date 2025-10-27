@@ -9,6 +9,7 @@
     <Import_RootNamespace>KKAPI</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)studio\LocalTextures.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\Events\ObjectDeletedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\Events\ObjectsCopiedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\Events\ObjectsSelectedEventArgs.cs" />

@@ -3,12 +3,11 @@ using KKAPI.Utilities;
 using UnityEngine.UI;
 using UnityEngine;
 using System.Linq;
-using System;
 
 namespace KKAPI.Maker {
     /// <summary>
-    /// API for global toggling of locally saved textures.
-    /// The UI is only set up if SaveType is read / set, or if an action is registered to SaveTypeChangedEvent.
+    /// API for global toggling of locally saved textures in Maker.
+    /// The module is only activated if Activate is called, SaveType is read / set, or if an action is registered to SaveTypeChangedEvent.
     /// </summary>
     public static partial class LocalTextures
     {
@@ -29,14 +28,26 @@ namespace KKAPI.Maker {
             set
             {
                 if (ConfTexSaveType.Value == value) return;
-                saveTypeChanging = true;
                 ConfTexSaveType.Value = value;
-                var eLogger = ApiEventExecutionLogger.GetEventLogger();
-                eLogger.Begin(nameof(SaveTypeChangedEvent), "");
-                OnSaveTypeChanged(null, new LocalSaveChangedEventArgs(value), eLogger);
-                eLogger.End();
-                saveTypeChanging = false;
             }
+        }
+
+        /// <summary>
+        /// Activates the LocalTextures API
+        /// </summary>
+        public static bool Activate()
+        {
+#if !EC
+            try
+            {
+                var hello = Studio.LocalTextures.SaveType;
+            }
+            catch
+            {
+                return false;
+            }
+#endif
+            return true;
         }
 
         internal static ConfigEntry<TextureSaveType> ConfTexSaveType { get; set; }
@@ -44,9 +55,16 @@ namespace KKAPI.Maker {
 
         static LocalTextures()
         {
-            ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Card Save Type", TextureSaveType.Bundled, new ConfigDescription("Whether external textures used by plugins should be bundled with the card or to a local folder.", new AcceptableValueEnums<TextureSaveType>(TextureSaveType.Bundled, TextureSaveType.Local), new ConfigurationManagerAttributes { IsAdvanced = true }));
+            string description = "Whether external textures used by plugins should be bundled with the card or saved to a local folder.\nCards with local textures save storage space but cannot be shared.";
+            ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Card Save Type", TextureSaveType.Bundled, new ConfigDescription(description, new AcceptableValueEnums<TextureSaveType>(TextureSaveType.Bundled, TextureSaveType.Local), new ConfigurationManagerAttributes { IsAdvanced = true }));
+            ConfTexSaveType.SettingChanged += OnSaveTypeChanged;
             MakerAPI.MakerStartedLoading += (x, y) => { SetupUI(); };
             if (MakerAPI.InsideAndLoaded) SetupUI();
+
+#if !EC
+            // Activates Studio LocalTexture API
+            Studio.LocalTextures.SaveType.ToString();
+#endif
         }
 
         private static void SetTfProps(RectTransform tf, float a, float b, float c, float d, float e, float f, float g, float h, Vector3? scale = null)
@@ -57,8 +75,7 @@ namespace KKAPI.Maker {
             tf.offsetMin = new Vector2(e, f);
             tf.offsetMax = new Vector2(g, h);
 
-            if (!scale.HasValue) tf.localScale = Vector3.one;
-            else tf.localScale = scale.Value;
+            if (scale.HasValue) tf.localScale = scale.Value;
         }
 
         private static void SetLayers(Transform rootTransform)
@@ -79,9 +96,14 @@ namespace KKAPI.Maker {
             return Sprite.Create(spriteTex, spriteRect, spriteSize / 2, 100, 0, SpriteMeshType.FullRect, spriteBorder);
         }
 
-        private static void OnSaveTypeChanged(object sender, System.EventArgs args, ApiEventExecutionLogger eventLogger)
+        private static void OnSaveTypeChanged(object x, System.EventArgs y)
         {
-            SaveTypeChangedEvent.SafeInvokeWithLogging(handler => handler.Invoke(sender, args), nameof(SaveTypeChangedEvent), eventLogger);
+            saveTypeChanging = true;
+            var eLogger = ApiEventExecutionLogger.GetEventLogger();
+            eLogger.Begin(nameof(SaveTypeChangedEvent), "");
+            SaveTypeChangedEvent.SafeInvokeWithLogging(handler => handler.Invoke(null, new LocalSaveChangedEventArgs(SaveType)), nameof(SaveTypeChangedEvent), eLogger);
+            eLogger.End();
+            saveTypeChanging = false;
         }
 
 #if !KKS
@@ -122,7 +144,7 @@ namespace KKAPI.Maker {
             }
         }
 
-        private class AcceptableValueEnums<T> : AcceptableValueBase where T : Enum
+        private class AcceptableValueEnums<T> : AcceptableValueBase where T : System.Enum
         {
             //
             // Summary:
@@ -138,12 +160,12 @@ namespace KKAPI.Maker {
             {
                 if (acceptableValues == null)
                 {
-                    throw new ArgumentNullException("acceptableValues");
+                    throw new System.ArgumentNullException("acceptableValues");
                 }
 
                 if (acceptableValues.Length == 0)
                 {
-                    throw new ArgumentException("At least one acceptable value is needed", "acceptableValues");
+                    throw new System.ArgumentException("At least one acceptable value is needed", "acceptableValues");
                 }
 
                 AcceptableValues = acceptableValues;

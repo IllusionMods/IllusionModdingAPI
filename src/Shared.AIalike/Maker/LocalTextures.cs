@@ -81,15 +81,15 @@ namespace KKAPI.Maker
 
                 localSave = new GameObject("localSave", new[] { typeof(RectTransform), typeof(ToggleGroup), typeof(Image) });
                 localSave.transform.SetParent(root.transform);
-                SetTfProps(localSave.GetComponent<RectTransform>(), 0, 1, 0, 1, 1384, -772, 1688, -632);
                 localSave.GetComponent<Image>().sprite = MakeSprite("local-frame.png", 12);
                 localSave.GetComponent<Image>().type = Image.Type.Sliced;
+                SetTfProps(localSave.GetComponent<RectTransform>(), 0, 1, 0, 1, 1384, -772, 1688, -632);
 
                 var text = new GameObject("text", new[] { typeof(RectTransform), typeof(TextMeshProUGUI) });
                 text.transform.SetParent(localSave.transform);
-                SetTfProps(text.GetComponent<RectTransform>(), 0, 1, 1, 1, 8, -136, 0, -88);
                 var textUGUI = SetupText(text, warningText, TextAlignmentOptions.TopLeft);
                 textUGUI.color = new Color(1, 0.3f, 0.3f);
+                SetTfProps(text.GetComponent<RectTransform>(), 0, 1, 1, 1, 8, -136, 0, -88);
 
                 var tglGrp = localSave.GetComponent<ToggleGroup>();
                 tglGrp.RegisterToggle(CreateCheck("imgRbFace", "Bundled Textures", TextureSaveType.Bundled, -40, -8));
@@ -101,26 +101,26 @@ namespace KKAPI.Maker
                 {
                     var checkRoot = new GameObject(name, new[] { typeof(RectTransform), typeof(Image), typeof(Toggle) });
                     checkRoot.transform.SetParent(localSave.transform);
-                    SetTfProps(checkRoot.GetComponent<RectTransform>(), 0, 1, 1, 1, 8, f, 0, h);
                     checkRoot.GetComponent<Image>().color = Color.clear;
                     var checkToggle = checkRoot.GetComponent<Toggle>();
                     checkToggle.group = tglGrp;
                     checkToggle.navigation = new Navigation() { mode = Navigation.Mode.None };
+                    SetTfProps(checkRoot.GetComponent<RectTransform>(), 0, 1, 1, 1, 8, f, 0, h);
 
                     var checkBack = new GameObject("rb_back", new[] { typeof(RectTransform), typeof(Image) });
                     checkBack.transform.SetParent(checkRoot.transform.transform);
-                    SetTfProps(checkBack.GetComponent<RectTransform>(), 0, 0, 0, 1, 0, 0, 32, 0);
                     checkBack.GetComponent<Image>().sprite = MakeSprite("local-back.png", 0);
+                    SetTfProps(checkBack.GetComponent<RectTransform>(), 0, 0, 0, 1, 0, 0, 32, 0);
 
                     var checkCheck = new GameObject("rb_check", new[] { typeof(RectTransform), typeof(Image) });
                     checkCheck.transform.SetParent(checkBack.transform.transform);
-                    SetTfProps(checkCheck.GetComponent<RectTransform>(), 0, 0, 1, 1, 0, 0, 0, 0);
                     checkCheck.GetComponent<Image>().sprite = MakeSprite("local-check.png", 0);
+                    SetTfProps(checkCheck.GetComponent<RectTransform>(), 0, 0, 1, 1, 0, 0, 0, 0);
 
                     var checkText = new GameObject("text", new[] { typeof(RectTransform), typeof(TextMeshProUGUI) });
                     checkText.transform.SetParent(checkRoot.transform);
-                    SetTfProps(checkText.GetComponent<RectTransform>(), 0, 0, 1, 1, 36, 0, 0, 0);
                     SetupText(checkText, checkName);
+                    SetTfProps(checkText.GetComponent<RectTransform>(), 0, 0, 1, 1, 36, 0, 0, 0);
 
                     checkToggle.graphic = checkCheck.GetComponent<Image>();
 
