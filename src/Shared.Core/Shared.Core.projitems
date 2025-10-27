@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemFileDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Tablet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TabletManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utilities\ImageTypeIdentifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\WeakDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)KoikatuAPIBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\CharacterLoadFlags.cs" />
