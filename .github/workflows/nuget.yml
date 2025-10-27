@@ -18,6 +18,9 @@ jobs:
     - name: Setup Nuget
       uses: nuget/setup-nuget@v1
 
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
     - name: Build NativeHelper
       working-directory: ./src/Helper
       run: |
