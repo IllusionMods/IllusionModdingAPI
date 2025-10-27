@@ -9,29 +9,40 @@ namespace KKAPI.Utilities
     /// </summary>
     public static class ImageTypeIdentifier
     {
-        private static readonly Dictionary<string, byte[][]> patterns = new Dictionary<string, byte[][]>();
-        private static readonly Dictionary<string, string[]> patternsRaw = new Dictionary<string, string[]>
-            {
-                { "png", new[] { "89 50 4E 47 0D 0A 1A 0A" } },
-                { "jpg", new[] { "FF D8 FF", "00 00 00 0C 6A 50 20 20 0D 0A 87 0A", "FF 4F FF 51" } },
-                { "webp", new[] { "52 49 46 46" } },
-                { "bmp", new[] { "42 4D" } },
-                { "gif", new[] { "47 49 46 38 37 61", "47 49 46 38 39 61" } },
-                { "avif", new[] { "00 00 00 1C 66 74 79 70 61 76 69 66", "00 00 00 20 66 74 79 70 61 76 69 66" } },
-                { "tif", new[] { "49 49 2A 00", "4D 4D 00 2A", "49 49 2B 00", "4D 4D 00 2B" } },
-            };
-
-        static ImageTypeIdentifier()
+      private static readonly Dictionary<string, byte[][]> patterns = new Dictionary<string, byte[][]>
         {
-            List<byte[]> patternList = new List<byte[]>();
-            foreach (var kvp in patternsRaw)
-            {
-                patternList.Clear();
-                foreach (var byteString in kvp.Value)
-                    patternList.Add(byteString.Split(' ').Select(x => Convert.ToByte(x, 16)).ToArray());
-                patterns.Add(kvp.Key, patternList.ToArray());
-            }
-        }
+            { "png", new[] { new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A } } },
+            { "jpg", new[]
+                {
+                    new byte[] { 0xFF, 0xD8, 0xFF },
+                    new byte[] { 0x00, 0x00, 0x00, 0x0C, 0x6A, 0x50, 0x20, 0x20, 0x0D, 0x0A, 0x87, 0x0A },
+                    new byte[] { 0xFF, 0x4F, 0xFF, 0x51 }
+                }
+            },
+            // webp hack: several other filetypes begin like that but none other are images
+            { "webp", new[] { new byte[] { 0x52, 0x49, 0x46, 0x46 } } },
+            { "bmp", new[] { new byte[] { 0x42, 0x4D } } },
+            { "gif", new[]
+                {
+                    new byte[] { 0x47, 0x49, 0x46, 0x38, 0x37, 0x61 },
+                    new byte[] { 0x47, 0x49, 0x46, 0x38, 0x39, 0x61 }
+                }
+            },
+            { "avif", new[]
+                {
+                    new byte[] { 0x00, 0x00, 0x00, 0x1C, 0x66, 0x74, 0x79, 0x70, 0x61, 0x76, 0x69, 0x66 },
+                    new byte[] { 0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70, 0x61, 0x76, 0x69, 0x66 }
+                }
+            },
+            { "tif", new[]
+                {
+                    new byte[] { 0x49, 0x49, 0x2A, 0x00 },
+                    new byte[] { 0x4D, 0x4D, 0x00, 0x2A },
+                    new byte[] { 0x49, 0x49, 0x2B, 0x00 },
+                    new byte[] { 0x4D, 0x4D, 0x00, 0x2B }
+                }
+            },
+        };
 
         /// <summary>
         /// Identify the file extension of a byte array representing an image.
