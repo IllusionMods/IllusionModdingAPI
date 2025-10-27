@@ -18,10 +18,10 @@ jobs:
     - name: Setup Nuget
       uses: nuget/setup-nuget@v1
 
-    - name: Setup MSBuild
+    - name: Setup MSBuild # Needed by Build NativeHelper
       uses: microsoft/setup-msbuild@v1
-
-    - name: Build NativeHelper
+      
+    - name: Build NativeHelper # Need to build this separately first because nuget pack doesn't seem to handle vcxproj
       working-directory: ./src/Helper
       run: |
         msbuild Helper.vcxproj /p:Configuration=Release /p:Platform=x64
