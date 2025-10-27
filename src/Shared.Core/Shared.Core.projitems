@@ -19,7 +19,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Chara\Events\CoordinateEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Chara\TestCharaCustomFunctionController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\CharaTextureSaveTypeChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\CharaLocalTextures.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maker\CharaTextureSaveType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\GlobalTooltips.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ApiEventExecutionLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Curve.cs" />
@@ -27,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemFileDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Tablet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TabletManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)utilities\ImageTypeIdentifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\WeakDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)KoikatuAPIBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\CharacterLoadFlags.cs" />
@@ -62,6 +66,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\WindowsStringComparer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\local-back.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\local-check.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\local-frame.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-box-light.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-box.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Utilities\IMGUI\guisharp-window-light.png" />
