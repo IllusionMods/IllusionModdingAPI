@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#pragma warning (disable : 4190) // Disable warning about C linkage of C++ functions (SetFileTypes exposes wstring)
+
 extern "C" {
 __declspec(dllexport) std::wstring SetFileTypes(IFileDialog* dialog, const wchar_t* filter)
 {

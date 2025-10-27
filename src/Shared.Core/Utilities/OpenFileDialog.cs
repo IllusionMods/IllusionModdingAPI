@@ -195,7 +195,9 @@ namespace KKAPI.Utilities
             new Thread(
                 () =>
                 {
+#pragma warning disable CS0618 // Type or member is obsolete
                     var result = ShowDialog(title, initialDir, filter, defaultExt, flags, handle);
+#pragma warning restore CS0618 // Type or member is obsolete
                     onAccept(result);
                 }).Start();
         }
