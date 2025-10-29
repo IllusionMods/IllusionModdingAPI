@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using BepInEx.Configuration;
+using System.Collections;
+using BepInEx.Bootstrap;
 using KKAPI.Utilities;
 using UnityEngine.UI;
 using UnityEngine;
 using HarmonyLib;
+using BepInEx;
 using Studio;
 #if !PH
 using TMPro;
@@ -56,6 +59,7 @@ namespace KKAPI.Studio
 
         internal static ConfigEntry<SceneTextureSaveType> ConfTexSaveType { get; set; }
 
+        private static bool oldBrowserFolders = false;
         private static bool saveTypeChanging = false;
         private static readonly Harmony harmony = null;
 
@@ -66,6 +70,20 @@ namespace KKAPI.Studio
             ConfTexSaveType.SettingChanged += OnSaveTypeChanged;
             if (StudioAPI.InsideStudio)
                 harmony = Harmony.CreateAndPatchAll(typeof(SceneLocalTextures));
+
+            KoikatuAPI.Instance.StartCoroutine(CheckFolderBrowsersLater());
+            IEnumerator CheckFolderBrowsersLater()
+            {
+                yield return null;
+                yield return null;
+                yield return null;
+                if (Chainloader.PluginInfos.TryGetValue("marco.FolderBrowser", out PluginInfo browserFoldersInfo))
+                {
+                    System.Version version = browserFoldersInfo.Metadata.Version;
+                    if (version.Major < 3 || (version.Major == 3 && version.Minor < 1))
+                        oldBrowserFolders = true;
+                }
+            }
 
             // Activates Maker LocalTexture API
             Maker.CharaLocalTextures.SaveType.ToString();
@@ -93,7 +111,10 @@ namespace KKAPI.Studio
                 localSave.transform.SetParent(root.transform.GetComponentInChildren<StudioNode>(true).GetComponentInParent<Canvas>().transform);
                 localSave.GetComponent<Image>().sprite = MakeSprite("local-frame.png", 12);
                 localSave.GetComponent<Image>().type = Image.Type.Sliced;
-                SetTfProps(localSave.GetComponent<RectTransform>(), 0, 1, 0, 1, 195, -225, 675, -50);
+                if (oldBrowserFolders)
+                    SetTfProps(localSave.GetComponent<RectTransform>(), 0, 1, 0, 1, 940, -225, 1420, -50);
+                else
+                    SetTfProps(localSave.GetComponent<RectTransform>(), 0, 1, 0, 1, 195, -225, 675, -50);
 
                 var title = new GameObject("title", new[] { typeof(RectTransform) });
                 title.transform.SetParent(localSave.transform);
