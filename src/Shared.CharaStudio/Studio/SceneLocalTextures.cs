@@ -66,7 +66,7 @@ namespace KKAPI.Studio
         static SceneLocalTextures()
         {
             string description = "Whether external textures used by plugins should be bundled with the scene, deduped and then saved to the scene, or saved to a local folder.\nWARNING: Scenes with deduped textures save some space but cannot be loaded by earlier plugin versions. Scenes with local textures save more space but cannot be shared.";
-            ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Scene Save Type", SceneTextureSaveType.Bundled, new ConfigDescription(description, null, new ConfigurationManagerAttributes { IsAdvanced = true }));
+            ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Scene Save Type", SceneTextureSaveType.Bundled, new ConfigDescription(description, null, new ConfigurationManagerAttributes { IsAdvanced = true, Order = 1 }));
             ConfTexSaveType.SettingChanged += OnSaveTypeChanged;
             if (StudioAPI.InsideStudio)
                 harmony = Harmony.CreateAndPatchAll(typeof(SceneLocalTextures));
