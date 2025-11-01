@@ -75,8 +75,6 @@ namespace KKAPI.Studio
             IEnumerator CheckFolderBrowsersLater()
             {
                 yield return null;
-                yield return null;
-                yield return null;
                 if (Chainloader.PluginInfos.TryGetValue("marco.FolderBrowser", out PluginInfo browserFoldersInfo))
                 {
                     System.Version version = browserFoldersInfo.Metadata.Version;
