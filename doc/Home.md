@@ -139,6 +139,7 @@
 - [`SmartRect`](KKAPI.Utilities.md#smartrect)
 - [`SystemFileDialog`](KKAPI.Utilities.md#systemfiledialog)
 - [`TabletManager`](KKAPI.Utilities.md#tabletmanager)
+- [`TextureSaveHandlerBase`](KKAPI.Utilities.md#texturesavehandlerbase)
 - [`TextureUtils`](KKAPI.Utilities.md#textureutils)
 - [`TextUtils`](KKAPI.Utilities.md#textutils)
 - [`TimelineCompatibility`](KKAPI.Utilities.md#timelinecompatibility)

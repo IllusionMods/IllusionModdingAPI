@@ -114,6 +114,8 @@ Static Methods
 | `Boolean` | SequenceEqualFast(this `Byte[]` a, `Byte[]` b) | This method compares two byte arrays for equality, returning true if they are identical and false otherwise.  It is optimized for high performance and uses unsafe code. | 
 | `Boolean` | SetFieldValue(this `Object` self, `String` name, `Object` value) | Set value of a field through reflection | 
 | `Boolean` | SetPropertyValue(this `Object` self, `String` name, `Object` value) | Set value of a property through reflection | 
+| `IEnumerable<T>` | Subset(this `T[]` array, `Int32` start) | Return elements from a specified start position | 
+| `IEnumerable<T>` | Subset(this `T[]` array, `Int32` start, `Int32` size) | Return elements from a specified start position | 
 | `ReadOnlyDictionary<TKey, TValue>` | ToReadOnlyDictionary(this `IDictionary<TKey, TValue>` original) | Wrap this dictionary in a read-only wrapper that will prevent any changes to it.  Warning: Any reference types inside the dictionary can still be modified. | 
 
 
@@ -502,6 +504,45 @@ Static Methods
 | --- | --- | --- | 
 | `void` | Subscribe(`TabletEvent` handler) | Subscribes a provided event handler to receive tablet input updates. | 
 | `void` | Unsubscribe(`TabletEvent` handler) | Unsubscribes a previously registered event handler from receiving tablet input updates. | 
+
+
+## `TextureSaveHandlerBase`
+
+Template class for handling texture saving.
+```csharp
+public abstract class KKAPI.Utilities.TextureSaveHandlerBase
+
+```
+
+Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `String` | DedupedTexSavePostfix | Postfix for deduped texture data in PluginData | 
+| `String` | DedupedTexSavePrefix | Prefix for deduped identification data in PluginData | 
+| `String` | LocalTexPrefix | Prefix for locally saved texture files | 
+| `String` | LocalTexSavePrefix | Prefix for local identification data in PluginData | 
+| `String` | LocalTexturePath | Where local textures should be saved | 
+| `String` | LocalTexUnusedFolder | Name of folder within local texture folder where unused textures can be automatically placed | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Object` | DefaultData() | What to return when no data is able to be loaded. | 
+| `Boolean` | IsBundled(`PluginData` pluginData, `String` key, `Object&` data) | Determines whether the provided data was saved as bundled | 
+| `Boolean` | IsDeduped(`PluginData` pluginData, `String` key, `Object&` data) | Determines whether the provided data was saved as deduped | 
+| `Boolean` | IsLocal(`PluginData` pluginData, `String` key, `Object&` data) | Determines whether the provided data was saved as local | 
+| `T` | Load(`PluginData` pluginData, `String` key, `Boolean` isCharaController) | Determine save type and then load data from the provided PluginData | 
+| `Object` | LoadBundled(`PluginData` pluginData, `String` key, `Object` data, `Boolean` isCharaController = False) | Load bundled data from the provided PluginData | 
+| `Object` | LoadDeduped(`PluginData` pluginData, `String` key, `Object` data, `Boolean` isCharaController = False) | Load deduped data from the provided PluginData | 
+| `Object` | LoadLocal(`PluginData` pluginData, `String` key, `Object` data, `Boolean` isCharaController = False) | Load local data from the provided PluginData | 
+| `void` | RegisterForAudit(`String` name, `String` searchString) | Register the Texture Handler instance for auditing via the API audit function.  To be eligible for automatic auditing, the locally saved data must be in the form of an  (int, string) Dictionary, where the key is the ID of the texture, and the string is its  hash encoded in hex, which is also used in the local file's name. The saved data has to  be serialised via MessagePackSerializer. | 
+| `void` | Save(`PluginData` pluginData, `String` key, `Object` data, `Boolean` isCharaController) | Save the provided data with the current settings | 
+| `void` | SaveBundled(`PluginData` pluginData, `String` key, `Object` data, `Boolean` isCharaController = False) | Save the provided data with the provided key as bundled | 
+| `void` | SaveDeduped(`PluginData` pluginData, `String` key, `Object` data, `Boolean` isCharaController = False) | Save the provided data with the provided key as deduped | 
+| `void` | SaveLocal(`PluginData` pluginData, `String` key, `Object` data, `Boolean` isCharaController = False) | Save the provided data with the provided key as local | 
 
 
 ## `TextureUtils`
