@@ -209,7 +209,7 @@ namespace KKAPI.Utilities
             }
         }
 
-        internal static void AuditLocalFiles()
+        private static void AuditLocalFiles()
         {
             if (auditPlugins.Count == 0)
             {
@@ -301,33 +301,34 @@ namespace KKAPI.Utilities
             {
                 int patternStart = FindPosition(fileData, auditPluginSearchBytes[plugin], readingAt);
                 if (patternStart < 0) break;
-                int lenLenByte = patternStart + auditPluginSearchBytes[plugin].Length;
+                int posLenByte = patternStart + auditPluginSearchBytes[plugin].Length;
 
                 int length = -1;
                 int offset = 0;
-                List<byte> dicBytes;
-                switch (fileData[lenLenByte])
+                switch (fileData[posLenByte])
                 {
                     case 0xC4:
-                        length = fileData[lenLenByte + 1];
+                        length = fileData[posLenByte + 1];
                         offset = 2;
                         break;
                     case 0xC5:
-                        length = (fileData[lenLenByte + 1] << 8) + fileData[lenLenByte + 2];
+                        length = (fileData[posLenByte + 1] << 8) + fileData[posLenByte + 2];
                         offset = 3;
                         break;
+                    // I've never seen this case, it's only an extrapolation from the first two, but getting here would imply having
+                    // more than 65535 bytes worth of local texture hashes in a single controller, which is unlikely anyway
                     case 0xC6:
-                        length = (fileData[lenLenByte + 1] << 16) + (fileData[lenLenByte + 2] << 8) + fileData[lenLenByte + 3];
+                        length = (fileData[posLenByte + 1] << 16) + (fileData[posLenByte + 2] << 8) + fileData[posLenByte + 3];
                         offset = 4;
                         break;
                 }
                 if (length == -1) break;
-                dicBytes = fileData.SubSet(lenLenByte + offset, length).ToList();
+
                 try
                 {
-                    Dictionary<int, string> hashDict = MessagePackSerializer.Deserialize<Dictionary<int, string>>(dicBytes.ToArray());
+                    byte[] dicBytes = fileData.Subset(posLenByte + offset, length).ToArray();
+                    Dictionary<int, string> hashDict = MessagePackSerializer.Deserialize<Dictionary<int, string>>(dicBytes);
                     if (hashDict != null && hashDict.Count > 0)
-                    {
                         foreach (var kvp in hashDict)
                             lock (auditFoundHashToFiles[plugin])
                                 if (!auditFoundHashToFiles[plugin].TryGetValue(kvp.Value, out var fileList))
@@ -335,15 +336,13 @@ namespace KKAPI.Utilities
                                 else
                                     lock (fileList)
                                         fileList.Add(file);
-                        break;
-                    }
                 }
                 catch (Exception e)
                 {
                     KoikatuAPI.Logger.LogError($"Error deserialising hash dictionary!\n{e.Message}\n{e.StackTrace}");
                     break;
                 }
-                readingAt = patternStart + length;
+                readingAt = posLenByte + length;
             }
         }
 

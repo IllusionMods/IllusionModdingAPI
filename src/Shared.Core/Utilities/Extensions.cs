@@ -436,13 +436,22 @@ namespace KKAPI.Utilities
         }
 
         /// <summary>
-        /// Return part of the array from start to end (excluding)
+        /// Return elements from a specified start position
+        /// </summary>
+        /// <param name="array">Array being operated on</param>
+        /// <param name="start">First element to return</param>
+        public static IEnumerable<T> Subset<T>(this T[] array, int start)
+        {
+            return array.Subset(start, array.Length - start);
+        }
+
+        /// <summary>
+        /// Return a specific number of elements from a specified start position
         /// </summary>
         /// <param name="array">Array being operated on</param>
         /// <param name="start">First element to return</param>
         /// <param name="size">How many elements to return</param>
-        /// <returns></returns>
-        public static IEnumerable<T> SubSet<T>(this T[] array, int start, int size)
+        public static IEnumerable<T> Subset<T>(this T[] array, int start, int size)
         {
             if (start < 0) throw new ArgumentOutOfRangeException(nameof(start), "Start should be positive!");
             if (start >= array.Length) throw new ArgumentOutOfRangeException(nameof(start), "Start is outside of array bounds!");
