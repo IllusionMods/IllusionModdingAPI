@@ -61,7 +61,7 @@ namespace KKAPI.Maker {
             MakerAPI.MakerStartedLoading += (x, y) => { SetupUI(); };
             if (MakerAPI.InsideAndLoaded) SetupUI();
             MakerCardSave.RegisterNewCardSavePathModifier(null, TextureSaveHandlerBase.AddLocalPrefixToCard);
-            KoikatuAPI.Instance.Config.Bind("Local Textures", "Audit Local Files", 0, new ConfigDescription("Parse all character / scene files and check for missing or unused local files. Takes a long times if you have many cards and scenes.", null, new ConfigurationManagerAttributes
+            KoikatuAPI.Instance.Config.Bind("Local Textures", "Audit Local Files", 0, new ConfigDescription("Parse all character / scene files and check for missing or unused local files. Takes a long time if you have many cards and scenes.", null, new ConfigurationManagerAttributes
             {
                 CustomDrawer = new System.Action<ConfigEntryBase>(TextureSaveHandlerBase.AuditOptionDrawer),
                 Order = 0,

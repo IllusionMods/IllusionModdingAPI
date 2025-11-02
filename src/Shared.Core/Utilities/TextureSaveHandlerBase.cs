@@ -202,7 +202,10 @@ namespace KKAPI.Utilities
                         displaying.SetValue(cfgMgrInfo.Instance, false, null);
                     }
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    KoikatuAPI.Logger.LogError($"Error closing ConfigurationManager window!\n{e.Message}\n{e.StackTrace}");
+                }
             }
         }
 
@@ -261,7 +264,9 @@ namespace KKAPI.Utilities
             lock (KoikatuAPI.Logger)
                 KoikatuAPI.Logger.LogDebug($"Starting new local file processor with period {period} and offset {offset}!");
 
+            // There was no local saving before this point in time, so we can skip files not modified since
             DateTime cutoff = new DateTime(2025, 10, 21);
+
             string file;
             int i = offset;
             while (i < pngs.Count)
@@ -269,14 +274,15 @@ namespace KKAPI.Utilities
                 if (auditDoneCoroutine == null) return;
 
                 file = pngs[i];
-                if (file != null && File.Exists(file) && File.GetLastWriteTime(file) > cutoff)
+                if (
+                    file != null && File.Exists(file)
+                    && File.GetLastWriteTime(file) > cutoff
+                    && new FileInfo(file).Length <= int.MaxValue
+                )
                 {
-                    if (new FileInfo(file).Length <= int.MaxValue)
-                    {
-                        byte[] fileData = File.ReadAllBytes(file);
-                        foreach (var plugin in auditPlugins)
-                            ScourData(file, fileData, plugin);
-                    }
+                    byte[] fileData = File.ReadAllBytes(file);
+                    foreach (var plugin in auditPlugins)
+                        ScourData(file, fileData, plugin);
                 }
 
                 lock (auditLock)
@@ -332,8 +338,9 @@ namespace KKAPI.Utilities
                         break;
                     }
                 }
-                catch
+                catch (Exception e)
                 {
+                    KoikatuAPI.Logger.LogError($"Error deserialising hash dictionary!\n{e.Message}\n{e.StackTrace}");
                     break;
                 }
                 readingAt = patternStart + length;
@@ -516,16 +523,14 @@ namespace KKAPI.Utilities
                             auditUnusedTextures[auditPlugins[auditNowPlugin]].Clear();
                         }
                         GUILayout.Space(5);
-                        if (GUILayout.Button("Move unused files to '_Unused' folder", AuditButton, GUILayout.Height(30)))
+                        if (GUILayout.Button($"Move unused files to '{auditPlugins[auditNowPlugin].LocalTexUnusedFolder}' folder", AuditButton, GUILayout.Height(30)))
                         {
                             string unusedFolder = Path.Combine(auditPlugins[auditNowPlugin].LocalTexturePath, auditPlugins[auditNowPlugin].LocalTexUnusedFolder);
                             if (!Directory.Exists(unusedFolder))
                                 Directory.CreateDirectory(unusedFolder);
                             foreach (var kvp in auditUnusedTextures[auditPlugins[auditNowPlugin]])
-                                File.Move(
-                                    Path.Combine(auditPlugins[auditNowPlugin].LocalTexturePath, kvp.Value),
-                                    Path.Combine(Path.Combine(auditPlugins[auditNowPlugin].LocalTexturePath, auditPlugins[auditNowPlugin].LocalTexUnusedFolder), kvp.Value));
-                            auditUnusedTextures.Clear();
+                                File.Move(Path.Combine(auditPlugins[auditNowPlugin].LocalTexturePath, kvp.Value), Path.Combine(unusedFolder, kvp.Value));
+                            auditUnusedTextures[auditPlugins[auditNowPlugin]].Clear();
                         }
                         GUILayout.Space(5);
                         if (GUILayout.Button("Close", AuditButton, GUILayout.Height(30)))

@@ -444,8 +444,10 @@ namespace KKAPI.Utilities
         /// <returns></returns>
         public static IEnumerable<T> SubSet<T>(this T[] array, int start, int size)
         {
-            if (size < 1) throw new ArgumentOutOfRangeException("Size should be positive!");
-            if (start + size > array.Length) throw new ArgumentOutOfRangeException("Start + size goes beyond array bounds!");
+            if (start < 0) throw new ArgumentOutOfRangeException(nameof(start), "Start should be positive!");
+            if (start >= array.Length) throw new ArgumentOutOfRangeException(nameof(start), "Start is outside of array bounds!");
+            if (size < 1) throw new ArgumentOutOfRangeException(nameof(size), "Size should be positive!");
+            if (start + size > array.Length) throw new ArgumentOutOfRangeException(nameof(size), "Start + size goes beyond array bounds!");
             for (int i = start; i < start + size; i++) yield return array[i];
         }
     }
