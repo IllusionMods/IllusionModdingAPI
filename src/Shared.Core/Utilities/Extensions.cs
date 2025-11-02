@@ -434,5 +434,30 @@ namespace KKAPI.Utilities
             var height = corners[1].y - corners[0].y;
             return new Rect(xMin, yMin, width, height);
         }
+
+        /// <summary>
+        /// Return elements from a specified start position
+        /// </summary>
+        /// <param name="array">Array being operated on</param>
+        /// <param name="start">First element to return</param>
+        public static IEnumerable<T> Subset<T>(this T[] array, int start)
+        {
+            return array.Subset(start, array.Length - start);
+        }
+
+        /// <summary>
+        /// Return a specific number of elements from a specified start position
+        /// </summary>
+        /// <param name="array">Array being operated on</param>
+        /// <param name="start">First element to return</param>
+        /// <param name="size">How many elements to return</param>
+        public static IEnumerable<T> Subset<T>(this T[] array, int start, int size)
+        {
+            if (start < 0) throw new ArgumentOutOfRangeException(nameof(start), "Start should be positive!");
+            if (start >= array.Length) throw new ArgumentOutOfRangeException(nameof(start), "Start is outside of array bounds!");
+            if (size < 1) throw new ArgumentOutOfRangeException(nameof(size), "Size should be positive!");
+            if (start + size > array.Length) throw new ArgumentOutOfRangeException(nameof(size), "Start + size goes beyond array bounds!");
+            for (int i = start; i < start + size; i++) yield return array[i];
+        }
     }
 }
