@@ -718,7 +718,8 @@ namespace KKAPI.Utilities
 #endif
             if (MakerAPI.InsideMaker)
                 return (int)CharaLocalTextures.SaveType;
-            throw new ArgumentException("Not inside Studio or Maker!");
+
+            return (int)CharaTextureSaveType.Bundled;
         }
     }
 }
