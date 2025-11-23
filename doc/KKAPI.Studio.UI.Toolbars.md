@@ -66,7 +66,7 @@ Methods
 
 ## `ToolbarManager`
 
-Add custom buttons to studio toolbars. Thread-safe.  You can find a button template here https://github.com/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
+Add custom buttons to studio toolbars. Thread-safe.  You can find a button template here https://gitgoon.dev/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
 ```csharp
 public static class KKAPI.Studio.UI.Toolbars.ToolbarManager
 

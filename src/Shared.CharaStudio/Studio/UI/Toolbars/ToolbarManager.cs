@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ namespace KKAPI.Studio.UI.Toolbars
 {
     /// <summary>
     /// Add custom buttons to studio toolbars. Thread-safe.
-    /// You can find a button template here https://github.com/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
+    /// You can find a button template here https://gitgoon.dev/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
     /// </summary>
     public static class ToolbarManager
     {

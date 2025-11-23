@@ -19,7 +19,7 @@ Enum
 
 ## `KoikatuAPI`
 
-Provides overall information about the game and the API itself, and provides some useful tools.  More information is available in project wiki at https://github.com/ManlyMarco/KKAPI/wiki
+Provides overall information about the game and the API itself, and provides some useful tools.  More information is available in project wiki at https://gitgoon.dev/IllusionMods/IllusionModdingAPI/wiki
 ```csharp
 public class KKAPI.KoikatuAPI
     : BaseUnityPlugin

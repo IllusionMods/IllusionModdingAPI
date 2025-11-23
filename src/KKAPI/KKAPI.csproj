@@ -144,8 +144,8 @@
   <Import Project="..\Shared.CharaStudio\Shared.CharaStudio.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST "D:\SVN\MarkdownGenerator\bin\Debug\MarkdownGenerator.exe" (
-"D:\SVN\MarkdownGenerator\bin\Debug\MarkdownGenerator.exe" "$(SolutionDir)..\bin\KKAPI.dll" "$(SolutionDir)..\doc"
+    <PostBuildEvent>IF EXIST "D:\SVN\ManlyMarco_Forks\MarkdownGenerator\bin\Debug\MarkdownGenerator.exe" (
+"D:\SVN\ManlyMarco_Forks\MarkdownGenerator\bin\Debug\MarkdownGenerator.exe" "$(SolutionDir)..\bin\KKAPI.dll" "$(SolutionDir)..\doc"
 )
 IF EXIST $(SolutionDir)PostBuild.bat CALL "$(SolutionDir)PostBuild.bat" $(TargetPath) KK</PostBuildEvent>
   </PropertyGroup>

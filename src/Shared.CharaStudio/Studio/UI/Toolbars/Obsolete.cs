@@ -12,7 +12,7 @@ namespace KKAPI.Studio.UI
 {
     /// <summary>
     /// Add custom buttons to studio toolbars.
-    /// You can find a button template here https://github.com/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
+    /// You can find a button template here https://gitgoon.dev/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
     /// </summary>
     [Obsolete("Use ToolbarManager instead")]
     public static class CustomToolbarButtons
@@ -24,7 +24,7 @@ namespace KKAPI.Studio.UI
         /// <param name="iconTex">
         /// A 32x32 icon used for the button.
         /// You can find a template here
-        /// https://github.com/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
+        /// https://gitgoon.dev/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
         /// For best performance and smallest size save your thumbnail as 8bit grayscale png (or indexed if you need colors) with no alpha channel.
         /// </param>
         /// <param name="initialValue">Initial state of the toggle.</param>

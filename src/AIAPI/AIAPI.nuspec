@@ -4,7 +4,7 @@
     <id>IllusionModdingAPI.AIAPI</id>
     <version>$version$</version>
     <authors>ManlyMarco</authors>
-    <projectUrl>https://github.com/IllusionMods/IllusionModdingAPI</projectUrl>
+    <projectUrl>https://gitgoon.dev/IllusionMods/IllusionModdingAPI</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Modding API for AI Girl</description>
     <developmentDependency>true</developmentDependency>

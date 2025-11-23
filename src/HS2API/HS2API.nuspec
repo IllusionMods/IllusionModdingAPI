@@ -4,7 +4,7 @@
     <id>IllusionModdingAPI.HS2API</id>
     <version>$version$</version>
     <authors>ManlyMarco</authors>
-    <projectUrl>https://github.com/IllusionMods/IllusionModdingAPI</projectUrl>
+    <projectUrl>https://gitgoon.dev/IllusionMods/IllusionModdingAPI</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Modding API for HoneySelect2</description>
     <developmentDependency>true</developmentDependency>

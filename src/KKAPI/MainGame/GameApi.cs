@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -144,7 +144,7 @@ namespace KKAPI.MainGame
         /// <summary>
         /// Register a new action icon in roaming mode (like the icons for training/studying, club report screen, peeping).
         /// Dispose the return value to remove the icon.
-        /// Icon templates can be found here https://github.com/IllusionMods/IllusionModdingAPI/tree/master/src/KKAPI/MainGame/ActionIcons
+        /// Icon templates can be found here https://gitgoon.dev/IllusionMods/IllusionModdingAPI/tree/master/src/KKAPI/MainGame/ActionIcons
         /// </summary>
         /// <param name="mapNo">Identification number of the map the icon should be spawned on</param>
         /// <param name="position">Position of the icon. All default icons are spawned at y=0, but different heights work fine to a degree.
@@ -173,7 +173,7 @@ namespace KKAPI.MainGame
         /// <summary>
         /// Register a new touch icon in talk scenes in roaming mode (like the touch and look buttons on top right when talking to a character).
         /// Dispose the return value to remove the icon.
-        /// Icon templates can be found here https://github.com/IllusionMods/IllusionModdingAPI/tree/master/src/KKAPI/MainGame/TouchIcons
+        /// Icon templates can be found here https://gitgoon.dev/IllusionMods/IllusionModdingAPI/tree/master/src/KKAPI/MainGame/TouchIcons
         /// By default this functions as a simple button. If you want to turn this into a toggle you have to manually switch button.image.sprite as needed.
         /// </summary>
         /// <param name="icon">Icon shown by default</param>

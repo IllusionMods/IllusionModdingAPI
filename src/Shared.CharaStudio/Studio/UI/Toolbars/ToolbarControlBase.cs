@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using KKAPI.Utilities;
 using System;
 using System.Collections.Generic;
@@ -50,7 +50,7 @@ namespace KKAPI.Studio.UI.Toolbars
         /// <param name="iconGetter">
         /// Function to get the icon texture. It should be a 32x32 icon used for the button.
         /// You can find a template here
-        /// https://github.com/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
+        /// https://gitgoon.dev/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
         /// For best performance and smallest size save your thumbnail as 8bit grayscale png (or indexed if you need colors) with
         /// no alpha channel.
         /// This func is always called on main thread, it may not be called if button is hidden by user.

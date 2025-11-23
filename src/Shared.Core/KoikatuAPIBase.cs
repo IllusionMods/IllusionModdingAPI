@@ -18,7 +18,7 @@ namespace KKAPI
 {
     /// <summary>
     /// Provides overall information about the game and the API itself, and provides some useful tools.
-    /// More information is available in project wiki at https://github.com/ManlyMarco/KKAPI/wiki
+    /// More information is available in project wiki at https://gitgoon.dev/IllusionMods/IllusionModdingAPI/wiki
     /// </summary>
     [BepInDependency("com.joan6694.illusionplugins.moreaccessories", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(ExtensibleSaveFormat.ExtendedSave.GUID, ExtensibleSaveFormat.ExtendedSave.Version)]
