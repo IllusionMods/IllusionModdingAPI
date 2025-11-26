@@ -7,7 +7,6 @@
     <projectUrl>https://gitgoon.dev/IllusionMods/IllusionModdingAPI</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Modding API for Koikatsu Sunshine</description>
-    <developmentDependency>true</developmentDependency>
     <tags>Koikatu Sunshine</tags>
   </metadata>
   <files>

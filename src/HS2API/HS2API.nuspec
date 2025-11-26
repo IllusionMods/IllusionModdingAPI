@@ -7,7 +7,6 @@
     <projectUrl>https://gitgoon.dev/IllusionMods/IllusionModdingAPI</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Modding API for HoneySelect2</description>
-    <developmentDependency>true</developmentDependency>
     <tags>HoneySelect2</tags>
   </metadata>
   <files>
