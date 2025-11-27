@@ -21,31 +21,31 @@ namespace KKAPI.Utilities
             /// </summary>
             /// <param name="t">The interpolation factor, ranging from 0 (start) to 1 (end), that determines the position along the linear curve.</param>
             /// <returns>A <see cref="Vector2"/> representing the interpolated position along the linear curve.</returns>
-            public static Vector2 Linear(float t) => Bezier(Vector2.zero, Vector2.one, Vector2.zero, Vector2.one, t);
+            public static Vector2 Linear(float t) => new Vector2(t, t);
             /// <summary>
             /// Performs easing interpolation between two points to calculate a position at a specific interpolation value, using a predefined ease-in-out curve.
             /// </summary>
             /// <param name="t">The interpolation factor, ranging from 0 (start) to 1 (end), that determines the position along the easing curve.</param>
             /// <returns>A <see cref="Vector2"/> representing the interpolated position along the easing curve.</returns>
-            public static Vector2 Ease(float t) => Bezier(Vector2.zero, Vector2.one, new Vector2(0.25f, 0.1f), new Vector2(0.25f, 1f), t);
+            public static Vector2 Ease(float t) => Bezier(Vector2.zero, new Vector2(0.25f, 0.1f), new Vector2(0.25f, 1f), Vector2.one, t);
             /// <summary>
             /// Performs an ease-in interpolation between two points to calculate a position at a specific interpolation value, resulting in a slower start and faster end.
             /// </summary>
             /// <param name="t">The interpolation factor, ranging from 0 (start) to 1 (end), that determines the position along the ease-in curve.</param>
             /// <returns>A <see cref="Vector2"/> representing the interpolated position along the ease-in curve.</returns>
-            public static Vector2 EaseIn(float t) => Bezier(Vector2.zero, Vector2.one, new Vector2(0.42f, 0f), Vector2.one, t);
+            public static Vector2 EaseIn(float t) => Bezier(Vector2.zero, new Vector2(0.42f, 0f), Vector2.one, Vector2.one, t);
             /// <summary>
             /// Calculates a position on an ease-out curved trajectory for a given interpolation value.
             /// </summary>
             /// <param name="t">The interpolation factor, ranging from 0 (start) to 1 (end), that determines the position along the ease-out curve.</param>
             /// <returns>A <see cref="Vector2"/> representing the interpolated position along the ease-out curve.</returns>
-            public static Vector2 EaseOut(float t) => Bezier(Vector2.zero, Vector2.one, Vector2.zero, new Vector2(0.58f, 1f), t);
+            public static Vector2 EaseOut(float t) => Bezier(Vector2.zero, Vector2.zero, new Vector2(0.58f, 1f), Vector2.one, t);
             /// <summary>
             /// Calculates a position along an ease-in-out interpolation curve at a specific interpolation value.
             /// </summary>
             /// <param name="t">The interpolation factor, ranging from 0 (start) to 1 (end), that determines the position along the ease-in-out curve.</param>
             /// <returns>A <see cref="Vector2"/> representing the interpolated position along the ease-in-out curve.</returns>
-            public static Vector2 EaseInOut(float t) => Bezier(Vector2.zero, Vector2.one, new Vector2(0.42f, 0), new Vector2(0.58f, 1), t);
+            public static Vector2 EaseInOut(float t) => Bezier(Vector2.zero, new Vector2(0.42f, 0f), new Vector2(0.58f, 1f), Vector2.one, t);
             /// <summary>
             /// Computes a smooth step interpolation between two points to calculate a position at a specific interpolation value.
             /// </summary>
