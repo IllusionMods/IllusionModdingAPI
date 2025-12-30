@@ -6,50 +6,230 @@ using System.Runtime.InteropServices;
 namespace KKAPI
 {
 #pragma warning disable CS1591
-
     /// <summary>
-    /// Represents a data packet structure used for interacting with tablet hardware,
-    /// containing information about button states, positional coordinates, and
-    /// pressure sensitivity. This structure is primarily utilized for processing
-    /// input data from digitizing devices.
+    /// Represents a Wintab packet containing tablet input data such as position, pressure, and orientation.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This structure maps directly to the Wintab PACKET structure and must maintain sequential layout
+    /// with single-byte packing for correct COM interop with the Wintab driver.
+    /// </para>
+    /// <para>
+    /// The fields included in this packet are determined by the <c>lcPktData</c> mask specified when
+    /// opening the tablet context. Only fields corresponding to bits set in that mask will contain
+    /// valid data.
+    /// </para>
+    /// </remarks>
+    /// <seealso href="https://developer-docs.wacom.com/intuos-cintiq-business-702/docs/wintab-packet"/>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Packet
     {
-        public IntPtr pkContext;        		// PK_CONTEXT
-        public uint pkStatus;           		// PK_STATUS
-        public uint pkTime;             		// PK_TIME
-        public uint pkChanged;          		// PK_CHANGED
-        public uint pkSerialNumber;     		// PK_SERIAL_NUMBER
-        public uint pkCursor;           		// PK_CURSOR
-        public uint pkButtons;          		// PK_BUTTONS
-        public int pkX;                 		// PK_X
-        public int pkY;                 		// PK_Y
-        public int pkZ;                 		// PK_Z
-        public uint pkNormalPressure;   		// PK_NORMAL_PRESSURE
-        public uint pkTangentPressure;  		// PK_TANGENT_PRESSURE
-        public Orientation pkOrientation;       // PK_ORIENTATION
-        public Rotation pkRotation;             // PK_ROTATION
+        /// <summary>
+        /// Handle to the tablet context that generated this packet.
+        /// </summary>
+        public IntPtr Context;
+
+        /// <summary>
+        /// Status flags indicating the current state of the cursor relative to the context.
+        /// </summary>
+        /// <remarks>
+        /// Bit 0 (TPS_PROXIMITY): Set when the cursor is within the context's input area.
+        /// Bit 1 (TPS_QUEUE_ERR): Set if packets were lost due to queue overflow.
+        /// Bit 2 (TPS_MARGIN): Set when the cursor is in the context's margin area.
+        /// Bit 3 (TPS_GRAB): Set when the context has grabbed input exclusively.
+        /// Bit 4 (TPS_INVERT): Set when the cursor is inverted (e.g., eraser end of stylus).
+        /// </remarks>
+        public uint Status;
+
+        /// <summary>
+        /// Timestamp of the packet in milliseconds, relative to Windows system time.
+        /// </summary>
+        public uint Time;
+
+        /// <summary>
+        /// Bitmask indicating which packet fields have changed since the previous packet.
+        /// </summary>
+        /// <remarks>
+        /// Each bit corresponds to a PK_* field constant. This is useful for efficient
+        /// change detection without comparing all field values.
+        /// </remarks>
+        public uint Changed;
+
+        /// <summary>
+        /// Unique serial number of the physical device generating the packet.
+        /// </summary>
+        /// <remarks>
+        /// This value uniquely identifies the physical tool (stylus, airbrush, etc.) and
+        /// persists across sessions, allowing applications to associate settings with specific tools.
+        /// </remarks>
+        public uint SerialNumber;
+
+        /// <summary>
+        /// Index of the cursor type currently in use.
+        /// </summary>
+        /// <remarks>
+        /// This identifies which cursor (stylus tip, eraser, airbrush, etc.) generated
+        /// the packet. Use <c>WTInfo</c> with <c>WTI_CURSORS</c> to query cursor capabilities.
+        /// </remarks>
+        public uint Cursor;
+
+        /// <summary>
+        /// Button state bitmask for the current cursor.
+        /// </summary>
+        /// <remarks>
+        /// Each bit represents a button's state. The meaning of each bit depends on the
+        /// cursor type and button mapping configuration.
+        /// </remarks>
+        public uint Buttons;
+
+        /// <summary>
+        /// X coordinate in tablet units.
+        /// </summary>
+        /// <remarks>
+        /// The coordinate space is defined by the context's input area (<c>lcInOrgX</c>/<c>lcInExtX</c>)
+        /// and may be scaled to output coordinates based on the context's output area settings.
+        /// </remarks>
+        public int X;
+
+        /// <summary>
+        /// Y coordinate in tablet units.
+        /// </summary>
+        /// <remarks>
+        /// The coordinate space is defined by the context's input area (<c>lcInOrgY</c>/<c>lcInExtY</c>)
+        /// and may be scaled to output coordinates based on the context's output area settings.
+        /// </remarks>
+        public int Y;
+
+        /// <summary>
+        /// Z coordinate (height above tablet surface) in tablet units.
+        /// </summary>
+        /// <remarks>
+        /// Not all tablets support Z-axis input. Check device capabilities before relying on this value.
+        /// </remarks>
+        public int Z;
+
+        /// <summary>
+        /// Tip pressure value, typically ranging from 0 to the device's maximum pressure level.
+        /// </summary>
+        /// <remarks>
+        /// Query <c>WTI_DEVICES</c> with <c>DVC_NPRESSURE</c> to determine the device's pressure range.
+        /// A value of 0 typically indicates the stylus is hovering (not touching the surface).
+        /// </remarks>
+        public uint NormalPressure;
+
+        /// <summary>
+        /// Tangential (barrel) pressure for devices that support it, such as airbrushes.
+        /// </summary>
+        /// <remarks>
+        /// This value represents the finger wheel position on airbrush-style devices.
+        /// Query <c>WTI_DEVICES</c> with <c>DVC_TPRESSURE</c> to determine availability and range.
+        /// </remarks>
+        public float NormalizedPressure;
+
+        /// <summary>
+        /// Orientation of the cursor in 3D space (azimuth, altitude, and twist).
+        /// </summary>
+        /// <seealso cref="Orientation"/>
+        public Orientation Orientation;
+
+        /// <summary>
+        /// Rotation data for devices that support full 3D rotation tracking.
+        /// </summary>
+        /// <remarks>
+        /// This is typically used by 3D input devices rather than standard styluses.
+        /// </remarks>
+        /// <seealso cref="Rotation"/>
+        public Rotation Rotation;
     }
 
     /// <summary>
-    /// PK_ORIENTATION - Represents the orientation data of a tablet input device.
+    /// Represents the 3D orientation of a stylus or cursor relative to the tablet surface.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Orientation data is commonly used for brush dynamics in drawing applications,
+    /// allowing stroke width or opacity to vary based on pen tilt and rotation.
+    /// </para>
+    /// <para>
+    /// Query <c>WTI_DEVICES</c> with <c>DVC_ORIENTATION</c> to determine the range
+    /// and resolution of each axis for the connected device.
+    /// </para>
+    /// </remarks>
     public struct Orientation
     {
-        public uint orAzimuth;
-        public uint orAltitude;
-        public uint orTwist;
+        /// <summary>
+        /// Clockwise rotation of the cursor around the vertical axis, measured from the positive Y axis.
+        /// </summary>
+        /// <remarks>
+        /// Typically reported in tenths of a degree, ranging from 0 to 3600.
+        /// </remarks>
+        public uint Azimuth;
+
+        /// <summary>
+        /// Angle of the cursor relative to the tablet surface.
+        /// </summary>
+        /// <remarks>
+        /// A value representing perpendicular to the surface indicates the pen is upright.
+        /// Lower values indicate increasing tilt. Typically reported in tenths of a degree.
+        /// </remarks>
+        public uint Altitude;
+
+        /// <summary>
+        /// Clockwise rotation of the cursor around its own axis.
+        /// </summary>
+        /// <remarks>
+        /// Represents barrel rotation for styluses that support it. Typically reported
+        /// in tenths of a degree, ranging from 0 to 3600.
+        /// </remarks>
+        public uint Twist;
     }
 
     /// <summary>
-    /// PK_ROTATION - Represents the rotation data of a tablet input device.
+    /// Represents the 3D rotation of a tablet input device.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This structure is used by devices that support full rotational tracking, such as
+    /// 3D mice or specialized input devices. Standard styluses typically use
+    /// <see cref="Orientation"/> instead.
+    /// </para>
+    /// <para>
+    /// Values are reported in device-specific units. Query <c>WTI_DEVICES</c> with
+    /// <c>DVC_ROTATION</c> to determine the range and resolution of each axis.
+    /// </para>
+    /// </remarks>
     public struct Rotation
     {
-        public uint roPitch;
-        public uint roRoll;
-        public uint roYaw;
+        /// <summary>
+        /// Rotation around the lateral (side-to-side) axis.
+        /// </summary>
+        public uint Pitch;
+
+        /// <summary>
+        /// Rotation around the longitudinal (front-to-back) axis.
+        /// </summary>
+        public uint Roll;
+
+        /// <summary>
+        /// Rotation around the vertical axis.
+        /// </summary>
+        public uint Yaw;
+    }
+
+    public struct lcOut
+    {
+        public int xOrg;
+        public int yOrg;
+        public int xExt;
+        public int yExt;
+
+        public lcOut(int xOrg, int yOrg, int xExt, int yExt)
+        {
+            this.xOrg = xOrg;
+            this.yOrg = yOrg;
+            this.xExt = xExt;
+            this.yExt = yExt;
+        }
     }
 
 #pragma warning restore CS1591
@@ -133,13 +313,41 @@ namespace KKAPI
 
         #region Structs
 
+        /// <summary>
+        /// Describes the range and characteristics of a tablet axis.
+        /// </summary>
+        /// <remarks>
+        /// This structure maps to the Wintab AXIS structure, used to query device capabilities
+        /// such as pressure range, coordinate extents, and tilt limits via <c>WTInfo</c>.
+        /// </remarks>
         [StructLayout(LayoutKind.Sequential)]
         private struct Axis
         {
-            public int axMin;
-            public int axMax;
-            public uint axUnits;
-            public int axResolution;
+            /// <summary>
+            /// Minimum value reported on this axis.
+            /// </summary>
+            public int Min;
+
+            /// <summary>
+            /// Maximum value reported on this axis.
+            /// </summary>
+            public int Max;
+
+            /// <summary>
+            /// Physical units of measurement for this axis.
+            /// </summary>
+            /// <remarks>
+            /// Common values: <c>TU_NONE</c> (0), <c>TU_INCHES</c> (1), <c>TU_CENTIMETERS</c> (2), <c>TU_CIRCLE</c> (3).
+            /// </remarks>
+            public uint Units;
+
+            /// <summary>
+            /// Axis resolution in lines per physical unit (as specified by <see cref="Units"/>).
+            /// </summary>
+            /// <remarks>
+            /// For dimensionless axes (e.g., pressure), this value indicates the number of discrete levels.
+            /// </remarks>
+            public int Resolution;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -233,13 +441,52 @@ namespace KKAPI
         #endregion
 
         /// <summary>
-        /// Initializes the tablet by setting up the context and required configurations to enable digitizer input.
+        /// Initializes the Wintab tablet context with the specified output coordinates and options.
         /// </summary>
+        /// <param name="lcCoords">
+        /// Output coordinate mapping defining the origin and extent of the tablet's output space.
+        /// </param>
+        /// <param name="lco">
+        /// Context options bitmask. Default is <c>5</c> (<c>CXO_SYSTEM | CXO_MESSAGES</c>).
+        /// </param>
+        /// <param name="lcpktMode">
+        /// Packet mode flags specifying which data items are reported in relative mode.
+        /// Default is <c>0</c> (all absolute).
+        /// </param>
+        /// <param name="lcmm">
+        /// Movement mask specifying which packet data items generate move messages.
+        /// Default is <c>1408</c> (<c>X | Y | BUTTONS</c>).
+        /// </param>
+        /// <param name="lcpktRate">
+        /// Desired packet report rate in packets per second. Default is <c>100</c>.
+        /// </param>
         /// <returns>
-        /// True if the tablet is successfully initialized and ready for digitizer input;
-        /// otherwise, false if initialization fails or the necessary system components are unavailable.
+        /// <see langword="true"/> if the tablet context was successfully opened and initialized;
+        /// <see langword="false"/> if Wintab is unavailable, context creation failed, or an error occurred.
         /// </returns>
-        public bool Initialize()
+        /// <remarks>
+        /// <para>
+        /// This method allocates an unmanaged packet buffer, retrieves the default digitizing context,
+        /// configures it with the specified parameters, and opens the context. The context is bound
+        /// to the current active or foreground window.
+        /// </para>
+        /// <para>
+        /// The packet data mask (<c>lcPktData</c>) is set to <c>16383</c>, requesting all standard
+        /// packet fields including position, pressure, orientation, and rotation.
+        /// </para>
+        /// <para>
+        /// After opening, the method queries the actual context settings, sets the packet queue size
+        /// to <see cref="MAX_PACKETS"/>, and retrieves the device's maximum pressure value for
+        /// normalization.
+        /// </para>
+        /// <para>
+        /// Call <see cref="Dispose"/> to release resources when the tablet context is no longer needed.
+        /// </para>
+        /// <para>
+        /// Any exceptions are caught and forwarded to the <see cref="OnError"/> event handler.
+        /// </para>
+        /// </remarks>
+        public bool Initialize(lcOut lcCoords, uint lco = 5U, uint lcpktMode = 0U, uint lcmm = 1408U, uint lcpktRate = 100U)
         {
             try
             {
@@ -262,30 +509,17 @@ namespace KKAPI
 
                 context.lcName = "WinTabReader";
 
-                context.lcPktData = PK_CONTEXT |
-                                    PK_STATUS |
-                                    PK_TIME |
-                                    PK_CHANGED |
-                                    PK_SERIAL_NUMBER |
-                                    PK_CURSOR |
-                                    PK_BUTTONS |
-                                    PK_X |
-                                    PK_Y |
-                                    PK_Z |
-                                    PK_NORMAL_PRESSURE |
-                                    PK_TANGENT_PRESSURE |
-                                    PK_ORIENTATION |
-                                    PK_ROTATION;
+                context.lcPktData = 16383U;
 
-                context.lcOptions = CXO_MESSAGES | CXO_SYSTEM;
-                context.lcPktMode = 0;
-                context.lcMoveMask = PK_X | PK_Y | PK_NORMAL_PRESSURE;
-                context.lcPktRate = 100;
+                context.lcOptions = lco;
+                context.lcPktMode = lcpktMode;
+                context.lcMoveMask = lcmm;
+                context.lcPktRate = lcpktRate;
 
-                context.lcOutOrgX = 0;
-                context.lcOutOrgY = 0;
-                context.lcOutExtX = 5000;
-                context.lcOutExtY = 5000;
+                context.lcOutOrgX = lcCoords.xOrg;
+                context.lcOutOrgY = lcCoords.yOrg;
+                context.lcOutExtX = lcCoords.xExt;
+                context.lcOutExtY = lcCoords.yExt;
 
                 IntPtr hwnd = GetActiveWindow();
                 if (hwnd == IntPtr.Zero)
@@ -317,13 +551,30 @@ namespace KKAPI
         }
 
         /// <summary>
-        /// Queries the tablet for the latest packet of data if available.
+        /// Retrieves the most recent packet from the tablet context's queue, discarding older packets.
         /// </summary>
-        /// <param name="data">Outputs the last received packet data if the query is successful.</param>
+        /// <param name="data">
+        /// When this method returns <see langword="true"/>, contains the most recent packet from
+        /// the queue. When this method returns <see langword="false"/>, contains the default value.
+        /// </param>
         /// <returns>
-        /// True if a packet was successfully read; otherwise, false if no data is available
-        /// or if the tablet is not initialized.
+        /// <see langword="true"/> if a packet was retrieved; <see langword="false"/> if no packets
+        /// were available, the tablet is not initialized, or an error occurred.
         /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This method drains all pending packets (up to <see cref="MAX_PACKETS"/>) and returns
+        /// only the last one, which represents the most current tablet state. This is useful when
+        /// only the latest position and pressure matter, such as for cursor display.
+        /// </para>
+        /// <para>
+        /// For applications that need to process every packet (e.g., for accurate stroke rendering),
+        /// use <see cref="QueryMulti"/> instead.
+        /// </para>
+        /// <para>
+        /// Any exceptions are caught and forwarded to the <see cref="OnError"/> event handler.
+        /// </para>
+        /// </remarks>
         public bool Query(out Packet data)
         {
             data = default;
@@ -350,13 +601,32 @@ namespace KKAPI
         }
 
         /// <summary>
-        /// Queries the tablet for multiple packets of data if available.
+        /// Retrieves all pending packets from the tablet context's queue.
         /// </summary>
-        /// <param name="data">Outputs the array of received packet data if the query is successful or null if empty.</param>
+        /// <param name="data">
+        /// When this method returns <see langword="true"/>, contains an array of packets retrieved
+        /// from the queue, or <see langword="null"/> if no packets were available. When this method
+        /// returns <see langword="false"/>, the value is <see langword="null"/>.
+        /// </param>
         /// <returns>
-        /// True if one or more packets were successfully read; otherwise, false if no data is available
-        /// or if the tablet is not initialized.
+        /// <see langword="true"/> if the query succeeded (even if no packets were available);
+        /// <see langword="false"/> if the tablet is not initialized or an error occurred.
         /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This method retrieves up to <see cref="MAX_PACKETS"/> packets in a single call.
+        /// If no packets are pending, the method returns <see langword="true"/> with
+        /// <paramref name="data"/> set to <see langword="null"/>.
+        /// </para>
+        /// <para>
+        /// On older Unity versions (KK/PH targets), packets are copied using a manual loop due to
+        /// the unavailability of <see cref="Buffer.MemoryCopy"/>. On newer targets, the native
+        /// memory copy is used for better performance.
+        /// </para>
+        /// <para>
+        /// Any exceptions are caught and forwarded to the <see cref="OnError"/> event handler.
+        /// </para>
+        /// </remarks>
         public unsafe bool QueryMulti(out Packet[] data)
         {
             data = null;
@@ -394,8 +664,17 @@ namespace KKAPI
         }
 
         /// <summary>
-        /// Check if Wintab is available
+        /// Checks whether the Wintab driver is installed and available on the system.
         /// </summary>
+        /// <returns>
+        /// <see langword="true"/> if Wintab is installed and responding; otherwise, <see langword="false"/>.
+        /// </returns>
+        /// <remarks>
+        /// This method calls <c>WTInfoA</c> with category and index set to zero, which queries
+        /// whether the Wintab interface is present without retrieving any specific information.
+        /// A <see cref="DllNotFoundException"/> or similar exception is caught and treated as
+        /// Wintab being unavailable.
+        /// </remarks>
         private bool IsWintabAvailable()
         {
             try
@@ -409,8 +688,27 @@ namespace KKAPI
         }
 
         /// <summary>
-        /// Get the default digitizing context
+        /// Retrieves the default digitizing context from the Wintab driver.
         /// </summary>
+        /// <returns>
+        /// A <see cref="LogContext"/> containing the default context settings, or <see langword="null"/>
+        /// if no context could be retrieved.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This method first attempts to retrieve the default digitizing context (<c>WTI_DEFCONTEXT</c>),
+        /// which is optimized for drawing applications with full tablet resolution. If that fails,
+        /// it falls back to the default system context (<c>WTI_DEFSYSCTX</c>), which maps tablet
+        /// coordinates to screen coordinates.
+        /// </para>
+        /// <para>
+        /// The returned context can be modified and passed to <c>WTOpen</c> to create a tablet context
+        /// tailored to the application's needs.
+        /// </para>
+        /// <para>
+        /// Any exceptions are caught and forwarded to the <see cref="OnError"/> event handler.
+        /// </para>
+        /// </remarks>
         private LogContext? GetDefaultDigitizingContext()
         {
             try
@@ -447,8 +745,30 @@ namespace KKAPI
         }
 
         /// <summary>
-        /// Get the maximum pressure value
+        /// Queries the tablet device for its maximum tip pressure level.
         /// </summary>
+        /// <returns>
+        /// The maximum pressure value supported by the device, or <see cref="ushort.MaxValue"/>
+        /// as a fallback if the query fails.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This method queries <c>WTI_DEVICES</c> with <c>DVC_NPRESSURE</c> to retrieve the
+        /// pressure axis capabilities. The returned <see cref="Axis.Max"/> value represents
+        /// the maximum pressure the device can report.
+        /// </para>
+        /// <para>
+        /// The returned value is used to normalize pressure readings from <see cref="Packet.NormalPressure"/>
+        /// into a 0.0–1.0 range for application use.
+        /// </para>
+        /// <para>
+        /// If the query fails or returns an invalid value, <see cref="ushort.MaxValue"/> (65535) is
+        /// returned as a reasonable default for most modern tablets.
+        /// </para>
+        /// <para>
+        /// Any exceptions are caught and forwarded to the <see cref="OnError"/> event handler.
+        /// </para>
+        /// </remarks>
         private uint GetMaxPressure()
         {
             try
@@ -463,9 +783,9 @@ namespace KKAPI
                     {
                         Marshal.Copy(axisBuffer, 0, ptr, axisBuffer.Length);
                         var axis = (Axis)Marshal.PtrToStructure(ptr, typeof(Axis));
-                        if (axis.axMax > 0)
+                        if (axis.Max > 0)
                         {
-                            return (uint)axis.axMax;
+                            return (uint)axis.Max;
                         }
                     }
                     finally
@@ -482,6 +802,23 @@ namespace KKAPI
             return ushort.MaxValue;
         }
 
+        /// <summary>
+        /// Releases all resources used by this tablet context.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This method closes the Wintab context handle and frees the unmanaged packet buffer.
+        /// After disposal, the instance cannot be reused and all query methods will return failure.
+        /// </para>
+        /// <para>
+        /// This method is safe to call multiple times. Any exceptions from <c>WTClose</c> are
+        /// silently ignored to ensure cleanup completes.
+        /// </para>
+        /// <para>
+        /// <see cref="GC.SuppressFinalize"/> is called to prevent redundant finalization if the
+        /// object was disposed explicitly.
+        /// </para>
+        /// </remarks>
         public void Dispose()
         {
             if (_context != IntPtr.Zero)
