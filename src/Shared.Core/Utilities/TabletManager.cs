@@ -50,9 +50,19 @@ namespace KKAPI.Utilities
         }
 
         /// <summary>
-        /// Subscribes a provided event handler to receive tablet input updates.
+        /// Registers a handler to receive tablet event notifications.
         /// </summary>
-        /// <param name="handler">The event handler to subscribe. If null, no operation is performed.</param>
+        /// <param name="handler">The delegate to subscribe. If <see langword="null"/>, no action is taken.</param>
+        /// <remarks>
+        /// <para>
+        /// When the first subscriber is added, tablet polling is automatically started.
+        /// </para>
+        /// <para>
+        /// This method is thread-safe. Duplicate subscriptions are allowed and will result
+        /// in the handler being invoked multiple times per event.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="Unsubscribe"/>
         public static void Subscribe(TabletEvent handler)
         {
             lock (_lock)
@@ -68,9 +78,18 @@ namespace KKAPI.Utilities
         }
 
         /// <summary>
-        /// Unsubscribes a previously registered event handler from receiving tablet input updates.
+        /// Removes a handler from tablet event notifications.
         /// </summary>
-        /// <param name="handler">The event handler to unsubscribe. If null, no operation is performed.</param>
+        /// <param name="handler">The delegate to unsubscribe. If <see langword="null"/>, no action is taken.</param>
+        /// <remarks>
+        /// <para>
+        /// When the last subscriber is removed, tablet polling is automatically stopped to
+        /// conserve resources.
+        /// </para>
+        /// <para>
+        /// This method is thread-safe.
+        /// </para>
+        /// </remarks>
         public static void Unsubscribe(TabletEvent handler)
         {
             lock (_lock)
@@ -97,7 +116,7 @@ namespace KKAPI.Utilities
         {
             lock (_lock)
             {
-                if (!_tablet.IsInitialized && !_tablet.Initialize())
+                if (!_tablet.IsInitialized && !_tablet.Initialize(new lcOut(0, 0, 5000, 5000)))
                     return;
                 _isPolling = true;
             }
@@ -145,7 +164,7 @@ namespace KKAPI.Utilities
 
             if (!_tablet.IsInitialized && hasFocus)
             {
-                _tablet.Initialize();
+                _tablet.Initialize(new lcOut(0, 0, 5000, 5000));
             }
         }
 
