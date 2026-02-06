@@ -54,7 +54,7 @@ namespace KKAPI.Maker
 
         static CharaLocalTextures()
         {
-            EnableLocalTextureSupport = KoikatuAPI.Instance.Config.Bind("Local Textures", "Enable local texture support", true, new ConfigDescription("Enable or disable local texture support. When disabled, the local texture UI is hidden and all textures are always stored in cards.", null, new ConfigurationManagerAttributes { IsAdvanced = true, Order = 3 }));
+            EnableLocalTextureSupport = KoikatuAPI.Instance.Config.Bind("Local Textures", "Enable local texture support", true, new ConfigDescription("Enable or disable local texture support. When disabled, the local texture UI is hidden and all textures are always stored in cards. Note: Existing local textures will be inaccessible (but not deleted) while this is disabled.", null, new ConfigurationManagerAttributes { IsAdvanced = true, Order = 3 }));
             EnableLocalTextureSupport.SettingChanged += (sender, args) => OnEnableLocalTextureSupportChanged();
             
             string description = "Whether external textures used by plugins should be bundled with the card or saved to a local folder.\nWARNING: Cards with local textures save storage space but cannot be shared.";
@@ -83,7 +83,7 @@ namespace KKAPI.Maker
         private static void OnEnableLocalTextureSupportChanged()
         {
             // Trigger SaveTypeChangedEvent to notify plugins of the change
-            OnSaveTypeChanged(null, System.EventArgs.Empty);
+            OnSaveTypeChanged(EnableLocalTextureSupport, System.EventArgs.Empty);
         }
     }
 }
