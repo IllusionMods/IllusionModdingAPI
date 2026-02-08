@@ -172,6 +172,7 @@ namespace KKAPI
         {
             GlobalTooltips.OnGUI();
             TextureSaveHandlerBase.DoOnGUI();
+            GlobalContextMenu.OnGUI();
         }
         private void Update()
         {

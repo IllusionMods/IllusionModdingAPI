@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)GameMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\CharaLocalTextures.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Maker\CharaTextureSaveType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\GlobalContextMenu.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TextureSaveHandlerBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\GlobalTooltips.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ApiEventExecutionLogger.cs" />

@@ -324,5 +324,21 @@ namespace KKAPI.Utilities
         /// At that point you might also want to use GUIContent (created once and stored) instead of string.
         /// </summary>
         public static GUILayoutOption[] EmptyLayoutOptions = new GUILayoutOption[0];
+
+        /// <summary>
+        /// For use inside OnGUI to check if a GUI.Button was clicked with middle mouse button.
+        /// </summary>
+        public static bool IsMouseWheelClick()
+        {
+            return Event.current.button == 2;
+        }
+
+        /// <summary>
+        /// For use inside OnGUI to check if a GUI.Button was clicked with right mouse button.
+        /// </summary>
+        public static bool IsMouseRightClick()
+        {
+            return Event.current.button == 1;
+        }
     }
 }
