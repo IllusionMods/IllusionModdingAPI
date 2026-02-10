@@ -1,13 +1,18 @@
 using BepInEx;
+using BepInEx.Configuration;
+using KKAPI.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace KKAPI.Studio.UI.Toolbars
 {
     /// <summary>
-    /// Add custom buttons to studio toolbars. Thread-safe.
-    /// You can find a button template here https://gitgoon.dev/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
+    /// Add custom buttons to studio toolbars.
+    /// Thread-safe.
     /// </summary>
     public static class ToolbarManager
     {
@@ -15,21 +20,23 @@ namespace KKAPI.Studio.UI.Toolbars
         private static bool _studioLoaded;
         private static bool _dirty;
 
+        // --- Configs ---
+        private static ConfigEntry<string> _hiddenButtonIdsConfig;
+        private static ConfigEntry<bool> _editModeConfig;
+        private static HashSet<string> _hiddenIdsCache = new HashSet<string>();
+        // ----------------
+
         /// <summary>
         /// Adds a custom toolbar toggle button to the left toolbar.
         /// </summary>
-        /// <param name="button">The custom toolbar button to add.</param>
-        /// <returns>True if the button was added, false if already present.</returns>
+        /// <param name="button">The button control to add.</param>
+        /// <returns>True if added successfully, false otherwise.</returns>
         public static bool AddLeftToolbarControl(ToolbarControlBase button)
         {
             if (button == null) throw new ArgumentNullException(nameof(button));
             if (button.IsDisposed) throw new ObjectDisposedException(nameof(button));
 
-            if (!StudioAPI.InsideStudio)
-            {
-                KoikatuAPI.Logger.LogDebug($"Tried to run StudioAPI.AddLeftToolbarToggle for {button.ButtonID} outside of studio!");
-                return false;
-            }
+            if (!StudioAPI.InsideStudio) return false;
 
             lock (_buttons)
             {
@@ -44,9 +51,9 @@ namespace KKAPI.Studio.UI.Toolbars
         }
 
         /// <summary>
-        /// Removes the button from the toolbar and destroys it. The button must be recreated to be used again.
-        /// If you want to temporarily hide a button, set its Visible property to false instead.
+        /// Removes the button from the toolbar and destroys it.
         /// </summary>
+        /// <param name="toolbarControlBase">The button to remove.</param>
         public static void RemoveControl(ToolbarControlBase toolbarControlBase)
         {
             lock (_buttons)
@@ -57,37 +64,48 @@ namespace KKAPI.Studio.UI.Toolbars
         }
 
         /// <summary>
-        /// Get an array of all toolbar buttons added so far. Optionally exclude invisible buttons.
+        /// Get an array of all toolbar buttons added so far.
         /// </summary>
+        /// <param name="includeInvisible">If true, returns hidden buttons as well.</param>
+        /// <returns>Array of buttons.</returns>
         public static ToolbarControlBase[] GetAllButtons(bool includeInvisible)
         {
             lock (_buttons)
-                return includeInvisible ? _buttons.ToArray() : _buttons.Where(x => x.Visible.Value).ToArray();
+                return includeInvisible ?
+                    _buttons.ToArray() : _buttons.Where(x => x.Visible.Value).ToArray();
         }
 
         /// <summary>
-        /// Queues an update of the toolbar interface, which will be done on the next frame if necessary.
-        /// Shouldn't need to be called manually unless button positions are changed externally.
+        /// Queues an update of the toolbar interface layout.
         /// </summary>
         public static void RequestToolbarRelayout()
         {
             lock (_buttons)
             {
-                if (!_studioLoaded || _dirty) return;
+                if (!_studioLoaded) return;
                 _dirty = true;
                 ThreadingHelper.Instance.StartSyncInvoke(UpdateInterface);
             }
         }
 
         /// <summary>
-        /// Called when the studio scene is loaded. Initializes and updates the toolbar interface. Must be called on main thread.
+        /// Internal callback when Studio is loaded.
         /// </summary>
         internal static void OnStudioLoaded()
         {
+            // --- Init Config ---
+            _hiddenButtonIdsConfig = KoikatuAPI.Instance.Config.Bind("Toolbars", "HiddenButtonIDs", "", "List of Button IDs to hide.");
+            _editModeConfig = KoikatuAPI.Instance.Config.Bind("Toolbars", "EditMode", false, "Enable to manage buttons. Blocks interaction with buttons while active.");
+
+            RefreshHiddenCache();
+
+            _editModeConfig.SettingChanged += (sender, args) => RequestToolbarRelayout();
+            _hiddenButtonIdsConfig.SettingChanged += (sender, args) => { RefreshHiddenCache(); RequestToolbarRelayout(); };
+            // -------------------
+
             lock (_buttons)
             {
                 _dirty = true;
-
                 foreach (var stockButton in ToolbarControlBase.InitToolbar())
                 {
                     _buttons.Add(stockButton);
@@ -99,37 +117,196 @@ namespace KKAPI.Studio.UI.Toolbars
             }
         }
 
-        // Must be called on main thread
+        private static void RefreshHiddenCache()
+        {
+            _hiddenIdsCache.Clear();
+            if (string.IsNullOrEmpty(_hiddenButtonIdsConfig.Value)) return;
+
+            var ids = _hiddenButtonIdsConfig.Value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var id in ids) _hiddenIdsCache.Add(id);
+        }
+
+        /// <summary>
+        /// Component attached to the overlay to handle clicks and visibility logic.
+        /// </summary>
+        public class ToolbarButtonHider : MonoBehaviour, IPointerDownHandler
+        {
+            /// <summary>
+            /// Reference to the underlying button control.
+            /// </summary>
+            public ToolbarControlBase ButtonControl;
+
+            /// <summary>
+            /// Whether this item is currently blacklisted/hidden.
+            /// </summary>
+            public bool IsHiddenItem;
+
+            private Image _imageComponent;
+
+            private void Awake()
+            {
+                _imageComponent = GetComponent<Image>();
+            }
+
+            private void Update()
+            {
+                // Only run animation when in Edit Mode to save performance
+                if (_editModeConfig.Value && _imageComponent != null)
+                {
+                    // Calculate a sine wave for the pulsing effect (Cycle approx. 2 seconds)
+                    float sinWave = Mathf.Sin(Time.time * Mathf.PI);
+
+                    if (IsHiddenItem)
+                    {
+                        // Hidden Item: Flash RED
+                        // Alpha oscillates between 0.5 and 0.8 for high visibility
+                        float alpha = 0.65f + 0.15f * sinWave;
+                        _imageComponent.color = new Color(1f, 0f, 0f, alpha);
+                    }
+                    else
+                    {
+                        // Visible Item: Flash WHITE (Subtle)
+                        // Indicates that interaction is blocked and Edit Mode is active
+                        float alpha = 0.25f + 0.15f * sinWave;
+                        _imageComponent.color = new Color(1f, 1f, 1f, alpha);
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Handles pointer down events.
+            /// Used instead of OnPointerClick to ensure responsiveness even if the mouse moves slightly.
+            /// </summary>
+            public void OnPointerDown(PointerEventData eventData)
+            {
+                if (_editModeConfig.Value &&
+                    (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) &&
+                    eventData.button == PointerEventData.InputButton.Right)
+                {
+                    ToggleHide();
+                }
+            }
+
+            private void ToggleHide()
+            {
+                if (ButtonControl == null) return;
+                string id = ButtonControl.ButtonID;
+
+                if (_hiddenIdsCache.Contains(id))
+                {
+                    _hiddenIdsCache.Remove(id);
+                    KoikatuAPI.Logger.LogInfo($"Unhiding button: {id}");
+                }
+                else
+                {
+                    _hiddenIdsCache.Add(id);
+                    KoikatuAPI.Logger.LogInfo($"Hiding button: {id}");
+                }
+
+                _hiddenButtonIdsConfig.Value = string.Join("|", _hiddenIdsCache.ToArray());
+            }
+        }
+
         private static void UpdateInterface()
         {
             lock (_buttons)
             {
                 if (!_studioLoaded) return;
-                if (!_dirty) return;
+                if (_dirty) _dirty = false;
 
                 var takenPositions = new HashSet<ToolbarPosition>();
                 var positionNotSet = new List<ToolbarControlBase>();
+                bool isEditMode = _editModeConfig.Value;
 
-                // First pass: create controls and classify buttons
-                foreach (var button in _buttons.Where(x => x.Visible.Value) // Do not process invisible buttons
-                                               .OrderByDescending(x => x is ToolbarControlAdapter) // Base game buttons first
-                                               .ThenBy(x => x.ButtonID) // Allow plugins to control order with ButtonID
-                                               .ThenBy(x => x.Owner.Info.Metadata.GUID)) // Keep order stable if there's duplicate ButtonIDs
+                var allButtons = _buttons.OrderByDescending(x => x is ToolbarControlAdapter)
+                                         .ThenBy(x => x.ButtonID)
+                                         .ThenBy(x => x.Owner.Info.Metadata.GUID);
+
+                foreach (var button in allButtons)
                 {
                     button.CreateControl();
+                    var btnObj = button.ButtonObject;
 
-                    // Now try to set position
+                    if (btnObj)
+                    {
+                        // --- Overlay Logic ---
+
+                        Transform overlayTr = btnObj.transform.Find("HiderOverlay");
+                        GameObject overlayGo;
+                        ToolbarButtonHider hiderScript;
+
+                        if (overlayTr == null)
+                        {
+                            overlayGo = new GameObject("HiderOverlay");
+                            overlayGo.transform.SetParent(btnObj.transform, false);
+
+                            var img = overlayGo.AddComponent<Image>();
+                            img.raycastTarget = true; // Blocks clicks to the underlying button
+
+                            var rt = overlayGo.GetComponent<RectTransform>();
+                            rt.anchorMin = Vector2.zero;
+                            rt.anchorMax = Vector2.one;
+                            rt.offsetMin = Vector2.zero;
+                            rt.offsetMax = Vector2.zero;
+
+                            hiderScript = overlayGo.AddComponent<ToolbarButtonHider>();
+                        }
+                        else
+                        {
+                            overlayGo = overlayTr.gameObject;
+                            hiderScript = overlayGo.GetComponent<ToolbarButtonHider>();
+                        }
+
+                        hiderScript.ButtonControl = button;
+                        overlayGo.transform.SetAsLastSibling(); // Ensure overlay is on top
+
+                        bool isBlacklisted = _hiddenIdsCache.Contains(button.ButtonID);
+
+                        if (isEditMode)
+                        {
+                            // Edit Mode: Enable overlay to block input and show visual feedback
+                            overlayGo.SetActive(true);
+                            hiderScript.IsHiddenItem = isBlacklisted;
+
+                            // Ensure the button itself is active so we can see what we are editing
+                            if (!btnObj.gameObject.activeSelf) btnObj.gameObject.SetActive(true);
+                        }
+                        else
+                        {
+                            // Normal Mode: Disable overlay
+                            overlayGo.SetActive(false);
+
+                            if (isBlacklisted)
+                            {
+                                // Completely hide the button from the layout
+                                if (btnObj.gameObject.activeSelf) btnObj.gameObject.SetActive(false);
+                                continue;
+                            }
+                            else
+                            {
+                                // Restore standard visibility logic
+                                bool shouldBeVisible = button.Visible.Value;
+                                if (btnObj.gameObject.activeSelf != shouldBeVisible)
+                                    btnObj.gameObject.SetActive(shouldBeVisible);
+
+                                if (!shouldBeVisible) continue;
+                            }
+                        }
+                        // -------------------------
+                    }
+                    else continue;
+
+                    // Positioning Logic
                     if (button.DesiredPosition.HasValue)
                     {
-                        // Try to set to desired position, if taken then move right until free spot is found
                         var position = button.DesiredPosition.Value;
                         while (takenPositions.Contains(position))
                             position = new ToolbarPosition(position.Row, position.Column + 1);
-                        
+
                         if (button.SetActualPosition(position, true))
                             takenPositions.Add(position);
                         else
-                            positionNotSet.Add(button); // Failed to set position, will assign later
+                            positionNotSet.Add(button);
                     }
                     else
                     {
@@ -137,12 +314,10 @@ namespace KKAPI.Studio.UI.Toolbars
                     }
                 }
 
-                // Now place all buttons that didn't have a desired position set
-                // First find the first unused position in the two leftmost columns
+                // Place remaining buttons
                 var addedPos = 0;
                 foreach (var btn in positionNotSet)
                 {
-                    // Find the next free position in the left two columns
                     ToolbarPosition newPos;
                     do
                     {
@@ -152,11 +327,9 @@ namespace KKAPI.Studio.UI.Toolbars
                         addedPos++;
                     } while (takenPositions.Contains(newPos));
 
-                    btn.SetActualPosition(newPos, false); // Do not save position
+                    btn.SetActualPosition(newPos, false);
                     takenPositions.Add(newPos);
                 }
-
-                _dirty = false;
 
                 ToolbarDataStorage.SaveButtonPositions(_buttons);
             }
