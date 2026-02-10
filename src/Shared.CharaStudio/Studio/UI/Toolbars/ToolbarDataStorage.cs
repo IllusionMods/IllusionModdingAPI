@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -8,16 +8,89 @@ using UnityEngine;
 
 namespace KKAPI.Studio.UI.Toolbars
 {
-    internal static class ToolbarDataStorage
+    public static class ToolbarDataStorage
     {
         private static ConfigEntry<string> _positionSetting;
         private static Dictionary<string, ToolbarPosition> _initialPositions;
+
+        // --- NEW: Added Configs for Hiding Buttons & Edit Mode ---
+        private static ConfigEntry<string> _hiddenButtonIdsConfig;
+        private static ConfigEntry<bool> _editModeConfig;
+        private static readonly HashSet<string> _hiddenIdsCache = new HashSet<string>();
+
+        public static bool IsEditMode => _editModeConfig != null && _editModeConfig.Value;
+        // ---------------------------------------------------------
+
+        /// <summary>
+        /// Initializes the storage with the plugin configuration file.
+        /// Must be called before accessing edit mode or hidden buttons logic.
+        /// </summary>
+        public static void Init(ConfigFile config)
+        {
+            // Initialize Hidden IDs Config
+            _hiddenButtonIdsConfig = config.Bind("Toolbars", "HiddenButtonIDs", "", "List of Button IDs to hide.");
+            _editModeConfig = config.Bind("Toolbars", "EditMode", false, "Enable to manage buttons. Blocks interaction with buttons while active.");
+
+            RefreshHiddenCache();
+
+            // Notify ToolbarManager to redraw when config changes
+            _editModeConfig.SettingChanged += (sender, args) => ToolbarManager.RequestToolbarRelayout();
+            _hiddenButtonIdsConfig.SettingChanged += (sender, args) =>
+            {
+                RefreshHiddenCache();
+                ToolbarManager.RequestToolbarRelayout();
+            };
+        }
+
+        private static void RefreshHiddenCache()
+        {
+            _hiddenIdsCache.Clear();
+            if (_hiddenButtonIdsConfig == null || string.IsNullOrEmpty(_hiddenButtonIdsConfig.Value)) return;
+
+            var ids = _hiddenButtonIdsConfig.Value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var id in ids)
+            {
+                // Trim whitespace to avoid config errors (as suggested by review)
+                var trimmed = id.Trim();
+                if (!string.IsNullOrEmpty(trimmed))
+                {
+                    _hiddenIdsCache.Add(trimmed);
+                }
+            }
+        }
+
+        public static bool IsHidden(string buttonId)
+        {
+            return _hiddenIdsCache.Contains(buttonId);
+        }
+
+        public static void ToggleHidden(string buttonId)
+        {
+            if (_hiddenIdsCache.Contains(buttonId))
+            {
+                _hiddenIdsCache.Remove(buttonId);
+                KoikatuAPI.Logger.LogInfo($"Unhiding button: {buttonId}");
+            }
+            else
+            {
+                _hiddenIdsCache.Add(buttonId);
+                KoikatuAPI.Logger.LogInfo($"Hiding button: {buttonId}");
+            }
+
+            // Save back to config. OrderBy ensures the config string is stable (as suggested by review).
+            _hiddenButtonIdsConfig.Value = string.Join("|", _hiddenIdsCache.OrderBy(id => id).ToArray());
+        }
+
+        // ==================================================================================
+        // BELOW IS THE ORIGINAL POSITION SAVING LOGIC (KEPT INTACT)
+        // ==================================================================================
 
         private static string GetUniqueName(ToolbarControlBase button)
         {
             var guid = button is ToolbarControlAdapter ? "BaseGame" : button.Owner == KoikatuAPI.Instance ? "Unknown" : button.Owner.Info.Metadata.GUID;
             return $"{guid}_{button.ButtonID}".ReplaceChars(null, Path.GetInvalidFileNameChars()).ReplaceChars("_", ' ', ':', '|');
         }
+
         private static string ReplaceChars(this string filename, string replacement, params char[] charsToReplace)
         {
             return replacement != null ? string.Join(replacement, filename.Split(charsToReplace)) : string.Concat(filename.Split(charsToReplace));
@@ -81,6 +154,7 @@ namespace KKAPI.Studio.UI.Toolbars
 
             foreach (var b in buttons)
             {
+                // Modified: Only save position if the button has a DesiredPosition set (Original Logic)
                 if (!b.DesiredPosition.HasValue) continue;
 
                 var saveKey = GetUniqueName(b);
@@ -93,6 +167,7 @@ namespace KKAPI.Studio.UI.Toolbars
                 entries.Add($"{saveKey}:{b.DesiredPosition.Value.Row}:{b.DesiredPosition.Value.Column}");
             }
 
+            // Using OrderBy to keep the saved string deterministic
             if (duplicateIds.Count > 0)
             {
                 KoikatuAPI.Logger.LogWarning($"Duplicate toolbar button IDs detected when saving: {string.Join(", ", duplicateIds.ToArray())}. These settings will not be saved until the IDs are changed to be unique.");
