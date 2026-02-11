@@ -8,12 +8,12 @@ using UnityEngine;
 
 namespace KKAPI.Studio.UI.Toolbars
 {
-    public static class ToolbarDataStorage
+    internal static class ToolbarDataStorage
     {
         private static ConfigEntry<string> _positionSetting;
         private static Dictionary<string, ToolbarPosition> _initialPositions;
 
-        // --- NEW: Added Configs for Hiding Buttons & Edit Mode ---
+        //Configs for Hiding Buttons & Edit Mode ---
         private static ConfigEntry<string> _hiddenButtonIdsConfig;
         private static ConfigEntry<bool> _editModeConfig;
         private static readonly HashSet<string> _hiddenIdsCache = new HashSet<string>();
@@ -80,10 +80,6 @@ namespace KKAPI.Studio.UI.Toolbars
             // Save back to config. OrderBy ensures the config string is stable (as suggested by review).
             _hiddenButtonIdsConfig.Value = string.Join("|", _hiddenIdsCache.OrderBy(id => id).ToArray());
         }
-
-        // ==================================================================================
-        // BELOW IS THE ORIGINAL POSITION SAVING LOGIC (KEPT INTACT)
-        // ==================================================================================
 
         private static string GetUniqueName(ToolbarControlBase button)
         {
