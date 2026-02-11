@@ -178,7 +178,6 @@ namespace KKAPI.Studio.UI.Toolbars
                 var positionNotSet = new List<ToolbarControlBase>();
                 bool isEditMode = ToolbarDataStorage.IsEditMode;
 
-                // Restored sorting comments as requested
                 var allButtons = _buttons.OrderByDescending(x => x is ToolbarControlAdapter) // Base game buttons first
                                          .ThenBy(x => x.ButtonID) // Allow plugins to control order with ButtonID
                                          .ThenBy(x => x.Owner.Info.Metadata.GUID); // Keep order stable if there's duplicate ButtonIDs
