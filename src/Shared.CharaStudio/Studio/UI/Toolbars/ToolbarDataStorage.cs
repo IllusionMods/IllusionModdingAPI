@@ -150,7 +150,6 @@ namespace KKAPI.Studio.UI.Toolbars
 
             foreach (var b in buttons)
             {
-                // Modified: Only save position if the button has a DesiredPosition set (Original Logic)
                 if (!b.DesiredPosition.HasValue) continue;
 
                 var saveKey = GetUniqueName(b);
