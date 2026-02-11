@@ -48,7 +48,8 @@ namespace KKAPI.Studio.UI.Toolbars
         }
 
         /// <summary>
-        /// Hide the button from the toolbar.
+        /// Removes the button from the toolbar and destroys it. The button must be recreated to be used again.
+        /// If you want to temporarily hide a button, set its Visible property to false instead.
         /// </summary>
         /// <param name="toolbarControlBase">The button to remove.</param>
         public static void RemoveControl(ToolbarControlBase toolbarControlBase)
@@ -80,7 +81,7 @@ namespace KKAPI.Studio.UI.Toolbars
         {
             lock (_buttons)
             {
-                if (!_studioLoaded) return;
+                if (!_studioLoaded || _dirty) return;
                 _dirty = true;
                 ThreadingHelper.Instance.StartSyncInvoke(UpdateInterface);
             }
@@ -170,9 +171,8 @@ namespace KKAPI.Studio.UI.Toolbars
         {
             lock (_buttons)
             {
-                //Restore original dirty check logic to prevent unnecessary updates
-                if (!_studioLoaded || !_dirty) return;
-                _dirty = false;
+                if (!_studioLoaded) return;
+                if (!_dirty) return;
 
                 var takenPositions = new HashSet<ToolbarPosition>();
                 var positionNotSet = new List<ToolbarControlBase>();
@@ -289,7 +289,7 @@ namespace KKAPI.Studio.UI.Toolbars
                         addedPos++;
                     } while (takenPositions.Contains(newPos));
 
-                    btn.SetActualPosition(newPos, false);
+                    btn.SetActualPosition(newPos, false); // Do not save position
                     takenPositions.Add(newPos);
                 }
                 _dirty = false;
