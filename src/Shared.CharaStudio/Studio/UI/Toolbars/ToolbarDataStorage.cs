@@ -163,7 +163,6 @@ namespace KKAPI.Studio.UI.Toolbars
                 entries.Add($"{saveKey}:{b.DesiredPosition.Value.Row}:{b.DesiredPosition.Value.Column}");
             }
 
-            // Using OrderBy to keep the saved string deterministic
             if (duplicateIds.Count > 0)
             {
                 KoikatuAPI.Logger.LogWarning($"Duplicate toolbar button IDs detected when saving: {string.Join(", ", duplicateIds.ToArray())}. These settings will not be saved until the IDs are changed to be unique.");
