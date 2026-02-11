@@ -31,7 +31,6 @@ namespace KKAPI.Studio.UI.Toolbars
 
             if (!StudioAPI.InsideStudio)
             {
-                // Reverted log removal as requested
                 KoikatuAPI.Logger.LogDebug($"Tried to run StudioAPI.AddLeftToolbarToggle for {button.ButtonID} outside of studio!");
                 return false;
             }
@@ -49,7 +48,7 @@ namespace KKAPI.Studio.UI.Toolbars
         }
 
         /// <summary>
-        /// Removes the button from the toolbar and destroys it.
+        /// Hide the button from the toolbar.
         /// </summary>
         /// <param name="toolbarControlBase">The button to remove.</param>
         public static void RemoveControl(ToolbarControlBase toolbarControlBase)
@@ -171,7 +170,7 @@ namespace KKAPI.Studio.UI.Toolbars
         {
             lock (_buttons)
             {
-                // Fix: Restore original dirty check logic to prevent unnecessary updates
+                //Restore original dirty check logic to prevent unnecessary updates
                 if (!_studioLoaded || !_dirty) return;
                 _dirty = false;
 
@@ -293,7 +292,7 @@ namespace KKAPI.Studio.UI.Toolbars
                     btn.SetActualPosition(newPos, false);
                     takenPositions.Add(newPos);
                 }
-
+                _dirty = false;
                 ToolbarDataStorage.SaveButtonPositions(_buttons);
             }
         }
