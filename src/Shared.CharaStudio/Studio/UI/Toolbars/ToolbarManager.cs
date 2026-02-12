@@ -153,7 +153,6 @@ namespace KKAPI.Studio.UI.Toolbars
             public void OnPointerDown(PointerEventData eventData)
             {
                 if (ToolbarDataStorage.IsEditMode &&
-                    (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) &&
                     eventData.button == PointerEventData.InputButton.Right)
                 {
                     ToggleHide();
