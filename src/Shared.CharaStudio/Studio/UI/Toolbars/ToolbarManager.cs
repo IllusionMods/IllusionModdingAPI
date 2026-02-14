@@ -15,9 +15,50 @@ namespace KKAPI.Studio.UI.Toolbars
     /// </summary>
     public static class ToolbarManager
     {
-        private static readonly HashSet<ToolbarControlBase> _buttons = new HashSet<ToolbarControlBase>();
+        private static readonly HashSet<ToolbarControlBase> _Buttons = new HashSet<ToolbarControlBase>();
         private static bool _studioLoaded;
         private static bool _dirty;
+        private static bool _editMode;
+        private static bool EditMode
+        {
+            get => _editMode;
+            set
+            {
+                if (_editMode != value)
+                {
+                    _editMode = value;
+                    RequestToolbarRelayout();
+                }
+            }
+        }
+
+        private static readonly GlobalContextMenu.Entry[] _ContextMenuItems = {
+            GlobalContextMenu.Entry.Create(() => {
+                var originalColor = GUI.backgroundColor;
+                if (EditMode) GUI.backgroundColor = Color.cyan;
+
+                bool newMode = GUILayout.Toggle(EditMode, new GUIContent("Edit Mode", "Allows you to hide unnecessary buttons from the left toolbar."), "Button");
+
+                if (EditMode) GUI.backgroundColor = originalColor;
+
+                if (newMode != EditMode)
+                {
+                    EditMode = newMode;
+                    RequestToolbarRelayout();
+
+                    return true;
+                }
+                return false;
+            }),
+            GlobalContextMenu.Entry.Create(new GUIContent("Rearrange buttons", "Discard current button positions and line them up along the edge of the screen."), () =>
+            {
+                ToolbarDataStorage.ResetPositions();
+                foreach (var butt in _Buttons)
+                    butt.DesiredPosition = null;
+                RequestToolbarRelayout();
+            }),
+            GlobalContextMenu.Entry.Create(new GUIContent("Show all buttons", "Reset state of all buttons to be visible."), ToolbarDataStorage.ResetHidden)
+        };
 
         /// <summary>
         /// Adds a custom toolbar toggle button to the left toolbar.
@@ -35,9 +76,9 @@ namespace KKAPI.Studio.UI.Toolbars
                 return false;
             }
 
-            lock (_buttons)
+            lock (_Buttons)
             {
-                if (_buttons.Add(button))
+                if (_Buttons.Add(button))
                 {
                     ToolbarDataStorage.ApplyInitialPosition(button);
                     RequestToolbarRelayout();
@@ -54,9 +95,9 @@ namespace KKAPI.Studio.UI.Toolbars
         /// <param name="toolbarControlBase">The button to remove.</param>
         public static void RemoveControl(ToolbarControlBase toolbarControlBase)
         {
-            lock (_buttons)
+            lock (_Buttons)
             {
-                _buttons.Remove(toolbarControlBase);
+                _Buttons.Remove(toolbarControlBase);
                 toolbarControlBase.Dispose();
             }
         }
@@ -68,9 +109,9 @@ namespace KKAPI.Studio.UI.Toolbars
         /// <returns>Array of buttons.</returns>
         public static ToolbarControlBase[] GetAllButtons(bool includeInvisible)
         {
-            lock (_buttons)
+            lock (_Buttons)
                 return includeInvisible ?
-                    _buttons.ToArray() : _buttons.Where(x => x.Visible.Value).ToArray();
+                    _Buttons.ToArray() : _Buttons.Where(x => x.Visible.Value).ToArray();
         }
 
         /// <summary>
@@ -79,7 +120,7 @@ namespace KKAPI.Studio.UI.Toolbars
         /// </summary>
         public static void RequestToolbarRelayout()
         {
-            lock (_buttons)
+            lock (_Buttons)
             {
                 if (!_studioLoaded || _dirty) return;
                 _dirty = true;
@@ -95,25 +136,39 @@ namespace KKAPI.Studio.UI.Toolbars
             // Init storage and configs
             ToolbarDataStorage.Init(KoikatuAPI.Instance.Config);
 
-            lock (_buttons)
+            lock (_Buttons)
             {
                 _dirty = true;
                 foreach (var stockButton in ToolbarControlBase.InitToolbar())
                 {
-                    _buttons.Add(stockButton);
+                    _Buttons.Add(stockButton);
                     ToolbarDataStorage.ApplyInitialPosition(stockButton);
                 }
 
                 _studioLoaded = true;
                 UpdateInterface();
             }
+
+            var manipulateBtn = GameObject.Find("StudioScene/Canvas System Menu/00_Draw/Button Manipulate");
+            if (manipulateBtn != null)
+                manipulateBtn.AddComponent<ContextMenuTrigger>();
         }
 
-        private sealed class ToolbarButtonEditOverlay : MonoBehaviour, IPointerDownHandler
+        private class ContextMenuTrigger : MonoBehaviour, IPointerClickHandler
         {
-            private static GlobalTooltips.Tooltip _tooltip = new GlobalTooltips.Tooltip("Currently editing the toolbar.\n" +
-                                                                                        "Right-click to enable or disable a button (red = disabled).\n" +
-                                                                                        "Middle-click to exit edit mode.");
+            public void OnPointerClick(PointerEventData eventData)
+            {
+                if (eventData.button == PointerEventData.InputButton.Right)
+                    GlobalContextMenu.Show("Left Toolbar", _ContextMenuItems);
+            }
+        }
+
+        private sealed class ToolbarButtonEditOverlay : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+        {
+            private static readonly GlobalTooltips.Tooltip _Tooltip = new GlobalTooltips.Tooltip("Currently editing the toolbar.\n" +
+                                                                                                 "Left-click to enable or disable a button (red = disabled).\n" +
+                                                                                                 "Drag to change button positions." +
+                                                                                                 "Middle-click to exit edit mode.");
 
             public ToolbarControlBase TargetButtonControl;
             public bool IsButtonHidden;
@@ -123,13 +178,13 @@ namespace KKAPI.Studio.UI.Toolbars
             private void Awake()
             {
                 _imageComponent = GetComponent<Image>();
-                GlobalTooltips.RegisterTooltip(gameObject, _tooltip);
+                GlobalTooltips.RegisterTooltip(gameObject, _Tooltip);
             }
 
             private void Update()
             {
                 // Only run animation when in Edit Mode to save performance
-                if (ToolbarDataStorage.IsEditMode && _imageComponent != null)
+                if (EditMode && _imageComponent != null)
                 {
                     // Calculate a sine wave for the pulsing effect (Cycle approx. 2 seconds)
                     float sinWave = Mathf.Sin(Time.time * Mathf.PI);
@@ -151,40 +206,39 @@ namespace KKAPI.Studio.UI.Toolbars
                 }
             }
 
-            /// <summary>
-            /// Handles pointer down events.
-            /// Used instead of OnPointerClick to ensure responsiveness even if the mouse moves slightly.
-            /// </summary>
-            public void OnPointerDown(PointerEventData eventData)
-            {
-                if (ToolbarDataStorage.IsEditMode)
-                {
-                    if (eventData.button == PointerEventData.InputButton.Right)
-                        ToggleHide();
-                    else if (eventData.button == PointerEventData.InputButton.Middle)
-                        ToolbarDataStorage.IsEditMode = false;
-                }
-            }
-
             private void ToggleHide()
             {
                 if (TargetButtonControl == null) return;
-                ToolbarDataStorage.ToggleHidden(TargetButtonControl.ButtonID);
+                ToolbarDataStorage.ToggleHidden(TargetButtonControl);
             }
+
+            public void OnPointerClick(PointerEventData eventData)
+            {
+                if (!EditMode) return;
+                if (eventData.dragging) return;
+
+                if (eventData.button == PointerEventData.InputButton.Middle)
+                    EditMode = false;
+                else
+                    ToggleHide();
+            }
+
+            // Need these empty pointer handlers because without them OnPointerClick never gets called for some reason (a parent object handles it maybe?)
+            public void OnPointerUp(PointerEventData eventData) { }
+            public void OnPointerDown(PointerEventData eventData) { }
         }
 
         private static void UpdateInterface()
         {
-            lock (_buttons)
+            lock (_Buttons)
             {
                 if (!_studioLoaded) return;
                 if (!_dirty) return;
 
                 var takenPositions = new HashSet<ToolbarPosition>();
                 var positionNotSet = new List<ToolbarControlBase>();
-                bool isEditMode = ToolbarDataStorage.IsEditMode;
 
-                var allButtons = _buttons.OrderByDescending(x => x is ToolbarControlAdapter) // Base game buttons first
+                var allButtons = _Buttons.OrderByDescending(x => x is ToolbarControlAdapter) // Base game buttons first
                                          .ThenBy(x => x.ButtonID) // Allow plugins to control order with ButtonID
                                          .ThenBy(x => x.Owner.Info.Metadata.GUID); // Keep order stable if there's duplicate ButtonIDs
 
@@ -225,9 +279,9 @@ namespace KKAPI.Studio.UI.Toolbars
                         editOverlayScript.TargetButtonControl = button;
                         overlayGo.transform.SetAsLastSibling(); // Ensure overlay is on top
 
-                        bool isBlacklisted = ToolbarDataStorage.IsHidden(button.ButtonID);
+                        bool isBlacklisted = ToolbarDataStorage.IsHidden(button);
 
-                        if (isEditMode)
+                        if (EditMode)
                         {
                             // Edit Mode: Enable overlay to block input and show visual feedback
                             overlayGo.SetActive(true);
@@ -298,7 +352,7 @@ namespace KKAPI.Studio.UI.Toolbars
                     takenPositions.Add(newPos);
                 }
                 _dirty = false;
-                ToolbarDataStorage.SaveButtonPositions(_buttons);
+                ToolbarDataStorage.SaveButtonPositions(_Buttons);
             }
         }
     }
