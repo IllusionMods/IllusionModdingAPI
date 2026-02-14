@@ -326,7 +326,7 @@ namespace KKAPI.Utilities
         public static GUILayoutOption[] EmptyLayoutOptions = new GUILayoutOption[0];
 
         /// <summary>
-        /// For use inside OnGUI to check if a GUI.Button was clicked with middle mouse button.
+        /// For use inside OnGUI immediately after a GUI.Button click (within the if block) to check which mouse button was used.
         /// </summary>
         public static bool IsMouseWheelClick()
         {
@@ -334,7 +334,7 @@ namespace KKAPI.Utilities
         }
 
         /// <summary>
-        /// For use inside OnGUI to check if a GUI.Button was clicked with right mouse button.
+        /// For use inside OnGUI immediately after a GUI.Button click (within the if block) to check which mouse button was used.
         /// </summary>
         public static bool IsMouseRightClick()
         {
