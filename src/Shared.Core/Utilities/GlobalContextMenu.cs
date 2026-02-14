@@ -52,6 +52,9 @@ namespace KKAPI.Utilities
             _windowRect = new Rect(screenPoint.x, screenPoint.y, 100, 100); 
             _title = title;
             _contents = items;
+
+            // hack to discard old state of the window and make sure it appears correctly when rapidly opened on different items
+            _windowId++;
         }
 
         /// <summary>
