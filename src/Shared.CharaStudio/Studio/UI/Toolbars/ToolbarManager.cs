@@ -133,9 +133,6 @@ namespace KKAPI.Studio.UI.Toolbars
         /// </summary>
         internal static void OnStudioLoaded()
         {
-            // Init storage and configs
-            ToolbarDataStorage.Init(KoikatuAPI.Instance.Config);
-
             lock (_Buttons)
             {
                 _dirty = true;

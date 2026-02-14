@@ -19,9 +19,11 @@ namespace KKAPI.Studio.UI.Toolbars
         /// Initializes the storage with the plugin configuration file.
         /// Must be called before accessing edit mode or hidden buttons logic.
         /// </summary>
-        public static void Init(ConfigFile config)
+        static ToolbarDataStorage()
         {
-            _positionSetting = KoikatuAPI.Instance.Config.Bind("Toolbars", "LeftToolbarButtonPositions", "", new ConfigDescription("Stores desired positions of custom toolbar buttons. Remove to reset all button positions on next studio start.", null, new BrowsableAttribute(false)));
+            var config = KoikatuAPI.Instance.Config;
+
+            _positionSetting = config.Bind("Toolbars", "LeftToolbarButtonPositions", "", new ConfigDescription("Stores desired positions of custom toolbar buttons. Remove to reset all button positions on next studio start.", null, new BrowsableAttribute(false)));
             _positionSetting.SettingChanged += (sender, args) =>
             {
                 RefreshButtonPositionCache();
