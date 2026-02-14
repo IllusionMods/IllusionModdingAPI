@@ -124,6 +124,7 @@
 - [`CoroutineUtils`](KKAPI.Utilities.md#coroutineutils)
 - [`Curve`](KKAPI.Utilities.md#curve)
 - [`Extensions`](KKAPI.Utilities.md#extensions)
+- [`GlobalContextMenu`](KKAPI.Utilities.md#globalcontextmenu)
 - [`GlobalTooltips`](KKAPI.Utilities.md#globaltooltips)
 - [`HSceneUtils`](KKAPI.Utilities.md#hsceneutils)
 - [`ImageTypeIdentifier`](KKAPI.Utilities.md#imagetypeidentifier)
