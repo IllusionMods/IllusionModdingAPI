@@ -23,6 +23,8 @@ The API is required by many plugins made for Koikatsu, Emotion Creators and AI-G
 2. Download [the latest release](https://gitgoon.dev/IllusionMods/IllusionModdingAPI/releases) for your game. **Warning:** You only need the version specific for your game (check the prefix, for example KK = for Koikatsu). Downloading version for the wrong game or multiple versions will break things!
 3. Extract the archive into your game directory. The .dll file should end up inside BepInEx\plugins.
 
+If you'd like to test not-yet-released features you can download the latest nightly builds from the [CI workflow](https://github.com/IllusionMods/IllusionModdingAPI/actions/workflows/ci.yaml).
+
 ## Developers
 - Basic construction of the API is [explained in the introduction](https://gitgoon.dev/IllusionMods/IllusionModdingAPI/wiki/Introduction).
 - A short tutorial on how the API can be used to make a plugin [can be found here](https://gitgoon.dev/IllusionMods/IllusionModdingAPI/wiki/Typical-usage-example-and-explanation).
