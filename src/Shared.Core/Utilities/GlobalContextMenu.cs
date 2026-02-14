@@ -6,7 +6,23 @@ using UnityEngine;
 namespace KKAPI.Utilities
 {
     /// <summary>
-    /// Context menu invoked by right clicking on many things.
+    /// Context menu that can be opened at mouse or screen position.
+    /// <example>
+    /// To open a right-click context menu when clicking on a Button object, add a click handler and check
+    /// if right mouse button was used (e.g. with the help of `.OnPointerClickAsObservable()`) and then call
+    /// `GlobalContextMenu.Show("Title", new []{ ContextMenuEntry Create(...), ...})`.
+    /// 
+    /// If you are using IMGUI, you can do:
+    /// ```
+    /// if(GUI/GUILayout.Button(...))
+    /// {
+    ///     if(IMGUIUtils.IsMouseRightClick())
+    ///         GlobalContextMenu.Show(...);
+    ///     else
+    ///         // Left click
+    /// }
+    /// ```
+    /// </example>
     /// </summary>
     public static class GlobalContextMenu
     {
