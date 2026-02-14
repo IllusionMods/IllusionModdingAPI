@@ -109,16 +109,21 @@ namespace KKAPI.Studio.UI.Toolbars
             }
         }
 
-        // Copilot Suggestion: Made private and sealed as it's an internal implementation detail
-        private sealed class ToolbarButtonHider : MonoBehaviour, IPointerDownHandler
+        private sealed class ToolbarButtonEditOverlay : MonoBehaviour, IPointerDownHandler
         {
-            public ToolbarControlBase ButtonControl;
-            public bool IsHiddenItem;
+            private static GlobalTooltips.Tooltip _tooltip = new GlobalTooltips.Tooltip("Currently editing the toolbar.\n" +
+                                                                                        "Right-click to enable or disable a button (red = disabled).\n" +
+                                                                                        "Middle-click to exit edit mode.");
+
+            public ToolbarControlBase TargetButtonControl;
+            public bool IsButtonHidden;
+
             private Image _imageComponent;
 
             private void Awake()
             {
                 _imageComponent = GetComponent<Image>();
+                GlobalTooltips.RegisterTooltip(gameObject, _tooltip);
             }
 
             private void Update()
@@ -129,7 +134,7 @@ namespace KKAPI.Studio.UI.Toolbars
                     // Calculate a sine wave for the pulsing effect (Cycle approx. 2 seconds)
                     float sinWave = Mathf.Sin(Time.time * Mathf.PI);
 
-                    if (IsHiddenItem)
+                    if (IsButtonHidden)
                     {
                         // Hidden Item: Flash RED
                         // Alpha oscillates between 0.5 and 0.8 for high visibility
@@ -152,17 +157,19 @@ namespace KKAPI.Studio.UI.Toolbars
             /// </summary>
             public void OnPointerDown(PointerEventData eventData)
             {
-                if (ToolbarDataStorage.IsEditMode &&
-                    eventData.button == PointerEventData.InputButton.Right)
+                if (ToolbarDataStorage.IsEditMode)
                 {
-                    ToggleHide();
+                    if (eventData.button == PointerEventData.InputButton.Right)
+                        ToggleHide();
+                    else if (eventData.button == PointerEventData.InputButton.Middle)
+                        ToolbarDataStorage.IsEditMode = false;
                 }
             }
 
             private void ToggleHide()
             {
-                if (ButtonControl == null) return;
-                ToolbarDataStorage.ToggleHidden(ButtonControl.ButtonID);
+                if (TargetButtonControl == null) return;
+                ToolbarDataStorage.ToggleHidden(TargetButtonControl.ButtonID);
             }
         }
 
@@ -191,7 +198,7 @@ namespace KKAPI.Studio.UI.Toolbars
                         // --- Overlay Logic ---
                         Transform overlayTr = btnObj.transform.Find("HiderOverlay");
                         GameObject overlayGo;
-                        ToolbarButtonHider hiderScript;
+                        ToolbarButtonEditOverlay editOverlayScript;
 
                         if (overlayTr == null)
                         {
@@ -207,15 +214,15 @@ namespace KKAPI.Studio.UI.Toolbars
                             rt.offsetMin = Vector2.zero;
                             rt.offsetMax = Vector2.zero;
 
-                            hiderScript = overlayGo.AddComponent<ToolbarButtonHider>();
+                            editOverlayScript = overlayGo.AddComponent<ToolbarButtonEditOverlay>();
                         }
                         else
                         {
                             overlayGo = overlayTr.gameObject;
-                            hiderScript = overlayGo.GetComponent<ToolbarButtonHider>();
+                            editOverlayScript = overlayGo.GetComponent<ToolbarButtonEditOverlay>();
                         }
 
-                        hiderScript.ButtonControl = button;
+                        editOverlayScript.TargetButtonControl = button;
                         overlayGo.transform.SetAsLastSibling(); // Ensure overlay is on top
 
                         bool isBlacklisted = ToolbarDataStorage.IsHidden(button.ButtonID);
@@ -224,7 +231,7 @@ namespace KKAPI.Studio.UI.Toolbars
                         {
                             // Edit Mode: Enable overlay to block input and show visual feedback
                             overlayGo.SetActive(true);
-                            hiderScript.IsHiddenItem = isBlacklisted;
+                            editOverlayScript.IsButtonHidden = isBlacklisted;
 
                             // Ensure the button itself is active so we can see what we are editing
                             if (!btnObj.gameObject.activeSelf) btnObj.gameObject.SetActive(true);

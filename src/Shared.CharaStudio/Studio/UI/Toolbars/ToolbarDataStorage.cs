@@ -18,7 +18,11 @@ namespace KKAPI.Studio.UI.Toolbars
         private static ConfigEntry<bool> _editModeConfig;
         private static readonly HashSet<string> _hiddenIdsCache = new HashSet<string>();
 
-        public static bool IsEditMode => _editModeConfig != null && _editModeConfig.Value;
+        public static bool IsEditMode
+        {
+            get => _editModeConfig != null && _editModeConfig.Value;
+            set => _editModeConfig.Value = value;
+        }
         // ---------------------------------------------------------
 
         /// <summary>
