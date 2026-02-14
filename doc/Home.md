@@ -4,6 +4,7 @@
 
 - [`GameMode`](KKAPI.md#gamemode)
 - [`KoikatuAPI`](KKAPI.md#koikatuapi)
+- [`lcOut`](KKAPI.md#lcout)
 - [`Orientation`](KKAPI.md#orientation)
 - [`Packet`](KKAPI.md#packet)
 - [`Rotation`](KKAPI.md#rotation)

@@ -528,8 +528,8 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `void` | Subscribe(`TabletEvent` handler) | Subscribes a provided event handler to receive tablet input updates. | 
-| `void` | Unsubscribe(`TabletEvent` handler) | Unsubscribes a previously registered event handler from receiving tablet input updates. | 
+| `void` | Subscribe(`TabletEvent` handler) | Registers a handler to receive tablet event notifications. | 
+| `void` | Unsubscribe(`TabletEvent` handler) | Removes a handler from tablet event notifications. | 
 
 
 ## `TextureSaveHandlerBase`

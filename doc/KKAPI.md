@@ -65,9 +65,26 @@ Static Events
 | `EventHandler` | Quitting | Occurs when application is quitting.  Plugins can use this to do things like write config files and caches, or stop outstanding coroutines to prevent shutdown delays.  Note: This event might not fire if the game isn't closed cleanly (hard crashes, killed process, closing the console window, etc.). | 
 
 
+## `lcOut`
+
+```csharp
+public struct KKAPI.lcOut
+
+```
+
+Fields
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Int32` | xExt |  | 
+| `Int32` | xOrg |  | 
+| `Int32` | yExt |  | 
+| `Int32` | yOrg |  | 
+
+
 ## `Orientation`
 
-PK_ORIENTATION - Represents the orientation data of a tablet input device.
+Represents the 3D orientation of a stylus or cursor relative to the tablet surface.
 ```csharp
 public struct KKAPI.Orientation
 
@@ -77,14 +94,14 @@ Fields
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `UInt32` | orAltitude |  | 
-| `UInt32` | orAzimuth |  | 
-| `UInt32` | orTwist |  | 
+| `UInt32` | Altitude | Angle of the cursor relative to the tablet surface. | 
+| `UInt32` | Azimuth | Clockwise rotation of the cursor around the vertical axis, measured from the positive Y axis. | 
+| `UInt32` | Twist | Clockwise rotation of the cursor around its own axis. | 
 
 
 ## `Packet`
 
-Represents a data packet structure used for interacting with tablet hardware,  containing information about button states, positional coordinates, and  pressure sensitivity. This structure is primarily utilized for processing  input data from digitizing devices.
+Represents a Wintab packet containing tablet input data such as position, pressure, and orientation.
 ```csharp
 public struct KKAPI.Packet
 
@@ -94,25 +111,25 @@ Fields
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `UInt32` | pkButtons |  | 
-| `UInt32` | pkChanged |  | 
-| `IntPtr` | pkContext |  | 
-| `UInt32` | pkCursor |  | 
-| `UInt32` | pkNormalPressure |  | 
-| `Orientation` | pkOrientation |  | 
-| `Rotation` | pkRotation |  | 
-| `UInt32` | pkSerialNumber |  | 
-| `UInt32` | pkStatus |  | 
-| `UInt32` | pkTangentPressure |  | 
-| `UInt32` | pkTime |  | 
-| `Int32` | pkX |  | 
-| `Int32` | pkY |  | 
-| `Int32` | pkZ |  | 
+| `UInt32` | Buttons | Button state bitmask for the current cursor. | 
+| `UInt32` | Changed | Bitmask indicating which packet fields have changed since the previous packet. | 
+| `IntPtr` | Context | Handle to the tablet context that generated this packet. | 
+| `UInt32` | Cursor | Index of the cursor type currently in use. | 
+| `UInt32` | NormalPressure | Tip pressure value, typically ranging from 0 to the device's maximum pressure level. | 
+| `Orientation` | Orientation | Orientation of the cursor in 3D space (azimuth, altitude, and twist). | 
+| `Rotation` | Rotation | Rotation data for devices that support full 3D rotation tracking. | 
+| `UInt32` | SerialNumber | Unique serial number of the physical device generating the packet. | 
+| `UInt32` | Status | Status flags indicating the current state of the cursor relative to the context. | 
+| `Single` | TangentPressure | Tangential (barrel) pressure for devices that support it, such as airbrushes. | 
+| `UInt32` | Time | Timestamp of the packet in milliseconds, relative to Windows system time. | 
+| `Int32` | X | X coordinate in tablet units. | 
+| `Int32` | Y | Y coordinate in tablet units. | 
+| `Int32` | Z | Z coordinate (height above tablet surface) in tablet units. | 
 
 
 ## `Rotation`
 
-PK_ROTATION - Represents the rotation data of a tablet input device.
+Represents the 3D rotation of a tablet input device.
 ```csharp
 public struct KKAPI.Rotation
 
@@ -122,9 +139,9 @@ Fields
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
-| `UInt32` | roPitch |  | 
-| `UInt32` | roRoll |  | 
-| `UInt32` | roYaw |  | 
+| `UInt32` | Pitch | Rotation around the lateral (side-to-side) axis. | 
+| `UInt32` | Roll | Rotation around the longitudinal (front-to-back) axis. | 
+| `UInt32` | Yaw | Rotation around the vertical axis. | 
 
 
 ## `SceneApi`

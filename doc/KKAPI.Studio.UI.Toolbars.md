@@ -66,7 +66,7 @@ Methods
 
 ## `ToolbarManager`
 
-Add custom buttons to studio toolbars. Thread-safe.  You can find a button template here https://gitgoon.dev/IllusionMods/IllusionModdingAPI/blob/master/doc/studio%20icon%20template.png
+Add custom buttons to studio toolbars. Thread-safe.  You can find a button template in "\doc\studio icon template.png"
 ```csharp
 public static class KKAPI.Studio.UI.Toolbars.ToolbarManager
 
@@ -77,9 +77,9 @@ Static Methods
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `Boolean` | AddLeftToolbarControl(`ToolbarControlBase` button) | Adds a custom toolbar toggle button to the left toolbar. | 
-| `ToolbarControlBase[]` | GetAllButtons(`Boolean` includeInvisible) | Get an array of all toolbar buttons added so far. Optionally exclude invisible buttons. | 
+| `ToolbarControlBase[]` | GetAllButtons(`Boolean` includeInvisible) | Get an array of all toolbar buttons added so far. | 
 | `void` | RemoveControl(`ToolbarControlBase` toolbarControlBase) | Removes the button from the toolbar and destroys it. The button must be recreated to be used again.  If you want to temporarily hide a button, set its Visible property to false instead. | 
-| `void` | RequestToolbarRelayout() | Queues an update of the toolbar interface, which will be done on the next frame if necessary.  Shouldn't need to be called manually unless button positions are changed externally. | 
+| `void` | RequestToolbarRelayout() | Queues an update of the toolbar interface layout, which will be done on the next frame if necessary.  Shouldn't need to be called manually unless button positions are changed externally. | 
 
 
 ## `ToolbarPosition`

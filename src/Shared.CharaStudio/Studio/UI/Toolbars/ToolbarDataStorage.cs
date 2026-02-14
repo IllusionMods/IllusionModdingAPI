@@ -1,23 +1,90 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using BepInEx.Configuration;
-using UnityEngine;
 
 namespace KKAPI.Studio.UI.Toolbars
 {
     internal static class ToolbarDataStorage
     {
         private static ConfigEntry<string> _positionSetting;
-        private static Dictionary<string, ToolbarPosition> _initialPositions;
+        private static readonly Dictionary<string, ToolbarPosition> _InitialPositions = new Dictionary<string, ToolbarPosition>();
+
+        private static ConfigEntry<string> _hiddenButtonIdsConfig;
+        private static readonly HashSet<string> _HiddenIdsCache = new HashSet<string>();
+
+        /// <summary>
+        /// Initializes the storage with the plugin configuration file.
+        /// Must be called before accessing edit mode or hidden buttons logic.
+        /// </summary>
+        public static void Init(ConfigFile config)
+        {
+            _positionSetting = KoikatuAPI.Instance.Config.Bind("Toolbars", "LeftToolbarButtonPositions", "", new ConfigDescription("Stores desired positions of custom toolbar buttons. Remove to reset all button positions on next studio start.", null, new BrowsableAttribute(false)));
+            _positionSetting.SettingChanged += (sender, args) =>
+            {
+                RefreshButtonPositionCache();
+            };
+            RefreshButtonPositionCache();
+
+            _hiddenButtonIdsConfig = config.Bind("Toolbars", "LeftToolbarHiddenButtons", "", new ConfigDescription("List of Button IDs to hide.", null, new BrowsableAttribute(false)));
+            _hiddenButtonIdsConfig.SettingChanged += (sender, args) =>
+            {
+                RefreshHiddenCache();
+                ToolbarManager.RequestToolbarRelayout();
+            };
+
+            RefreshHiddenCache();
+        }
+
+        public static void ResetHidden() => _hiddenButtonIdsConfig.Value = "";
+        public static void ResetPositions() => _positionSetting.Value = "";
+
+        private static void RefreshHiddenCache()
+        {
+            _HiddenIdsCache.Clear();
+            if (_hiddenButtonIdsConfig == null || string.IsNullOrEmpty(_hiddenButtonIdsConfig.Value)) return;
+
+            var ids = _hiddenButtonIdsConfig.Value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var id in ids)
+            {
+                var trimmed = id.Trim();
+                if (!string.IsNullOrEmpty(trimmed))
+                {
+                    _HiddenIdsCache.Add(trimmed);
+                }
+            }
+        }
+
+        public static bool IsHidden(ToolbarControlBase button)
+        {
+            return _HiddenIdsCache.Contains(GetUniqueName(button));
+        }
+
+        public static void ToggleHidden(ToolbarControlBase button)
+        {
+            var name = GetUniqueName(button);
+            if (_HiddenIdsCache.Remove(name))
+            {
+                KoikatuAPI.Logger.LogInfo($"Unhiding button: {button}");
+            }
+            else
+            {
+                _HiddenIdsCache.Add(name);
+                KoikatuAPI.Logger.LogInfo($"Hiding button: {button}");
+            }
+
+            // SaveKey|SaveKey2|...
+            _hiddenButtonIdsConfig.Value = string.Join("|", _HiddenIdsCache.OrderBy(id => id).ToArray());
+        }
 
         private static string GetUniqueName(ToolbarControlBase button)
         {
             var guid = button is ToolbarControlAdapter ? "BaseGame" : button.Owner == KoikatuAPI.Instance ? "Unknown" : button.Owner.Info.Metadata.GUID;
             return $"{guid}_{button.ButtonID}".ReplaceChars(null, Path.GetInvalidFileNameChars()).ReplaceChars("_", ' ', ':', '|');
         }
+
         private static string ReplaceChars(this string filename, string replacement, params char[] charsToReplace)
         {
             return replacement != null ? string.Join(replacement, filename.Split(charsToReplace)) : string.Concat(filename.Split(charsToReplace));
@@ -28,21 +95,16 @@ namespace KKAPI.Studio.UI.Toolbars
         /// </summary>
         public static void ApplyInitialPosition(ToolbarControlBase btn)
         {
-            if (_initialPositions == null)
-            {
-                _positionSetting = KoikatuAPI.Instance.Config.Bind("Toolbars", "LeftToolbarButtonPositions", "", new ConfigDescription("Stores desired positions of custom toolbar buttons. Remove to reset all button positions on next studio start.", null, new BrowsableAttribute(false)));
-
-                _initialPositions = ParseButtonPositions(_positionSetting.Value);
-            }
-
-            if (_initialPositions.TryGetValue(GetUniqueName(btn), out var pos))
+            if (_InitialPositions.TryGetValue(GetUniqueName(btn), out var pos))
                 btn.DesiredPosition = pos;
         }
 
-        private static Dictionary<string, ToolbarPosition> ParseButtonPositions(string value)
+        private static void RefreshButtonPositionCache()
         {
-            var dict = new Dictionary<string, ToolbarPosition>();
-            if (string.IsNullOrEmpty(value)) return dict;
+            var value = _positionSetting.Value;
+            var dict = _InitialPositions;
+            dict.Clear();
+            if (string.IsNullOrEmpty(value)) return;
 
             // SaveKey:row:col|SaveKey2:row:col|...
             var entries = value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -65,7 +127,6 @@ namespace KKAPI.Studio.UI.Toolbars
 
                 KoikatuAPI.Logger.LogWarning($"Could not parse toolbar button position entry: {entry}");
             }
-            return dict;
         }
 
         /// <summary>
