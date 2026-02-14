@@ -61,12 +61,12 @@ namespace KKAPI.Utilities
         /// <exception cref="ArgumentNullException">Thrown if the title or items parameter is null.</exception>
         public static void Show(Vector2 screenPoint, string title, params Entry[] items)
         {
-            if (title == null) throw new ArgumentNullException(nameof(title));
             if (items == null) throw new ArgumentNullException(nameof(items));
             if (items.Length == 0) throw new ArgumentException("Menu must have at least one entry", nameof(items));
+            
+            _title = title ?? throw new ArgumentNullException(nameof(title));
 
             _windowRect = new Rect(screenPoint.x, screenPoint.y, 100, 100); 
-            _title = title;
             _contents = items;
 
             // hack to discard old state of the window and make sure it appears correctly when rapidly opened on different items

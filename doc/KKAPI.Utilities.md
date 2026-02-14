@@ -121,7 +121,7 @@ Static Methods
 
 ## `GlobalContextMenu`
 
-Context menu that can be opened at mouse or screen position.  <example>  To open a right-click context menu when clicking on a Button object, add a click handler and check  if right mouse button was used (e.g. with the help of `.OnPointerClickAsObservable()`) and then call  `GlobalContextMenu.Show("Title", new []{ GlobalContextMenu.Entry.Create(...), ...})`.    If you are using IMGUI, you can do:  ```  if(GUI/GUILayout.Button(...))  {  if(IMGUIUtils.IsMouseRightClick())  GlobalContextMenu.Show(...);  else  // Left click  }  ```  </example>
+Context menu that can be opened at mouse or screen position.  <example>  To open a right-click context menu when clicking on a Button object, add a click handler and check  if right mouse button was used (e.g. with the help of `.OnPointerClickAsObservable()`) and then call  `GlobalContextMenu.Show("Title", GlobalContextMenu.Entry.Create(...), More entries...)`.    If you are using IMGUI, you can do:  ```  if(GUI/GUILayout.Button(...))  {  if(IMGUIUtils.IsMouseRightClick())  GlobalContextMenu.Show(...);  else  // Left click  }  ```  </example>
 ```csharp
 public static class KKAPI.Utilities.GlobalContextMenu
 
