@@ -161,7 +161,7 @@ namespace KKAPI.Utilities
             /// <param name="onClick">Action called when user left-clicks on this menu entry. If null, a label will be shown instead.</param>
             /// <param name="onCheckState">Callback that checks if this item is currently visible. If null, the button is always visible and active.</param>
             /// <exception cref="ArgumentNullException">Thrown if the name parameter is null.</exception>
-            public static ContextMenuEntry Create(GUIContent name, Action onClick, Func<EntryState> onCheckState)
+            public static ContextMenuEntry Create(GUIContent name, Action onClick, Func<EntryState> onCheckState = null)
             {
                 if (name == null) throw new ArgumentNullException(nameof(name));
 
