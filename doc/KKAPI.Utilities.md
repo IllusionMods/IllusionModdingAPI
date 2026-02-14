@@ -119,6 +119,30 @@ Static Methods
 | `ReadOnlyDictionary<TKey, TValue>` | ToReadOnlyDictionary(this `IDictionary<TKey, TValue>` original) | Wrap this dictionary in a read-only wrapper that will prevent any changes to it.  Warning: Any reference types inside the dictionary can still be modified. | 
 
 
+## `GlobalContextMenu`
+
+Context menu that can be opened at mouse or screen position.  <example>  To open a right-click context menu when clicking on a Button object, add a click handler and check  if right mouse button was used (e.g. with the help of `.OnPointerClickAsObservable()`) and then call  `GlobalContextMenu.Show("Title", new []{ GlobalContextMenu.Entry.Create(...), ...})`.    If you are using IMGUI, you can do:  ```  if(GUI/GUILayout.Button(...))  {  if(IMGUIUtils.IsMouseRightClick())  GlobalContextMenu.Show(...);  else  // Left click  }  ```  </example>
+```csharp
+public static class KKAPI.Utilities.GlobalContextMenu
+
+```
+
+Static Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `Boolean` | Enabled | Is the menu currently visible. Use Show and Hide methods to change this. | 
+
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `void` | Hide() | Hide currently displayed context menu, if there is any. | 
+| `void` | Show(`String` title, `Entry[]` items) | Show context menu at the cursor's current screen position with the given title and menu entries.  Any currently open context menu will be replaced by the new one. | 
+| `void` | Show(`Vector2` screenPoint, `String` title, `Entry[]` items) | Show context menu at the cursor's current screen position with the given title and menu entries.  Any currently open context menu will be replaced by the new one. | 
+
+
 ## `GlobalTooltips`
 
 API for easily displaying tooltips in game and studio.
@@ -223,6 +247,8 @@ Static Methods
 | `void` | DrawSolidBox(`Rect` boxRect) | Draw a gray non-transparent GUI.Box at the specified rect. Use before a GUI.Window or other controls to get rid of  the default transparency and make the GUI easier to read.  <example>  IMGUIUtils.DrawSolidBox(screenRect);  GUILayout.Window(362, screenRect, TreeWindow, "Select character folder");  </example> | 
 | `void` | DrawTooltip(`Rect` area, `Int32` tooltipWidth = 400) | Display a tooltip for any GUIContent with the tootlip property set in a given window.  To use, place this at the end of your Window method: IMGUIUtils.DrawTooltip(_windowRect); | 
 | `void` | EatInputInRect(`Rect` eatRect) | Block input from going through to the game/canvases if the mouse cursor is within the specified Rect.  Use after a GUI.Window call or the window will not be able to get the inputs either.  <example>  GUILayout.Window(362, screenRect, TreeWindow, "Select character folder");  Utils.EatInputInRect(screenRect);  </example> | 
+| `Boolean` | IsMouseRightClick() | For use inside OnGUI immediately after a GUI.Button click (within the if block) to check which mouse button was used. | 
+| `Boolean` | IsMouseWheelClick() | For use inside OnGUI immediately after a GUI.Button click (within the if block) to check which mouse button was used. | 
 
 
 ## `ImguiWindow<T>`

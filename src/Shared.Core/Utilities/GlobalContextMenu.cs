@@ -10,7 +10,7 @@ namespace KKAPI.Utilities
     /// <example>
     /// To open a right-click context menu when clicking on a Button object, add a click handler and check
     /// if right mouse button was used (e.g. with the help of `.OnPointerClickAsObservable()`) and then call
-    /// `GlobalContextMenu.Show("Title", new []{ ContextMenuEntry Create(...), ...})`.
+    /// `GlobalContextMenu.Show("Title", GlobalContextMenu.Entry.Create(...), More entries...)`.
     /// 
     /// If you are using IMGUI, you can do:
     /// ```
@@ -27,7 +27,7 @@ namespace KKAPI.Utilities
     public static class GlobalContextMenu
     {
         private static string _title;
-        private static ICollection<ContextMenuEntry> _contents;
+        private static Entry[] _contents;
 
         private static Rect _windowRect;
         private static int _windowId = 5739610; // Random starting ID, high to avoid conflicts, incremented by 1 for each new menu
@@ -44,7 +44,7 @@ namespace KKAPI.Utilities
         /// <param name="title">The title to display at the top of the context menu.</param>
         /// <param name="items">The collection of context menu entries to show.</param>
         /// <exception cref="ArgumentNullException">Thrown if the title or items parameter is null.</exception>
-        public static void Show(string title, ICollection<ContextMenuEntry> items)
+        public static void Show(string title, params Entry[] items)
         {
             var m = UnityInput.Current.mousePosition;
             var clickPoint = new Vector2(m.x, Screen.height - m.y);
@@ -59,11 +59,11 @@ namespace KKAPI.Utilities
         /// <param name="title">The title to display at the top of the context menu.</param>
         /// <param name="items">The collection of context menu entries to show. Must not be null or empty.</param>
         /// <exception cref="ArgumentNullException">Thrown if the title or items parameter is null.</exception>
-        public static void Show(Vector2 screenPoint, string title, ICollection<ContextMenuEntry> items)
+        public static void Show(Vector2 screenPoint, string title, params Entry[] items)
         {
             if (title == null) throw new ArgumentNullException(nameof(title));
             if (items == null) throw new ArgumentNullException(nameof(items));
-            if (items.Count == 0) throw new ArgumentException("Menu must have at least one entry", nameof(items));
+            if (items.Length == 0) throw new ArgumentException("Menu must have at least one entry", nameof(items));
 
             _windowRect = new Rect(screenPoint.x, screenPoint.y, 100, 100); 
             _title = title;
@@ -116,7 +116,7 @@ namespace KKAPI.Utilities
 
         private static void DrawMenu(int id)
         {
-            if (_contents.Count == 0)
+            if (_contents.Length == 0)
             {
                 Hide();
                 return;
@@ -132,11 +132,11 @@ namespace KKAPI.Utilities
             }
             GUILayout.EndVertical();
         }
-
+        
         /// <summary>
         /// A single entry in the context menu.
         /// </summary>
-        public readonly struct ContextMenuEntry
+        public readonly struct Entry
         {
             /// <summary>
             /// Specifies the possible states of a context menu entry.
@@ -160,17 +160,17 @@ namespace KKAPI.Utilities
             /// <summary>
             /// A list separator.
             /// </summary>
-            public static readonly ContextMenuEntry Separator = new ContextMenuEntry();
+            public static readonly Entry Separator = new Entry();
 
             /// <summary>
             /// Create a new context menu entry.
             /// </summary>
             /// <param name="onGuiLayout">GUILayout code to draw the button. When it returns true the context menu is closed (e.g. after user clicks the button). Must not be null.</param>
             /// <exception cref="ArgumentNullException">Thrown if the onGuiLayout parameter is null.</exception>
-            public static ContextMenuEntry Create(Func<bool> onGuiLayout)
+            public static Entry Create(Func<bool> onGuiLayout)
             {
                 if (onGuiLayout == null) throw new ArgumentNullException(nameof(onGuiLayout));
-                return new ContextMenuEntry(onGuiLayout);
+                return new Entry(onGuiLayout);
             }
 
             /// <summary>
@@ -180,11 +180,11 @@ namespace KKAPI.Utilities
             /// <param name="onClick">Action called when user left-clicks on this menu entry. If null, a label will be shown instead.</param>
             /// <param name="onCheckState">Callback that checks if this item is currently visible. If null, the button is always visible and active.</param>
             /// <exception cref="ArgumentNullException">Thrown if the name parameter is null.</exception>
-            public static ContextMenuEntry Create(GUIContent name, Action onClick, Func<EntryState> onCheckState = null)
+            public static Entry Create(GUIContent name, Action onClick, Func<EntryState> onCheckState = null)
             {
                 if (name == null) throw new ArgumentNullException(nameof(name));
 
-                return new ContextMenuEntry(SimpleButton);
+                return new Entry(SimpleButton);
 
                 bool SimpleButton()
                 {
@@ -223,7 +223,7 @@ namespace KKAPI.Utilities
                 }
             }
 
-            internal ContextMenuEntry(Func<bool> onGuiLayout)
+            internal Entry(Func<bool> onGuiLayout)
             {
                 _onGuiLayout = onGuiLayout;
             }
