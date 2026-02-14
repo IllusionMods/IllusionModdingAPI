@@ -11,6 +11,10 @@ namespace KKAPI.Maker
     {
         private static void SetupUI()
         {
+            // Don't show UI if local texture support is disabled
+            if (!EnableLocalTextureSupport.Value)
+                return;
+                
             // Save new screen
             var panel1 = SetupUIPanel(out _);
             panel1.transform.localPosition += new Vector3(0, panel1.GetComponent<RectTransform>().sizeDelta.y + 10, 0);

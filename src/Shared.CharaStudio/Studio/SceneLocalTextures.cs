@@ -32,6 +32,9 @@ namespace KKAPI.Studio
         {
             get
             {
+                // If local texture support is disabled, always return Bundled
+                if (!Maker.CharaLocalTextures.EnableLocalTextureSupport.Value)
+                    return SceneTextureSaveType.Bundled;
                 return ConfTexSaveType.Value;
             }
             set
@@ -90,6 +93,10 @@ namespace KKAPI.Studio
         [HarmonyPostfix, HarmonyPatch(typeof(SceneLoadScene), nameof(SceneLoadScene.Awake))]
         private static void SetupUI(SceneLoadScene __instance)
         {
+            // Don't show UI if local texture support is disabled
+            if (!Maker.CharaLocalTextures.EnableLocalTextureSupport.Value)
+                return;
+                
             SetupUIPanel(__instance);
         }
 

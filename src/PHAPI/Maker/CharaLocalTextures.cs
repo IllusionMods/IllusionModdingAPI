@@ -21,6 +21,9 @@ namespace KKAPI.Maker
         {
             get
             {
+                // If local texture support is disabled, always return Bundled
+                if (!EnableLocalTextureSupport.Value)
+                    return CharaTextureSaveType.Bundled;
                 return ConfTexSaveType.Value;
             }
             set
@@ -47,9 +50,13 @@ namespace KKAPI.Maker
         }
 
         internal static ConfigEntry<CharaTextureSaveType> ConfTexSaveType { get; private set; }
+        internal static ConfigEntry<bool> EnableLocalTextureSupport { get; private set; }
 
         static CharaLocalTextures()
         {
+            EnableLocalTextureSupport = KoikatuAPI.Instance.Config.Bind("Local Textures", "Enable local texture support", true, new ConfigDescription("Enable or disable local texture support. When disabled, the local texture UI is hidden and all textures are always stored in cards. Note: Existing local textures will be inaccessible (but not deleted) while this is disabled.", null, new ConfigurationManagerAttributes { IsAdvanced = true, Order = 3 }));
+            EnableLocalTextureSupport.SettingChanged += (sender, args) => OnEnableLocalTextureSupportChanged();
+            
             string description = "Whether external textures used by plugins should be bundled with the card or saved to a local folder.\nWARNING: Cards with local textures save storage space but cannot be shared.";
             ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Card Save Type", CharaTextureSaveType.Bundled, new ConfigDescription(description, null, new ConfigurationManagerAttributes { IsAdvanced = true, Order = 2 }));
             ConfTexSaveType.SettingChanged += OnSaveTypeChanged;
@@ -71,6 +78,12 @@ namespace KKAPI.Maker
             eLogger.Begin(nameof(SaveTypeChangedEvent), "");
             SaveTypeChangedEvent.SafeInvokeWithLogging(handler => handler.Invoke(null, new CharaTextureSaveTypeChangedEventArgs(SaveType)), nameof(SaveTypeChangedEvent), eLogger);
             eLogger.End();
+        }
+
+        private static void OnEnableLocalTextureSupportChanged()
+        {
+            // Trigger SaveTypeChangedEvent to notify plugins of the change
+            OnSaveTypeChanged(EnableLocalTextureSupport, System.EventArgs.Empty);
         }
     }
 }
