@@ -17,7 +17,7 @@ namespace KKAPI.Utilities
         private static int _windowId = 5739610; // Random starting ID, high to avoid conflicts, incremented by 1 for each new menu
 
         /// <summary>
-        /// Is the menu currently visible. Use Show and Hide methods to change this./>
+        /// Is the menu currently visible. Use Show and Hide methods to change this.
         /// </summary>
         public static bool Enabled => _contents != null;
 
