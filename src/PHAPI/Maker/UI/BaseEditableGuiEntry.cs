@@ -67,7 +67,7 @@ namespace KKAPI.Maker.UI
                 _outgoingValue.OnNext(newValue);
         }
 
-        private bool _firingEnabled;
+        internal bool _firingEnabled;
 
         internal override void CreateControl(Transform subCategoryList)
         {
