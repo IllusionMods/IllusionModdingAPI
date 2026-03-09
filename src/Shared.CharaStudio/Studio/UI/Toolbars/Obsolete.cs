@@ -94,6 +94,7 @@ namespace KKAPI.Studio.UI
         /// <param name="target">The target toggle toolbar button.</param>
         public ToolbarToggle(SimpleToolbarToggle target) : base(null, target.Toggled.Value, null)
         {
+            _firingEnabled = true;
             ValueChanged.Subscribe(b =>
             {
                 if (b != target.Toggled.Value)
