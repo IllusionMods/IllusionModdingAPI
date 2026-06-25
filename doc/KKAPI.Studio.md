@@ -85,6 +85,8 @@ Static Methods
 | `IEnumerable<OCIChar>` | GetSelectedCharacters() | Get all character objects currently selected in Studio's Workspace. | 
 | `IEnumerable<T>` | GetSelectedControllers() | Get all instances of this controller that belong to characters that are selected in Studio's Workspace. | 
 | `IEnumerable<ObjectCtrlInfo>` | GetSelectedObjects() | Get all objects (all types) currently selected in Studio's Workspace. | 
+| `TreeNodeObject[]` | GetSelectedTreeNodes() | Get all tree nodes currently selected in Studio's Workspace. Returns an empty array if called outside of studio or before studio finishes loading. | 
+| `IDisposable` | RegisterTreeNodeContextMenuItems(`MenuOrder` priority, `TreeNodeRightClickHandler` handler) | Subscribe to workspace tree node right click events to add custom context menu items. Only one menu can be shown at a time.  Warning: This is called for every tree node right click, so make sure your handler is fast and doesn't allocate memory unnecessarily. Consider caching the entries. | 
 
 
 Static Events
@@ -106,11 +108,12 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `IEnumerable<TreeNodeObject>` | Flatten(this `TreeNodeObject` treeNodeObject) | Recursively flatten this TreeNodeObject and all of its children into a single collection of TreeNodeObjects. | 
 | `ChaControl` | GetChaControl(this `OCIChar` ociChar) | Get character component for this studio object | 
 | `ObjectCtrlInfo` | GetObjectCtrlInfo(this `ObjectInfo` obj) | Get the ObjectCtrlInfo object that uses this ObjectInfo.  If the object was not found in current scene, null is returned. | 
 | `OCIChar` | GetOCIChar(this `ChaControl` chaControl) | Get GetOCIChar that is assigned to this character. Only works in CharaStudio, returns null elsewhere. | 
 | `Int32` | GetSceneId(this `ObjectCtrlInfo` obj) | Get the ID of this object as used in the currently loaded scene.  If the object was not found in current scene, -1 is returned. | 
 | `Int32` | GetSceneId(this `ObjectInfo` obj) | Get the ID of this object as used in the currently loaded scene.  If the object was not found in current scene, -1 is returned. | 
-| `Boolean` | TryGetObjectCtrlInfo(this `TreeNodeObject` tno, `ObjectCtrlInfo&` objectCtrlInfo) | Try to get the ObjectCtrlInfo controlled by this TreeNodeObject. | 
+| `Boolean` | TryGetObjectCtrlInfo(this `TreeNodeObject` tno, `ObjectCtrlInfo&` objectCtrlInfo) | Try to get the ObjectCtrlInfo controlled by this TreeNodeObject. Returns null if the object is not found or if called outside of studio. | 
 
 

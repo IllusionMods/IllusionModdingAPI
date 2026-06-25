@@ -92,13 +92,23 @@ namespace KKAPI.Studio
         /// </summary>
         public static IEnumerable<ObjectCtrlInfo> GetSelectedObjects()
         {
-            if (!StudioLoaded)
-                yield break;
+            if (!StudioLoaded) return Enumerable.Empty<ObjectCtrlInfo>();
 
-            TreeNodeObject[] selectNodes = Singleton<global::Studio.Studio>.Instance.treeNodeCtrl.selectNodes;
-            for (int i = 0; i < selectNodes.Length; i++)
-                if (global::Studio.Studio.Instance.dicInfo.TryGetValue(selectNodes[i], out ObjectCtrlInfo objectCtrlInfo))
-                    yield return objectCtrlInfo;
+            return GetObjectCtrlInfos(GetSelectedTreeNodes());
+        }
+
+        private static IEnumerable<ObjectCtrlInfo> GetObjectCtrlInfos(IList<TreeNodeObject> selectNodes)
+        {
+            return selectNodes.Select(node => global::Studio.Studio.Instance.dicInfo.TryGetValue(node, out var objectCtrlInfo) ? objectCtrlInfo : null)
+                              .Where(x => x != null);
+        }
+
+        /// <summary>
+        /// Get all tree nodes currently selected in Studio's Workspace. Returns an empty array if called outside of studio or before studio finishes loading.
+        /// </summary>
+        public static TreeNodeObject[] GetSelectedTreeNodes()
+        {
+            return StudioLoaded ? Singleton<global::Studio.Studio>.Instance.treeNodeCtrl.selectNodes : new TreeNodeObject[0]; ;
         }
 
         private static void CreateCategory(CurrentStateCategory category)

@@ -89,11 +89,32 @@ namespace KKAPI.Studio
 #endif
 
         /// <summary>
-        /// Try to get the ObjectCtrlInfo controlled by this TreeNodeObject.
+        /// Try to get the ObjectCtrlInfo controlled by this TreeNodeObject. Returns null if the object is not found or if called outside of studio.
         /// </summary>
         public static bool TryGetObjectCtrlInfo(this TreeNodeObject tno, out ObjectCtrlInfo objectCtrlInfo)
         {
+            if (!StudioAPI.StudioLoaded)
+            {
+                objectCtrlInfo = null;
+                return false;
+            }
+
             return Studio.dicInfo.TryGetValue(tno, out objectCtrlInfo);
         } 
+
+        /// <summary>
+        /// Recursively flatten this TreeNodeObject and all of its children into a single collection of TreeNodeObjects.
+        /// </summary>
+        public static IEnumerable<TreeNodeObject> Flatten(this TreeNodeObject treeNodeObject)
+        {
+            yield return treeNodeObject;
+            foreach (var child in treeNodeObject.child)
+            {
+                foreach (var descendant in child.Flatten())
+                {
+                    yield return descendant;
+                }
+            }
+        }
     }
 }
