@@ -94,10 +94,14 @@ namespace KKAPI.Utilities
             GUILayout.Window(backdropWindowId, new Rect(0, 0, Screen.width, Screen.height), DisableOnClickWindowFunc, string.Empty, GUI.skin.label);
 
             if (!Enabled) return;
-
             IMGUIUtils.DrawSolidBox(_windowRect);
+            
+            var skin = GUI.skin;
+            GUI.skin = IMGUIUtils.SolidBackgroundGuiSkin;
 
             _windowRect = GUILayout.Window(_windowId, _windowRect, DrawMenu, _title);
+
+            GUI.skin = skin;
 
             IMGUIUtils.EatInputInRect(_windowRect);
 
