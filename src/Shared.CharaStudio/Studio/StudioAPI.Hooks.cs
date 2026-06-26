@@ -42,13 +42,6 @@ namespace KKAPI.Studio
                 if (!InsideStudio) return;
 
                 __instance.m_ButtonSelect.GetOrAddComponent<PointerDown>().Instance = __instance;
-
-                //// Create a right click handler for the tree node object to allow for custom context menu items
-                //__instance.m_ButtonSelect.gameObject.OnMouseDownAsObservable().Subscribe(_ =>
-                //{
-                //    if (Input.GetMouseButtonDown(1))
-                //        OnShowWorkspaceContextMenu(__instance);
-                //});
             }
 
             private sealed class PointerDown : MonoBehaviour, IPointerClickHandler
