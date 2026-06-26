@@ -86,7 +86,7 @@ Static Methods
 | `IEnumerable<T>` | GetSelectedControllers() | Get all instances of this controller that belong to characters that are selected in Studio's Workspace. | 
 | `IEnumerable<ObjectCtrlInfo>` | GetSelectedObjects() | Get all objects (all types) currently selected in Studio's Workspace. | 
 | `TreeNodeObject[]` | GetSelectedTreeNodes() | Get all tree nodes currently selected in Studio's Workspace. Returns an empty array if called outside of studio or before studio finishes loading. | 
-| `IDisposable` | RegisterTreeNodeContextMenuItems(`MenuOrder` priority, `TreeNodeRightClickHandler` handler) | Subscribe to workspace tree node right click events to add custom context menu items. Only one menu can be shown at a time.  Warning: This is called for every tree node right click, so make sure your handler is fast and doesn't allocate memory unnecessarily. Consider caching the entries. | 
+| `IDisposable` | RegisterWorkspaceContextMenuItemProvider(`WorkspaceMenuItemProvider` handler) | Subscribe to workspace tree node right click events to add custom context menu items. Only one menu can be shown at a time.  Warning: This is called for every tree node right click, so make sure your handler is fast and doesn't allocate memory unnecessarily. Consider caching the entries. | 
 
 
 Static Events
