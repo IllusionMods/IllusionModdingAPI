@@ -133,44 +133,11 @@ namespace KKAPI.Studio
 
             Hooks.SetupHooks();
             StudioSaveLoadApi.Init();
+            StudioContextMenus.Init();
 
             SceneManager.sceneLoaded += SceneLoaded;
 
             DebugControls();
-
-            RegisterWorkspaceContextMenuItemProvider(BasicTreeNodeCommands);
-
-            ICollection<KeyValuePair<MenuOrder, GlobalContextMenu.Entry>> BasicTreeNodeCommands(TreeNodeClickedEventArgs args)
-            {
-                var results = new List<KeyValuePair<MenuOrder, GlobalContextMenu.Entry>>();
-
-                var allNodes = args.SelectedInstances.SelectMany(x => x.Flatten()).ToList();
-                var notSelected = allNodes.Except(args.SelectedInstances).ToList();
-                if (notSelected.Count > 0)
-                {
-                    results.Add(new KeyValuePair<MenuOrder, GlobalContextMenu.Entry>(MenuOrder.Selection, GlobalContextMenu.Entry.Create(new GUIContent("Select children"), () =>
-                    {
-                        foreach (var tno in notSelected)
-#if !PH
-                            StudioInstance.treeNodeCtrl.AddSelectNode(tno, true);
-#else
-                            _studioInstance.treeNodeCtrl.AddSelectNode(tno);
-#endif
-                    })));
-                }
-
-                if (args.SelectedInstances.Count >= 2 && args.SelectedInstances.Any(x => x.enableChangeParent))
-                    results.Add(new KeyValuePair<MenuOrder, GlobalContextMenu.Entry>(MenuOrder.NodeEdit, GlobalContextMenu.Entry.Create(new GUIContent("Parent"), () => StudioInstance.m_WorkspaceCtrl.OnClickParent())));
-                if (args.SelectedInstances.Any(x => x.isParent))
-                    results.Add(new KeyValuePair<MenuOrder, GlobalContextMenu.Entry>(MenuOrder.NodeEdit, GlobalContextMenu.Entry.Create(new GUIContent("Unparent"), () => StudioInstance.m_WorkspaceCtrl.OnClickRemove())));
-                if (args.SelectedInstances.Any(x => x.enableDelete))
-                    results.Add(new KeyValuePair<MenuOrder, GlobalContextMenu.Entry>(MenuOrder.NodeEdit, GlobalContextMenu.Entry.Create(new GUIContent("Delete"), () => StudioInstance.m_WorkspaceCtrl.OnClickDelete())));
-                if (args.SelectedInstances.Any(x => x.enableCopy))
-                    results.Add(new KeyValuePair<MenuOrder, GlobalContextMenu.Entry>(MenuOrder.NodeEdit, GlobalContextMenu.Entry.Create(new GUIContent("Duplicate"), () => StudioInstance.m_WorkspaceCtrl.OnClickDuplicate())));
-
-
-                return results;
-            }
         }
 
         /// <summary>
@@ -188,132 +155,6 @@ namespace KKAPI.Studio
         /// Fires once after studio finished loading the interface, right before custom controls are created.
         /// </summary>
         public static event EventHandler StudioLoadedChanged;
-
-        #region Workspace right click on items
-
-        public sealed class TreeNodeClickedEventArgs : EventArgs
-        {
-            public TreeNodeObject ClickedInstance { get; }
-            public ICollection<TreeNodeObject> SelectedInstances { get; }
-
-            public IEnumerable<ObjectCtrlInfo> GetSelectedObjects() => StudioAPI.GetSelectedObjects();
-
-            public TreeNodeClickedEventArgs(TreeNodeObject clickedInstance)
-            {
-                ClickedInstance = clickedInstance;
-                SelectedInstances = GetSelectedTreeNodes();
-            }
-        }
-
-        /// <summary>
-        /// Defines the order in which menu items appear in right click context menu in the workspace.
-        /// Menu items with the same MenuOrder value are grouped together. Different groups are separated by a separator.
-        /// Any custom value between -100 and 100 can be used. Lower values are called first and appear higher in the menu.
-        /// </summary>
-        public enum MenuOrder
-        {
-            /// <summary>
-            /// Always be at the top of the menu, above all other items. Use only if absolutely necessary.
-            /// </summary>
-            Topmost = -100,
-            /// <summary>
-            /// Actions that are most likely to be used by the user, e.g. "Edit text..." on a text node.
-            /// </summary>
-            SuggestedActions = -70,
-            /// <summary>
-            /// Actions to perform on the node, e.g. "Set Vanilla+ shaders".
-            /// </summary>
-            Actions = -50,
-            /// <summary>
-            /// Default order for menu items, consider using a different value. Appears in the middle of the menu.
-            /// </summary>
-            Default = 0,
-            /// <summary>
-            /// Commands that change selection.
-            /// </summary>
-            Selection = 40,
-            /// <summary>
-            /// Basic node editing like deleting or duplicating.
-            /// </summary>
-            NodeEdit = 50,
-            /// <summary>
-            /// Opening various properties windows.
-            /// </summary>
-            Properties = 80,
-            /// <summary>
-            /// Always be at the bottom of the menu, below all other items. Use only if absolutely necessary.
-            /// </summary>
-            Bottommost = 100
-        }
-
-        /// <summary>
-        /// Callback used to get context menu items for when a tree node is right clicked in the workspace.
-        /// </summary>
-        /// <param name="args">Information about clicked tree node</param>
-        /// <returns>Return a collection of menu items to add to the context menu. Each entry comes with a MenuOrder that specifies its position in the menu.</returns>
-        public delegate ICollection<KeyValuePair<MenuOrder, GlobalContextMenu.Entry>> WorkspaceMenuItemProvider(TreeNodeClickedEventArgs args);
-
-        private static readonly List<WorkspaceMenuItemProvider> _TreeNodeRightClickHandlers = new List<WorkspaceMenuItemProvider>();
-
-        /// <summary>
-        /// Subscribe to workspace tree node right click events to add custom context menu items. Only one menu can be shown at a time.
-        /// Warning: This is called for every tree node right click, so make sure your handler is fast and doesn't allocate memory unnecessarily. Consider caching the entries.
-        /// </summary>
-        /// <param name="handler">Callback function that returns a collection of menu entries to add to the context menu when a tree node is right clicked.</param>
-        /// <returns>An <see cref="IDisposable"/> that can be used to unsubscribe from the event when disposed.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="handler"/> is null.</exception>
-        public static IDisposable RegisterWorkspaceContextMenuItemProvider(WorkspaceMenuItemProvider handler)
-        {
-            _TreeNodeRightClickHandlers.Add(handler ?? throw new ArgumentNullException(nameof(handler)));
-            return Disposable.Create(() => _TreeNodeRightClickHandlers.Remove(handler));
-        }
-
-        private static void OnShowCustomContextMenu(TreeNodeObject clickedInstance)
-        {
-            if (!clickedInstance) return;
-
-            var args = new TreeNodeClickedEventArgs(clickedInstance);
-            // If the right clicked node is not in selected list, select it
-            if (!args.SelectedInstances.Contains(clickedInstance))
-            {
-#if PH
-                StudioAPI.StudioInstance.treeNodeCtrl.AddSelectNode(clickedInstance);
-#else
-                StudioInstance.treeNodeCtrl.AddSelectNode(clickedInstance, false);
-#endif
-                args = new TreeNodeClickedEventArgs(clickedInstance);
-            }
-
-            if (args.SelectedInstances.Count == 0) return;
-
-            var groupedMenuItems = _TreeNodeRightClickHandlers.SelectMany(handler =>
-            {
-                try
-                {
-                    var newEntries = handler.Invoke(args);
-                    return newEntries;
-                }
-                catch (Exception e)
-                {
-                    KoikatuAPI.Logger.LogError(e);
-                    return Enumerable.Empty<KeyValuePair<MenuOrder, GlobalContextMenu.Entry>>();
-                }
-            }).GroupBy(x => x.Key).OrderBy(x => x.Key);
-
-            var results = new List<GlobalContextMenu.Entry>();
-            foreach (var grouped in groupedMenuItems)
-            {
-                if (results.Count > 0)
-                    results.Add(GlobalContextMenu.Entry.Separator);
-
-                results.AddRange(grouped.Select(x => x.Value));
-            }
-
-            var title = args.SelectedInstances.Count <= 1 ? clickedInstance.textName : $"{clickedInstance.textName} + {args.SelectedInstances.Count(x => x != clickedInstance)} selected";
-            GlobalContextMenu.Show(title, results.ToArray());
-        }
-
-        #endregion
 
 #if PH
         private static void SceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode loadSceneMode)

@@ -49,7 +49,7 @@ namespace KKAPI.Studio
                 //__instance.m_ButtonSelect.gameObject.OnMouseDownAsObservable().Subscribe(_ =>
                 //{
                 //    if (Input.GetMouseButtonDown(1))
-                //        OnShowCustomContextMenu(__instance);
+                //        OnShowWorkspaceContextMenu(__instance);
                 //});
             }
 
@@ -59,7 +59,7 @@ namespace KKAPI.Studio
                 public void OnPointerClick(PointerEventData eventData)
                 {
                     if (Instance && eventData.button == PointerEventData.InputButton.Right)
-                        OnShowCustomContextMenu(Instance);
+                        StudioContextMenus.OnShowWorkspaceContextMenu(Instance);
                 }
             }
         }

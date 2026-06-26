@@ -81,7 +81,10 @@
 - [`SceneTextureSaveType`](KKAPI.Studio.md#scenetexturesavetype)
 - [`SceneTextureSaveTypeChangedEventArgs`](KKAPI.Studio.md#scenetexturesavetypechangedeventargs)
 - [`StudioAPI`](KKAPI.Studio.md#studioapi)
+- [`StudioContextMenuOrder`](KKAPI.Studio.md#studiocontextmenuorder)
+- [`StudioContextMenus`](KKAPI.Studio.md#studiocontextmenus)
 - [`StudioObjectExtensions`](KKAPI.Studio.md#studioobjectextensions)
+- [`WorkspaceNodeClickedEventArgs`](KKAPI.Studio.md#workspacenodeclickedeventargs)
 
 ## [KKAPI.Studio.SaveLoad](KKAPI.Studio.SaveLoad.md)
 

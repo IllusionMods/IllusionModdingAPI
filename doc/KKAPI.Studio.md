@@ -86,7 +86,6 @@ Static Methods
 | `IEnumerable<T>` | GetSelectedControllers() | Get all instances of this controller that belong to characters that are selected in Studio's Workspace. | 
 | `IEnumerable<ObjectCtrlInfo>` | GetSelectedObjects() | Get all objects (all types) currently selected in Studio's Workspace. | 
 | `TreeNodeObject[]` | GetSelectedTreeNodes() | Get all tree nodes currently selected in Studio's Workspace. Returns an empty array if called outside of studio or before studio finishes loading. | 
-| `IDisposable` | RegisterWorkspaceContextMenuItemProvider(`WorkspaceMenuItemProvider` handler) | Subscribe to workspace tree node right click events to add custom context menu items. Only one menu can be shown at a time.  Warning: This is called for every tree node right click, so make sure your handler is fast and doesn't allocate memory unnecessarily. Consider caching the entries. | 
 
 
 Static Events
@@ -94,6 +93,46 @@ Static Events
 | Type | Name | Summary | 
 | --- | --- | --- | 
 | `EventHandler` | StudioLoadedChanged | Fires once after studio finished loading the interface, right before custom controls are created. | 
+
+
+## `StudioContextMenuOrder`
+
+Defines the order in which menu items appear in right click context menus.  Menu items with the same StudioContextMenuOrder value are grouped together. Different groups are separated by a separator.  Any custom value between -100 and 100 can be used. Lower values are called first and appear higher in the menu.
+```csharp
+public enum KKAPI.Studio.StudioContextMenuOrder
+    : Enum, IComparable, IFormattable, IConvertible
+
+```
+
+Enum
+
+| Value | Name | Summary | 
+| --- | --- | --- | 
+| `-100` | Topmost | Always be at the top of the menu, above all other items. Use only if absolutely necessary. | 
+| `-70` | SuggestedActions | Actions that are most likely to be used by the user, e.g. "Edit text..." on a text node. | 
+| `-50` | Actions | Actions to perform on the node, e.g. "Set Vanilla+ shaders". | 
+| `0` | Default | Default order for menu items, consider using a different value. Appears in the middle of the menu. | 
+| `40` | Selection | Commands that change selection. | 
+| `50` | NodeEdit | Basic node editing like deleting or duplicating. | 
+| `80` | Properties | Opening various properties windows. | 
+| `100` | Bottommost | Always be at the bottom of the menu, below all other items. Use only if absolutely necessary. | 
+
+
+## `StudioContextMenus`
+
+Provides functionality for adding custom context menu items to the Studio workspace.
+```csharp
+public static class KKAPI.Studio.StudioContextMenus
+
+```
+
+Static Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `IDisposable` | AddWorkspaceContextMenuItem(`String` content, `Action<WorkspaceNodeClickedEventArgs>` onClick, `StudioContextMenuOrder` order = Default, `Func<WorkspaceNodeClickedEventArgs, EntryState>` checkState = null) | Add a menu item to the workspace context menu. | 
+| `IDisposable` | AddWorkspaceContextMenuItem(`GUIContent` content, `Action<WorkspaceNodeClickedEventArgs>` onClick, `StudioContextMenuOrder` order = Default, `Func<WorkspaceNodeClickedEventArgs, EntryState>` checkState = null) | Add a menu item to the workspace context menu. | 
+| `IDisposable` | AddWorkspaceContextMenuItem(`Entry` content, `StudioContextMenuOrder` order) | Add a menu item to the workspace context menu. | 
 
 
 ## `StudioObjectExtensions`
@@ -115,5 +154,29 @@ Static Methods
 | `Int32` | GetSceneId(this `ObjectCtrlInfo` obj) | Get the ID of this object as used in the currently loaded scene.  If the object was not found in current scene, -1 is returned. | 
 | `Int32` | GetSceneId(this `ObjectInfo` obj) | Get the ID of this object as used in the currently loaded scene.  If the object was not found in current scene, -1 is returned. | 
 | `Boolean` | TryGetObjectCtrlInfo(this `TreeNodeObject` tno, `ObjectCtrlInfo&` objectCtrlInfo) | Try to get the ObjectCtrlInfo controlled by this TreeNodeObject. Returns null if the object is not found or if called outside of studio. | 
+
+
+## `WorkspaceNodeClickedEventArgs`
+
+Event arguments for workspace tree node context menu events.
+```csharp
+public class KKAPI.Studio.WorkspaceNodeClickedEventArgs
+    : EventArgs
+
+```
+
+Properties
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `TreeNodeObject` | ClickedInstance | The tree node that was right-clicked to open the context menu. | 
+| `ICollection<TreeNodeObject>` | SelectedInstances | All tree nodes currently selected in the workspace. | 
+
+
+Methods
+
+| Type | Name | Summary | 
+| --- | --- | --- | 
+| `IEnumerable<ObjectCtrlInfo>` | GetSelectedObjects() | Get all objects currently selected in the workspace. | 
 
 
