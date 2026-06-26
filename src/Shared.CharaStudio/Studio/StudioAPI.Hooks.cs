@@ -2,8 +2,6 @@
 using KKAPI.Utilities;
 using Studio;
 using System.Collections;
-using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 

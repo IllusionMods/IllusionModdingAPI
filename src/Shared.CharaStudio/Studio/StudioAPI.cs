@@ -8,7 +8,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using KKAPI.Utilities;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;

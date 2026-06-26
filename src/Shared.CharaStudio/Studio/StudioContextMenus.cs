@@ -8,7 +8,7 @@ using UnityEngine;
 namespace KKAPI.Studio
 {
     /// <summary>
-    /// Provides functionality for adding custom context menu items to the Studio workspace.
+    /// Provides functionality for adding custom context menu items to studio.
     /// </summary>
     public static class StudioContextMenus
     {
