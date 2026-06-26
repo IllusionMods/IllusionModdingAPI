@@ -114,7 +114,7 @@ namespace KKAPI.Chara
         {
             if (StudioAPI.InsideStudio)
             {
-                var charaName = global::Studio.Studio.Instance.dicObjectCtrl.Values.OfType<OCIChar>().FirstOrDefault(x => x.charInfo.human == h)?.charStatus.name;
+                var charaName = StudioAPI.StudioInstance.dicObjectCtrl.Values.OfType<OCIChar>().FirstOrDefault(x => x.charInfo.human == h)?.charStatus.name;
                 if (!string.IsNullOrEmpty(charaName)) return charaName;
             }
             //return h is Female f ? f.HeroineID.ToString() : ((Male) h).MaleID.ToString();

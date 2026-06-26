@@ -88,6 +88,6 @@ namespace KKAPI.Studio.SaveLoad
         /// <summary>
         /// Get the instance of the Studio game manager object.
         /// </summary>
-        public global::Studio.Studio GetStudio() => global::Studio.Studio.Instance;
+        public global::Studio.Studio GetStudio() => StudioAPI.StudioInstance;
     }
 }

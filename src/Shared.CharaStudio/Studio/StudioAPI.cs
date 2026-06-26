@@ -19,6 +19,9 @@ namespace KKAPI.Studio
     /// </summary>
     public static partial class StudioAPI
     {
+        private static global::Studio.Studio _studioInstance;
+        internal static global::Studio.Studio StudioInstance => _studioInstance ? _studioInstance : _studioInstance = global::Studio.Studio.Instance;
+
         private static readonly List<CurrentStateCategory> _customCurrentStateCategories = new List<CurrentStateCategory>();
         private static GameObject _customStateRoot;
 
@@ -99,7 +102,7 @@ namespace KKAPI.Studio
 
         private static IEnumerable<ObjectCtrlInfo> GetObjectCtrlInfos(IList<TreeNodeObject> selectNodes)
         {
-            return selectNodes.Select(node => global::Studio.Studio.Instance.dicInfo.TryGetValue(node, out var objectCtrlInfo) ? objectCtrlInfo : null)
+            return selectNodes.Select(node => StudioInstance.dicInfo.TryGetValue(node, out var objectCtrlInfo) ? objectCtrlInfo : null)
                               .Where(x => x != null);
         }
 
@@ -108,7 +111,7 @@ namespace KKAPI.Studio
         /// </summary>
         public static TreeNodeObject[] GetSelectedTreeNodes()
         {
-            return StudioLoaded ? Singleton<global::Studio.Studio>.Instance.treeNodeCtrl.selectNodes : new TreeNodeObject[0]; ;
+            return StudioLoaded ? StudioInstance.treeNodeCtrl.selectNodes : new TreeNodeObject[0];
         }
 
         private static void CreateCategory(CurrentStateCategory category)

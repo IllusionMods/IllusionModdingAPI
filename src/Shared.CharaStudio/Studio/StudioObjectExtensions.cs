@@ -14,8 +14,6 @@ namespace KKAPI.Studio
     /// </summary>
     public static class StudioObjectExtensions
     {
-        private static global::Studio.Studio Studio => global::Studio.Studio.Instance;
-
         /// <summary>
         /// Get the ObjectCtrlInfo object that uses this ObjectInfo.
         /// If the object was not found in current scene, null is returned.
@@ -23,9 +21,9 @@ namespace KKAPI.Studio
         public static ObjectCtrlInfo GetObjectCtrlInfo(this ObjectInfo obj)
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
-            if (Studio == null) throw new InvalidOperationException("Studio is not initialized yet!");
+            if (StudioAPI.StudioInstance == null) throw new InvalidOperationException("Studio is not initialized yet!");
 
-            return Studio.dicObjectCtrl.Values.FirstOrDefault(x => x.objectInfo == obj);
+            return StudioAPI.StudioInstance.dicObjectCtrl.Values.FirstOrDefault(x => x.objectInfo == obj);
         }
 
         /// <summary>
@@ -35,9 +33,9 @@ namespace KKAPI.Studio
         public static int GetSceneId(this ObjectCtrlInfo obj)
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
-            if (Studio == null) throw new InvalidOperationException("Studio is not initialized yet!");
+            if (StudioAPI.StudioInstance == null) throw new InvalidOperationException("Studio is not initialized yet!");
 
-            if (Studio.dicObjectCtrl.TryGetValue(obj.objectInfo.dicKey, out var oci) && oci == obj)
+            if (StudioAPI.StudioInstance.dicObjectCtrl.TryGetValue(obj.objectInfo.dicKey, out var oci) && oci == obj)
                 return obj.objectInfo.dicKey;
 
             return -1;
@@ -50,9 +48,9 @@ namespace KKAPI.Studio
         public static int GetSceneId(this ObjectInfo obj)
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
-            if (Studio == null) throw new InvalidOperationException("Studio is not initialized yet!");
+            if (StudioAPI.StudioInstance == null) throw new InvalidOperationException("Studio is not initialized yet!");
             
-            if (Studio.dicObjectCtrl.TryGetValue(obj.dicKey, out var oci) && oci.objectInfo == obj)
+            if (StudioAPI.StudioInstance.dicObjectCtrl.TryGetValue(obj.dicKey, out var oci) && oci.objectInfo == obj)
                 return obj.dicKey;
 
             return -1;
@@ -64,7 +62,7 @@ namespace KKAPI.Studio
         public static OCIChar GetOCIChar(this ChaControl chaControl)
         {
             if (!StudioAPI.InsideStudio) return null;
-            var infos = global::Studio.Studio.Instance.dicInfo;
+            var infos = StudioAPI.StudioInstance.dicInfo;
             var charas = infos.Values.OfType<OCIChar>();
             return charas.FirstOrDefault(x => x.charInfo == chaControl);
         }
@@ -99,7 +97,7 @@ namespace KKAPI.Studio
                 return false;
             }
 
-            return Studio.dicInfo.TryGetValue(tno, out objectCtrlInfo);
+            return StudioAPI.StudioInstance.dicInfo.TryGetValue(tno, out objectCtrlInfo);
         } 
 
         /// <summary>

@@ -208,10 +208,10 @@ namespace KKAPI.Studio.SaveLoad
             switch (operation)
             {
                 case SceneOperationKind.Load:
-                    results = global::Studio.Studio.Instance.dicObjectCtrl;
+                    results = StudioAPI.StudioInstance.dicObjectCtrl;
                     break;
                 case SceneOperationKind.Import:
-                    results = global::Studio.Studio.Instance.dicObjectCtrl
+                    results = StudioAPI.StudioInstance.dicObjectCtrl
                         .Join(Hooks.ImportDictionary, pair => pair.Key, pair => pair.Key, (current, idLookup) => new { originalId = idLookup.Value, obj = current.Value })
                         .ToDictionary(x => x.originalId, x => x.obj);
                     break;

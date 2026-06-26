@@ -69,12 +69,12 @@ namespace KKAPI.Studio.UI
             button.onClick.AddListener(() =>
             {
 #if !PH
-                Singleton<GameStudio.Studio>.Instance.colorPalette.Setup(Name, Value.Value, c => { OnValueChanged(c); image.color = c; }, true);
-                Singleton<GameStudio.Studio>.Instance.colorPalette.visible = true;
+                StudioAPI.StudioInstance.colorPalette.Setup(Name, Value.Value, c => { OnValueChanged(c); image.color = c; }, true);
+                StudioAPI.StudioInstance.colorPalette.visible = true;
 #elif PH
-                Singleton<GameStudio.Studio>.Instance.colorMenu.updateColorFunc = new GameStudio.UI_ColorInfo.UpdateColor(c => { OnValueChanged(c); image.color = c; });
-                Singleton<GameStudio.Studio>.Instance.colorMenu.SetColor(image.color, UI_ColorInfo.ControlType.PresetsSample);
-                Singleton<GameStudio.Studio>.Instance.colorPaletteCtrl.visible = true;
+                StudioAPI.StudioInstance.colorMenu.updateColorFunc = new GameStudio.UI_ColorInfo.UpdateColor(c => { OnValueChanged(c); image.color = c; });
+                StudioAPI.StudioInstance.colorMenu.SetColor(image.color, UI_ColorInfo.ControlType.PresetsSample);
+                StudioAPI.StudioInstance.colorPaletteCtrl.visible = true;
 #endif
             });
             Value.Subscribe(newValue => image.color = newValue);

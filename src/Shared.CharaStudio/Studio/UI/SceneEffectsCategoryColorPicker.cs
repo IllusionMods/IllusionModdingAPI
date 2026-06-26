@@ -87,12 +87,12 @@ namespace KKAPI.Studio.UI
             button.onClick.AddListener(() =>
             {
 #if !PH
-                Singleton<GameStudio.Studio>.Instance.colorPalette.Setup(Text, Value, SetValue, true);
-                Singleton<GameStudio.Studio>.Instance.colorPalette.visible = true;
+                StudioAPI.StudioInstance.colorPalette.Setup(Text, Value, SetValue, true);
+                StudioAPI.StudioInstance.colorPalette.visible = true;
 #elif PH
-                Singleton<GameStudio.Studio>.Instance.colorMenu.updateColorFunc = new GameStudio.UI_ColorInfo.UpdateColor(SetValue);
-                Singleton<GameStudio.Studio>.Instance.colorMenu.SetColor(ColorImage.color, UI_ColorInfo.ControlType.PresetsSample);
-                Singleton<GameStudio.Studio>.Instance.colorPaletteCtrl.visible = true;
+                StudioAPI.StudioInstance.colorMenu.updateColorFunc = new GameStudio.UI_ColorInfo.UpdateColor(SetValue);
+                StudioAPI.StudioInstance.colorMenu.SetColor(ColorImage.color, UI_ColorInfo.ControlType.PresetsSample);
+                StudioAPI.StudioInstance.colorPaletteCtrl.visible = true;
 #endif
             });
 

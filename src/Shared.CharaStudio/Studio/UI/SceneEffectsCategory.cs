@@ -68,7 +68,7 @@ namespace KKAPI.Studio.UI
             const string sliderSourcePath = "Screen Effect/Viewport/Content/Depth of Field/Slider Focal Size";
 #endif
 
-            var sbc = global::Studio.Studio.Instance.systemButtonCtrl;
+            var sbc = StudioAPI.StudioInstance.systemButtonCtrl;
             var sef = sbc.transform.FindLoop("01_Screen Effect");
             _headerSource = sef.transform.Find(headerSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + headerSourcePath);
             _contentSource = sef.transform.Find(contentSourcePath)?.gameObject ?? throw new ArgumentException("Could not find " + contentSourcePath);

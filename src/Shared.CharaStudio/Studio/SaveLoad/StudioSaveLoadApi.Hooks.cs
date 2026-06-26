@@ -194,7 +194,7 @@ namespace KKAPI.Studio.SaveLoad
             private static void TreeNodeCtrl_SelectMultiple()
             {
                 List<ObjectCtrlInfo> selectedObjects = new List<ObjectCtrlInfo>();
-                foreach (var node in Singleton<global::Studio.Studio>.Instance.treeNodeCtrl.selectNodes)
+                foreach (var node in StudioAPI.StudioInstance.treeNodeCtrl.selectNodes)
                     selectedObjects.Add(global::Studio.Studio.GetCtrlInfo(node));
                 OnObjectsSelected(selectedObjects);
             }
@@ -221,7 +221,7 @@ namespace KKAPI.Studio.SaveLoad
                 if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
                 {
                     List<ObjectCtrlInfo> selectedObjects = new List<ObjectCtrlInfo>();
-                    foreach (var node in Singleton<global::Studio.Studio>.Instance.treeNodeCtrl.selectNodes)
+                    foreach (var node in StudioAPI.StudioInstance.treeNodeCtrl.selectNodes)
                         selectedObjects.Add(global::Studio.Studio.GetCtrlInfo(node));
                     OnObjectsSelected(selectedObjects);
                 }
