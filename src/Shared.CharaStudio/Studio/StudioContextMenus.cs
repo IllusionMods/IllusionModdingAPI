@@ -82,7 +82,7 @@ namespace KKAPI.Studio
             }
 
             // BUG: Title bar gets cut off
-            var title = args.SelectedInstances.Count <= 1 ? clickedInstance.textName : $"{clickedInstance.textName} + {args.SelectedInstances.Count(x => x != clickedInstance)} selected";
+            var title = args.SelectedInstances.Count <= 1 ? clickedInstance.textName : $"{clickedInstance.textName} + {args.SelectedInstances.Count(x => x != clickedInstance)}";
             GlobalContextMenu.Show(title, _workspaceMenuItemsSorted);
         }
 

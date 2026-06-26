@@ -120,7 +120,7 @@ Enum
 
 ## `StudioContextMenus`
 
-Provides functionality for adding custom context menu items to the Studio workspace.
+Provides functionality for adding custom context menu items to studio.
 ```csharp
 public static class KKAPI.Studio.StudioContextMenus
 
