@@ -24,6 +24,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Studio\SaveLoad\TestSceneFunctionController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\StudioAPI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\StudioAPI.Hooks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\StudioContextMenuOrder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\StudioContextMenus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\StudioObjectExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\BaseCurrentStateEditableGuiEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\CurrentStateCategory.cs" />
@@ -47,5 +49,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarControlAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\SimpleToolbarToggle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Studio\UI\Toolbars\ToolbarPosition.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Studio\Events\WorkspaceNodeClickedEventArgs.cs" />
   </ItemGroup>
 </Project>

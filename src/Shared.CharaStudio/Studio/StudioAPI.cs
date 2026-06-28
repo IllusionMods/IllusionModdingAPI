@@ -132,6 +132,7 @@ namespace KKAPI.Studio
 
             Hooks.SetupHooks();
             StudioSaveLoadApi.Init();
+            StudioContextMenus.Init();
 
             SceneManager.sceneLoaded += SceneLoaded;
 

@@ -2,6 +2,8 @@
 using KKAPI.Utilities;
 using Studio;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace KKAPI.Studio
 {
@@ -16,7 +18,7 @@ namespace KKAPI.Studio
 
             [HarmonyPostfix]
             [HarmonyPatch(typeof(MPCharCtrl), nameof(MPCharCtrl.OnClickRoot), typeof(int))]
-            public static void OnClickRoot(int _idx, OCIChar ___m_OCIChar)
+            private static void OnClickRoot(int _idx, OCIChar ___m_OCIChar)
             {
                 IEnumerator DelayedUpdateTrigger()
                 {
@@ -31,6 +33,25 @@ namespace KKAPI.Studio
                 }
 
                 KoikatuAPI.Instance.StartCoroutine(DelayedUpdateTrigger());
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(TreeNodeObject), nameof(TreeNodeObject.Start))]
+            private static void OnTreeNodeObjectStart(TreeNodeObject __instance)
+            {
+                if (!InsideStudio) return;
+
+                __instance.m_ButtonSelect.GetOrAddComponent<PointerDown>().Instance = __instance;
+            }
+
+            private sealed class PointerDown : MonoBehaviour, IPointerClickHandler
+            {
+                internal TreeNodeObject Instance;
+                public void OnPointerClick(PointerEventData eventData)
+                {
+                    if (Instance && eventData.button == PointerEventData.InputButton.Right)
+                        StudioContextMenus.OnShowWorkspaceContextMenu(Instance);
+                }
             }
         }
     }
