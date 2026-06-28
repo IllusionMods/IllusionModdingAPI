@@ -46,9 +46,9 @@ namespace KKAPI.Studio
             if (!args.SelectedInstances.Contains(clickedInstance))
             {
 #if PH
-                StudioAPI.StudioInstance.treeNodeCtrl.AddSelectNode(clickedInstance);
+                StudioAPI.StudioInstance.treeNodeCtrl.SetSelectNode(clickedInstance);
 #else
-                StudioAPI.StudioInstance.treeNodeCtrl.AddSelectNode(clickedInstance, false);
+                StudioAPI.StudioInstance.treeNodeCtrl.SetSelectNode(clickedInstance);
 #endif
                 args = new WorkspaceNodeClickedEventArgs(clickedInstance);
             }
@@ -68,10 +68,9 @@ namespace KKAPI.Studio
                 foreach (var menuItem in _WorkspaceMenuItems)
                 {
                     if (previous != menuItem.Order && results.Count > 0)
-                    {
-                        previous = menuItem.Order;
                         results.Add(GlobalContextMenu.Entry.Separator);
-                    }
+                    
+                    previous = menuItem.Order;
 
                     results.Add(menuItem.Entry);
                 }
@@ -182,7 +181,11 @@ namespace KKAPI.Studio
             string content,
             Action<WorkspaceNodeClickedEventArgs> onClick,
             StudioContextMenuOrder order = StudioContextMenuOrder.Default,
-            Func<WorkspaceNodeClickedEventArgs, GlobalContextMenu.Entry.EntryState> checkState = null) => AddWorkspaceContextMenuItem(new GUIContent(content), onClick, order, checkState);
+            Func<WorkspaceNodeClickedEventArgs, GlobalContextMenu.Entry.EntryState> checkState = null)
+        {
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            return AddWorkspaceContextMenuItem(new GUIContent(content), onClick, order, checkState);
+        }
 
         /// <inheritdoc cref="AddWorkspaceContextMenuItem(string, Action{WorkspaceNodeClickedEventArgs}, StudioContextMenuOrder, Func{WorkspaceNodeClickedEventArgs, GlobalContextMenu.Entry.EntryState})"/>
         public static IDisposable AddWorkspaceContextMenuItem(
