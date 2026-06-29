@@ -18,17 +18,35 @@ jobs:
 
     - name: Setup MSBuild # Needed by Build NativeHelper
       uses: microsoft/setup-msbuild@v1
+
+    - name: Install .NET Framework 4.6 targeting pack
+      shell: pwsh
+      run: |
+        choco install netfx-4.6-devpack -y
       
     - name: Build NativeHelper # Need to build this separately first because nuget pack doesn't seem to handle vcxproj
       working-directory: ./src/Helper
+      shell: pwsh
       run: |
+        $ErrorActionPreference = 'Stop'
         msbuild Helper.vcxproj /p:Configuration=Release /p:Platform=x64
+        if ($LASTEXITCODE -ne 0) { throw "NativeHelper build failed with exit code $LASTEXITCODE" }
     
     - name: Nuget pack
       working-directory: ./src
+      shell: pwsh
       run: |
+        $ErrorActionPreference = 'Stop'
         nuget restore
-        gci -Recurse -Filter *.nuspec | foreach { nuget pack "$($_.DirectoryName)\$($_.BaseName).csproj" -build -properties Configuration=Release -OutputDirectory "../bin" }
+        if ($LASTEXITCODE -ne 0) { throw "nuget restore failed with exit code $LASTEXITCODE" }
+
+        Get-ChildItem -Recurse -Filter *.nuspec | ForEach-Object {
+          $proj = Join-Path $_.DirectoryName ($_.BaseName + '.csproj')
+          nuget pack $proj -build -properties Configuration=Release -OutputDirectory "../bin"
+          if ($LASTEXITCODE -ne 0) {
+            throw "nuget pack failed for $proj with exit code $LASTEXITCODE"
+          }
+        }
 
     - name: Upload build
       uses: actions/upload-artifact@v4
