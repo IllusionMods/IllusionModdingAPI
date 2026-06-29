@@ -22,7 +22,7 @@ jobs:
     - name: Install .NET Framework 4.6 targeting pack
       shell: pwsh
       run: |
-        choco install netfx-4.6.1-devpack -y
+        choco install netfx-4.6-devpack -y
       
     - name: Build NativeHelper # Need to build this separately first because nuget pack doesn't seem to handle vcxproj
       working-directory: ./src/Helper
