@@ -45,6 +45,37 @@ namespace KKAPI.Utilities
             return tex;
         }
 
+#if KK
+        private static byte[] _gammaLut;
+#endif
+
+        /// <summary>
+        /// Gamma-encodes an sRGB texture's RGB so it isn't sampled too dark in Linear color space.
+        /// Fixes UI PNGs on Koikatsu (Unity 5.6); no-op on every other game. Alpha is untouched; the texture must be readable.
+        /// </summary>
+        public static void CorrectColorSpaceForKoikatu(this Texture2D texture)
+        {
+            if (!texture) throw new ArgumentNullException(nameof(texture));
+#if KK
+            if (_gammaLut == null)
+            {
+                _gammaLut = new byte[256];
+                for (int i = 0; i < 256; i++)
+                    _gammaLut[i] = (byte)Mathf.Clamp(Mathf.RoundToInt(Mathf.LinearToGammaSpace(i / 255f) * 255f), 0, 255);
+            }
+
+            var pixels = texture.GetPixels32();
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                pixels[i].r = _gammaLut[pixels[i].r];
+                pixels[i].g = _gammaLut[pixels[i].g];
+                pixels[i].b = _gammaLut[pixels[i].b];
+            }
+            texture.SetPixels32(pixels);
+            texture.Apply(false);
+#endif
+        }
+
         /// <summary>
         /// Create a sprite based on this texture.
         /// </summary>
