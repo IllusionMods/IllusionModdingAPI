@@ -41,12 +41,14 @@ namespace KKAPI.Utilities
 
             // Load the custom skin from resources
             _boxBackground = ResourceUtils.GetEmbeddedResource(lightVersion ? "guisharp-box-light.png" : "guisharp-box.png").LoadTexture();
+            _boxBackground.CorrectColorSpaceForLinear();
             Object.DontDestroyOnLoad(_boxBackground);
             newSkin.box.onNormal.background = null;
             newSkin.box.normal.background = _boxBackground;
             newSkin.box.normal.textColor = Color.white;
 
             _winBackground = ResourceUtils.GetEmbeddedResource(lightVersion ? "guisharp-window-light.png" : "guisharp-window.png").LoadTexture();
+            _winBackground.CorrectColorSpaceForLinear();
             Object.DontDestroyOnLoad(_winBackground);
             newSkin.window.onNormal.background = null;
             newSkin.window.normal.background = _winBackground;
