@@ -53,7 +53,7 @@ namespace KKAPI.Utilities
         /// Gamma-encodes an sRGB texture's RGB so it isn't sampled too dark in Linear color space.
         /// Fixes UI PNGs on Koikatsu (Unity 5.6); no-op on every other game. Alpha is untouched; the texture must be readable.
         /// </summary>
-        public static void CorrectColorSpaceForLinear(this Texture2D texture)
+        public static void CorrectColorSpaceForKoikatu(this Texture2D texture)
         {
             if (!texture) throw new ArgumentNullException(nameof(texture));
 #if KK
