@@ -583,6 +583,7 @@ Static Methods
 
 | Type | Name | Summary | 
 | --- | --- | --- | 
+| `void` | CorrectColorSpaceForKoikatu(this `Texture2D` texture) | Gamma-encodes an sRGB texture's RGB so it isn't sampled too dark in Linear color space.  Fixes UI PNGs on Koikatsu (Unity 5.6); no-op on every other game. Alpha is untouched; the texture must be readable. | 
 | `Texture2D` | GetVisibleTexture(this `Sprite` spr) | Gets texture as it is shown by this sprite. If it's not packed then returns the original texture.  If it's packed then this tries to crop out the part that the sprite is supposed to show and return only that. | 
 | `Texture2D` | LoadTexture(this `Byte[]` texBytes, `TextureFormat` format = ARGB32, `Boolean` mipMaps = False) | Create texture from an image stored in a byte array, for example a png file read from disk. | 
 | `Texture2D` | ResizeTexture(this `Texture2D` pSource, `ImageFilterMode` pFilterMode, `Single` pScale) | Create a resized copy of this texture.  http://blog.collectivemass.com/2014/03/resizing-textures-in-unity/ | 
