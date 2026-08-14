@@ -241,6 +241,14 @@ namespace KKAPI.Maker
                         itemsRect.offsetMin = new Vector2(17, 0);
                         itemsRect.offsetMax = new Vector2(374, 0);
 
+                        // Start extending the window downward if there's more entries that can fit
+                        if (_sidebarEntries.Count > 8)
+                        {
+                            var additionalRows = Mathf.CeilToInt(_sidebarEntries.Count / 2f - 0.1f) - 4;
+                            gridLayout.constraintCount += additionalRows;
+                            rt.sizeDelta = new Vector2(rt.sizeDelta.x, rt.sizeDelta.y + additionalRows * (gridLayout.cellSize.y + gridLayout.spacing.y));
+                        }
+
                         foreach (Transform item in itemsTransform) Object.Destroy(item.gameObject);
 
                         foreach (var sidebarEntry in _sidebarEntries) sidebarEntry.CreateControl(itemsTransform);
