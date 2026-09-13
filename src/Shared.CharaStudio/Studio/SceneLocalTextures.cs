@@ -68,7 +68,7 @@ namespace KKAPI.Studio
 
         static SceneLocalTextures()
         {
-            string description = "Whether external textures used by plugins should be bundled with the scene, deduped and then saved to the scene, or saved to a local folder.\nWARNING: Scenes with deduped textures save some space but cannot be loaded by earlier plugin versions. Scenes with local textures save more space but cannot be shared.";
+            string description = "Whether external textures used by plugins should be bundled with the scene (Standard), deduped and then saved to the scene (Deduped), or saved to a configurable local folder (Local).\nWARNING: Scenes with deduped textures save some space but cannot be loaded by earlier plugin versions. Scenes with local textures save more space but cannot be shared.";
             ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Scene Save Type", SceneTextureSaveType.Bundled, new ConfigDescription(description, null, new ConfigurationManagerAttributes { IsAdvanced = true, Order = 1 }));
             ConfTexSaveType.SettingChanged += OnSaveTypeChanged;
             if (StudioAPI.InsideStudio)
@@ -104,8 +104,8 @@ namespace KKAPI.Studio
         {
             GameObject localSave;
 
-            string titleText = "Texture Save Type";
-            string warningText = "Scenes with deduped textures save some storage space but cannot be loaded by earlier plugin versions.\nScenes with local textures save more storage space but cannot be shared.";
+            string titleText = "Scene Save Type";
+            string warningText = "Deduped Save reduces file size, but may not be compatible with old plugin versions.\nLocal Save reduces file size greatly, but can only be loaded on the local machine.";
 
             // Build UI
             {
@@ -131,7 +131,7 @@ namespace KKAPI.Studio
                 SetTfProps(title.GetComponent<RectTransform>(), 0, 1, 1, 1, 12, -48, 0, -5);
 
                 var tglGrp = localSave.GetComponent<ToggleGroup>();
-                tglGrp.RegisterToggle(CreateCheck("tglBundled", "Bundled", -80, -48));
+                tglGrp.RegisterToggle(CreateCheck("tglBundled", "Standard", -80, -48));
                 tglGrp.RegisterToggle(CreateCheck("tglDeduped", "Deduped", -120, -88));
                 tglGrp.RegisterToggle(CreateCheck("tglLocal", "Local", -160, -128));
 
