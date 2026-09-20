@@ -18,7 +18,7 @@ namespace KKAPI.Maker
                 return;
                 
             // Save new screen
-            var panel1 = SetupUIPanel(false, out bool isNew);
+            var panel1 = SetupUIPanel(AlwaysUseFallbackLocalTexUI.Value, out bool isNew);
             if (isNew)
             {
                 panel1.transform.SetParent(Singleton<CustomBase>.Instance.cvsCapMenu.transform.parent);
@@ -49,7 +49,7 @@ namespace KKAPI.Maker
             Transform copyFrom = root.transform.Find("menuTop/bg");
             GameObject localSave;
 
-            string warningText = "Cards with local textures save storage space but cannot be shared.";
+            string warningText = "Local Save reduces card sizes but these cards cannot be shared. Resave as Standard to share.";
 
             if (copyFrom != null && !forceNew)
             {
@@ -63,7 +63,7 @@ namespace KKAPI.Maker
                 localSave.transform.Find("type/textTitle").GetComponent<Text>().text = "Textures";
                 localSave.transform.Find("type/textTitle").GetComponent<Text>().alignment = TextAnchor.MiddleRight;
                 var toggles = localSave.transform.Find("type/items");
-                toggles.GetChild(0).GetComponentInChildren<Text>().text = "Bundled";
+                toggles.GetChild(0).GetComponentInChildren<Text>().text = "Standard";
                 toggles.GetChild(0).GetComponentInChildren<Text>().fontSize = 15;
                 toggles.GetChild(1).GetComponentInChildren<Text>().text = "Local";
 
@@ -94,8 +94,8 @@ namespace KKAPI.Maker
                 SetTfProps(text.GetComponent<RectTransform>(), 0, 1, 1, 1, 8, -136, 0, -88);
 
                 var tglGrp = localSave.GetComponent<ToggleGroup>();
-                tglGrp.RegisterToggle(CreateCheck("imgRbFace", "Bundled Textures", -40, -8));
-                tglGrp.RegisterToggle(CreateCheck("imgRbCard", "Local Textures", -80, -48));
+                tglGrp.RegisterToggle(CreateCheck("imgRbFace", "Standard Save", -40, -8));
+                tglGrp.RegisterToggle(CreateCheck("imgRbCard", "Local Save", -80, -48));
 
                 SetLayers(localSave.transform);
                 

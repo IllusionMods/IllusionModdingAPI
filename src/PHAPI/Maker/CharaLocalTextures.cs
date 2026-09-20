@@ -51,13 +51,15 @@ namespace KKAPI.Maker
 
         internal static ConfigEntry<CharaTextureSaveType> ConfTexSaveType { get; private set; }
         internal static ConfigEntry<bool> EnableLocalTextureSupport { get; private set; }
+        internal static ConfigEntry<bool> AlwaysUseFallbackLocalTexUI { get; private set; }
 
         static CharaLocalTextures()
         {
-            EnableLocalTextureSupport = KoikatuAPI.Instance.Config.Bind("Local Textures", "Enable local texture support", true, new ConfigDescription("Enable or disable local texture support. When disabled, the local texture UI is hidden and all textures are always stored in cards. Note: Existing local textures will be inaccessible (but not deleted) while this is disabled.", null, new ConfigurationManagerAttributes { IsAdvanced = true, Order = 3 }));
+            EnableLocalTextureSupport = KoikatuAPI.Instance.Config.Bind("Local Textures", "Enable local texture support", true, new ConfigDescription("Enable or disable local texture support. When disabled, the local texture UI is hidden and all textures are always stored in cards. Note: Existing local textures can still be loaded.", null, new ConfigurationManagerAttributes { IsAdvanced = true, Order = 4 }));
             EnableLocalTextureSupport.SettingChanged += (sender, args) => OnEnableLocalTextureSupportChanged();
-            
-            string description = "Whether external textures used by plugins should be bundled with the card or saved to a local folder.\nWARNING: Cards with local textures save storage space but cannot be shared.";
+            AlwaysUseFallbackLocalTexUI = KoikatuAPI.Instance.Config.Bind("Local Textures", "Always Use Fallback UI", false, new ConfigDescription("Always use the fallback UI skin for the save type selector to distinguish it from vanilla options.", null, new ConfigurationManagerAttributes { IsAdvanced = true, Order = 3 }));
+
+            string description = "Whether external textures used by plugins should be bundled with the card (Standard), or saved to a configruable local folder (Local).\nWARNING: Cards with local textures save storage space but cannot be shared.";
             ConfTexSaveType = KoikatuAPI.Instance.Config.Bind("Local Textures", "Card Save Type", CharaTextureSaveType.Bundled, new ConfigDescription(description, null, new ConfigurationManagerAttributes { IsAdvanced = true, Order = 2 }));
             ConfTexSaveType.SettingChanged += OnSaveTypeChanged;
             KoikatuAPI.Instance.Config.Bind("Local Textures", "Audit Local Files", 0, new ConfigDescription("Parse all character / scene files and check for missing or unused local files. Takes a long time if you have many cards and scenes.", null, new ConfigurationManagerAttributes

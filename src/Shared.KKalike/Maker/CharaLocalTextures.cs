@@ -16,11 +16,11 @@ namespace KKAPI.Maker
                 return;
                 
             // Save new screen
-            var panel1 = SetupUIPanel(out _);
+            var panel1 = SetupUIPanel(AlwaysUseFallbackLocalTexUI.Value, out _);
             panel1.transform.localPosition += new Vector3(0, panel1.GetComponent<RectTransform>().sizeDelta.y + 10, 0);
 
             // Overwrite screen
-            var panel2 = SetupUIPanel(out bool isNew);
+            var panel2 = SetupUIPanel(AlwaysUseFallbackLocalTexUI.Value, out bool isNew);
             var panel2rect = panel2.GetComponent<RectTransform>();
             Vector2 panel2RectSize = panel2rect.sizeDelta;
             var checkWindow = Singleton<CustomBase>.Instance.GetComponentsInChildren<CustomCheckWindow>(true)[0];
@@ -34,17 +34,17 @@ namespace KKAPI.Maker
                 panel2.transform.localPosition = new Vector3(-panel2RectSize.x / 2, 0, 0);
         }
 
-        private static GameObject SetupUIPanel(out bool isNewPanel)
+        private static GameObject SetupUIPanel(bool forceNew, out bool isNewPanel)
         {
             GameObject root = Singleton<CustomBase>.Instance.customCtrl.objCaptureTop;
             GameObject copyFrom = root.GetComponentInChildren<ToggleGroup>(true).gameObject;
             GameObject localSave;
 
-            string tglText1 = "Bundled Textures";
-            string tglText2 = "Local Textures";
-            string warningText = "Cards with local textures save storage space but cannot be shared.";
+            string tglText1 = "Standard Save";
+            string tglText2 = "Local Save";
+            string warningText = "Local Save reduces card sizes but these cards cannot be shared. Resave as Standard to share.";
 
-            if (copyFrom != null)
+            if (copyFrom != null && !forceNew)
             {
                 isNewPanel = false;
                 localSave = Object.Instantiate(copyFrom.gameObject, copyFrom.transform.parent);
